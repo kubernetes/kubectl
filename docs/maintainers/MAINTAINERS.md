@@ -51,8 +51,10 @@ Look through the PR list with [SIG cli](https://github.com/kubernetes/kubernetes
 
 ## New contributor assistance
 
-Look through issues labeled "for-new-contributors" that are assigned, and make sure they are active.
-If they haven't had activity in a couple days, ping the assignee and ask if help is needed.
+- Look through issues labeled "for-new-contributors" that are assigned, and make sure they are active.
+  If they haven't had activity in a couple days, ping the assignee and ask if help is needed.
+- Identify issues for new contributors to pick up
+- Figure out a progression for new contributors to become reviewers
 
 ## Per-release tasks
 
@@ -63,5 +65,15 @@ If they haven't had activity in a couple days, ping the assignee and ask if help
 
 ### During code-freeze
 
-- Daily look at issues labeled with []sig/cli in the milestone](https://github.com/kubernetes/kubernetes/issues?utf8=%E2%9C%93&q=is%3Aissue%20is%3Aopen%20label%3Asig%2Fcli%20milestone%3Av1.9%20) and make sure they are owned and make progress
+- Daily look at issues labeled with [sig/cli in the milestone](https://github.com/kubernetes/kubernetes/issues?utf8=%E2%9C%93&q=is%3Aissue%20is%3Aopen%20label%3Asig%2Fcli%20milestone%3Av1.9%20) and make sure they are owned and make progress
   - **Note:** You will need to update the milestone in the link to the current milestone
+
+## Every 3-6 months tasks
+
+### (3 months) Report about SIG cli at the community meeting
+
+TODO: fill this in
+
+### (6 months) Setup a SIG cli face-to-face
+
+TODO: fill this in
