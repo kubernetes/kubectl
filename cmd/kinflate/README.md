@@ -1,8 +1,8 @@
-# kexpand
+# kinflate
 
 _TODO: flesh out this placeholder documentation_
  
-`kexpand` is a kubernetes cluster configuration utility,
+`kinflate` is a kubernetes cluster configuration utility,
 a prototype of ideas discussed in [this doc][DAM].
 
 It accepts one or more file system path arguments,
@@ -29,7 +29,7 @@ For example, if your current working directory contained
 
 then the command 
 ```
-kexpand ./mycluster/instances | kubectl apply -f -
+kinflate ./mycluster/instances | kubectl apply -f -
 ```
 would modify your cluster per the resources
 generated from the manifests and associated

@@ -20,6 +20,12 @@ import (
 	"fmt"
 )
 
-func main() {
+// TestableMain allows test coverage for main.
+func TestableMain() error {
 	fmt.Println("Hello world.")
+	return nil
+}
+
+func main() {
+	TestableMain()
 }

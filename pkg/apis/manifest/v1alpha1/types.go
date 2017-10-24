@@ -98,14 +98,14 @@ type Manifest struct {
 	// If a secret want to have a base and an overlay, it should go to Bases and Overlays fields.
 	Secrets []Secret `json:"secrets,omitempty" yaml:"secrets,omitempty"`
 
-  // Whether prune resources not defined in Kube-manifest.yaml, similar to `kubectl apply --prune` behavior.
+	// Whether prune resources not defined in Kube-manifest.yaml, similar to `kubectl apply --prune` behavior.
 	Prune bool `json:"prune,omitempty" yaml:"prune,omitempty"`
 
-  // TODO: figure out what the behavior details should be.
+	// TODO: figure out what the behavior details should be.
 	// Whether PersistentVolumeClaims should be deleted with the other resources.
 	// OwnPersistentVolumeClaims bool `json:"ownPersistentVolumeClaims,omitempty" yaml:"ownPersistentVolumeClaims,omitempty"`
 
-  // TODO: figure out what the behavior details should be.
+	// TODO: figure out what the behavior details should be.
 	// Whether recursive look for Kube-manifest.yaml, similar to `kubectl --recursive` behavior.
 	// Recursive bool `json:"recursive,omitempty" yaml:"recursive,omitempty"`
 }
@@ -139,7 +139,7 @@ type Secret struct {
 	// TLS secret.
 	TLS TLS `json:"tls,omitempty" yaml:"tls,omitempty"`
 
-  // TODO: support more secret types, e.g. DockerRegistry
+	// TODO: support more secret types, e.g. DockerRegistry
 }
 
 // Generic contains some generic sources for configmap or secret.
