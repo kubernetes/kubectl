@@ -1,9 +1,9 @@
 # SIG CLI Issue Backlog
 ## Grooming work for new and existing contributors
 
-Link: https://goo.gl/YEq33R
-Author: @pwittrock
-Last updated: 10/25/17
+- Link: https://goo.gl/YEq33R
+- Author: @pwittrock
+- Last updated: 10/25/17
 
 
 ## Background
