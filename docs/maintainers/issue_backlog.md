@@ -1,5 +1,6 @@
 # SIG CLI Issue Backlog
-## Grooming work for new and existing contributors
+
+Grooming work for new and existing contributors
 
 - Link: https://goo.gl/YEq33R
 - Author: @pwittrock
