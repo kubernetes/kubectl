@@ -51,13 +51,13 @@ These challenges can be reduced by:
 #### Stakeholder and Contributor
 
 A stakeholder typically files the issue, wants to see the work done, and will
-review PRs that address the issue - or find reviewers.
+personally review, or find reviewers for, PRs that address the issue.
 
-The contrbutor is the issue assignee - they provide the PR for review.
+The contrbutor is the issue assignee - they provide PR for review
+to close the issue.
 
-The stakeholder may become the contributor, but then they must find someone else
-to review the PR.  They must find a new stakeholder to review the work and help
-follow through on issue closure.
+The stakeholder may become the contributor.  Then they must find a new
+stakeholder to review the work and help follow through on issue closure.
 
 #### Encapsulated
 
