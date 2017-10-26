@@ -31,21 +31,21 @@ These challenges can be reduced through grooming a work backlog carefully and in
 ## Contribution lifecycle
 
 1. Issue is created with description and labels
-  - Made sure the issue meets guidelines for a good issue
-  - Issue must have a stakeholder invested in the work being completed
+   - Made sure the issue meets guidelines for a good issue
+   - Issue must have a stakeholder invested in the work being completed (stakeholder is either the assignee or if no assignee, the issue creator)
 2. SIG agrees that work for issue will be accept
-  - Must be low overhead approach
+   - Must be low overhead approach
 3. Issue moved to [backlog](https://github.com/kubernetes/kubectl/projects/3) in the GH project
 4. Contributor assigns issue to self, or asks issue be assigned if they are not a Kubernetes org member
 5. Issue moved to [assigned](https://github.com/kubernetes/kubectl/projects/3) in the GH project
 6. Contributor begins work and publishes work to fork as it is being done
-  - posts it to the issue
+   - posts it to the issue
 7. Contributor updates issue weekly with status updates, and pushes work to fork
-  - Periodic feedback provided
-  - Discussion between contributor and stakeholder occurs on issue
+   - Periodic feedback provided
+   - Discussion between contributor and stakeholder occurs on issue
 8. Contributor sends PR for review
-  - Stakeholder ensures the appropriate reviewers exist
-  - Discussion and updates occur on the PR
+   - Stakeholder ensures the appropriate reviewers exist
+   - Discussion and updates occur on the PR
 9. PR accepted and merged
 
 ## Picking good issues for the backlog
@@ -95,14 +95,16 @@ Improving test coverage and augmenting e2e tests with integration tests is also 
 Improving code coverage allows the project to move more quickly by reducing regressions issues that the SIG must field,
 and by providing a safety net for code reviewers ensuring changes don’t break existing functionality.
 
-- Write unit tests for functionality only covered by integration and e2e tests
-- Write integration tests for functionality only covered by e2e tests
+- Write unit tests for functionality only covered by integration and [e2e tests](https://github.com/kubernetes/community/blob/master/contributors/devel/e2e-tests.md)
+  - Integration tests may run processes, such as the apiserver, but do so locally
+  - E2e tests run a full Kubernetes cluster (remote)
+- Write integration tests for functionality only covered by [e2e tests](https://github.com/kubernetes/community/blob/master/contributors/devel/e2e-tests.md)
 - Improve coverage for edge cases and different inputs to functions
 - Checking behavior for invalid arguments
 - Refactoring existing tests to pull out common code into reusable functions
   - **Note:** this should be very well scoped as it impacts existing tests and reviewers need to make sure nothing breaks
 
-### Encapsulated libraries
+### New libraries
 
 Encapsulated libraries are great contributions for experienced contributors - either programming in go, or
 with Kubernetes.  Because the libraries are encapsulated, it is easier for reviewers to determine the correctness
