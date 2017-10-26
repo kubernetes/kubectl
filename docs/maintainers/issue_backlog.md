@@ -112,7 +112,7 @@ and by providing a safety net for code reviewers ensuring changes don’t break 
 - Write integration tests for functionality currently only covered by [e2e tests].
 - Improve coverage for edge cases and different inputs to functions.
 - Improve handling of invalid arguments.
-- Refactoring existing tests to pull out common code into reusable functions
+- Refactoring existing tests to pull out common code into reusable functions.
    > _This should be very well scoped as it impacts existing tests and reviewers need to make sure nothing breaks._
 
 ### New libraries
@@ -133,7 +133,7 @@ have multiple reviewers, and can have subtle side effects that need to be carefu
 
 Improvements in documentation and testing (above) reduces the burden to modify existing code.
 
-## How to manage issue in the backlog
+## Managing a backlog issue
 
 ### Setting Labels
 
@@ -169,10 +169,10 @@ on the issue.  We use labels to define the most important metadata about the iss
 ## Assigning an issue once work has started
 
 1. Contributor messages stakeholder on the issue, and maybe on slack
-2. Stakeholder moves issue from backlog to assigned
-3. Contributor updates issue weekly and publishes work in progress to a fork
-   - Fork linked on issue
-4. Once work is ready for review, contributor files a PR and notifies the stakeholder
+1. Stakeholder moves issue from backlog to assigned
+1. Contributor updates issue weekly and publishes work in progress to a fork
+   > The issue should be updated with a link to the fork.
+1. Once work is ready for review, contributor files a PR and notifies the stakeholder
 
 ## What is expected as part of contributing a library?
 
