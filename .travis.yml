@@ -6,12 +6,13 @@ go:
 go_import_path: k8s.io/kubectl
 
 before_install:
+  - source ./bin/consider-early-travis-exit.sh
   - go get -u github.com/golang/lint/golint
   - go get -u golang.org/x/tools/cmd/goimports
 
 script:
   - ./bin/pre-commit.sh
 
-# TBD, suppressing for now.
+# TBD. Suppressing for now.
 notifications:
   email: false
