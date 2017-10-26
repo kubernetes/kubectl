@@ -27,45 +27,43 @@ These challenges can be reduced by:
   themselves.
 - Ensuring each issue has a stake holder that is committed to seeing that changes are reviewed.
 
+[new contributors project]: https://github.com/kubernetes/kubectl/projects/3
+
 ## Contribution lifecycle
 
-1. A [good issue](#what-makes-a-good-issue) is created with description and labels
-2. SIG agrees that work for issue will be accepted
-3. Issue moved to [backlog](https://github.com/kubernetes/kubectl/projects/3) in the GH project
-4. Contributor assigns issue to self, or asks issue be assigned if they are not a Kubernetes org member
-5. Issue moved to [assigned](https://github.com/kubernetes/kubectl/projects/3) in the GH project
-6. Contributor begins work and publishes work to fork as it is being done
-   - posts it to the issue
-7. Contributor updates issue weekly with status updates, and pushes work to fork
+1. A [good issue](#what-makes-a-good-issue) is created with description and labels.
+1. SIG agrees that work for issue will be accepted.
+1. Issue moved to the _backlog_ column in the [new contributors project].
+1. Contributor assigns issue to self, or asks issue be assigned if they are not a Kubernetes org member.
+1. Issue moved to the _assigned_ column in the [new contributors project].
+1. Contributor updates issue weekly with status updates, and pushes work to fork
    - Periodic feedback provided
    - Discussion between contributor and stakeholder occurs on issue
-8. Contributor sends PR for review
+1. Contributor sends PR for review
    - Stakeholder ensures the appropriate reviewers exist
    - Discussion and updates occur on the PR
-9. PR accepted and merged
+1. PR accepted and merged
 
-## Picking good issues for the backlog
+## What make a good issue?
 
-### What makes a good issue
-
-#### Stakeholder and Contributor
+### Stakeholder and Contributor
 
 A stakeholder typically files the issue, wants to see the work done, and will
-personally review, or find reviewers for, PRs that address the issue.
+find reviewers for PRs that address the issue.
 
-The contrbutor is the issue assignee - they provide PR for review
+The contributor is the issue assignee - they provide PRs for review
 to close the issue.
 
-The stakeholder may become the contributor.  Then they must find a new
-stakeholder to review the work and help follow through on issue closure.
+The stakeholder may become the contributor.  They must find a new stakeholder to
+review the work and help follow through on issue closure.
 
-#### Encapsulated
+### Encapsulated
 
 Issues that require modifying large pieces of existing code are typically hard
 to accept without multiple reviewers, require a high degree of communication and require knowledge of the
 existing codebase.
 
-This makes them bad candidates for contributors looking to pick up a piece of work on independently.
+This makes them bad candidates for contributors looking to get started independently.
 
 Issues with good encapsulation have the following properties:
 
@@ -74,10 +72,13 @@ Issues with good encapsulation have the following properties:
 - Easy to review the contribution on its own without needing to examine other parts of the system
 - Low chance of needing to rebase or conflicting with changes made in parallel
 
-#### Consensus on work within the SIG
+### Consensus on work within the SIG
 
-Work described in issues in the backlog should be agreed upon by the SIG.  PRs sent for review should have the code
-reviewed not the concept.  SIG CLI needs to come up with low overhead a process for accepting proposed work.
+Work described in issues in the backlog should be agreed upon by the SIG.  PRs
+sent for review should have the code reviewed, not the _reason_ for doing the
+PR.
+
+SIG CLI needs to come up with low overhead a process for accepting proposed work.
 
 1. Create an issue for the work
 2. SIG agrees to accept work for the issue (as described) if it is completed
@@ -103,28 +104,34 @@ Improving test coverage and augmenting e2e tests with integration tests is also 
 Improving code coverage allows the project to move more quickly by reducing regressions issues that the SIG must field,
 and by providing a safety net for code reviewers ensuring changes don’t break existing functionality.
 
-- Write unit tests for functionality only covered by integration and [e2e tests](https://github.com/kubernetes/community/blob/master/contributors/devel/e2e-tests.md)
-   - Integration tests may run processes, such as the apiserver, but do so locally
-   - E2e tests run a full Kubernetes cluster (remote)
-- Write integration tests for functionality only covered by [e2e tests](https://github.com/kubernetes/community/blob/master/contributors/devel/e2e-tests.md)
-- Improve coverage for edge cases and different inputs to functions
-- Checking behavior for invalid arguments
+[e2e tests]: https://github.com/kubernetes/community/blob/master/contributors/devel/e2e-tests.md
+
+- Write unit tests for functionality currently only covered by integration and [e2e tests].
+   > Integration tests may run processes, such as the apiserver, but do so locally.
+   > E2e tests run a full Kubernetes cluster (remote).
+- Write integration tests for functionality currently only covered by [e2e tests].
+- Improve coverage for edge cases and different inputs to functions.
+- Improve handling of invalid arguments.
 - Refactoring existing tests to pull out common code into reusable functions
-   - _This should be very well scoped as it impacts existing tests and reviewers need to make sure nothing breaks._
+   > _This should be very well scoped as it impacts existing tests and reviewers need to make sure nothing breaks._
 
 ### New libraries
 
-Encapsulated libraries are great contributions for experienced contributors - either programming in Go, or
-with Kubernetes.  Because the libraries are encapsulated, it is easier for reviewers to determine the correctness
+Encapsulated libraries (collections of functions devoted to one simple purpose - e.g. date/time utils)
+are great contributions for experienced contributors - either programming in Go, or
+with Kubernetes.
+
+Because the libraries are encapsulated, it is easier for reviewers to determine the correctness
 of their interactions with the existing system.  If the functionality is new or can be disabled with a flag, the
-risk of accepting the change is reduced, and should be easier for reviewers to get consensus on.
+risk of accepting the change is reduced, improving the chance the change will be accepted.
 
 ### Modifying existing libraries
 
 Tasks to perform non-trivial changes to existing libraries should be reserved only for folks who have made
 multiple successful contributions of code - either tests or libraries.  PRs to modify existing libraries typically
-have multiple reviewers, and can have subtle side effects that need to be carefully checked for.  Improvements in
-documentation and testing (above) will reduce the burden to modify existing code.
+have multiple reviewers, and can have subtle side effects that need to be carefully checked for.
+
+Improvements in documentation and testing (above) reduces the burden to modify existing code.
 
 ## How to manage issue in the backlog
 
