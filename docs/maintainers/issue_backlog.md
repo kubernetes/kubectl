@@ -27,15 +27,15 @@ These challenges can be reduced by:
   themselves.
 - Ensuring each issue has a stake holder that is committed to seeing that changes are reviewed.
 
-[new contributors project]: https://github.com/kubernetes/kubectl/projects/3
+[New Contributors Project]: https://github.com/kubernetes/kubectl/projects/3
 
 ## Contribution lifecycle
 
 1. A [good issue](#what-makes-a-good-issue) is created with description and labels.
 1. SIG agrees that work for issue will be accepted.
-1. Issue moved to the _backlog_ column in the [new contributors project].
+1. Issue moved to the _backlog_ column in the [New Contributors Project].
 1. Contributor assigns issue to self, or asks issue be assigned if they are not a Kubernetes org member.
-1. Issue moved to the _assigned_ column in the [new contributors project].
+1. Issue moved to the _assigned_ column in the [New Contributors Project].
 1. Contributor updates issue weekly with status updates, and pushes work to fork
    - Periodic feedback provided
    - Discussion between contributor and stakeholder occurs on issue
@@ -44,7 +44,7 @@ These challenges can be reduced by:
    - Discussion and updates occur on the PR
 1. PR accepted and merged
 
-## What make a good issue?
+## What makes a good issue?
 
 ### Stakeholder and Contributor
 
