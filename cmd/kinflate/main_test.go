@@ -25,8 +25,8 @@ import (
 // to a buffer, compare to expected results, etc.
 // a script in there, have script write file
 func TestTrueMain(t *testing.T) {
-	err := TestableMain()
-	if err != nil {
-		t.Errorf("Unexpected error: %v", err)
+	exrr := TestableMain()
+	if exrr != nil {
+		t.Errorf("Unexpected error: %v", exrr)
 	}
 }
