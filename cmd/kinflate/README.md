@@ -1,13 +1,15 @@
 # kinflate
 
+BLAH
+
 _TODO: flesh out this placeholder documentation_
- 
+
 `kinflate` is a kubernetes cluster configuration utility,
 a prototype of ideas discussed in [this doc][DAM].
 
 It accepts one or more file system path arguments,
 reads the content thereof, and emits kubernetes
-[resource] yaml to stdout, suitable for piping 
+[resource] yaml to stdout, suitable for piping
 into [kubectl] for [declarative] application to a
 kubernetes cluster.
 
@@ -27,7 +29,7 @@ For example, if your current working directory contained
 >  ...
 > ```
 
-then the command 
+then the command
 ```
 kinflate ./mycluster/instances | kubectl apply -f -
 ```

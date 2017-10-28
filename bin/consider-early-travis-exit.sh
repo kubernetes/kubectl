@@ -1,3 +1,10 @@
+function fooDbg {
+	echo "----- begin: $@"
+  $@
+	echo "------- end: $@"
+  echo " "
+}
+
 # Exits with status 0 if it can be determined that the
 # current PR should not trigger all travis checks.
 #
@@ -6,20 +13,27 @@
 # travis logs to see how branch files were considered.
 function consider-early-travis-exit {
   if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
-    echo "Not a travis pull request."
+    echo "Unknown pull request."
     return
   fi
-  if [ -z "$TRAVIS_BRANCH" ]; then
-    echo "Unknown travis branch."
-    return
-  fi
-  echo "TRAVIS_BRANCH=$TRAVIS_BRANCH"
-  local branchFiles=$(git diff --name-only FETCH_HEAD...$TRAVIS_BRANCH)
-  local invisibles=0
-  local triggers=0
+
+	fooDbg pwd
+	fooDbg git diff --name-only HEAD origin/master
+	fooDbg cat bin/consider-early-travis-exit.sh
+	fooDbg ls -C1
+	fooDbg git status
+	fooDbg git branch
+	fooDbg git remote -v
+
+  echo "TRAVIS_COMMIT_RANGE=$TRAVIS_COMMIT_RANGE"
+  echo "---"
+  git diff --name-only $TRAVIS_COMMIT_RANGE
+  echo "---"
   echo "Branch Files (X==invisible to travis):"
   echo "---"
-  for fn in $branchFiles; do
+  local triggers=0
+  local invisibles=0
+  for fn in $(git diff --name-only HEAD origin/master); do
     if [[ "$fn" =~ (\.md$)|(^docs/) ]]; then
       echo "  X  $fn"
       let invisibles+=1
