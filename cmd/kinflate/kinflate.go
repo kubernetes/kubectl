@@ -18,6 +18,9 @@ package main
 
 import (
 	"fmt"
+	"os"
+
+	"k8s.io/kubectl/pkg/kinflate"
 )
 
 // TestableMain allows test coverage for main.
@@ -28,4 +31,10 @@ func TestableMain() error {
 
 func main() {
 	TestableMain()
+	cmd := kinflate.NewCmdKinflate(os.Stdout, os.Stderr)
+	err := cmd.Execute()
+	if err != nil {
+		os.Exit(1)
+	}
+	os.Exit(0)
 }
