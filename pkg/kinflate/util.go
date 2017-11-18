@@ -21,7 +21,7 @@ import (
 	"io/ioutil"
 	"path"
 
-	"gopkg.in/yaml.v2"
+	yaml "gopkg.in/yaml.v2"
 
 	"k8s.io/apimachinery/pkg/api/meta"
 	"k8s.io/apimachinery/pkg/runtime"
