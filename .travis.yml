@@ -10,6 +10,10 @@ before_install:
   - go get -u github.com/golang/lint/golint
   - go get -u golang.org/x/tools/cmd/goimports
 
+# Install must be set to prevent default `go get` to run.
+install:
+  -
+
 script:
   - ./bin/pre-commit.sh
 
