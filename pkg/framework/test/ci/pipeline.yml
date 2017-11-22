@@ -1,0 +1,70 @@
+
+jobs:
+- name: test-dev-branch
+  public: true
+  serial: true
+  plan:
+  - get: git-kubectl-dev
+    trigger: true
+  - task: run-tests
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source:
+          repository: golang
+          tag: 1.9
+      inputs:
+      - name: git-kubectl-dev
+        path: go/src/k8s.io/kubectl
+      run:
+        path: /bin/bash
+        args:
+        - -c
+        - |
+          #!/usr/bin/env bash
+          set -eux
+          export GOPATH="${PWD}/go"
+          export PATH="${PATH}:${GOPATH}/bin"
+          go get github.com/onsi/ginkgo/ginkgo
+          cd "${GOPATH}/src/k8s.io/kubectl/pkg/framework/test"
+          ginkgo -r
+- name: push-to-prod-branch
+  serial: true
+  plan:
+  - get: git-kubectl-dev
+    trigger: true
+    passed:
+    - test-dev-branch
+  - put: git-kubectl-pair2
+    params:
+      repository: git-kubectl-dev
+      force: true
+  - put: git-kubectl-pair1
+    params:
+      repository: git-kubectl-dev
+      force: true
+
+
+resources:
+- name: git-kubectl-dev
+  type: git
+  source:
+    uri: {{git-dev-url}} # git@github.com:totherme/kubectl
+    branch: test-framework-dev
+    private_key: {{git-dev-private-key}}
+    ignore_paths: [pkg/framework/test/ci]
+
+- name: git-kubectl-pair1
+  type: git
+  source:
+    uri: {{git-pair1-url}} #git@github.com:totherme/kubectl
+    branch: test-framework
+    private_key: {{git-pair1-private-key}}
+
+- name: git-kubectl-pair2
+  type: git
+  source:
+    uri: {{git-pair2-url}} #git@github.com:hoegaarden/kubectl
+    branch: test-framework
+    private_key: {{git-pair2-private-key}}
