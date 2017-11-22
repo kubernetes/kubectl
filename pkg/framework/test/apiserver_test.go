@@ -15,37 +15,44 @@ var _ = Describe("Apiserver", func() {
 		It("can start and stop that binary", func() {
 			pathToFakeAPIServer, err := gexec.Build("k8s.io/kubectl/pkg/framework/test/assets/fakeapiserver")
 			Expect(err).NotTo(HaveOccurred())
-			apiServer := APIServer{Path: pathToFakeAPIServer}
+			apiServer := &APIServer{Path: pathToFakeAPIServer}
 
 			By("Starting the API Server")
-			session, err := apiServer.Start("the etcd url")
+			err = apiServer.Start("the etcd url")
 			Expect(err).NotTo(HaveOccurred())
 
-			Eventually(session.Out).Should(gbytes.Say("Everything is fine"))
-			Expect(session).NotTo(gexec.Exit())
+			Eventually(apiServer).Should(gbytes.Say("Everything is fine"))
+			Expect(apiServer).NotTo(gexec.Exit())
 
 			By("Stopping the API Server")
-			session.Terminate()
-			Eventually(session).Should(gexec.Exit(143))
+			apiServer.Stop()
+			Eventually(apiServer).Should(gexec.Exit(143))
 		})
 
 	})
 
 	Context("when no path is given", func() {
 		It("fails with a helpful error", func() {
-			apiServer := APIServer{}
-			_, err := apiServer.Start("the etcd url")
+			apiServer := &APIServer{}
+			err := apiServer.Start("the etcd url")
 			Expect(err).To(MatchError(ContainSubstring("no such file or directory")))
 		})
 	})
 
 	Context("when given a path to a non-executable", func() {
 		It("fails with a helpful error", func() {
-			apiServer := APIServer{
+			apiServer := &APIServer{
 				Path: "./apiserver.go",
 			}
-			_, err := apiServer.Start("the etcd url")
+			err := apiServer.Start("the etcd url")
 			Expect(err).To(MatchError(ContainSubstring("./apiserver.go: permission denied")))
+		})
+	})
+
+	Context("when we try to stop a server that hasn't been started", func() {
+		It("does not panic", func() {
+			server := &APIServer{}
+			server.Stop()
 		})
 	})
 })
