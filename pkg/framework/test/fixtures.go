@@ -2,7 +2,10 @@ package test
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
+
+	"github.com/onsi/gomega"
 )
 
 // Fixtures is a struct that knows how to start all your test fixtures.
@@ -52,7 +55,10 @@ type tempDirManager struct {
 }
 
 func (t *tempDirManager) Create() string {
-	t.dir = os.TempDir()
+	var err error
+	t.dir, err = ioutil.TempDir("", "kube-test-framework")
+	gomega.ExpectWithOffset(2, err).NotTo(gomega.HaveOccurred(),
+		"expected to be able to create a temporary directory in the kube test framework")
 	return t.dir
 }
 
