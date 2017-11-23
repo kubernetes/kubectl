@@ -72,10 +72,10 @@ func (t *tempDirManager) Destroy() error {
 // Start will start all your fixtures. To stop them, call Stop().
 func (f *Fixtures) Start() error {
 	tmpDir := f.TempDirManager.Create()
-	if err := f.Etcd.Start("tcp://127.0.0.1:2379", tmpDir); err != nil {
+	if err := f.Etcd.Start("http://127.0.0.1:2379", tmpDir); err != nil {
 		return fmt.Errorf("Error starting etcd: %s", err)
 	}
-	if err := f.APIServer.Start("tcp://127.0.0.1:2379"); err != nil {
+	if err := f.APIServer.Start("http://127.0.0.1:2379"); err != nil {
 		return fmt.Errorf("Error starting apiserver: %s", err)
 	}
 	return nil
