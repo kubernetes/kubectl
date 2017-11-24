@@ -27,11 +27,11 @@ var _ = Describe("Integration", func() {
 
 		Eventually(func() bool {
 			return isSomethingListeningOnPort(2379)
-		}, 5*time.Second).Should(BeTrue(), "Expected Etcd to listen on 2379")
+		}, 25*time.Second).Should(BeTrue(), "Expected Etcd to listen on 2379")
 
 		Eventually(func() bool {
 			return isSomethingListeningOnPort(8080)
-		}, 5*time.Second).Should(BeTrue(), "Expected APIServer to listen on 8080")
+		}, 25*time.Second).Should(BeTrue(), "Expected APIServer to listen on 8080")
 
 		err = fixtures.Stop()
 		Expect(err).NotTo(HaveOccurred(), "Expected fixtures to stop successfully")
