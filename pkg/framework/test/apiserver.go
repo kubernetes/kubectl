@@ -5,7 +5,6 @@ import (
 
 	"fmt"
 
-	"github.com/onsi/ginkgo"
 	"github.com/onsi/gomega/gbytes"
 	"github.com/onsi/gomega/gexec"
 )
@@ -14,11 +13,14 @@ import (
 type APIServer struct {
 	// The path to the apiserver binary
 	Path    string
+	EtcdURL string
 	session *gexec.Session
+	stdOut  *gbytes.Buffer
+	stdErr  *gbytes.Buffer
 }
 
 // Start starts the apiserver, and returns a gexec.Session. To stop it again, call Terminate and Wait on that session.
-func (s *APIServer) Start(etcdURL string) error {
+func (s *APIServer) Start() error {
 	args := []string{
 		"--authorization-mode=Node,RBAC",
 		"--runtime-config=admissionregistration.k8s.io/v1alpha1",
@@ -29,12 +31,12 @@ func (s *APIServer) Start(etcdURL string) error {
 		"--insecure-bind-address=127.0.0.1",
 		"--insecure-port=8080",
 		"--storage-backend=etcd3",
-		fmt.Sprintf("--etcd-servers=%s", etcdURL),
+		fmt.Sprintf("--etcd-servers=%s", s.EtcdURL),
 	}
 
 	command := exec.Command(s.Path, args...)
 	var err error
-	s.session, err = gexec.Start(command, ginkgo.GinkgoWriter, ginkgo.GinkgoWriter)
+	s.session, err = gexec.Start(command, s.stdOut, s.stdErr)
 	return err
 }
 

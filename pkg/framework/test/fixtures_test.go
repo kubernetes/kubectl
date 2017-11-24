@@ -43,8 +43,6 @@ var _ = Describe("Fixtures", func() {
 			By("starting APIServer")
 			Expect(fakeAPIServerStartStopper.StartCallCount()).To(Equal(1),
 				"the APIServerStartStopper should be called exactly once")
-			url = fakeAPIServerStartStopper.StartArgsForCall(0)
-			Expect(url).To(Equal("http://127.0.0.1:2379"))
 		})
 
 		Context("when starting etcd fails", func() {
