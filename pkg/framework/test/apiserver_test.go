@@ -15,10 +15,13 @@ var _ = Describe("Apiserver", func() {
 		It("can start and stop that binary", func() {
 			pathToFakeAPIServer, err := gexec.Build("k8s.io/kubectl/pkg/framework/test/assets/fakeapiserver")
 			Expect(err).NotTo(HaveOccurred())
-			apiServer := &APIServer{Path: pathToFakeAPIServer}
+			apiServer := &APIServer{
+				Path:    pathToFakeAPIServer,
+				EtcdURL: "the etcd url",
+			}
 
 			By("Starting the API Server")
-			err = apiServer.Start("the etcd url")
+			err = apiServer.Start()
 			Expect(err).NotTo(HaveOccurred())
 
 			Eventually(apiServer).Should(gbytes.Say("Everything is fine"))
@@ -34,7 +37,7 @@ var _ = Describe("Apiserver", func() {
 	Context("when no path is given", func() {
 		It("fails with a helpful error", func() {
 			apiServer := &APIServer{}
-			err := apiServer.Start("the etcd url")
+			err := apiServer.Start()
 			Expect(err).To(MatchError(ContainSubstring("no such file or directory")))
 		})
 	})
@@ -42,9 +45,10 @@ var _ = Describe("Apiserver", func() {
 	Context("when given a path to a non-executable", func() {
 		It("fails with a helpful error", func() {
 			apiServer := &APIServer{
-				Path: "./apiserver.go",
+				Path:    "./apiserver.go",
+				EtcdURL: "the etcd url",
 			}
-			err := apiServer.Start("the etcd url")
+			err := apiServer.Start()
 			Expect(err).To(MatchError(ContainSubstring("./apiserver.go: permission denied")))
 		})
 	})
