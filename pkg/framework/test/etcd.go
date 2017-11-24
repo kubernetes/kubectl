@@ -36,7 +36,7 @@ func (e *Etcd) Start(etcdURL string, datadir string) error {
 // Stop stops this process gracefully.
 func (e *Etcd) Stop() {
 	if e.session != nil {
-		e.session.Terminate()
+		e.session.Terminate().Wait()
 	}
 }
 
