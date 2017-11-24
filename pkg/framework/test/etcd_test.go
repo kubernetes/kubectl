@@ -15,10 +15,13 @@ var _ = Describe("Etcd", func() {
 		It("can start and stop that binary", func() {
 			pathToFakeEtcd, err := gexec.Build("k8s.io/kubectl/pkg/framework/test/assets/fakeetcd")
 			Expect(err).NotTo(HaveOccurred())
-			etcd := &Etcd{Path: pathToFakeEtcd}
+			etcd := &Etcd{
+				Path:    pathToFakeEtcd,
+				EtcdURL: "our etcd url",
+			}
 
 			By("Starting the Etcd Server")
-			err = etcd.Start("our etcd url", "our data directory")
+			err = etcd.Start()
 			Expect(err).NotTo(HaveOccurred())
 
 			Eventually(etcd).Should(gbytes.Say("Everything is dandy"))
@@ -34,7 +37,7 @@ var _ = Describe("Etcd", func() {
 	Context("when no path is given", func() {
 		It("fails with a helpful error", func() {
 			etcd := &Etcd{}
-			err := etcd.Start("our etcd url", "")
+			err := etcd.Start()
 			Expect(err).To(MatchError(ContainSubstring("no such file or directory")))
 		})
 	})
@@ -44,7 +47,7 @@ var _ = Describe("Etcd", func() {
 			etcd := &Etcd{
 				Path: "./etcd.go",
 			}
-			err := etcd.Start("our etcd url", "")
+			err := etcd.Start()
 			Expect(err).To(MatchError(ContainSubstring("./etcd.go: permission denied")))
 		})
 	})
