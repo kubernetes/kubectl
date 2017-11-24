@@ -19,10 +19,18 @@ func main() {
 		"--storage-backend=etcd3",
 		"--etcd-servers=the etcd url",
 	}
+	numExpectedArgs := len(expectedArgs)
+	numGivenArgs := len(os.Args) - 1
 
-	for i, arg := range os.Args[1:] {
-		if arg != expectedArgs[i] {
-			fmt.Printf("Expected arg %s, got arg %s", expectedArgs[i], arg)
+	if numGivenArgs < numExpectedArgs {
+		fmt.Printf("Expected at least %d args, only got %d\n", numExpectedArgs, numGivenArgs)
+		os.Exit(2)
+	}
+
+	for i, arg := range expectedArgs {
+		givenArg := os.Args[i+1]
+		if arg != givenArg {
+			fmt.Printf("Expected arg %s, got arg %s\n", arg, givenArg)
 			os.Exit(1)
 		}
 	}
