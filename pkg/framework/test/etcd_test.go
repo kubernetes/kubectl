@@ -26,7 +26,7 @@ var _ = Describe("Etcd", func() {
 
 			By("Stopping the Etcd Server")
 			etcd.Stop()
-			Eventually(etcd).Should(gexec.Exit(143))
+			Expect(etcd).To(gexec.Exit(143))
 		})
 
 	})

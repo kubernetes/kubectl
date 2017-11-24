@@ -41,7 +41,7 @@ func (s *APIServer) Start(etcdURL string) error {
 // Stop stops this process gracefully.
 func (s *APIServer) Stop() {
 	if s.session != nil {
-		s.session.Terminate()
+		s.session.Terminate().Wait()
 	}
 }
 
