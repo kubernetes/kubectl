@@ -22,7 +22,7 @@ type EtcdStartStopper interface {
 
 // APIServerStartStopper knows how to start an APIServer. One good implementation is APIServer.
 type APIServerStartStopper interface {
-	Start(etcdURL string) error
+	Start() error
 	Stop()
 }
 
@@ -36,7 +36,10 @@ func NewFixtures(pathToEtcd, pathToAPIServer string) *Fixtures {
 			Path:    pathToEtcd,
 			EtcdURL: etcdURL,
 		},
-		APIServer: &APIServer{Path:pathToAPIServer},
+		APIServer: &APIServer{
+			Path:    pathToAPIServer,
+			EtcdURL: etcdURL,
+		},
 	}
 }
 
@@ -45,7 +48,7 @@ func (f *Fixtures) Start() error {
 	if err := f.Etcd.Start(); err != nil {
 		return fmt.Errorf("Error starting etcd: %s", err)
 	}
-	if err := f.APIServer.Start("http://127.0.0.1:2379"); err != nil {
+	if err := f.APIServer.Start(); err != nil {
 		return fmt.Errorf("Error starting apiserver: %s", err)
 	}
 	return nil

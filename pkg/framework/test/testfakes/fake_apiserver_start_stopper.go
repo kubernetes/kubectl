@@ -8,12 +8,10 @@ import (
 )
 
 type FakeAPIServerStartStopper struct {
-	StartStub        func(etcdURL string) error
+	StartStub        func() error
 	startMutex       sync.RWMutex
-	startArgsForCall []struct {
-		etcdURL string
-	}
-	startReturns struct {
+	startArgsForCall []struct{}
+	startReturns     struct {
 		result1 error
 	}
 	startReturnsOnCall map[int]struct {
@@ -26,16 +24,14 @@ type FakeAPIServerStartStopper struct {
 	invocationsMutex sync.RWMutex
 }
 
-func (fake *FakeAPIServerStartStopper) Start(etcdURL string) error {
+func (fake *FakeAPIServerStartStopper) Start() error {
 	fake.startMutex.Lock()
 	ret, specificReturn := fake.startReturnsOnCall[len(fake.startArgsForCall)]
-	fake.startArgsForCall = append(fake.startArgsForCall, struct {
-		etcdURL string
-	}{etcdURL})
-	fake.recordInvocation("Start", []interface{}{etcdURL})
+	fake.startArgsForCall = append(fake.startArgsForCall, struct{}{})
+	fake.recordInvocation("Start", []interface{}{})
 	fake.startMutex.Unlock()
 	if fake.StartStub != nil {
-		return fake.StartStub(etcdURL)
+		return fake.StartStub()
 	}
 	if specificReturn {
 		return ret.result1
@@ -47,12 +43,6 @@ func (fake *FakeAPIServerStartStopper) StartCallCount() int {
 	fake.startMutex.RLock()
 	defer fake.startMutex.RUnlock()
 	return len(fake.startArgsForCall)
-}
-
-func (fake *FakeAPIServerStartStopper) StartArgsForCall(i int) string {
-	fake.startMutex.RLock()
-	defer fake.startMutex.RUnlock()
-	return fake.startArgsForCall[i].etcdURL
 }
 
 func (fake *FakeAPIServerStartStopper) StartReturns(result1 error) {
