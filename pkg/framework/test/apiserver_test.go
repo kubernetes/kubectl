@@ -26,7 +26,7 @@ var _ = Describe("Apiserver", func() {
 
 			By("Stopping the API Server")
 			apiServer.Stop()
-			Eventually(apiServer).Should(gexec.Exit(143))
+			Expect(apiServer).To(gexec.Exit(143))
 		})
 
 	})
