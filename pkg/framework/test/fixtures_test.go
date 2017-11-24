@@ -19,16 +19,16 @@ var _ = Describe("Fixtures", func() {
 
 	Context("with a properly configured set of Fixtures", func() {
 		var (
-			fakeEtcdStartStopper      *testfakes.FakeEtcdStartStopper
-			fakeAPIServerStartStopper *testfakes.FakeAPIServerStartStopper
-			fixtures                  Fixtures
+			fakeEtcdProcess      *testfakes.FakeFixtureProcess
+			fakeAPIServerProcess *testfakes.FakeFixtureProcess
+			fixtures             Fixtures
 		)
 		BeforeEach(func() {
-			fakeEtcdStartStopper = &testfakes.FakeEtcdStartStopper{}
-			fakeAPIServerStartStopper = &testfakes.FakeAPIServerStartStopper{}
+			fakeEtcdProcess = &testfakes.FakeFixtureProcess{}
+			fakeAPIServerProcess = &testfakes.FakeFixtureProcess{}
 			fixtures = Fixtures{
-				Etcd:      fakeEtcdStartStopper,
-				APIServer: fakeAPIServerStartStopper,
+				Etcd:      fakeEtcdProcess,
+				APIServer: fakeAPIServerProcess,
 			}
 		})
 
@@ -37,17 +37,17 @@ var _ = Describe("Fixtures", func() {
 			Expect(err).NotTo(HaveOccurred())
 
 			By("starting Etcd")
-			Expect(fakeEtcdStartStopper.StartCallCount()).To(Equal(1),
+			Expect(fakeEtcdProcess.StartCallCount()).To(Equal(1),
 				"the EtcdStartStopper should be called exactly once")
 
 			By("starting APIServer")
-			Expect(fakeAPIServerStartStopper.StartCallCount()).To(Equal(1),
+			Expect(fakeAPIServerProcess.StartCallCount()).To(Equal(1),
 				"the APIServerStartStopper should be called exactly once")
 		})
 
 		Context("when starting etcd fails", func() {
 			It("wraps the error", func() {
-				fakeEtcdStartStopper.StartReturns(fmt.Errorf("some error"))
+				fakeEtcdProcess.StartReturns(fmt.Errorf("some error"))
 				err := fixtures.Start()
 				Expect(err).To(MatchError(ContainSubstring("some error")))
 			})
@@ -55,7 +55,7 @@ var _ = Describe("Fixtures", func() {
 
 		Context("when starting APIServer fails", func() {
 			It("wraps the error", func() {
-				fakeAPIServerStartStopper.StartReturns(fmt.Errorf("another error"))
+				fakeAPIServerProcess.StartReturns(fmt.Errorf("another error"))
 				err := fixtures.Start()
 				Expect(err).To(MatchError(ContainSubstring("another error")))
 			})
@@ -63,8 +63,8 @@ var _ = Describe("Fixtures", func() {
 
 		It("can can clean up the temporary directory and stop", func() {
 			fixtures.Stop()
-			Expect(fakeEtcdStartStopper.StopCallCount()).To(Equal(1))
-			Expect(fakeAPIServerStartStopper.StopCallCount()).To(Equal(1))
+			Expect(fakeEtcdProcess.StopCallCount()).To(Equal(1))
+			Expect(fakeAPIServerProcess.StopCallCount()).To(Equal(1))
 		})
 
 	})

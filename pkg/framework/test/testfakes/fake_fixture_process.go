@@ -7,7 +7,7 @@ import (
 	"k8s.io/kubectl/pkg/framework/test"
 )
 
-type FakeAPIServerStartStopper struct {
+type FakeFixtureProcess struct {
 	StartStub        func() error
 	startMutex       sync.RWMutex
 	startArgsForCall []struct{}
@@ -24,7 +24,7 @@ type FakeAPIServerStartStopper struct {
 	invocationsMutex sync.RWMutex
 }
 
-func (fake *FakeAPIServerStartStopper) Start() error {
+func (fake *FakeFixtureProcess) Start() error {
 	fake.startMutex.Lock()
 	ret, specificReturn := fake.startReturnsOnCall[len(fake.startArgsForCall)]
 	fake.startArgsForCall = append(fake.startArgsForCall, struct{}{})
@@ -39,20 +39,20 @@ func (fake *FakeAPIServerStartStopper) Start() error {
 	return fake.startReturns.result1
 }
 
-func (fake *FakeAPIServerStartStopper) StartCallCount() int {
+func (fake *FakeFixtureProcess) StartCallCount() int {
 	fake.startMutex.RLock()
 	defer fake.startMutex.RUnlock()
 	return len(fake.startArgsForCall)
 }
 
-func (fake *FakeAPIServerStartStopper) StartReturns(result1 error) {
+func (fake *FakeFixtureProcess) StartReturns(result1 error) {
 	fake.StartStub = nil
 	fake.startReturns = struct {
 		result1 error
 	}{result1}
 }
 
-func (fake *FakeAPIServerStartStopper) StartReturnsOnCall(i int, result1 error) {
+func (fake *FakeFixtureProcess) StartReturnsOnCall(i int, result1 error) {
 	fake.StartStub = nil
 	if fake.startReturnsOnCall == nil {
 		fake.startReturnsOnCall = make(map[int]struct {
@@ -64,7 +64,7 @@ func (fake *FakeAPIServerStartStopper) StartReturnsOnCall(i int, result1 error) 
 	}{result1}
 }
 
-func (fake *FakeAPIServerStartStopper) Stop() {
+func (fake *FakeFixtureProcess) Stop() {
 	fake.stopMutex.Lock()
 	fake.stopArgsForCall = append(fake.stopArgsForCall, struct{}{})
 	fake.recordInvocation("Stop", []interface{}{})
@@ -74,13 +74,13 @@ func (fake *FakeAPIServerStartStopper) Stop() {
 	}
 }
 
-func (fake *FakeAPIServerStartStopper) StopCallCount() int {
+func (fake *FakeFixtureProcess) StopCallCount() int {
 	fake.stopMutex.RLock()
 	defer fake.stopMutex.RUnlock()
 	return len(fake.stopArgsForCall)
 }
 
-func (fake *FakeAPIServerStartStopper) Invocations() map[string][][]interface{} {
+func (fake *FakeFixtureProcess) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
 	fake.startMutex.RLock()
@@ -94,7 +94,7 @@ func (fake *FakeAPIServerStartStopper) Invocations() map[string][][]interface{} 
 	return copiedInvocations
 }
 
-func (fake *FakeAPIServerStartStopper) recordInvocation(key string, args []interface{}) {
+func (fake *FakeFixtureProcess) recordInvocation(key string, args []interface{}) {
 	fake.invocationsMutex.Lock()
 	defer fake.invocationsMutex.Unlock()
 	if fake.invocations == nil {
@@ -106,4 +106,4 @@ func (fake *FakeAPIServerStartStopper) recordInvocation(key string, args []inter
 	fake.invocations[key] = append(fake.invocations[key], args)
 }
 
-var _ test.APIServerStartStopper = new(FakeAPIServerStartStopper)
+var _ test.FixtureProcess = new(FakeFixtureProcess)
