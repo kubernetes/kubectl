@@ -28,9 +28,9 @@ var _ = Describe("Integration", func() {
 		isEtcdListening := isSomethingListeningOnPort(2379)
 		isAPIServerListening := isSomethingListeningOnPort(8080)
 
-		Eventually(isEtcdListening, 25*time.Second).Should(BeTrue(), "Expected Etcd to listen on 2379")
+		Expect(isEtcdListening()).To(BeTrue(), "Expected Etcd to listen on 2379")
 
-		Eventually(isAPIServerListening, 25*time.Second).Should(BeTrue(), "Expected APIServer to listen on 8080")
+		Expect(isAPIServerListening()).To(BeTrue(), "Expected APIServer to listen on 8080")
 
 		err = fixtures.Stop()
 		Expect(err).NotTo(HaveOccurred(), "Expected fixtures to stop successfully")

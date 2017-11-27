@@ -35,6 +35,7 @@ func main() {
 		}
 	}
 	fmt.Println("Everything is fine")
+	fmt.Fprintln(os.Stderr, "Serving insecurely on 127.0.0.1:8080")
 
 	time.Sleep(10 * time.Minute)
 }
