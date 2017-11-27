@@ -20,4 +20,11 @@ var _ = Describe("Integration", func() {
 		Expect(session.Out).To(gbytes.Say(helpfulMessage))
 	})
 
+	It("can get a list of pods", func() {
+		command := exec.Command(pathToDemoCommand, "listPods")
+		session, err := gexec.Start(command, GinkgoWriter, GinkgoWriter)
+		Expect(err).NotTo(HaveOccurred())
+		Eventually(session).Should(gexec.Exit(0))
+		Expect(session.Out).To(gbytes.Say("There are no pods."))
+	})
 })
