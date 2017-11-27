@@ -3,8 +3,6 @@ package integration_test
 import (
 	"fmt"
 	"net"
-	"os"
-	"path/filepath"
 	"time"
 
 	. "github.com/onsi/ginkgo"
@@ -14,13 +12,7 @@ import (
 
 var _ = Describe("Integration", func() {
 	It("Successfully manages the fixtures lifecycle", func() {
-		assetsDir, ok := os.LookupEnv("KUBE_ASSETS_DIR")
-		Expect(ok).To(BeTrue(), "Expected $KUBE_ASSETS_DIR to be set")
-
-		pathToEtcd := filepath.Join(assetsDir, "etcd")
-		pathToApiserver := filepath.Join(assetsDir, "kube-apiserver")
-
-		fixtures := test.NewFixtures(pathToEtcd, pathToApiserver)
+		fixtures := test.NewFixtures(defaultPathToEtcd, defaultPathToApiserver)
 
 		err := fixtures.Start()
 		Expect(err).NotTo(HaveOccurred(), "Expected fixtures to start successfully")
@@ -40,6 +32,15 @@ var _ = Describe("Integration", func() {
 		By("Ensuring APIServer is not listening anymore")
 		Expect(isAPIServerListening()).To(BeFalse(), "Expected APIServer not to listen anymore")
 	})
+
+	Measure("It should be fast to bring up and tear down the fixtures", func(b Benchmarker) {
+		b.Time("lifecycle", func() {
+			fixtures := test.NewFixtures(defaultPathToEtcd, defaultPathToApiserver)
+
+			fixtures.Start()
+			fixtures.Stop()
+		})
+	}, 10)
 })
 
 type portChecker func() bool
