@@ -1,9 +1,9 @@
 package test
 
 import (
-	"os/exec"
-
 	"fmt"
+	"os/exec"
+	"time"
 
 	"github.com/onsi/gomega/gbytes"
 	"github.com/onsi/gomega/gexec"
@@ -21,6 +21,9 @@ type APIServer struct {
 
 // Start starts the apiserver, and returns a gexec.Session. To stop it again, call Terminate and Wait on that session.
 func (s *APIServer) Start() error {
+	s.stdOut = gbytes.NewBuffer()
+	s.stdErr = gbytes.NewBuffer()
+
 	args := []string{
 		"--authorization-mode=Node,RBAC",
 		"--runtime-config=admissionregistration.k8s.io/v1alpha1",
@@ -34,16 +37,28 @@ func (s *APIServer) Start() error {
 		fmt.Sprintf("--etcd-servers=%s", s.EtcdURL),
 	}
 
+	detectedStart := s.stdErr.Detect("Serving insecurely on 127.0.0.1:8080")
+	timedOut := time.After(20 * time.Second)
+
 	command := exec.Command(s.Path, args...)
 	var err error
 	s.session, err = gexec.Start(command, s.stdOut, s.stdErr)
-	return err
+	if err != nil {
+		return err
+	}
+
+	select {
+	case <-detectedStart:
+		return nil
+	case <-timedOut:
+		return fmt.Errorf("timeout waiting for apiserver to start serving")
+	}
 }
 
 // Stop stops this process gracefully.
 func (s *APIServer) Stop() {
 	if s.session != nil {
-		s.session.Terminate().Wait()
+		s.session.Terminate().Wait(20 * time.Second)
 	}
 }
 

@@ -31,6 +31,7 @@ func main() {
 		}
 	}
 	fmt.Println("Everything is dandy")
+	fmt.Fprintln(os.Stderr, "serving insecure client requests on 127.0.0.1:2379")
 
 	time.Sleep(10 * time.Minute)
 }
