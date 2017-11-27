@@ -12,22 +12,6 @@ type Fixtures struct {
 	APIServer FixtureProcess
 }
 
-// EtcdStartStopper knows how to start an Etcd. One good implementation is Etcd.
-type EtcdStartStopper interface {
-	Start() error
-	Stop()
-}
-
-//go:generate counterfeiter . EtcdStartStopper
-
-// APIServerStartStopper knows how to start an APIServer. One good implementation is APIServer.
-type APIServerStartStopper interface {
-	Start() error
-	Stop()
-}
-
-//go:generate counterfeiter . APIServerStartStopper
-
 // FixtureProcess knows how to start and stop a Fixture processes.
 // This interface is potentially going to be expanded to e.g. allow access to the processes StdOut/StdErr
 // and other internals.
