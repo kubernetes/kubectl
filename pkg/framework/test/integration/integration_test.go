@@ -25,29 +25,33 @@ var _ = Describe("Integration", func() {
 		err := fixtures.Start()
 		Expect(err).NotTo(HaveOccurred(), "Expected fixtures to start successfully")
 
-		Eventually(func() bool {
-			return isSomethingListeningOnPort(2379)
-		}, 25*time.Second).Should(BeTrue(), "Expected Etcd to listen on 2379")
+		isEtcdListening := isSomethingListeningOnPort(2379)
+		isAPIServerListening := isSomethingListeningOnPort(8080)
 
-		Eventually(func() bool {
-			return isSomethingListeningOnPort(8080)
-		}, 25*time.Second).Should(BeTrue(), "Expected APIServer to listen on 8080")
+		Eventually(isEtcdListening, 25*time.Second).Should(BeTrue(), "Expected Etcd to listen on 2379")
+
+		Eventually(isAPIServerListening, 25*time.Second).Should(BeTrue(), "Expected APIServer to listen on 8080")
 
 		err = fixtures.Stop()
 		Expect(err).NotTo(HaveOccurred(), "Expected fixtures to stop successfully")
 
-		Expect(isSomethingListeningOnPort(2379)).To(BeFalse(), "Expected Etcd not to listen anymore")
+		Expect(isEtcdListening()).To(BeFalse(), "Expected Etcd not to listen anymore")
 
 		By("Ensuring APIServer is not listening anymore")
-		Expect(isSomethingListeningOnPort(8080)).To(BeFalse(), "Expected APIServer not to listen anymore")
+		Expect(isAPIServerListening()).To(BeFalse(), "Expected APIServer not to listen anymore")
 	})
 })
 
-func isSomethingListeningOnPort(port int) bool {
-	conn, err := net.DialTimeout("tcp", net.JoinHostPort("", fmt.Sprintf("%d", port)), 1*time.Second)
-	if err != nil {
-		return false
+type portChecker func() bool
+
+func isSomethingListeningOnPort(port int) portChecker {
+	return func() bool {
+		conn, err := net.DialTimeout("tcp", net.JoinHostPort("", fmt.Sprintf("%d", port)), 1*time.Second)
+
+		if err != nil {
+			return false
+		}
+		conn.Close()
+		return true
 	}
-	conn.Close()
-	return true
 }
