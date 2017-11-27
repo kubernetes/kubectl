@@ -1,7 +1,9 @@
 package test
 
 import (
+	"fmt"
 	"os/exec"
+	"time"
 
 	"github.com/onsi/gomega"
 	"github.com/onsi/gomega/gbytes"
@@ -28,6 +30,8 @@ type DataDirManager interface {
 // Start starts the etcd, and returns a gexec.Session. To stop it again, call Terminate and Wait on that session.
 func (e *Etcd) Start() error {
 	e.dataDirManager = NewTempDirManager()
+	e.stdOut = gbytes.NewBuffer()
+	e.stdErr = gbytes.NewBuffer()
 
 	dataDir, err := e.dataDirManager.Create()
 	if err != nil {
@@ -44,15 +48,27 @@ func (e *Etcd) Start() error {
 		dataDir,
 	}
 
+	detectedStart := e.stdErr.Detect("serving insecure client requests on 127.0.0.1:2379")
+	timedOut := time.After(20 * time.Second)
+
 	command := exec.Command(e.Path, args...)
 	e.session, err = gexec.Start(command, e.stdOut, e.stdErr)
-	return err
+	if err != nil {
+		return err
+	}
+
+	select {
+	case <-detectedStart:
+		return nil
+	case <-timedOut:
+		return fmt.Errorf("timeout waiting for etcd to start serving")
+	}
 }
 
 // Stop stops this process gracefully.
 func (e *Etcd) Stop() {
 	if e.session != nil {
-		e.session.Terminate().Wait()
+		e.session.Terminate().Wait(20 * time.Second)
 		err := e.dataDirManager.Destroy()
 		gomega.Expect(err).NotTo(gomega.HaveOccurred())
 	}
