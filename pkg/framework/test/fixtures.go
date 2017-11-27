@@ -1,9 +1,5 @@
 package test
 
-import (
-	"fmt"
-)
-
 // Fixtures is a struct that knows how to start all your test fixtures.
 //
 // Right now, that means Etcd and your APIServer. This is likely to increase in future.
@@ -39,12 +35,25 @@ func NewFixtures(pathToEtcd, pathToAPIServer string) *Fixtures {
 
 // Start will start all your fixtures. To stop them, call Stop().
 func (f *Fixtures) Start() error {
-	if err := f.Etcd.Start(); err != nil {
-		return fmt.Errorf("Error starting etcd: %s", err)
+	started := make(chan error)
+	starter := func(process FixtureProcess) {
+		started <- process.Start()
 	}
-	if err := f.APIServer.Start(); err != nil {
-		return fmt.Errorf("Error starting apiserver: %s", err)
+	processes := []FixtureProcess{
+		f.Etcd,
+		f.APIServer,
 	}
+
+	for _, process := range processes {
+		go starter(process)
+	}
+
+	for pendingProcesses := len(processes); pendingProcesses > 0; pendingProcesses-- {
+		if err := <-started; err != nil {
+			return err
+		}
+	}
+
 	return nil
 }
 
