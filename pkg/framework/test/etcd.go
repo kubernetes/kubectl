@@ -18,11 +18,10 @@ type Etcd struct {
 	session        *gexec.Session
 	stdOut         *gbytes.Buffer
 	stdErr         *gbytes.Buffer
-	dataDirManager DataDirManager
+	dataDirManager dataDirManager
 }
 
-// DataDirManager knows how to create and destroy Etcd's data directory.
-type DataDirManager interface {
+type dataDirManager interface {
 	Create() (string, error)
 	Destroy() error
 }
