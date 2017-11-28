@@ -28,7 +28,7 @@ jobs:
           export PATH="${PATH}:${GOPATH}/bin"
           go get github.com/onsi/ginkgo/ginkgo
           "${GOPATH}/src/k8s.io/kubectl/pkg/framework/test/scripts/download-binaries.sh"
-          "${GOPATH}/src/k8s.io/kubectl/pkg/framework/test/scripts/run-tests.sh"
+          GINKGO_PERFORMANCE=1 "${GOPATH}/src/k8s.io/kubectl/pkg/framework/test/scripts/run-tests.sh"
 - name: push-to-prod-branch
   serial: true
   plan:
