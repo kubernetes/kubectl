@@ -24,11 +24,16 @@ jobs:
         - |
           #!/usr/bin/env bash
           set -eux
-          export GOPATH="${PWD}/go"
-          export PATH="${PATH}:${GOPATH}/bin"
-          go get github.com/onsi/ginkgo/ginkgo
-          "${GOPATH}/src/k8s.io/kubectl/pkg/framework/test/scripts/download-binaries.sh"
-          GINKGO_PERFORMANCE=1 "${GOPATH}/src/k8s.io/kubectl/pkg/framework/test/scripts/run-tests.sh"
+          chown -R nobody:nogroup "${PWD}/go"
+
+          cat <<'EOS' | su -c bash -s /bin/bash nobody
+            set -eux
+            export GOPATH="${PWD}/go"
+            export PATH="${PATH}:/usr/local/go/bin:${GOPATH}/bin"
+            go get github.com/onsi/ginkgo/ginkgo
+            "${GOPATH}/src/k8s.io/kubectl/pkg/framework/test/scripts/download-binaries.sh"
+            GINKGO_PERFORMANCE=1 "${GOPATH}/src/k8s.io/kubectl/pkg/framework/test/scripts/run-tests.sh"
+          EOS
 - name: push-to-prod-branch
   serial: true
   plan:
