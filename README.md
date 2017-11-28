@@ -26,6 +26,11 @@ cli client. That client will eventually move here too.
 - Packages in this repository should aspire to implement sensible, small
   interfaces and import a limited set of dependencies.
 
+## Dependencies
+
+Dependencies are managed using [dep](https://github.com/golang/dep). Please
+refer to its documentation if needed.
+
 ## Community, discussion, contribution, and support
 
 See [this document](https://github.com/kubernetes/community/tree/master/sig-cli) for how to reach the maintainers of this project.
