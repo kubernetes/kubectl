@@ -3,21 +3,24 @@ package main
 import (
 	"fmt"
 	"os"
+	"regexp"
 	"time"
 )
 
 func main() {
-	expectedArgs := []string{
-		"--authorization-mode=Node,RBAC",
-		"--runtime-config=admissionregistration.k8s.io/v1alpha1",
-		"--v=3", "--vmodule=",
-		"--admission-control=Initializers,NamespaceLifecycle,LimitRanger,ServiceAccount,SecurityContextDeny,DefaultStorageClass,DefaultTolerationSeconds,GenericAdmissionWebhook,ResourceQuota",
-		"--admission-control-config-file=",
-		"--bind-address=0.0.0.0",
-		"--insecure-bind-address=127.0.0.1",
-		"--insecure-port=8080",
-		"--storage-backend=etcd3",
-		"--etcd-servers=the etcd url",
+	expectedArgs := []*regexp.Regexp{
+		regexp.MustCompile("^--authorization-mode=Node,RBAC$"),
+		regexp.MustCompile("^--runtime-config=admissionregistration.k8s.io/v1alpha1$"),
+		regexp.MustCompile("^--v=3$"),
+		regexp.MustCompile("^--vmodule=$"),
+		regexp.MustCompile("^--admission-control=Initializers,NamespaceLifecycle,LimitRanger,ServiceAccount,SecurityContextDeny,DefaultStorageClass,DefaultTolerationSeconds,GenericAdmissionWebhook,ResourceQuota$"),
+		regexp.MustCompile("^--admission-control-config-file=$"),
+		regexp.MustCompile("^--bind-address=0.0.0.0$"),
+		regexp.MustCompile("^--insecure-bind-address=127.0.0.1$"),
+		regexp.MustCompile("^--insecure-port=8080$"),
+		regexp.MustCompile("^--storage-backend=etcd3$"),
+		regexp.MustCompile("^--etcd-servers=the etcd url$"),
+		regexp.MustCompile("^--cert-dir=.*"),
 	}
 	numExpectedArgs := len(expectedArgs)
 	numGivenArgs := len(os.Args) - 1
@@ -27,10 +30,10 @@ func main() {
 		os.Exit(2)
 	}
 
-	for i, arg := range expectedArgs {
+	for i, argRegexp := range expectedArgs {
 		givenArg := os.Args[i+1]
-		if arg != givenArg {
-			fmt.Printf("Expected arg %s, got arg %s\n", arg, givenArg)
+		if !argRegexp.MatchString(givenArg) {
+			fmt.Printf("Expected arg '%s' to match '%s'\n", givenArg, argRegexp.String())
 			os.Exit(1)
 		}
 	}

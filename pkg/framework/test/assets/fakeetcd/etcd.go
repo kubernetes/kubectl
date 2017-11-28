@@ -3,17 +3,19 @@ package main
 import (
 	"fmt"
 	"os"
+	"regexp"
 	"time"
 )
 
 func main() {
-	expectedArgs := []string{
-		"--debug",
-		"--advertise-client-urls",
-		"our etcd url",
-		"--listen-client-urls",
-		"our etcd url",
-		"--data-dir",
+	expectedArgs := []*regexp.Regexp{
+		regexp.MustCompile("^--debug$"),
+		regexp.MustCompile("^--advertise-client-urls$"),
+		regexp.MustCompile("^our etcd url$"),
+		regexp.MustCompile("^--listen-client-urls$"),
+		regexp.MustCompile("^our etcd url$"),
+		regexp.MustCompile("^--data-dir$"),
+		regexp.MustCompile("^.+"),
 	}
 	numExpectedArgs := len(expectedArgs)
 	numGivenArgs := len(os.Args) - 1
@@ -23,10 +25,10 @@ func main() {
 		os.Exit(2)
 	}
 
-	for i, arg := range expectedArgs {
+	for i, argRegexp := range expectedArgs {
 		givenArg := os.Args[i+1]
-		if arg != givenArg {
-			fmt.Printf("Expected arg %s, got arg %s\n", arg, givenArg)
+		if !argRegexp.MatchString(givenArg) {
+			fmt.Printf("Expected arg '%s' to match '%s'\n", givenArg, argRegexp.String())
 			os.Exit(1)
 		}
 	}
