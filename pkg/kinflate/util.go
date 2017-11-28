@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package manifest
+package kinflate
 
 import (
 	"errors"
@@ -26,7 +26,7 @@ import (
 	"k8s.io/apimachinery/pkg/api/meta"
 	"k8s.io/apimachinery/pkg/runtime"
 	manifest "k8s.io/kubectl/pkg/apis/manifest/v1alpha1"
-	"k8s.io/kubernetes/pkg/kubectl/resource"
+	"k8s.io/common/resource"
 )
 
 const kubeManifestFileName = "Kube-manifest.yaml"
