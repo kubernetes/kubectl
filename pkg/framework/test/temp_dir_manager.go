@@ -29,7 +29,7 @@ type TempDirManager struct {
 // Create knows how to create a temporary directory and how to keep track of it.
 func (t *TempDirManager) Create() (string, error) {
 	if t.dir == "" {
-		dir, err := t.Maker("", "kube-test-framework")
+		dir, err := t.Maker("", "kube-test-framework-")
 		if err != nil {
 			return "", err
 		}
