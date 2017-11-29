@@ -26,7 +26,7 @@ type certDirManager interface {
 	Destroy() error
 }
 
-// Start starts the apiserver, and returns a gexec.Session. To stop it again, call Terminate and Wait on that session.
+// Start starts the apiserver, waits for it to come up, and returns an error, if occoured.
 func (s *APIServer) Start() error {
 	s.certDirManager = NewTempDirManager()
 	s.stdOut = gbytes.NewBuffer()
@@ -68,7 +68,7 @@ func (s *APIServer) Start() error {
 	}
 }
 
-// Stop stops this process gracefully.
+// Stop stops this process gracefully, waits for its termination, and cleans up the cert directory.
 func (s *APIServer) Stop() {
 	if s.session != nil {
 		s.session.Terminate().Wait(20 * time.Second)

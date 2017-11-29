@@ -26,7 +26,7 @@ type dataDirManager interface {
 	Destroy() error
 }
 
-// Start starts the etcd, and returns a gexec.Session. To stop it again, call Terminate and Wait on that session.
+// Start starts the etcd, waits for it to come up, and returns an error, if occoured.
 func (e *Etcd) Start() error {
 	e.dataDirManager = NewTempDirManager()
 	e.stdOut = gbytes.NewBuffer()
@@ -64,7 +64,7 @@ func (e *Etcd) Start() error {
 	}
 }
 
-// Stop stops this process gracefully.
+// Stop stops this process gracefully, waits for its termination, and cleans up the data directory.
 func (e *Etcd) Stop() {
 	if e.session != nil {
 		e.session.Terminate().Wait(20 * time.Second)
