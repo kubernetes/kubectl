@@ -19,7 +19,13 @@ go vet -all ./...
 rc=$((rc || $?))
 
 echo "Running go test"
-go test -v ./...
+go list ./... | grep -vF pkg/framework/test | xargs go test -v
+rc=$((rc || $?))
+
+echo "Running test framework tests"
+go get github.com/onsi/ginkgo/ginkgo \
+  && ./pkg/framework/test/scripts/download-binaries.sh \
+  && ./pkg/framework/test/scripts/run-tests.sh
 rc=$((rc || $?))
 
 exit $rc
