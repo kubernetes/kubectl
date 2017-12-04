@@ -9,7 +9,7 @@ import (
 	"github.com/onsi/gomega/gexec"
 )
 
-var _ = Describe("Integration", func() {
+var _ = Describe("DemoCLI Integration", func() {
 	It("can give us a helpful help message", func() {
 		helpfulMessage := `This is a demo kubernetes CLI, which interacts with the kubernetes API.`
 
