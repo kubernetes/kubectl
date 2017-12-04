@@ -21,11 +21,10 @@ type FixtureProcess interface {
 // NewFixtures will give you a Fixtures struct that's properly wired together.
 func NewFixtures(pathToEtcd, pathToAPIServer string) *Fixtures {
 	etcdURL := "http://127.0.0.1:2379"
+
+	etcd := NewEtcd(pathToEtcd, etcdURL)
 	return &Fixtures{
-		Etcd: &Etcd{
-			Path:    pathToEtcd,
-			EtcdURL: etcdURL,
-		},
+		Etcd: etcd,
 		APIServer: &APIServer{
 			Path:    pathToAPIServer,
 			EtcdURL: etcdURL,

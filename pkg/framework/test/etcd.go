@@ -2,6 +2,7 @@ package test
 
 import (
 	"fmt"
+	"io"
 	"os/exec"
 	"time"
 
@@ -12,10 +13,10 @@ import (
 
 // Etcd knows how to run an etcd server. Set it up with the path to a precompiled binary.
 type Etcd struct {
-	// The path to the etcd binary
 	Path           string
 	EtcdURL        string
-	session        *gexec.Session
+	ProcessStarter simpleSessionStarter
+	session        SimpleSession
 	stdOut         *gbytes.Buffer
 	stdErr         *gbytes.Buffer
 	dataDirManager dataDirManager
@@ -24,6 +25,33 @@ type Etcd struct {
 type dataDirManager interface {
 	Create() (string, error)
 	Destroy() error
+}
+
+// SimpleSession describes a CLI session. You can get output, and you can kill it. It is implemented by *gexec.Session.
+type SimpleSession interface {
+	Buffer() *gbytes.Buffer
+	ExitCode() int
+	Wait(timeout ...interface{}) *gexec.Session
+	Terminate() *gexec.Session
+}
+
+//go:generate counterfeiter . SimpleSession
+
+type simpleSessionStarter func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error)
+
+// NewEtcd constructs an Etcd Fixture Process
+func NewEtcd(pathToEtcd string, etcdURL string) *Etcd {
+	starter := func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
+		return gexec.Start(command, out, err)
+	}
+
+	etcd := &Etcd{
+		Path:           pathToEtcd,
+		EtcdURL:        etcdURL,
+		ProcessStarter: starter,
+	}
+
+	return etcd
 }
 
 // Start starts the etcd, waits for it to come up, and returns an error, if occoured.
@@ -51,7 +79,7 @@ func (e *Etcd) Start() error {
 	timedOut := time.After(20 * time.Second)
 
 	command := exec.Command(e.Path, args...)
-	e.session, err = gexec.Start(command, e.stdOut, e.stdErr)
+	e.session, err = e.ProcessStarter(command, e.stdOut, e.stdErr)
 	if err != nil {
 		return err
 	}
@@ -67,7 +95,8 @@ func (e *Etcd) Start() error {
 // Stop stops this process gracefully, waits for its termination, and cleans up the data directory.
 func (e *Etcd) Stop() {
 	if e.session != nil {
-		e.session.Terminate().Wait(20 * time.Second)
+		e.session.Terminate()
+		e.session.Wait(20 * time.Second)
 		err := e.dataDirManager.Destroy()
 		gomega.Expect(err).NotTo(gomega.HaveOccurred())
 	}
