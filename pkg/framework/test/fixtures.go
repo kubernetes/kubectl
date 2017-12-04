@@ -22,13 +22,9 @@ type FixtureProcess interface {
 func NewFixtures(pathToEtcd, pathToAPIServer string) *Fixtures {
 	etcdURL := "http://127.0.0.1:2379"
 
-	etcd := NewEtcd(pathToEtcd, etcdURL)
 	return &Fixtures{
-		Etcd: etcd,
-		APIServer: &APIServer{
-			Path:    pathToAPIServer,
-			EtcdURL: etcdURL,
-		},
+		Etcd:      NewEtcd(pathToEtcd, etcdURL),
+		APIServer: NewAPIServer(pathToAPIServer, etcdURL),
 	}
 }
 
