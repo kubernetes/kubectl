@@ -17,15 +17,19 @@ import (
 
 var _ = Describe("Etcd", func() {
 	var (
-		fakeSession *testfakes.FakeSimpleSession
-		etcd        *Etcd
+		fakeSession        *testfakes.FakeSimpleSession
+		fakeDataDirManager *testfakes.FakeDataDirManager
+		etcd               *Etcd
 	)
 
 	BeforeEach(func() {
 		fakeSession = &testfakes.FakeSimpleSession{}
+		fakeDataDirManager = &testfakes.FakeDataDirManager{}
+
 		etcd = &Etcd{
-			Path:    "",
-			EtcdURL: "our etcd url",
+			Path:           "",
+			EtcdURL:        "our etcd url",
+			DataDirManager: fakeDataDirManager,
 		}
 	})
 
@@ -51,6 +55,7 @@ var _ = Describe("Etcd", func() {
 			Expect(fakeSession.ExitCodeCallCount()).To(Equal(0))
 			Expect(etcd).NotTo(gexec.Exit())
 			Expect(fakeSession.ExitCodeCallCount()).To(Equal(1))
+			Expect(fakeDataDirManager.CreateCallCount()).To(Equal(1))
 
 			By("Stopping the Etcd Server")
 			etcd.Stop()
@@ -58,11 +63,28 @@ var _ = Describe("Etcd", func() {
 			Expect(fakeSession.TerminateCallCount()).To(Equal(1))
 			Expect(fakeSession.WaitCallCount()).To(Equal(1))
 			Expect(fakeSession.ExitCodeCallCount()).To(Equal(2))
+			Expect(fakeDataDirManager.DestroyCallCount()).To(Equal(1))
+		})
+	})
+
+	Context("when the data directory cannot be created", func() {
+		It("propagates the error, and does not start the process", func() {
+			fakeDataDirManager.CreateReturnsOnCall(0, "", fmt.Errorf("Error on directory creation."))
+
+			processStarterCounter := 0
+			etcd.ProcessStarter = func(Command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
+				processStarterCounter += 1
+				return fakeSession, nil
+			}
+
+			err := etcd.Start()
+			Expect(err).To(MatchError(ContainSubstring("Error on directory creation.")))
+			Expect(processStarterCounter).To(Equal(0))
 		})
 	})
 
 	Context("when  the starter returns an error", func() {
-		It("passes the error to the caller", func() {
+		It("propagates the error", func() {
 			etcd.ProcessStarter = func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
 				return nil, fmt.Errorf("Some error in the starter.")
 			}

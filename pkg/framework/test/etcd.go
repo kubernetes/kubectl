@@ -16,16 +16,18 @@ type Etcd struct {
 	Path           string
 	EtcdURL        string
 	ProcessStarter simpleSessionStarter
+	DataDirManager dataDirManager
 	session        SimpleSession
 	stdOut         *gbytes.Buffer
 	stdErr         *gbytes.Buffer
-	dataDirManager dataDirManager
 }
 
 type dataDirManager interface {
 	Create() (string, error)
 	Destroy() error
 }
+
+//go:generate counterfeiter . dataDirManager
 
 // SimpleSession describes a CLI session. You can get output, and you can kill it. It is implemented by *gexec.Session.
 type SimpleSession interface {
@@ -49,6 +51,7 @@ func NewEtcd(pathToEtcd string, etcdURL string) *Etcd {
 		Path:           pathToEtcd,
 		EtcdURL:        etcdURL,
 		ProcessStarter: starter,
+		DataDirManager: NewTempDirManager(),
 	}
 
 	return etcd
@@ -56,11 +59,10 @@ func NewEtcd(pathToEtcd string, etcdURL string) *Etcd {
 
 // Start starts the etcd, waits for it to come up, and returns an error, if occoured.
 func (e *Etcd) Start() error {
-	e.dataDirManager = NewTempDirManager()
 	e.stdOut = gbytes.NewBuffer()
 	e.stdErr = gbytes.NewBuffer()
 
-	dataDir, err := e.dataDirManager.Create()
+	dataDir, err := e.DataDirManager.Create()
 	if err != nil {
 		return err
 	}
@@ -97,7 +99,7 @@ func (e *Etcd) Stop() {
 	if e.session != nil {
 		e.session.Terminate()
 		e.session.Wait(20 * time.Second)
-		err := e.dataDirManager.Destroy()
+		err := e.DataDirManager.Destroy()
 		gomega.Expect(err).NotTo(gomega.HaveOccurred())
 	}
 }
