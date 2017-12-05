@@ -30,15 +30,25 @@ var listPodsCmd = &cobra.Command{
 	Short: "List all pods",
 	Long:  `Give a list of all pods known by the system`,
 	Run: func(cmd *cobra.Command, args []string) {
-		runGetPods()
+		apiURL, err := cmd.Flags().GetString("api-url")
+		if err != nil {
+			panic(err)
+		}
+		runGetPods(apiURL)
 	},
 }
 
-func runGetPods() {
-	config, _ := clientcmd.BuildConfigFromFlags("http://localhost:8080", "")
+func runGetPods(apiURL string) {
+	config, err := clientcmd.BuildConfigFromFlags(apiURL, "")
+	if err != nil {
+		panic(err)
+	}
 
 	// create the clientset
-	clientset, _ := kubernetes.NewForConfig(config)
+	clientset, err := kubernetes.NewForConfig(config)
+	if err != nil {
+		panic(err)
+	}
 
 	pods, err := clientset.CoreV1().Pods("").List(metav1.ListOptions{})
 	if err != nil {
@@ -54,6 +64,8 @@ func init() {
 	RootCmd.AddCommand(listPodsCmd)
 
 	// Here you will define your flags and configuration settings.
+
+	listPodsCmd.Flags().String("api-url", "http://localhost:8080", "URL of the APIServer to connect to")
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
