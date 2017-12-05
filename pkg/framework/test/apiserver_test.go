@@ -20,6 +20,7 @@ var _ = Describe("Apiserver", func() {
 		fakeSession        *testfakes.FakeSimpleSession
 		fakeCertDirManager *testfakes.FakeCertDirManager
 		apiServer          *APIServer
+		apiServerConfig    map[string]string
 	)
 
 	BeforeEach(func() {
@@ -28,8 +29,12 @@ var _ = Describe("Apiserver", func() {
 
 		apiServer = &APIServer{
 			Path:           "",
-			EtcdURL:        "the etcd url",
 			CertDirManager: fakeCertDirManager,
+		}
+
+		apiServerConfig = map[string]string{
+			"apiServerURL": "http://this.is.the.API.server:8080",
+			"etcdURL":      "http://this.is.etcd:2345/",
 		}
 	})
 
@@ -43,12 +48,12 @@ var _ = Describe("Apiserver", func() {
 			fakeSession.ExitCodeReturnsOnCall(1, 143)
 
 			apiServer.ProcessStarter = func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
-				fmt.Fprint(err, "Serving insecurely on 127.0.0.1:8080")
+				fmt.Fprint(err, "Serving insecurely on this.is.the.API.server:8080")
 				return fakeSession, nil
 			}
 
 			By("Starting the API Server")
-			err := apiServer.Start()
+			err := apiServer.Start(apiServerConfig)
 			Expect(err).NotTo(HaveOccurred())
 
 			Eventually(apiServer).Should(gbytes.Say("Everything is fine"))
@@ -77,7 +82,7 @@ var _ = Describe("Apiserver", func() {
 				return fakeSession, nil
 			}
 
-			err := apiServer.Start()
+			err := apiServer.Start(apiServerConfig)
 			Expect(err).To(MatchError(ContainSubstring("Error on cert directory creation.")))
 			Expect(processStarterCounter).To(Equal(0))
 		})
@@ -89,7 +94,7 @@ var _ = Describe("Apiserver", func() {
 				return nil, fmt.Errorf("Some error in the apiserver starter.")
 			}
 
-			err := apiServer.Start()
+			err := apiServer.Start(apiServerConfig)
 			Expect(err).To(MatchError(ContainSubstring("Some error in the apiserver starter.")))
 		})
 	})

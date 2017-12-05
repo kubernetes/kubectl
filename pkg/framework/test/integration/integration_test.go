@@ -4,9 +4,8 @@ import (
 	"net"
 	"time"
 
-	"net/url"
-
 	"fmt"
+	"net/url"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -15,33 +14,16 @@ import (
 
 var _ = Describe("The Testing Framework", func() {
 	It("Successfully manages the fixtures lifecycle", func() {
-		fixtures, err := test.NewFixtures(defaultPathToEtcd, defaultPathToApiserver)
-		Expect(err).NotTo(HaveOccurred())
+		fixtures := test.NewFixtures(defaultPathToEtcd, defaultPathToApiserver)
 
 		By("Starting all the fixture processes")
-		err = fixtures.Start()
+		err := fixtures.Start()
 		Expect(err).NotTo(HaveOccurred(), "Expected fixtures to start successfully")
 
-		var etcdURL, etcdPeerURL, apiServerURL *url.URL
-		etcd := fixtures.Etcd.(*test.Etcd)
-		apiServer := fixtures.APIServer.(*test.APIServer)
-
-		etcdURL, err = url.Parse(etcd.EtcdURL)
-		Expect(err).NotTo(HaveOccurred())
-		etcdPeerURL, err = url.Parse(etcd.EtcdPeerURL)
-		Expect(err).NotTo(HaveOccurred())
-		apiServerURL, err = url.Parse(apiServer.APIServerURL)
+		apiServerURL, err := url.Parse(fixtures.Config.APIServerURL)
 		Expect(err).NotTo(HaveOccurred())
 
-		isEtcdListening := isSomethingListeningOnPort(etcdURL.Host)
-		isEtcdPeerListening := isSomethingListeningOnPort(etcdPeerURL.Host)
 		isAPIServerListening := isSomethingListeningOnPort(apiServerURL.Host)
-
-		By("Ensuring Etcd is listening")
-		Expect(isEtcdListening()).To(BeTrue(),
-			fmt.Sprintf("Expected Etcd to listen on %s", etcdURL.Host))
-		Expect(isEtcdPeerListening()).To(BeTrue(),
-			fmt.Sprintf("Expected Etcd to listen for peers on %s", etcdPeerURL.Host))
 
 		By("Ensuring APIServer is listening")
 		Expect(isAPIServerListening()).To(BeTrue(),
@@ -51,19 +33,13 @@ var _ = Describe("The Testing Framework", func() {
 		err = fixtures.Stop()
 		Expect(err).NotTo(HaveOccurred(), "Expected fixtures to stop successfully")
 
-		By("Ensuring Etcd is not listening anymore")
-		Expect(isEtcdListening()).To(BeFalse(), "Expected Etcd not to listen anymore")
-		Expect(isEtcdPeerListening()).To(BeFalse(), "Expected Etcd not to listen for peers anymore")
-
 		By("Ensuring APIServer is not listening anymore")
 		Expect(isAPIServerListening()).To(BeFalse(), "Expected APIServer not to listen anymore")
 	})
 
 	Measure("It should be fast to bring up and tear down the fixtures", func(b Benchmarker) {
 		b.Time("lifecycle", func() {
-			fixtures, err := test.NewFixtures(defaultPathToEtcd, defaultPathToApiserver)
-			Expect(err).NotTo(HaveOccurred())
-
+			fixtures := test.NewFixtures(defaultPathToEtcd, defaultPathToApiserver)
 			fixtures.Start()
 			fixtures.Stop()
 		})

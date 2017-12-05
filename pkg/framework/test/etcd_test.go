@@ -20,6 +20,7 @@ var _ = Describe("Etcd", func() {
 		fakeSession        *testfakes.FakeSimpleSession
 		fakeDataDirManager *testfakes.FakeDataDirManager
 		etcd               *Etcd
+		etcdConfig         map[string]string
 	)
 
 	BeforeEach(func() {
@@ -28,8 +29,12 @@ var _ = Describe("Etcd", func() {
 
 		etcd = &Etcd{
 			Path:           "",
-			EtcdURL:        "our etcd url",
 			DataDirManager: fakeDataDirManager,
+		}
+
+		etcdConfig = map[string]string{
+			"clientURL": "http://this.is.etcd.listening.for.clients:1234",
+			"peerURL":   "http://this.is.etcd.listening.for.peers:1235",
 		}
 	})
 
@@ -43,12 +48,12 @@ var _ = Describe("Etcd", func() {
 			fakeSession.ExitCodeReturnsOnCall(1, 143)
 
 			etcd.ProcessStarter = func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
-				fmt.Fprint(err, "serving insecure client requests on 127.0.0.1:2379")
+				fmt.Fprint(err, "serving insecure client requests on this.is.etcd.listening.for.clients:1234")
 				return fakeSession, nil
 			}
 
 			By("Starting the Etcd Server")
-			err := etcd.Start()
+			err := etcd.Start(etcdConfig)
 			Expect(err).NotTo(HaveOccurred())
 
 			Eventually(etcd).Should(gbytes.Say("Everything is dandy"))
@@ -77,7 +82,7 @@ var _ = Describe("Etcd", func() {
 				return fakeSession, nil
 			}
 
-			err := etcd.Start()
+			err := etcd.Start(etcdConfig)
 			Expect(err).To(MatchError(ContainSubstring("Error on directory creation.")))
 			Expect(processStarterCounter).To(Equal(0))
 		})
@@ -89,7 +94,7 @@ var _ = Describe("Etcd", func() {
 				return nil, fmt.Errorf("Some error in the starter.")
 			}
 
-			err := etcd.Start()
+			err := etcd.Start(etcdConfig)
 			Expect(err).To(MatchError(ContainSubstring("Some error in the starter.")))
 		})
 	})

@@ -24,60 +24,69 @@ type FixturesConfig struct {
 // This interface is potentially going to be expanded to e.g. allow access to the processes StdOut/StdErr
 // and other internals.
 type FixtureProcess interface {
-	Start() error
+	Start(config map[string]string) error
 	Stop()
 }
 
 //go:generate counterfeiter . FixtureProcess
 
 // NewFixtures will give you a Fixtures struct that's properly wired together.
-func NewFixtures(pathToEtcd, pathToAPIServer string) (*Fixtures, error) {
-	urls := map[string]string{
-		"etcdClients":      "",
-		"etcdPeers":        "",
-		"apiServerClients": "",
-	}
-	host := "127.0.0.1"
-
-	for name := range urls {
-		port, err := getFreePort(host)
-		if err != nil {
-			return nil, err
-		}
-		urls[name] = fmt.Sprintf("http://%s:%d", host, port)
-	}
-
+func NewFixtures(pathToEtcd, pathToAPIServer string) *Fixtures {
 	fixtures := &Fixtures{
-		Etcd:      NewEtcd(pathToEtcd, urls["etcdClients"], urls["etcdPeers"]),
-		APIServer: NewAPIServer(pathToAPIServer, urls["apiServerClients"], urls["etcdClients"]),
+		Etcd:      NewEtcd(pathToEtcd),
+		APIServer: NewAPIServer(pathToAPIServer),
 	}
 
-	fixtures.Config = FixturesConfig{
-		APIServerURL: urls["apiServerClients"],
-	}
-
-	return fixtures, nil
+	return fixtures
 }
 
 // Start will start all your fixtures. To stop them, call Stop().
 func (f *Fixtures) Start() error {
+	type configs map[string]string
+
+	etcdClientURL, err := getHTTPListenURL()
+	if err != nil {
+		return err
+	}
+	etcdPeerURL, err := getHTTPListenURL()
+	if err != nil {
+		return err
+	}
+	apiServerURL, err := getHTTPListenURL()
+	if err != nil {
+		return err
+	}
+
+	etcdConf := configs{
+		"peerURL":   etcdPeerURL,
+		"clientURL": etcdClientURL,
+	}
+	apiServerConf := configs{
+		"etcdURL":      etcdClientURL,
+		"apiServerURL": apiServerURL,
+	}
+
 	started := make(chan error)
-	starter := func(process FixtureProcess) {
-		started <- process.Start()
+	starter := func(process FixtureProcess, conf configs) {
+		started <- process.Start(conf)
 	}
-	processes := []FixtureProcess{
-		f.Etcd,
-		f.APIServer,
-	}
-
-	for _, process := range processes {
-		go starter(process)
+	processes := map[FixtureProcess]configs{
+		f.Etcd:      etcdConf,
+		f.APIServer: apiServerConf,
 	}
 
-	for pendingProcesses := len(processes); pendingProcesses > 0; pendingProcesses-- {
+	for process, config := range processes {
+		go starter(process, config)
+	}
+
+	for range processes {
 		if err := <-started; err != nil {
 			return err
 		}
+	}
+
+	f.Config = FixturesConfig{
+		APIServerURL: apiServerURL,
 	}
 
 	return nil
@@ -88,6 +97,15 @@ func (f *Fixtures) Stop() error {
 	f.APIServer.Stop()
 	f.Etcd.Stop()
 	return nil
+}
+
+func getHTTPListenURL() (url string, err error) {
+	host := "127.0.0.1"
+	port, err := getFreePort(host)
+	if err != nil {
+		return "", err
+	}
+	return fmt.Sprintf("http://%s:%d", host, port), nil
 }
 
 func getFreePort(host string) (int, error) {

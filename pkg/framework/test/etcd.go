@@ -16,8 +16,6 @@ import (
 // Etcd knows how to run an etcd server. Set it up with the path to a precompiled binary.
 type Etcd struct {
 	Path           string
-	EtcdURL        string
-	EtcdPeerURL    string
 	ProcessStarter simpleSessionStarter
 	DataDirManager dataDirManager
 	session        SimpleSession
@@ -45,15 +43,13 @@ type SimpleSession interface {
 type simpleSessionStarter func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error)
 
 // NewEtcd constructs an Etcd Fixture Process
-func NewEtcd(pathToEtcd, etcdURL, etcdPeerURL string) *Etcd {
+func NewEtcd(pathToEtcd string) *Etcd {
 	starter := func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
 		return gexec.Start(command, out, err)
 	}
 
 	etcd := &Etcd{
 		Path:           pathToEtcd,
-		EtcdURL:        etcdURL,
-		EtcdPeerURL:    etcdPeerURL,
 		ProcessStarter: starter,
 		DataDirManager: NewTempDirManager(),
 	}
@@ -62,7 +58,7 @@ func NewEtcd(pathToEtcd, etcdURL, etcdPeerURL string) *Etcd {
 }
 
 // Start starts the etcd, waits for it to come up, and returns an error, if occoured.
-func (e *Etcd) Start() error {
+func (e *Etcd) Start(config map[string]string) error {
 	e.stdOut = gbytes.NewBuffer()
 	e.stdErr = gbytes.NewBuffer()
 
@@ -71,19 +67,28 @@ func (e *Etcd) Start() error {
 		return err
 	}
 
+	clientURL, ok := config["clientURL"]
+	if !ok {
+		return fmt.Errorf("config setting 'clientURL' not found")
+	}
+	peerURL, ok := config["peerURL"]
+	if !ok {
+		return fmt.Errorf("config setting 'peerURL' not found")
+	}
+
 	args := []string{
 		"--debug",
 		"--advertise-client-urls",
-		e.EtcdURL,
+		clientURL,
 		"--listen-client-urls",
-		e.EtcdURL,
+		clientURL,
 		"--listen-peer-urls",
-		e.EtcdPeerURL,
+		peerURL,
 		"--data-dir",
 		dataDir,
 	}
 
-	url, err := url.Parse(e.EtcdURL)
+	url, err := url.Parse(clientURL)
 	if err != nil {
 		return err
 	}

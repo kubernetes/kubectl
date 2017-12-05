@@ -42,8 +42,7 @@ var _ = BeforeSuite(func() {
 	Expect(assetsDir).NotTo(BeEmpty(),
 		"Could not determine assets directory (Hint: you can set $KUBE_ASSETS_DIR)")
 
-	fixtures, err = test.NewFixtures(filepath.Join(assetsDir, "etcd"), filepath.Join(assetsDir, "kube-apiserver"))
-	Expect(err).NotTo(HaveOccurred())
+	fixtures = test.NewFixtures(filepath.Join(assetsDir, "etcd"), filepath.Join(assetsDir, "kube-apiserver"))
 	err = fixtures.Start()
 	Expect(err).NotTo(HaveOccurred())
 })
