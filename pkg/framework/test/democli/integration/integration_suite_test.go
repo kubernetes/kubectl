@@ -4,11 +4,11 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 
-	"testing"
-
 	"os"
-
+	"path"
 	"path/filepath"
+	"runtime"
+	"testing"
 
 	"github.com/onsi/gomega/gexec"
 	"k8s.io/kubectl/pkg/framework/test"
@@ -29,8 +29,19 @@ var _ = BeforeSuite(func() {
 	pathToDemoCommand, err = gexec.Build("k8s.io/kubectl/pkg/framework/test/democli/")
 	Expect(err).NotTo(HaveOccurred())
 
-	assetsDir, ok := os.LookupEnv("KUBE_ASSETS_DIR")
-	Expect(ok).To(BeTrue(), "KUBE_ASSETS_DIR should point to a directory containing etcd and apiserver binaries")
+	assetsDir := ""
+
+	if dirFromEnv, ok := os.LookupEnv("KUBE_ASSETS_DIR"); ok {
+		assetsDir = dirFromEnv
+	} else {
+		if _, thisFile, _, ok := runtime.Caller(0); ok {
+			assetsDir = path.Clean(path.Join(path.Dir(thisFile), "..", "..", "assets", "bin"))
+		}
+	}
+
+	Expect(assetsDir).NotTo(BeEmpty(),
+		"Could not determine assets directory (Hint: you can set $KUBE_ASSETS_DIR)")
+
 	fixtures, err = test.NewFixtures(filepath.Join(assetsDir, "etcd"), filepath.Join(assetsDir, "kube-apiserver"))
 	Expect(err).NotTo(HaveOccurred())
 	err = fixtures.Start()
