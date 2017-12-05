@@ -2,6 +2,7 @@ package test
 
 import (
 	"fmt"
+	"io"
 	"os/exec"
 	"time"
 
@@ -12,13 +13,13 @@ import (
 
 // Etcd knows how to run an etcd server. Set it up with the path to a precompiled binary.
 type Etcd struct {
-	// The path to the etcd binary
 	Path           string
 	EtcdURL        string
-	session        *gexec.Session
+	ProcessStarter simpleSessionStarter
+	DataDirManager dataDirManager
+	session        SimpleSession
 	stdOut         *gbytes.Buffer
 	stdErr         *gbytes.Buffer
-	dataDirManager dataDirManager
 }
 
 type dataDirManager interface {
@@ -26,13 +27,42 @@ type dataDirManager interface {
 	Destroy() error
 }
 
+//go:generate counterfeiter . dataDirManager
+
+// SimpleSession describes a CLI session. You can get output, and you can kill it. It is implemented by *gexec.Session.
+type SimpleSession interface {
+	Buffer() *gbytes.Buffer
+	ExitCode() int
+	Wait(timeout ...interface{}) *gexec.Session
+	Terminate() *gexec.Session
+}
+
+//go:generate counterfeiter . SimpleSession
+
+type simpleSessionStarter func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error)
+
+// NewEtcd constructs an Etcd Fixture Process
+func NewEtcd(pathToEtcd string, etcdURL string) *Etcd {
+	starter := func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
+		return gexec.Start(command, out, err)
+	}
+
+	etcd := &Etcd{
+		Path:           pathToEtcd,
+		EtcdURL:        etcdURL,
+		ProcessStarter: starter,
+		DataDirManager: NewTempDirManager(),
+	}
+
+	return etcd
+}
+
 // Start starts the etcd, waits for it to come up, and returns an error, if occoured.
 func (e *Etcd) Start() error {
-	e.dataDirManager = NewTempDirManager()
 	e.stdOut = gbytes.NewBuffer()
 	e.stdErr = gbytes.NewBuffer()
 
-	dataDir, err := e.dataDirManager.Create()
+	dataDir, err := e.DataDirManager.Create()
 	if err != nil {
 		return err
 	}
@@ -51,7 +81,7 @@ func (e *Etcd) Start() error {
 	timedOut := time.After(20 * time.Second)
 
 	command := exec.Command(e.Path, args...)
-	e.session, err = gexec.Start(command, e.stdOut, e.stdErr)
+	e.session, err = e.ProcessStarter(command, e.stdOut, e.stdErr)
 	if err != nil {
 		return err
 	}
@@ -67,8 +97,9 @@ func (e *Etcd) Start() error {
 // Stop stops this process gracefully, waits for its termination, and cleans up the data directory.
 func (e *Etcd) Stop() {
 	if e.session != nil {
-		e.session.Terminate().Wait(20 * time.Second)
-		err := e.dataDirManager.Destroy()
+		e.session.Terminate()
+		e.session.Wait(20 * time.Second)
+		err := e.DataDirManager.Destroy()
 		gomega.Expect(err).NotTo(gomega.HaveOccurred())
 	}
 }

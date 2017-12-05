@@ -10,7 +10,7 @@ import (
 	"k8s.io/kubectl/pkg/framework/test"
 )
 
-var _ = Describe("Integration", func() {
+var _ = Describe("The Testing Framework", func() {
 	It("Successfully manages the fixtures lifecycle", func() {
 		fixtures := test.NewFixtures(defaultPathToEtcd, defaultPathToApiserver)
 
