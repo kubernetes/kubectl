@@ -5,6 +5,8 @@ import (
 	"os/exec"
 	"time"
 
+	"io"
+
 	"github.com/onsi/gomega"
 	"github.com/onsi/gomega/gbytes"
 	"github.com/onsi/gomega/gexec"
@@ -15,10 +17,11 @@ type APIServer struct {
 	// The path to the apiserver binary
 	Path           string
 	EtcdURL        string
-	session        *gexec.Session
+	ProcessStarter simpleSessionStarter
+	CertDirManager certDirManager
+	session        SimpleSession
 	stdOut         *gbytes.Buffer
 	stdErr         *gbytes.Buffer
-	certDirManager certDirManager
 }
 
 type certDirManager interface {
@@ -26,13 +29,29 @@ type certDirManager interface {
 	Destroy() error
 }
 
+//go:generate counterfeiter . certDirManager
+
+func NewAPIServer(pathToAPIServer, etcdURL string) *APIServer {
+	starter := func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
+		return gexec.Start(command, out, err)
+	}
+
+	apiserver := &APIServer{
+		Path:           pathToAPIServer,
+		EtcdURL:        etcdURL,
+		ProcessStarter: starter,
+		CertDirManager: NewTempDirManager(),
+	}
+
+	return apiserver
+}
+
 // Start starts the apiserver, waits for it to come up, and returns an error, if occoured.
 func (s *APIServer) Start() error {
-	s.certDirManager = NewTempDirManager()
 	s.stdOut = gbytes.NewBuffer()
 	s.stdErr = gbytes.NewBuffer()
 
-	certDir, err := s.certDirManager.Create()
+	certDir, err := s.CertDirManager.Create()
 	if err != nil {
 		return err
 	}
@@ -55,7 +74,7 @@ func (s *APIServer) Start() error {
 	timedOut := time.After(20 * time.Second)
 
 	command := exec.Command(s.Path, args...)
-	s.session, err = gexec.Start(command, s.stdOut, s.stdErr)
+	s.session, err = s.ProcessStarter(command, s.stdOut, s.stdErr)
 	if err != nil {
 		return err
 	}
@@ -71,8 +90,9 @@ func (s *APIServer) Start() error {
 // Stop stops this process gracefully, waits for its termination, and cleans up the cert directory.
 func (s *APIServer) Stop() {
 	if s.session != nil {
-		s.session.Terminate().Wait(20 * time.Second)
-		err := s.certDirManager.Destroy()
+		s.session.Terminate()
+		s.session.Wait(20 * time.Second)
+		err := s.CertDirManager.Destroy()
 		gomega.Expect(err).NotTo(gomega.HaveOccurred())
 	}
 }
