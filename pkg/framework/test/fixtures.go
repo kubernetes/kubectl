@@ -12,6 +12,7 @@ type Fixtures struct {
 	Etcd      FixtureProcess
 	APIServer FixtureProcess
 	Config    FixturesConfig
+	URLGetter listenURLGetter
 }
 
 // FixturesConfig is a datastructure that exposes configuration that should be used by clients to talk
@@ -35,6 +36,7 @@ func NewFixtures(pathToEtcd, pathToAPIServer string) *Fixtures {
 	fixtures := &Fixtures{
 		Etcd:      NewEtcd(pathToEtcd),
 		APIServer: NewAPIServer(pathToAPIServer),
+		URLGetter: getHTTPListenURL,
 	}
 
 	return fixtures
@@ -44,15 +46,15 @@ func NewFixtures(pathToEtcd, pathToAPIServer string) *Fixtures {
 func (f *Fixtures) Start() error {
 	type configs map[string]string
 
-	etcdClientURL, err := getHTTPListenURL()
+	etcdClientURL, err := f.URLGetter()
 	if err != nil {
 		return err
 	}
-	etcdPeerURL, err := getHTTPListenURL()
+	etcdPeerURL, err := f.URLGetter()
 	if err != nil {
 		return err
 	}
-	apiServerURL, err := getHTTPListenURL()
+	apiServerURL, err := f.URLGetter()
 	if err != nil {
 		return err
 	}
@@ -98,6 +100,10 @@ func (f *Fixtures) Stop() error {
 	f.Etcd.Stop()
 	return nil
 }
+
+type listenURLGetter func() (url string, err error)
+
+//go:generate counterfeiter . listenURLGetter
 
 func getHTTPListenURL() (url string, err error) {
 	host := "127.0.0.1"
