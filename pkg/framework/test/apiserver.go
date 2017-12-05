@@ -2,10 +2,10 @@ package test
 
 import (
 	"fmt"
+	"io"
+	"net/url"
 	"os/exec"
 	"time"
-
-	"io"
 
 	"github.com/onsi/gomega"
 	"github.com/onsi/gomega/gbytes"
@@ -19,6 +19,7 @@ type APIServer struct {
 	EtcdURL        string
 	ProcessStarter simpleSessionStarter
 	CertDirManager certDirManager
+	APIServerURL   string
 	session        SimpleSession
 	stdOut         *gbytes.Buffer
 	stdErr         *gbytes.Buffer
@@ -31,7 +32,8 @@ type certDirManager interface {
 
 //go:generate counterfeiter . certDirManager
 
-func NewAPIServer(pathToAPIServer, etcdURL string) *APIServer {
+// NewAPIServer creates a new APIServer Fixture Process
+func NewAPIServer(pathToAPIServer, apiServerURL, etcdURL string) *APIServer {
 	starter := func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
 		return gexec.Start(command, out, err)
 	}
@@ -41,6 +43,7 @@ func NewAPIServer(pathToAPIServer, etcdURL string) *APIServer {
 		EtcdURL:        etcdURL,
 		ProcessStarter: starter,
 		CertDirManager: NewTempDirManager(),
+		APIServerURL:   apiServerURL,
 	}
 
 	return apiserver
@@ -56,6 +59,11 @@ func (s *APIServer) Start() error {
 		return err
 	}
 
+	url, err := url.Parse(s.APIServerURL)
+	if err != nil {
+		return err
+	}
+
 	args := []string{
 		"--authorization-mode=Node,RBAC",
 		"--runtime-config=admissionregistration.k8s.io/v1alpha1",
@@ -63,14 +71,14 @@ func (s *APIServer) Start() error {
 		"--admission-control=Initializers,NamespaceLifecycle,LimitRanger,ServiceAccount,SecurityContextDeny,DefaultStorageClass,DefaultTolerationSeconds,GenericAdmissionWebhook,ResourceQuota",
 		"--admission-control-config-file=",
 		"--bind-address=0.0.0.0",
-		"--insecure-bind-address=127.0.0.1",
-		"--insecure-port=8080",
 		"--storage-backend=etcd3",
 		fmt.Sprintf("--etcd-servers=%s", s.EtcdURL),
 		fmt.Sprintf("--cert-dir=%s", certDir),
+		fmt.Sprintf("--insecure-port=%s", url.Port()),
+		fmt.Sprintf("--insecure-bind-address=%s", url.Hostname()),
 	}
 
-	detectedStart := s.stdErr.Detect("Serving insecurely on 127.0.0.1:8080")
+	detectedStart := s.stdErr.Detect(fmt.Sprintf("Serving insecurely on %s", url.Host))
 	timedOut := time.After(20 * time.Second)
 
 	command := exec.Command(s.Path, args...)

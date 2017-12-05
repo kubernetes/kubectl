@@ -31,7 +31,8 @@ var _ = BeforeSuite(func() {
 
 	assetsDir, ok := os.LookupEnv("KUBE_ASSETS_DIR")
 	Expect(ok).To(BeTrue(), "KUBE_ASSETS_DIR should point to a directory containing etcd and apiserver binaries")
-	fixtures = test.NewFixtures(filepath.Join(assetsDir, "etcd"), filepath.Join(assetsDir, "kube-apiserver"))
+	fixtures, err = test.NewFixtures(filepath.Join(assetsDir, "etcd"), filepath.Join(assetsDir, "kube-apiserver"))
+	Expect(err).NotTo(HaveOccurred())
 	err = fixtures.Start()
 	Expect(err).NotTo(HaveOccurred())
 })

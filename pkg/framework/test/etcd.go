@@ -6,6 +6,8 @@ import (
 	"os/exec"
 	"time"
 
+	"net/url"
+
 	"github.com/onsi/gomega"
 	"github.com/onsi/gomega/gbytes"
 	"github.com/onsi/gomega/gexec"
@@ -15,6 +17,7 @@ import (
 type Etcd struct {
 	Path           string
 	EtcdURL        string
+	EtcdPeerURL    string
 	ProcessStarter simpleSessionStarter
 	DataDirManager dataDirManager
 	session        SimpleSession
@@ -42,7 +45,7 @@ type SimpleSession interface {
 type simpleSessionStarter func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error)
 
 // NewEtcd constructs an Etcd Fixture Process
-func NewEtcd(pathToEtcd string, etcdURL string) *Etcd {
+func NewEtcd(pathToEtcd, etcdURL, etcdPeerURL string) *Etcd {
 	starter := func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
 		return gexec.Start(command, out, err)
 	}
@@ -50,6 +53,7 @@ func NewEtcd(pathToEtcd string, etcdURL string) *Etcd {
 	etcd := &Etcd{
 		Path:           pathToEtcd,
 		EtcdURL:        etcdURL,
+		EtcdPeerURL:    etcdPeerURL,
 		ProcessStarter: starter,
 		DataDirManager: NewTempDirManager(),
 	}
@@ -73,11 +77,19 @@ func (e *Etcd) Start() error {
 		e.EtcdURL,
 		"--listen-client-urls",
 		e.EtcdURL,
+		"--listen-peer-urls",
+		e.EtcdPeerURL,
 		"--data-dir",
 		dataDir,
 	}
 
-	detectedStart := e.stdErr.Detect("serving insecure client requests on 127.0.0.1:2379")
+	url, err := url.Parse(e.EtcdURL)
+	if err != nil {
+		return err
+	}
+
+	detectedStart := e.stdErr.Detect(fmt.Sprintf(
+		"serving insecure client requests on %s", url.Host))
 	timedOut := time.After(20 * time.Second)
 
 	command := exec.Command(e.Path, args...)
