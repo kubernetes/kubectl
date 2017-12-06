@@ -18,6 +18,7 @@ type APIServer struct {
 	Path           string
 	ProcessStarter simpleSessionStarter
 	CertDirManager certDirManager
+	Config         *APIServerConfig
 	session        SimpleSession
 	stdOut         *gbytes.Buffer
 	stdErr         *gbytes.Buffer
@@ -28,10 +29,16 @@ type certDirManager interface {
 	Destroy() error
 }
 
+// APIServerConfig is a struct holding data to configure the API Server process
+type APIServerConfig struct {
+	EtcdURL      string
+	APIServerURL string
+}
+
 //go:generate counterfeiter . certDirManager
 
 // NewAPIServer creates a new APIServer Fixture Process
-func NewAPIServer(pathToAPIServer string) *APIServer {
+func NewAPIServer(pathToAPIServer string, config *APIServerConfig) *APIServer {
 	starter := func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
 		return gexec.Start(command, out, err)
 	}
@@ -40,13 +47,14 @@ func NewAPIServer(pathToAPIServer string) *APIServer {
 		Path:           pathToAPIServer,
 		ProcessStarter: starter,
 		CertDirManager: NewTempDirManager(),
+		Config:         config,
 	}
 
 	return apiserver
 }
 
 // Start starts the apiserver, waits for it to come up, and returns an error, if occoured.
-func (s *APIServer) Start(config map[string]string) error {
+func (s *APIServer) Start() error {
 	s.stdOut = gbytes.NewBuffer()
 	s.stdErr = gbytes.NewBuffer()
 
@@ -55,16 +63,7 @@ func (s *APIServer) Start(config map[string]string) error {
 		return err
 	}
 
-	etcdURL, ok := config["etcdURL"]
-	if !ok {
-		return fmt.Errorf("config setting 'etcdURL' not found")
-	}
-	apiServerURL, ok := config["apiServerURL"]
-	if !ok {
-		return fmt.Errorf("config setting 'apiServerURL' not found")
-	}
-
-	url, err := url.Parse(apiServerURL)
+	clientURL, err := url.Parse(s.Config.APIServerURL)
 	if err != nil {
 		return err
 	}
@@ -77,13 +76,13 @@ func (s *APIServer) Start(config map[string]string) error {
 		"--admission-control-config-file=",
 		"--bind-address=0.0.0.0",
 		"--storage-backend=etcd3",
-		fmt.Sprintf("--etcd-servers=%s", etcdURL),
+		fmt.Sprintf("--etcd-servers=%s", s.Config.EtcdURL),
 		fmt.Sprintf("--cert-dir=%s", certDir),
-		fmt.Sprintf("--insecure-port=%s", url.Port()),
-		fmt.Sprintf("--insecure-bind-address=%s", url.Hostname()),
+		fmt.Sprintf("--insecure-port=%s", clientURL.Port()),
+		fmt.Sprintf("--insecure-bind-address=%s", clientURL.Hostname()),
 	}
 
-	detectedStart := s.stdErr.Detect(fmt.Sprintf("Serving insecurely on %s", url.Host))
+	detectedStart := s.stdErr.Detect(fmt.Sprintf("Serving insecurely on %s", clientURL.Host))
 	timedOut := time.After(20 * time.Second)
 
 	command := exec.Command(s.Path, args...)

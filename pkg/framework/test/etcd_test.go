@@ -20,21 +20,22 @@ var _ = Describe("Etcd", func() {
 		fakeSession        *testfakes.FakeSimpleSession
 		fakeDataDirManager *testfakes.FakeDataDirManager
 		etcd               *Etcd
-		etcdConfig         map[string]string
+		etcdConfig         *EtcdConfig
 	)
 
 	BeforeEach(func() {
 		fakeSession = &testfakes.FakeSimpleSession{}
 		fakeDataDirManager = &testfakes.FakeDataDirManager{}
 
+		etcdConfig = &EtcdConfig{
+			ClientURL: "http://this.is.etcd.listening.for.clients:1234",
+			PeerURL:   "http://this.is.etcd.listening.for.peers:1235",
+		}
+
 		etcd = &Etcd{
 			Path:           "",
 			DataDirManager: fakeDataDirManager,
-		}
-
-		etcdConfig = map[string]string{
-			"clientURL": "http://this.is.etcd.listening.for.clients:1234",
-			"peerURL":   "http://this.is.etcd.listening.for.peers:1235",
+			Config:         etcdConfig,
 		}
 	})
 
@@ -53,7 +54,7 @@ var _ = Describe("Etcd", func() {
 			}
 
 			By("Starting the Etcd Server")
-			err := etcd.Start(etcdConfig)
+			err := etcd.Start()
 			Expect(err).NotTo(HaveOccurred())
 
 			Eventually(etcd).Should(gbytes.Say("Everything is dandy"))
@@ -82,7 +83,7 @@ var _ = Describe("Etcd", func() {
 				return fakeSession, nil
 			}
 
-			err := etcd.Start(etcdConfig)
+			err := etcd.Start()
 			Expect(err).To(MatchError(ContainSubstring("Error on directory creation.")))
 			Expect(processStarterCounter).To(Equal(0))
 		})
@@ -94,7 +95,7 @@ var _ = Describe("Etcd", func() {
 				return nil, fmt.Errorf("Some error in the starter.")
 			}
 
-			err := etcd.Start(etcdConfig)
+			err := etcd.Start()
 			Expect(err).To(MatchError(ContainSubstring("Some error in the starter.")))
 		})
 	})

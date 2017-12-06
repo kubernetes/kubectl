@@ -44,7 +44,9 @@ var _ = BeforeSuite(func() {
 	Expect(pathToEtcd).NotTo(BeEmpty(), "Path to etcd cannot be empty, set $TEST_ETCD_BIN")
 	Expect(pathToAPIServer).NotTo(BeEmpty(), "Path to apiserver cannot be empty, set $TEST_APISERVER_BIN")
 
-	fixtures = test.NewFixtures(pathToEtcd, pathToAPIServer)
+	fixtures, err = test.NewFixtures(pathToEtcd, pathToAPIServer)
+	Expect(err).NotTo(HaveOccurred())
+
 	err = fixtures.Start()
 	Expect(err).NotTo(HaveOccurred())
 })

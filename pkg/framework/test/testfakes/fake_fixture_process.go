@@ -8,12 +8,10 @@ import (
 )
 
 type FakeFixtureProcess struct {
-	StartStub        func(config map[string]string) error
+	StartStub        func() error
 	startMutex       sync.RWMutex
-	startArgsForCall []struct {
-		config map[string]string
-	}
-	startReturns struct {
+	startArgsForCall []struct{}
+	startReturns     struct {
 		result1 error
 	}
 	startReturnsOnCall map[int]struct {
@@ -26,16 +24,14 @@ type FakeFixtureProcess struct {
 	invocationsMutex sync.RWMutex
 }
 
-func (fake *FakeFixtureProcess) Start(config map[string]string) error {
+func (fake *FakeFixtureProcess) Start() error {
 	fake.startMutex.Lock()
 	ret, specificReturn := fake.startReturnsOnCall[len(fake.startArgsForCall)]
-	fake.startArgsForCall = append(fake.startArgsForCall, struct {
-		config map[string]string
-	}{config})
-	fake.recordInvocation("Start", []interface{}{config})
+	fake.startArgsForCall = append(fake.startArgsForCall, struct{}{})
+	fake.recordInvocation("Start", []interface{}{})
 	fake.startMutex.Unlock()
 	if fake.StartStub != nil {
-		return fake.StartStub(config)
+		return fake.StartStub()
 	}
 	if specificReturn {
 		return ret.result1
@@ -47,12 +43,6 @@ func (fake *FakeFixtureProcess) StartCallCount() int {
 	fake.startMutex.RLock()
 	defer fake.startMutex.RUnlock()
 	return len(fake.startArgsForCall)
-}
-
-func (fake *FakeFixtureProcess) StartArgsForCall(i int) map[string]string {
-	fake.startMutex.RLock()
-	defer fake.startMutex.RUnlock()
-	return fake.startArgsForCall[i].config
 }
 
 func (fake *FakeFixtureProcess) StartReturns(result1 error) {

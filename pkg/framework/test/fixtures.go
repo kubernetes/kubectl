@@ -12,7 +12,6 @@ type Fixtures struct {
 	Etcd      FixtureProcess
 	APIServer FixtureProcess
 	Config    FixturesConfig
-	URLGetter listenURLGetter
 }
 
 // FixturesConfig is a datastructure that exposes configuration that should be used by clients to talk
@@ -25,70 +24,67 @@ type FixturesConfig struct {
 // This interface is potentially going to be expanded to e.g. allow access to the processes StdOut/StdErr
 // and other internals.
 type FixtureProcess interface {
-	Start(config map[string]string) error
+	Start() error
 	Stop()
 }
 
 //go:generate counterfeiter . FixtureProcess
 
 // NewFixtures will give you a Fixtures struct that's properly wired together.
-func NewFixtures(pathToEtcd, pathToAPIServer string) *Fixtures {
-	fixtures := &Fixtures{
-		Etcd:      NewEtcd(pathToEtcd),
-		APIServer: NewAPIServer(pathToAPIServer),
-		URLGetter: getHTTPListenURL,
+func NewFixtures(pathToEtcd, pathToAPIServer string) (*Fixtures, error) {
+	etcdConfig := &EtcdConfig{}
+	apiServerConfig := &APIServerConfig{}
+
+	if url, err := getHTTPListenURL(); err == nil {
+		etcdConfig.ClientURL = url
+		apiServerConfig.EtcdURL = url
+	} else {
+		return nil, err
 	}
 
-	return fixtures
+	if url, err := getHTTPListenURL(); err == nil {
+		etcdConfig.PeerURL = url
+	} else {
+		return nil, err
+	}
+
+	if url, err := getHTTPListenURL(); err == nil {
+		apiServerConfig.APIServerURL = url
+	} else {
+		return nil, err
+	}
+
+	fixtures := &Fixtures{
+		Etcd:      NewEtcd(pathToEtcd, etcdConfig),
+		APIServer: NewAPIServer(pathToAPIServer, apiServerConfig),
+	}
+
+	fixtures.Config = FixturesConfig{
+		APIServerURL: apiServerConfig.APIServerURL,
+	}
+
+	return fixtures, nil
 }
 
 // Start will start all your fixtures. To stop them, call Stop().
 func (f *Fixtures) Start() error {
-	type configs map[string]string
-
-	etcdClientURL, err := f.URLGetter()
-	if err != nil {
-		return err
-	}
-	etcdPeerURL, err := f.URLGetter()
-	if err != nil {
-		return err
-	}
-	apiServerURL, err := f.URLGetter()
-	if err != nil {
-		return err
-	}
-
-	etcdConf := configs{
-		"peerURL":   etcdPeerURL,
-		"clientURL": etcdClientURL,
-	}
-	apiServerConf := configs{
-		"etcdURL":      etcdClientURL,
-		"apiServerURL": apiServerURL,
-	}
-
 	started := make(chan error)
-	starter := func(process FixtureProcess, conf configs) {
-		started <- process.Start(conf)
+	starter := func(process FixtureProcess) {
+		started <- process.Start()
 	}
-	processes := map[FixtureProcess]configs{
-		f.Etcd:      etcdConf,
-		f.APIServer: apiServerConf,
+	processes := []FixtureProcess{
+		f.Etcd,
+		f.APIServer,
 	}
 
-	for process, config := range processes {
-		go starter(process, config)
+	for _, process := range processes {
+		go starter(process)
 	}
 
 	for range processes {
 		if err := <-started; err != nil {
 			return err
 		}
-	}
-
-	f.Config = FixturesConfig{
-		APIServerURL: apiServerURL,
 	}
 
 	return nil
@@ -100,10 +96,6 @@ func (f *Fixtures) Stop() error {
 	f.Etcd.Stop()
 	return nil
 }
-
-type listenURLGetter func() (url string, err error)
-
-//go:generate counterfeiter . listenURLGetter
 
 func getHTTPListenURL() (url string, err error) {
 	host := "127.0.0.1"

@@ -12,7 +12,8 @@ import (
 
 var _ = Describe("Fixtures", func() {
 	It("can construct a properly wired Fixtures struct", func() {
-		f := NewFixtures("path to etcd", "path to apiserver")
+		f, err := NewFixtures("path to etcd", "path to apiserver")
+		Expect(err).NotTo(HaveOccurred())
 		Expect(f.Etcd.(*Etcd).Path).To(Equal("path to etcd"))
 		Expect(f.APIServer.(*APIServer).Path).To(Equal("path to apiserver"))
 	})
@@ -21,24 +22,20 @@ var _ = Describe("Fixtures", func() {
 		var (
 			fakeEtcdProcess      *testfakes.FakeFixtureProcess
 			fakeAPIServerProcess *testfakes.FakeFixtureProcess
-			fakeListenURLGetter  *testfakes.FakeListenURLGetter
 			fixtures             Fixtures
 		)
 		BeforeEach(func() {
 			fakeEtcdProcess = &testfakes.FakeFixtureProcess{}
 			fakeAPIServerProcess = &testfakes.FakeFixtureProcess{}
-			fakeListenURLGetter = &testfakes.FakeListenURLGetter{}
 			fixtures = Fixtures{
 				Etcd:      fakeEtcdProcess,
 				APIServer: fakeAPIServerProcess,
-				URLGetter: fakeListenURLGetter.Spy,
 			}
 		})
 
 		It("can start them", func() {
 			err := fixtures.Start()
 			Expect(err).NotTo(HaveOccurred())
-			Expect(fakeListenURLGetter.CallCount()).To(Equal(3))
 
 			By("starting Etcd")
 			Expect(fakeEtcdProcess.StartCallCount()).To(Equal(1),
@@ -53,7 +50,6 @@ var _ = Describe("Fixtures", func() {
 			It("wraps the error", func() {
 				fakeEtcdProcess.StartReturns(fmt.Errorf("some error"))
 				err := fixtures.Start()
-				Expect(fakeListenURLGetter.CallCount()).To(Equal(3))
 				Expect(err).To(MatchError(ContainSubstring("some error")))
 			})
 		})
@@ -62,7 +58,6 @@ var _ = Describe("Fixtures", func() {
 			It("wraps the error", func() {
 				fakeAPIServerProcess.StartReturns(fmt.Errorf("another error"))
 				err := fixtures.Start()
-				Expect(fakeListenURLGetter.CallCount()).To(Equal(3))
 				Expect(err).To(MatchError(ContainSubstring("another error")))
 			})
 		})

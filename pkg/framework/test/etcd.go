@@ -18,6 +18,7 @@ type Etcd struct {
 	Path           string
 	ProcessStarter simpleSessionStarter
 	DataDirManager dataDirManager
+	Config         *EtcdConfig
 	session        SimpleSession
 	stdOut         *gbytes.Buffer
 	stdErr         *gbytes.Buffer
@@ -26,6 +27,12 @@ type Etcd struct {
 type dataDirManager interface {
 	Create() (string, error)
 	Destroy() error
+}
+
+// EtcdConfig is a struct holding data to configure the Etcd process
+type EtcdConfig struct {
+	ClientURL string
+	PeerURL   string
 }
 
 //go:generate counterfeiter . dataDirManager
@@ -43,7 +50,7 @@ type SimpleSession interface {
 type simpleSessionStarter func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error)
 
 // NewEtcd constructs an Etcd Fixture Process
-func NewEtcd(pathToEtcd string) *Etcd {
+func NewEtcd(pathToEtcd string, config *EtcdConfig) *Etcd {
 	starter := func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
 		return gexec.Start(command, out, err)
 	}
@@ -52,13 +59,14 @@ func NewEtcd(pathToEtcd string) *Etcd {
 		Path:           pathToEtcd,
 		ProcessStarter: starter,
 		DataDirManager: NewTempDirManager(),
+		Config:         config,
 	}
 
 	return etcd
 }
 
 // Start starts the etcd, waits for it to come up, and returns an error, if occoured.
-func (e *Etcd) Start(config map[string]string) error {
+func (e *Etcd) Start() error {
 	e.stdOut = gbytes.NewBuffer()
 	e.stdErr = gbytes.NewBuffer()
 
@@ -67,34 +75,25 @@ func (e *Etcd) Start(config map[string]string) error {
 		return err
 	}
 
-	clientURL, ok := config["clientURL"]
-	if !ok {
-		return fmt.Errorf("config setting 'clientURL' not found")
-	}
-	peerURL, ok := config["peerURL"]
-	if !ok {
-		return fmt.Errorf("config setting 'peerURL' not found")
-	}
-
 	args := []string{
 		"--debug",
 		"--advertise-client-urls",
-		clientURL,
+		e.Config.ClientURL,
 		"--listen-client-urls",
-		clientURL,
+		e.Config.ClientURL,
 		"--listen-peer-urls",
-		peerURL,
+		e.Config.PeerURL,
 		"--data-dir",
 		dataDir,
 	}
 
-	url, err := url.Parse(clientURL)
+	clientURL, err := url.Parse(e.Config.ClientURL)
 	if err != nil {
 		return err
 	}
 
 	detectedStart := e.stdErr.Detect(fmt.Sprintf(
-		"serving insecure client requests on %s", url.Host))
+		"serving insecure client requests on %s", clientURL.Host))
 	timedOut := time.After(20 * time.Second)
 
 	command := exec.Command(e.Path, args...)
