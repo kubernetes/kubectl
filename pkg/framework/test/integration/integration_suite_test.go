@@ -5,7 +5,6 @@ import (
 	. "github.com/onsi/gomega"
 
 	"os"
-	"path"
 	"path/filepath"
 	"runtime"
 	"testing"
@@ -24,21 +23,21 @@ var (
 )
 
 var _ = BeforeSuite(func() {
-	assetsDir := ""
+	_, thisFile, _, ok := runtime.Caller(0)
+	Expect(ok).NotTo(BeFalse())
+	defaultAssetsDir := filepath.Clean(filepath.Join(filepath.Dir(thisFile), "..", "assets", "bin"))
+	defaultPathToEtcd = filepath.Join(defaultAssetsDir, "etcd")
+	defaultPathToApiserver = filepath.Join(defaultAssetsDir, "kube-apiserver")
 
-	if dirFromEnv, ok := os.LookupEnv("KUBE_ASSETS_DIR"); ok {
-		assetsDir = dirFromEnv
-	} else {
-		if _, thisFile, _, ok := runtime.Caller(0); ok {
-			assetsDir = path.Clean(path.Join(path.Dir(thisFile), "..", "assets", "bin"))
-		}
+	if pathToBin, ok := os.LookupEnv("TEST_ETCD_BIN"); ok {
+		defaultPathToEtcd = pathToBin
+	}
+	if pathToBin, ok := os.LookupEnv("TEST_APISERVER_BIN"); ok {
+		defaultPathToApiserver = pathToBin
 	}
 
-	Expect(assetsDir).NotTo(BeEmpty(),
-		"Could not determine assets directory (Hint: you can set $KUBE_ASSETS_DIR)")
-
-	defaultPathToEtcd = filepath.Join(assetsDir, "etcd")
-	defaultPathToApiserver = filepath.Join(assetsDir, "kube-apiserver")
+	Expect(defaultPathToEtcd).NotTo(BeEmpty(), "Path to etcd cannot be empty, set $TEST_ETCD_BIN")
+	Expect(defaultPathToApiserver).NotTo(BeEmpty(), "Path to apiserver cannot be empty, set $TEST_APISERVER_BIN")
 })
 
 var _ = AfterSuite(func() {
