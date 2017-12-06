@@ -29,12 +29,6 @@ type certDirManager interface {
 	Destroy() error
 }
 
-// APIServerConfig is a struct holding data to configure the API Server process
-type APIServerConfig struct {
-	EtcdURL      string
-	APIServerURL string
-}
-
 //go:generate counterfeiter . certDirManager
 
 // NewAPIServer creates a new APIServer Fixture Process
@@ -55,6 +49,10 @@ func NewAPIServer(pathToAPIServer string, config *APIServerConfig) *APIServer {
 
 // Start starts the apiserver, waits for it to come up, and returns an error, if occoured.
 func (s *APIServer) Start() error {
+	if err := s.Config.Validate(); err != nil {
+		return err
+	}
+
 	s.stdOut = gbytes.NewBuffer()
 	s.stdErr = gbytes.NewBuffer()
 

@@ -29,12 +29,6 @@ type dataDirManager interface {
 	Destroy() error
 }
 
-// EtcdConfig is a struct holding data to configure the Etcd process
-type EtcdConfig struct {
-	ClientURL string
-	PeerURL   string
-}
-
 //go:generate counterfeiter . dataDirManager
 
 // SimpleSession describes a CLI session. You can get output, and you can kill it. It is implemented by *gexec.Session.
@@ -67,6 +61,10 @@ func NewEtcd(pathToEtcd string, config *EtcdConfig) *Etcd {
 
 // Start starts the etcd, waits for it to come up, and returns an error, if occoured.
 func (e *Etcd) Start() error {
+	if err := e.Config.Validate(); err != nil {
+		return err
+	}
+
 	e.stdOut = gbytes.NewBuffer()
 	e.stdErr = gbytes.NewBuffer()
 
