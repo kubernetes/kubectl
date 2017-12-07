@@ -20,16 +20,22 @@ var _ = Describe("Etcd", func() {
 		fakeSession        *testfakes.FakeSimpleSession
 		fakeDataDirManager *testfakes.FakeDataDirManager
 		etcd               *Etcd
+		etcdConfig         *EtcdConfig
 	)
 
 	BeforeEach(func() {
 		fakeSession = &testfakes.FakeSimpleSession{}
 		fakeDataDirManager = &testfakes.FakeDataDirManager{}
 
+		etcdConfig = &EtcdConfig{
+			ClientURL: "http://this.is.etcd.listening.for.clients:1234",
+			PeerURL:   "http://this.is.etcd.listening.for.peers:1235",
+		}
+
 		etcd = &Etcd{
 			Path:           "",
-			EtcdURL:        "our etcd url",
 			DataDirManager: fakeDataDirManager,
+			Config:         etcdConfig,
 		}
 	})
 
@@ -43,7 +49,7 @@ var _ = Describe("Etcd", func() {
 			fakeSession.ExitCodeReturnsOnCall(1, 143)
 
 			etcd.ProcessStarter = func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
-				fmt.Fprint(err, "serving insecure client requests on 127.0.0.1:2379")
+				fmt.Fprint(err, "serving insecure client requests on this.is.etcd.listening.for.clients:1234")
 				return fakeSession, nil
 			}
 

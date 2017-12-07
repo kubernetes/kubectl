@@ -12,7 +12,8 @@ import (
 
 var _ = Describe("Fixtures", func() {
 	It("can construct a properly wired Fixtures struct", func() {
-		f := NewFixtures("path to etcd", "path to apiserver")
+		f, err := NewFixtures("path to etcd", "path to apiserver")
+		Expect(err).NotTo(HaveOccurred())
 		Expect(f.Etcd.(*Etcd).Path).To(Equal("path to etcd"))
 		Expect(f.APIServer.(*APIServer).Path).To(Equal("path to apiserver"))
 	})
@@ -38,11 +39,11 @@ var _ = Describe("Fixtures", func() {
 
 			By("starting Etcd")
 			Expect(fakeEtcdProcess.StartCallCount()).To(Equal(1),
-				"the EtcdStartStopper should be called exactly once")
+				"the Etcd process should be started exactly once")
 
 			By("starting APIServer")
 			Expect(fakeAPIServerProcess.StartCallCount()).To(Equal(1),
-				"the APIServerStartStopper should be called exactly once")
+				"the APIServer process should be started exactly once")
 		})
 
 		Context("when starting etcd fails", func() {

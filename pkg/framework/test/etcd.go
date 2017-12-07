@@ -6,6 +6,8 @@ import (
 	"os/exec"
 	"time"
 
+	"net/url"
+
 	"github.com/onsi/gomega"
 	"github.com/onsi/gomega/gbytes"
 	"github.com/onsi/gomega/gexec"
@@ -14,9 +16,9 @@ import (
 // Etcd knows how to run an etcd server. Set it up with the path to a precompiled binary.
 type Etcd struct {
 	Path           string
-	EtcdURL        string
 	ProcessStarter simpleSessionStarter
 	DataDirManager dataDirManager
+	Config         *EtcdConfig
 	session        SimpleSession
 	stdOut         *gbytes.Buffer
 	stdErr         *gbytes.Buffer
@@ -42,16 +44,16 @@ type SimpleSession interface {
 type simpleSessionStarter func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error)
 
 // NewEtcd constructs an Etcd Fixture Process
-func NewEtcd(pathToEtcd string, etcdURL string) *Etcd {
+func NewEtcd(pathToEtcd string, config *EtcdConfig) *Etcd {
 	starter := func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
 		return gexec.Start(command, out, err)
 	}
 
 	etcd := &Etcd{
 		Path:           pathToEtcd,
-		EtcdURL:        etcdURL,
 		ProcessStarter: starter,
 		DataDirManager: NewTempDirManager(),
+		Config:         config,
 	}
 
 	return etcd
@@ -59,6 +61,10 @@ func NewEtcd(pathToEtcd string, etcdURL string) *Etcd {
 
 // Start starts the etcd, waits for it to come up, and returns an error, if occoured.
 func (e *Etcd) Start() error {
+	if err := e.Config.Validate(); err != nil {
+		return err
+	}
+
 	e.stdOut = gbytes.NewBuffer()
 	e.stdErr = gbytes.NewBuffer()
 
@@ -70,14 +76,22 @@ func (e *Etcd) Start() error {
 	args := []string{
 		"--debug",
 		"--advertise-client-urls",
-		e.EtcdURL,
+		e.Config.ClientURL,
 		"--listen-client-urls",
-		e.EtcdURL,
+		e.Config.ClientURL,
+		"--listen-peer-urls",
+		e.Config.PeerURL,
 		"--data-dir",
 		dataDir,
 	}
 
-	detectedStart := e.stdErr.Detect("serving insecure client requests on 127.0.0.1:2379")
+	clientURL, err := url.Parse(e.Config.ClientURL)
+	if err != nil {
+		return err
+	}
+
+	detectedStart := e.stdErr.Detect(fmt.Sprintf(
+		"serving insecure client requests on %s", clientURL.Host))
 	timedOut := time.After(20 * time.Second)
 
 	command := exec.Command(e.Path, args...)

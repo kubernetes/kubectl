@@ -14,6 +14,12 @@
   revision = "de5bf2ad457846296e2031421a34e2568e304e35"
 
 [[projects]]
+  name = "github.com/asaskevich/govalidator"
+  packages = ["."]
+  revision = "521b25f4b05fd26bec69d9dedeb8f9c9a83939a8"
+  version = "v8"
+
+[[projects]]
   name = "github.com/davecgh/go-spew"
   packages = ["spew"]
   revision = "346938d642f2ec3594ed81d874461961cd0faa76"
@@ -298,6 +304,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "f97c722e792f642563d42011d9e2dff8cd05844996c03c124ceca6409cda38ce"
+  inputs-digest = "78833c364b471940130012a5cb20b4a3eac5d94e88b87740b61d15d64eef0ba3"
   solver-name = "gps-cdcl"
   solver-version = 1
