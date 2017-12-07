@@ -106,15 +106,20 @@ func getHTTPListenURL() (url string, err error) {
 	return fmt.Sprintf("http://%s:%d", host, port), nil
 }
 
-func getFreePort(host string) (int, error) {
-	addr, err := net.ResolveTCPAddr("tcp", fmt.Sprintf("%s:0", host))
+func getFreePort(host string) (port int, err error) {
+	var addr *net.TCPAddr
+	addr, err = net.ResolveTCPAddr("tcp", fmt.Sprintf("%s:0", host))
 	if err != nil {
-		return 0, err
+		return
 	}
-	l, err := net.ListenTCP("tcp", addr)
+	var l *net.TCPListener
+	l, err = net.ListenTCP("tcp", addr)
 	if err != nil {
-		return 0, err
+		return
 	}
-	defer l.Close()
+	defer func() {
+		err = l.Close()
+	}()
+
 	return l.Addr().(*net.TCPAddr).Port, nil
 }

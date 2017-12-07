@@ -8,6 +8,7 @@ type APIServerConfig struct {
 	APIServerURL string `valid:"required,url"`
 }
 
+// Validate checks that the config contains only valid URLs
 func (c *APIServerConfig) Validate() error {
 	_, err := govalidator.ValidateStruct(c)
 	return err
