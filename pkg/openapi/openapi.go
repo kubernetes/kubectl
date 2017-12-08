@@ -68,6 +68,8 @@ func NewOpenAPIData(doc *openapi_v2.Document) (Resources, error) {
 	}, nil
 }
 
+// LookupResource checks if GroupVersionKind exists
+// Returns schema of the found modelName
 func (d *document) LookupResource(gvk schema.GroupVersionKind) proto.Schema {
 	modelName, found := d.resources[gvk]
 	if !found {

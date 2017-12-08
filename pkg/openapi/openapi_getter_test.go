@@ -22,8 +22,8 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 
-	"k8s.io/kubernetes/pkg/kubectl/cmd/util/openapi"
-	tst "k8s.io/kubernetes/pkg/kubectl/cmd/util/openapi/testing"
+	"k8s.io/kubectl/pkg/openapi"
+	tst "k8s.io/kubectl/pkg/openapi/openapitest"
 )
 
 var _ = Describe("Getting the Resources", func() {
