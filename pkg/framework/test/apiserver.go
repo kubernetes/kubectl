@@ -33,34 +33,18 @@ type certDirManager interface {
 
 var apiServerBinPathFinder = DefaultBinPathFinder
 
-// NewAPIServer constructs a new APIServer with whatever api_server binary it can find.
+// NewAPIServer creates a new APIServer Fixture Process
 func NewAPIServer(config *APIServerConfig) *APIServer {
 	starter := func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
 		return gexec.Start(command, out, err)
 	}
 
 	return &APIServer{
-		Path:           apiServerBinPathFinder("kube_apiserver"),
+		Path:           apiServerBinPathFinder("kube-apiserver"),
 		Config:         config,
-		ProcessStarter: starter,
-		CertDirManager: &TempDirManager{},
-	}
-}
-
-// NewAPIServerWithBinary creates a new APIServer Fixture Process
-func NewAPIServerWithBinary(pathToAPIServer string, config *APIServerConfig) *APIServer {
-	starter := func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
-		return gexec.Start(command, out, err)
-	}
-
-	apiserver := &APIServer{
-		Path:           pathToAPIServer,
 		ProcessStarter: starter,
 		CertDirManager: NewTempDirManager(),
-		Config:         config,
 	}
-
-	return apiserver
 }
 
 // Start starts the apiserver, waits for it to come up, and returns an error, if occoured.

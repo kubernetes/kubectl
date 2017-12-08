@@ -31,7 +31,7 @@ type FixtureProcess interface {
 //go:generate counterfeiter . FixtureProcess
 
 // NewFixtures will give you a Fixtures struct that's properly wired together.
-func NewFixtures(pathToEtcd, pathToAPIServer string) (*Fixtures, error) {
+func NewFixtures(pathToEtcd string) (*Fixtures, error) {
 	etcdConfig, err := NewEtcdConfig()
 	if err != nil {
 		return nil, err
@@ -48,7 +48,7 @@ func NewFixtures(pathToEtcd, pathToAPIServer string) (*Fixtures, error) {
 
 	fixtures := &Fixtures{
 		Etcd:      NewEtcdWithBinaryAndConfig(pathToEtcd, etcdConfig),
-		APIServer: NewAPIServerWithBinary(pathToAPIServer, apiServerConfig),
+		APIServer: NewAPIServer(apiServerConfig),
 	}
 
 	fixtures.Config = FixturesConfig{

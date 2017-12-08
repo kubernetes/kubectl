@@ -20,7 +20,7 @@ var _ = Describe("NewAPIServer", func() {
 			APIServerURL: "some APIServer URL",
 		}
 		apiServerBinPathFinder = func(name string) string {
-			Expect(name).To(Equal("kube_apiserver"))
+			Expect(name).To(Equal("kube-apiserver"))
 			return "some api server path"
 		}
 

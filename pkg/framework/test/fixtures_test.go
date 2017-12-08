@@ -12,10 +12,9 @@ import (
 
 var _ = Describe("Fixtures", func() {
 	It("can construct a properly wired Fixtures struct", func() {
-		f, err := NewFixtures("path to etcd", "path to apiserver")
+		f, err := NewFixtures("path to etcd")
 		Expect(err).NotTo(HaveOccurred())
 		Expect(f.Etcd.(*Etcd).Path).To(Equal("path to etcd"))
-		Expect(f.APIServer.(*APIServer).Path).To(Equal("path to apiserver"))
 	})
 
 	Context("with a properly configured set of Fixtures", func() {
