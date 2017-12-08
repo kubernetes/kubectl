@@ -25,10 +25,10 @@ import (
 	utilerrors "k8s.io/apimachinery/pkg/util/errors"
 	"k8s.io/kube-openapi/pkg/util/proto/validation"
 	"k8s.io/kubectl/pkg/openapi"
-	tst "k8s.io/kubectl/pkg/openapi/testing"
+	tst "k8s.io/kubectl/pkg/openapi/openapitest"
 )
 
-var fakeSchema = tst.Fake{Path: filepath.Join("swagger_test.json")}
+var fakeSchema = tst.Fake{Path: filepath.Join("..", "openapitest", "swagger_test.json")}
 
 var _ = Describe("resource validation using OpenAPI Schema", func() {
 	var validator *SchemaValidation

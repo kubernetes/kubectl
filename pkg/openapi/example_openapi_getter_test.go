@@ -20,7 +20,7 @@ import (
 	"fmt"
 
 	"k8s.io/kubectl/pkg/openapi"
-	tst "k8s.io/kubectl/pkg/openapi/testing"
+	tst "k8s.io/kubectl/pkg/openapi/openapitest"
 )
 
 func ExampleGetter_Get() {

@@ -18,24 +18,13 @@ package validation
 
 import (
 	"fmt"
+	"path/filepath"
 
-	"k8s.io/kubectl/pkg/openapi"
+	tst "k8s.io/kubectl/pkg/openapi/openapitest"
 )
 
-func GetResources() (openapi.Resources, error) {
-	schema, err := fakeSchema.OpenAPISchema()
-	if err != nil {
-		return nil, err
-	}
-	return openapi.NewOpenAPIData(schema)
-}
-
 func ExampleSchemaValidation_ValidateBytes() {
-	resources, err := GetResources()
-	if err != nil {
-		return
-	}
-	validator := NewSchemaValidation(resources)
+	validator := NewSchemaValidation(tst.NewFakeResources(filepath.Join("..", "openapitest", "swagger_test.json")))
 
 	dataToValidate := []byte(`
 apiVersion: extensions/v1beta1
@@ -56,7 +45,7 @@ spec:
         name: redis
 `)
 
-	err = validator.ValidateBytes(dataToValidate)
+	err := validator.ValidateBytes(dataToValidate)
 	if err != nil {
 		return
 	}

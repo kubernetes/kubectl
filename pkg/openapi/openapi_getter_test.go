@@ -23,7 +23,7 @@ import (
 	. "github.com/onsi/gomega"
 
 	"k8s.io/kubectl/pkg/openapi"
-	tst "k8s.io/kubectl/pkg/openapi/testing"
+	tst "k8s.io/kubectl/pkg/openapi/openapitest"
 )
 
 var _ = Describe("Getting the Resources", func() {
