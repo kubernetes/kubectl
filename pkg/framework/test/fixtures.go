@@ -32,30 +32,22 @@ type FixtureProcess interface {
 
 // NewFixtures will give you a Fixtures struct that's properly wired together.
 func NewFixtures(pathToEtcd, pathToAPIServer string) (*Fixtures, error) {
-	etcdConfig := &EtcdConfig{}
+	etcdConfig, err := NewEtcdConfig()
+	if err != nil {
+		return nil, err
+	}
+
 	apiServerConfig := &APIServerConfig{}
 
-	if url, err := getHTTPListenURL(); err == nil {
-		etcdConfig.ClientURL = url
-		apiServerConfig.EtcdURL = url
-	} else {
-		return nil, err
-	}
-
-	if url, err := getHTTPListenURL(); err == nil {
-		etcdConfig.PeerURL = url
-	} else {
-		return nil, err
-	}
-
-	if url, err := getHTTPListenURL(); err == nil {
+	if url, urlErr := getHTTPListenURL(); urlErr == nil {
 		apiServerConfig.APIServerURL = url
+		apiServerConfig.EtcdURL = etcdConfig.ClientURL
 	} else {
-		return nil, err
+		return nil, urlErr
 	}
 
 	fixtures := &Fixtures{
-		Etcd:      NewEtcd(pathToEtcd, etcdConfig),
+		Etcd:      NewEtcdWithBinaryAndConfig(pathToEtcd, etcdConfig),
 		APIServer: NewAPIServer(pathToAPIServer, apiServerConfig),
 	}
 
