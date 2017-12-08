@@ -48,7 +48,7 @@ func NewFixtures(pathToEtcd, pathToAPIServer string) (*Fixtures, error) {
 
 	fixtures := &Fixtures{
 		Etcd:      NewEtcdWithBinaryAndConfig(pathToEtcd, etcdConfig),
-		APIServer: NewAPIServer(pathToAPIServer, apiServerConfig),
+		APIServer: NewAPIServerWithBinary(pathToAPIServer, apiServerConfig),
 	}
 
 	fixtures.Config = FixturesConfig{

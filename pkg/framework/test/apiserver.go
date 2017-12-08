@@ -31,8 +31,24 @@ type certDirManager interface {
 
 //go:generate counterfeiter . certDirManager
 
-// NewAPIServer creates a new APIServer Fixture Process
-func NewAPIServer(pathToAPIServer string, config *APIServerConfig) *APIServer {
+var apiServerBinPathFinder = DefaultBinPathFinder
+
+// NewAPIServer constructs a new APIServer with whatever api_server binary it can find.
+func NewAPIServer(config *APIServerConfig) *APIServer {
+	starter := func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
+		return gexec.Start(command, out, err)
+	}
+
+	return &APIServer{
+		Path:           apiServerBinPathFinder("kube_apiserver"),
+		Config:         config,
+		ProcessStarter: starter,
+		CertDirManager: &TempDirManager{},
+	}
+}
+
+// NewAPIServerWithBinary creates a new APIServer Fixture Process
+func NewAPIServerWithBinary(pathToAPIServer string, config *APIServerConfig) *APIServer {
 	starter := func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
 		return gexec.Start(command, out, err)
 	}
