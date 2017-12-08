@@ -4,11 +4,10 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 
-	"testing"
-
 	"os"
-
 	"path/filepath"
+	"runtime"
+	"testing"
 
 	"github.com/onsi/gomega/gexec"
 	"k8s.io/kubectl/pkg/framework/test"
@@ -29,9 +28,25 @@ var _ = BeforeSuite(func() {
 	pathToDemoCommand, err = gexec.Build("k8s.io/kubectl/pkg/framework/test/democli/")
 	Expect(err).NotTo(HaveOccurred())
 
-	assetsDir, ok := os.LookupEnv("KUBE_ASSETS_DIR")
-	Expect(ok).To(BeTrue(), "KUBE_ASSETS_DIR should point to a directory containing etcd and apiserver binaries")
-	fixtures = test.NewFixtures(filepath.Join(assetsDir, "etcd"), filepath.Join(assetsDir, "kube-apiserver"))
+	_, thisFile, _, ok := runtime.Caller(0)
+	Expect(ok).NotTo(BeFalse())
+	defaultAssetsDir := filepath.Clean(filepath.Join(filepath.Dir(thisFile), "..", "..", "assets", "bin"))
+	pathToEtcd := filepath.Join(defaultAssetsDir, "etcd")
+	pathToAPIServer := filepath.Join(defaultAssetsDir, "kube-apiserver")
+
+	if pathToBin, ok := os.LookupEnv("TEST_ETCD_BIN"); ok {
+		pathToEtcd = pathToBin
+	}
+	if pathToBin, ok := os.LookupEnv("TEST_APISERVER_BIN"); ok {
+		pathToAPIServer = pathToBin
+	}
+
+	Expect(pathToEtcd).NotTo(BeEmpty(), "Path to etcd cannot be empty, set $TEST_ETCD_BIN")
+	Expect(pathToAPIServer).NotTo(BeEmpty(), "Path to apiserver cannot be empty, set $TEST_APISERVER_BIN")
+
+	fixtures, err = test.NewFixtures(pathToEtcd, pathToAPIServer)
+	Expect(err).NotTo(HaveOccurred())
+
 	err = fixtures.Start()
 	Expect(err).NotTo(HaveOccurred())
 })

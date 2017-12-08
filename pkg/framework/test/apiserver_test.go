@@ -20,16 +20,21 @@ var _ = Describe("Apiserver", func() {
 		fakeSession        *testfakes.FakeSimpleSession
 		fakeCertDirManager *testfakes.FakeCertDirManager
 		apiServer          *APIServer
+		apiServerConfig    *APIServerConfig
 	)
 
 	BeforeEach(func() {
 		fakeSession = &testfakes.FakeSimpleSession{}
 		fakeCertDirManager = &testfakes.FakeCertDirManager{}
 
+		apiServerConfig = &APIServerConfig{
+			EtcdURL:      "http://this.is.etcd:2345/",
+			APIServerURL: "http://this.is.the.API.server:8080",
+		}
 		apiServer = &APIServer{
 			Path:           "",
-			EtcdURL:        "the etcd url",
 			CertDirManager: fakeCertDirManager,
+			Config:         apiServerConfig,
 		}
 	})
 
@@ -43,7 +48,7 @@ var _ = Describe("Apiserver", func() {
 			fakeSession.ExitCodeReturnsOnCall(1, 143)
 
 			apiServer.ProcessStarter = func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
-				fmt.Fprint(err, "Serving insecurely on 127.0.0.1:8080")
+				fmt.Fprint(err, "Serving insecurely on this.is.the.API.server:8080")
 				return fakeSession, nil
 			}
 
