@@ -32,30 +32,22 @@ type FixtureProcess interface {
 
 // NewFixtures will give you a Fixtures struct that's properly wired together.
 func NewFixtures(pathToEtcd, pathToAPIServer string) (*Fixtures, error) {
-	etcdConfig := &EtcdConfig{}
+	etcdConfig, err := NewEtcdConfig()
+	if err != nil {
+		return nil, err
+	}
+
 	apiServerConfig := &APIServerConfig{}
 
-	if url, err := getHTTPListenURL(); err == nil {
-		etcdConfig.ClientURL = url
-		apiServerConfig.EtcdURL = url
-	} else {
-		return nil, err
-	}
-
-	if url, err := getHTTPListenURL(); err == nil {
-		etcdConfig.PeerURL = url
-	} else {
-		return nil, err
-	}
-
-	if url, err := getHTTPListenURL(); err == nil {
+	if url, urlErr := getHTTPListenURL(); urlErr == nil {
 		apiServerConfig.APIServerURL = url
+		apiServerConfig.EtcdURL = etcdConfig.ClientURL
 	} else {
-		return nil, err
+		return nil, urlErr
 	}
 
 	fixtures := &Fixtures{
-		Etcd:      NewEtcd(pathToEtcd, etcdConfig),
+		Etcd:      NewEtcdWithBinaryAndConfig(pathToEtcd, etcdConfig),
 		APIServer: NewAPIServer(pathToAPIServer, apiServerConfig),
 	}
 
@@ -106,15 +98,20 @@ func getHTTPListenURL() (url string, err error) {
 	return fmt.Sprintf("http://%s:%d", host, port), nil
 }
 
-func getFreePort(host string) (int, error) {
-	addr, err := net.ResolveTCPAddr("tcp", fmt.Sprintf("%s:0", host))
+func getFreePort(host string) (port int, err error) {
+	var addr *net.TCPAddr
+	addr, err = net.ResolveTCPAddr("tcp", fmt.Sprintf("%s:0", host))
 	if err != nil {
-		return 0, err
+		return
 	}
-	l, err := net.ListenTCP("tcp", addr)
+	var l *net.TCPListener
+	l, err = net.ListenTCP("tcp", addr)
 	if err != nil {
-		return 0, err
+		return
 	}
-	defer l.Close()
+	defer func() {
+		err = l.Close()
+	}()
+
 	return l.Addr().(*net.TCPAddr).Port, nil
 }

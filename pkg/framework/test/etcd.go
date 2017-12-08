@@ -43,8 +43,29 @@ type SimpleSession interface {
 
 type simpleSessionStarter func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error)
 
-// NewEtcd constructs an Etcd Fixture Process
-func NewEtcd(pathToEtcd string, config *EtcdConfig) *Etcd {
+var etcdBinPathFinder = DefaultBinPathFinder
+
+// NewEtcd returns a Etcd process configured with sane defaults
+func NewEtcd() (*Etcd, error) {
+	starter := func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
+		return gexec.Start(command, out, err)
+	}
+
+	config, err := NewEtcdConfig()
+	if err != nil {
+		return nil, err
+	}
+
+	return &Etcd{
+		Path:           etcdBinPathFinder("etcd"),
+		ProcessStarter: starter,
+		DataDirManager: NewTempDirManager(),
+		Config:         config,
+	}, nil
+}
+
+// NewEtcdWithBinaryAndConfig returns a Etcd process, using the handed in binary and config.
+func NewEtcdWithBinaryAndConfig(pathToEtcd string, config *EtcdConfig) *Etcd {
 	starter := func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
 		return gexec.Start(command, out, err)
 	}
