@@ -14,8 +14,23 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-// +k8s:deepcopy-gen=package,register
-// +k8s:openapi-gen=false
+package explain
 
-// +groupName=admission.k8s.io
-package v1alpha1 // import "k8s.io/api/admission/v1alpha1"
+// fieldsPrinterBuilder builds either a regularFieldsPrinter or a
+// recursiveFieldsPrinter based on the argument.
+type fieldsPrinterBuilder struct {
+	Recursive bool
+}
+
+// BuildFieldsPrinter builds the appropriate fieldsPrinter.
+func (f fieldsPrinterBuilder) BuildFieldsPrinter(writer *Formatter) fieldsPrinter {
+	if f.Recursive {
+		return &recursiveFieldsPrinter{
+			Writer: writer,
+		}
+	}
+
+	return &regularFieldsPrinter{
+		Writer: writer,
+	}
+}
