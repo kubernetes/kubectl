@@ -25,10 +25,10 @@ import (
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/kube-openapi/pkg/util/proto"
 	"k8s.io/kubectl/pkg/openapi"
-	tst "k8s.io/kubectl/pkg/openapi/testing"
+	tst "k8s.io/kubectl/pkg/openapi/openapitest"
 )
 
-var fakeSchema = tst.Fake{Path: filepath.Join("testing", "swagger_test.json")}
+var fakeSchema = tst.Fake{Path: filepath.Join("openapitest", "swagger_test.json")}
 
 var _ = Describe("Reading apps/v1beta1/Deployment from openAPIData", func() {
 	var resources openapi.Resources
