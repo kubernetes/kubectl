@@ -49,5 +49,18 @@ var _ = Describe("DefaultBinPathFinder", func() {
 			binPath := DefaultBinPathFinder("another_symbolic_name")
 			Expect(binPath).To(Equal("/path/to/some_bin.exe"))
 		})
+
+		It("sanitizes the environment variable name", func() {
+			By("cleaning all non-underscore punctuation")
+			binPath := DefaultBinPathFinder("another-symbolic name")
+			Expect(binPath).To(Equal("/path/to/some_bin.exe"))
+			binPath = DefaultBinPathFinder("another+symbolic\\name")
+			Expect(binPath).To(Equal("/path/to/some_bin.exe"))
+			binPath = DefaultBinPathFinder("another=symbolic.name")
+			Expect(binPath).To(Equal("/path/to/some_bin.exe"))
+			By("removing numbers from the beginning of the name")
+			binPath = DefaultBinPathFinder("12another_symbolic_name")
+			Expect(binPath).To(Equal("/path/to/some_bin.exe"))
+		})
 	})
 })

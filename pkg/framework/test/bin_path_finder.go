@@ -3,6 +3,7 @@ package test
 import (
 	"os"
 	"path/filepath"
+	"regexp"
 	"runtime"
 	"strings"
 )
@@ -25,7 +26,11 @@ type BinPathFinder func(symbolicName string) (binPath string)
 // variable, derived from the symbolic name, and falls back to a default assets location when
 // this variable is not set
 func DefaultBinPathFinder(symbolicName string) (binPath string) {
-	envVar := "TEST_ASSET_" + strings.ToUpper(symbolicName)
+	punctuationPattern := regexp.MustCompile("[^A-Z0-9]+")
+	sanitizedName := punctuationPattern.ReplaceAllString(strings.ToUpper(symbolicName), "_")
+	leadingNumberPattern := regexp.MustCompile("^[0-9]+")
+	sanitizedName = leadingNumberPattern.ReplaceAllString(sanitizedName, "")
+	envVar := "TEST_ASSET_" + sanitizedName
 
 	if val, ok := os.LookupEnv(envVar); ok {
 		return val
