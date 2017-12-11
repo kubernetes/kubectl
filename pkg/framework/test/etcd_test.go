@@ -38,7 +38,7 @@ var _ = Describe("Etcd", func() {
 	})
 
 	It("can be queried for the port it listens on", func() {
-		Expect(etcd.GetURL()).To(Equal("http://this.is.etcd.listening.for.clients:1234"))
+		Expect(etcd.URL()).To(Equal("http://this.is.etcd.listening.for.clients:1234"))
 	})
 
 	Context("when given a path to a binary that runs for a long time", func() {

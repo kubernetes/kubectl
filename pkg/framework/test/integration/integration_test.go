@@ -24,12 +24,10 @@ var _ = Describe("The Testing Framework", func() {
 		err = fixtures.Start()
 		Expect(err).NotTo(HaveOccurred(), "Expected fixtures to start successfully")
 
-		apiServerConf := fixtures.APIServer.(*test.APIServer).Config
-
 		var apiServerURL, etcdClientURL *url.URL
-		etcdClientURL, err = url.Parse(fixtures.APIServer.(*test.APIServer).Etcd.GetURL())
+		etcdClientURL, err = url.Parse(fixtures.APIServer.(*test.APIServer).Etcd.URL())
 		Expect(err).NotTo(HaveOccurred())
-		apiServerURL, err = url.Parse(apiServerConf.APIServerURL)
+		apiServerURL, err = url.Parse(fixtures.APIServerURL())
 		Expect(err).NotTo(HaveOccurred())
 
 		isEtcdListeningForClients := isSomethingListeningOnPort(etcdClientURL.Host)

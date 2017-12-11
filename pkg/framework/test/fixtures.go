@@ -10,13 +10,6 @@ import (
 // Right now, that means Etcd and your APIServer. This is likely to increase in future.
 type Fixtures struct {
 	APIServer FixtureProcess
-	Config    FixturesConfig
-}
-
-// FixturesConfig is a datastructure that exposes configuration that should be used by clients to talk
-// to the fixture processes.
-type FixturesConfig struct {
-	APIServerURL string
 }
 
 // FixtureProcess knows how to start and stop a Fixture processes.
@@ -25,7 +18,7 @@ type FixturesConfig struct {
 type FixtureProcess interface {
 	Start() error
 	Stop()
-	GetURL() string
+	URL() string
 }
 
 //go:generate counterfeiter . FixtureProcess
@@ -47,10 +40,6 @@ func NewFixtures() (*Fixtures, error) {
 
 	fixtures := &Fixtures{
 		APIServer: apiServer,
-	}
-
-	fixtures.Config = FixturesConfig{
-		APIServerURL: apiServerConfig.APIServerURL,
 	}
 
 	return fixtures, nil
@@ -83,6 +72,11 @@ func (f *Fixtures) Start() error {
 func (f *Fixtures) Stop() error {
 	f.APIServer.Stop()
 	return nil
+}
+
+// APIServerURL returns the URL to the APIServer. Clients can use this URL to connect to the APIServer.
+func (f *Fixtures) APIServerURL() string {
+	return f.APIServer.URL()
 }
 
 func getHTTPListenURL() (url string, err error) {

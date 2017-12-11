@@ -54,8 +54,8 @@ func NewAPIServer(config *APIServerConfig) (*APIServer, error) {
 	}, nil
 }
 
-// GetURL returns the URL APIServer is listening on. Clients can use this to connect to APIServer.
-func (s *APIServer) GetURL() string {
+// URL returns the URL APIServer is listening on. Clients can use this to connect to APIServer.
+func (s *APIServer) URL() string {
 	return s.Config.APIServerURL
 }
 
@@ -91,7 +91,7 @@ func (s *APIServer) Start() error {
 		"--admission-control-config-file=",
 		"--bind-address=0.0.0.0",
 		"--storage-backend=etcd3",
-		fmt.Sprintf("--etcd-servers=%s", s.Etcd.GetURL()),
+		fmt.Sprintf("--etcd-servers=%s", s.Etcd.URL()),
 		fmt.Sprintf("--cert-dir=%s", certDir),
 		fmt.Sprintf("--insecure-port=%s", clientURL.Port()),
 		fmt.Sprintf("--insecure-bind-address=%s", clientURL.Hostname()),

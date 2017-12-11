@@ -50,5 +50,12 @@ var _ = Describe("Fixtures", func() {
 			Expect(fakeAPIServerProcess.StopCallCount()).To(Equal(1))
 		})
 
+		It("can be queried for the APIServer URL", func() {
+			fakeAPIServerProcess.URLReturns("some url to the apiserver")
+
+			url := fixtures.APIServerURL()
+			Expect(url).To(Equal("some url to the apiserver"))
+		})
+
 	})
 })

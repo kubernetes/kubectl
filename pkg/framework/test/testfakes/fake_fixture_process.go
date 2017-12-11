@@ -17,16 +17,16 @@ type FakeFixtureProcess struct {
 	startReturnsOnCall map[int]struct {
 		result1 error
 	}
-	StopStub          func()
-	stopMutex         sync.RWMutex
-	stopArgsForCall   []struct{}
-	GetURLStub        func() string
-	getURLMutex       sync.RWMutex
-	getURLArgsForCall []struct{}
-	getURLReturns     struct {
+	StopStub        func()
+	stopMutex       sync.RWMutex
+	stopArgsForCall []struct{}
+	URLStub         func() string
+	uRLMutex        sync.RWMutex
+	uRLArgsForCall  []struct{}
+	uRLReturns      struct {
 		result1 string
 	}
-	getURLReturnsOnCall map[int]struct {
+	uRLReturnsOnCall map[int]struct {
 		result1 string
 	}
 	invocations      map[string][][]interface{}
@@ -89,42 +89,42 @@ func (fake *FakeFixtureProcess) StopCallCount() int {
 	return len(fake.stopArgsForCall)
 }
 
-func (fake *FakeFixtureProcess) GetURL() string {
-	fake.getURLMutex.Lock()
-	ret, specificReturn := fake.getURLReturnsOnCall[len(fake.getURLArgsForCall)]
-	fake.getURLArgsForCall = append(fake.getURLArgsForCall, struct{}{})
-	fake.recordInvocation("GetURL", []interface{}{})
-	fake.getURLMutex.Unlock()
-	if fake.GetURLStub != nil {
-		return fake.GetURLStub()
+func (fake *FakeFixtureProcess) URL() string {
+	fake.uRLMutex.Lock()
+	ret, specificReturn := fake.uRLReturnsOnCall[len(fake.uRLArgsForCall)]
+	fake.uRLArgsForCall = append(fake.uRLArgsForCall, struct{}{})
+	fake.recordInvocation("URL", []interface{}{})
+	fake.uRLMutex.Unlock()
+	if fake.URLStub != nil {
+		return fake.URLStub()
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	return fake.getURLReturns.result1
+	return fake.uRLReturns.result1
 }
 
-func (fake *FakeFixtureProcess) GetURLCallCount() int {
-	fake.getURLMutex.RLock()
-	defer fake.getURLMutex.RUnlock()
-	return len(fake.getURLArgsForCall)
+func (fake *FakeFixtureProcess) URLCallCount() int {
+	fake.uRLMutex.RLock()
+	defer fake.uRLMutex.RUnlock()
+	return len(fake.uRLArgsForCall)
 }
 
-func (fake *FakeFixtureProcess) GetURLReturns(result1 string) {
-	fake.GetURLStub = nil
-	fake.getURLReturns = struct {
+func (fake *FakeFixtureProcess) URLReturns(result1 string) {
+	fake.URLStub = nil
+	fake.uRLReturns = struct {
 		result1 string
 	}{result1}
 }
 
-func (fake *FakeFixtureProcess) GetURLReturnsOnCall(i int, result1 string) {
-	fake.GetURLStub = nil
-	if fake.getURLReturnsOnCall == nil {
-		fake.getURLReturnsOnCall = make(map[int]struct {
+func (fake *FakeFixtureProcess) URLReturnsOnCall(i int, result1 string) {
+	fake.URLStub = nil
+	if fake.uRLReturnsOnCall == nil {
+		fake.uRLReturnsOnCall = make(map[int]struct {
 			result1 string
 		})
 	}
-	fake.getURLReturnsOnCall[i] = struct {
+	fake.uRLReturnsOnCall[i] = struct {
 		result1 string
 	}{result1}
 }
@@ -136,8 +136,8 @@ func (fake *FakeFixtureProcess) Invocations() map[string][][]interface{} {
 	defer fake.startMutex.RUnlock()
 	fake.stopMutex.RLock()
 	defer fake.stopMutex.RUnlock()
-	fake.getURLMutex.RLock()
-	defer fake.getURLMutex.RUnlock()
+	fake.uRLMutex.RLock()
+	defer fake.uRLMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
 	for key, value := range fake.invocations {
 		copiedInvocations[key] = value

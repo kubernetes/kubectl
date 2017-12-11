@@ -41,7 +41,7 @@ var _ = Describe("Apiserver", func() {
 	})
 
 	It("can be queried for the URL it listens on", func() {
-		Expect(apiServer.GetURL()).To(Equal("http://this.is.the.API.server:8080"))
+		Expect(apiServer.URL()).To(Equal("http://this.is.the.API.server:8080"))
 	})
 
 	Context("when given a path to a binary that runs for a long time", func() {
