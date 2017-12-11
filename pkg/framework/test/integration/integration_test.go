@@ -17,7 +17,7 @@ var _ = Describe("The Testing Framework", func() {
 		var err error
 		var fixtures *test.Fixtures
 
-		fixtures, err = test.NewFixtures(defaultPathToEtcd)
+		fixtures, err = test.NewFixtures()
 		Expect(err).NotTo(HaveOccurred())
 
 		By("Starting all the fixture processes")
@@ -56,7 +56,7 @@ var _ = Describe("The Testing Framework", func() {
 
 	Measure("It should be fast to bring up and tear down the fixtures", func(b Benchmarker) {
 		b.Time("lifecycle", func() {
-			fixtures, err := test.NewFixtures(defaultPathToEtcd)
+			fixtures, err := test.NewFixtures()
 			Expect(err).NotTo(HaveOccurred())
 
 			fixtures.Start()

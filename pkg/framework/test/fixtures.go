@@ -31,7 +31,7 @@ type FixtureProcess interface {
 //go:generate counterfeiter . FixtureProcess
 
 // NewFixtures will give you a Fixtures struct that's properly wired together.
-func NewFixtures(pathToEtcd string) (*Fixtures, error) {
+func NewFixtures() (*Fixtures, error) {
 	apiServerConfig := &APIServerConfig{}
 
 	if url, urlErr := getHTTPListenURL(); urlErr == nil {

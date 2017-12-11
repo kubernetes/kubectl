@@ -12,7 +12,7 @@ import (
 
 var _ = Describe("Fixtures", func() {
 	It("can construct a properly wired Fixtures struct", func() {
-		_, err := NewFixtures("path to etcd")
+		_, err := NewFixtures()
 		Expect(err).NotTo(HaveOccurred())
 	})
 
