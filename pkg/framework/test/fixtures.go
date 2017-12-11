@@ -9,7 +9,6 @@ import (
 //
 // Right now, that means Etcd and your APIServer. This is likely to increase in future.
 type Fixtures struct {
-	Etcd      FixtureProcess
 	APIServer FixtureProcess
 	Config    FixturesConfig
 }
@@ -26,29 +25,28 @@ type FixturesConfig struct {
 type FixtureProcess interface {
 	Start() error
 	Stop()
+	GetURL() string
 }
 
 //go:generate counterfeiter . FixtureProcess
 
 // NewFixtures will give you a Fixtures struct that's properly wired together.
 func NewFixtures(pathToEtcd string) (*Fixtures, error) {
-	etcdConfig, err := NewEtcdConfig()
-	if err != nil {
-		return nil, err
-	}
-
 	apiServerConfig := &APIServerConfig{}
 
 	if url, urlErr := getHTTPListenURL(); urlErr == nil {
 		apiServerConfig.APIServerURL = url
-		apiServerConfig.EtcdURL = etcdConfig.ClientURL
 	} else {
 		return nil, urlErr
 	}
 
+	apiServer, err := NewAPIServer(apiServerConfig)
+	if err != nil {
+		return nil, err
+	}
+
 	fixtures := &Fixtures{
-		Etcd:      NewEtcdWithBinaryAndConfig(pathToEtcd, etcdConfig),
-		APIServer: NewAPIServer(apiServerConfig),
+		APIServer: apiServer,
 	}
 
 	fixtures.Config = FixturesConfig{
@@ -65,7 +63,6 @@ func (f *Fixtures) Start() error {
 		started <- process.Start()
 	}
 	processes := []FixtureProcess{
-		f.Etcd,
 		f.APIServer,
 	}
 
@@ -85,7 +82,6 @@ func (f *Fixtures) Start() error {
 // Stop will stop all your fixtures, and clean up their data.
 func (f *Fixtures) Stop() error {
 	f.APIServer.Stop()
-	f.Etcd.Stop()
 	return nil
 }
 

@@ -12,22 +12,18 @@ import (
 
 var _ = Describe("Fixtures", func() {
 	It("can construct a properly wired Fixtures struct", func() {
-		f, err := NewFixtures("path to etcd")
+		_, err := NewFixtures("path to etcd")
 		Expect(err).NotTo(HaveOccurred())
-		Expect(f.Etcd.(*Etcd).Path).To(Equal("path to etcd"))
 	})
 
 	Context("with a properly configured set of Fixtures", func() {
 		var (
-			fakeEtcdProcess      *testfakes.FakeFixtureProcess
 			fakeAPIServerProcess *testfakes.FakeFixtureProcess
 			fixtures             Fixtures
 		)
 		BeforeEach(func() {
-			fakeEtcdProcess = &testfakes.FakeFixtureProcess{}
 			fakeAPIServerProcess = &testfakes.FakeFixtureProcess{}
 			fixtures = Fixtures{
-				Etcd:      fakeEtcdProcess,
 				APIServer: fakeAPIServerProcess,
 			}
 		})
@@ -36,21 +32,9 @@ var _ = Describe("Fixtures", func() {
 			err := fixtures.Start()
 			Expect(err).NotTo(HaveOccurred())
 
-			By("starting Etcd")
-			Expect(fakeEtcdProcess.StartCallCount()).To(Equal(1),
-				"the Etcd process should be started exactly once")
-
 			By("starting APIServer")
 			Expect(fakeAPIServerProcess.StartCallCount()).To(Equal(1),
 				"the APIServer process should be started exactly once")
-		})
-
-		Context("when starting etcd fails", func() {
-			It("wraps the error", func() {
-				fakeEtcdProcess.StartReturns(fmt.Errorf("some error"))
-				err := fixtures.Start()
-				Expect(err).To(MatchError(ContainSubstring("some error")))
-			})
 		})
 
 		Context("when starting APIServer fails", func() {
@@ -63,7 +47,6 @@ var _ = Describe("Fixtures", func() {
 
 		It("can can clean up the temporary directory and stop", func() {
 			fixtures.Stop()
-			Expect(fakeEtcdProcess.StopCallCount()).To(Equal(1))
 			Expect(fakeAPIServerProcess.StopCallCount()).To(Equal(1))
 		})
 

@@ -24,12 +24,14 @@ var _ = Describe("NewAPIServer", func() {
 			return "some api server path"
 		}
 
-		apiServer := NewAPIServer(config)
+		apiServer, err := NewAPIServer(config)
 
+		Expect(err).NotTo(HaveOccurred())
 		Expect(apiServer).NotTo(BeNil())
 		Expect(apiServer.ProcessStarter).NotTo(BeNil())
 		Expect(apiServer.CertDirManager).NotTo(BeNil())
 		Expect(apiServer.Path).To(Equal("some api server path"))
+		Expect(apiServer.Etcd).NotTo(BeNil())
 		Expect(apiServer.Config).To(Equal(config))
 	})
 })

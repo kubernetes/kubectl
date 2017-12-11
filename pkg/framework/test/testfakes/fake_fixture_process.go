@@ -17,9 +17,18 @@ type FakeFixtureProcess struct {
 	startReturnsOnCall map[int]struct {
 		result1 error
 	}
-	StopStub         func()
-	stopMutex        sync.RWMutex
-	stopArgsForCall  []struct{}
+	StopStub          func()
+	stopMutex         sync.RWMutex
+	stopArgsForCall   []struct{}
+	GetURLStub        func() string
+	getURLMutex       sync.RWMutex
+	getURLArgsForCall []struct{}
+	getURLReturns     struct {
+		result1 string
+	}
+	getURLReturnsOnCall map[int]struct {
+		result1 string
+	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
 }
@@ -80,6 +89,46 @@ func (fake *FakeFixtureProcess) StopCallCount() int {
 	return len(fake.stopArgsForCall)
 }
 
+func (fake *FakeFixtureProcess) GetURL() string {
+	fake.getURLMutex.Lock()
+	ret, specificReturn := fake.getURLReturnsOnCall[len(fake.getURLArgsForCall)]
+	fake.getURLArgsForCall = append(fake.getURLArgsForCall, struct{}{})
+	fake.recordInvocation("GetURL", []interface{}{})
+	fake.getURLMutex.Unlock()
+	if fake.GetURLStub != nil {
+		return fake.GetURLStub()
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	return fake.getURLReturns.result1
+}
+
+func (fake *FakeFixtureProcess) GetURLCallCount() int {
+	fake.getURLMutex.RLock()
+	defer fake.getURLMutex.RUnlock()
+	return len(fake.getURLArgsForCall)
+}
+
+func (fake *FakeFixtureProcess) GetURLReturns(result1 string) {
+	fake.GetURLStub = nil
+	fake.getURLReturns = struct {
+		result1 string
+	}{result1}
+}
+
+func (fake *FakeFixtureProcess) GetURLReturnsOnCall(i int, result1 string) {
+	fake.GetURLStub = nil
+	if fake.getURLReturnsOnCall == nil {
+		fake.getURLReturnsOnCall = make(map[int]struct {
+			result1 string
+		})
+	}
+	fake.getURLReturnsOnCall[i] = struct {
+		result1 string
+	}{result1}
+}
+
 func (fake *FakeFixtureProcess) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
@@ -87,6 +136,8 @@ func (fake *FakeFixtureProcess) Invocations() map[string][][]interface{} {
 	defer fake.startMutex.RUnlock()
 	fake.stopMutex.RLock()
 	defer fake.stopMutex.RUnlock()
+	fake.getURLMutex.RLock()
+	defer fake.getURLMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
 	for key, value := range fake.invocations {
 		copiedInvocations[key] = value

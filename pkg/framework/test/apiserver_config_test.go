@@ -21,7 +21,6 @@ var _ = Describe("APIServerConfig", func() {
 		conf := &APIServerConfig{}
 		err := conf.Validate()
 		Expect(err).To(MatchError(ContainSubstring("APIServerURL: non zero value required")))
-		Expect(err).To(MatchError(ContainSubstring("EtcdURL: non zero value required")))
 	})
 
 	It("errors on malformed URLs", func() {
@@ -31,6 +30,5 @@ var _ = Describe("APIServerConfig", func() {
 		}
 		err := conf.Validate()
 		Expect(err).To(MatchError(ContainSubstring("APIServerURL: something not URLish does not validate as url")))
-		Expect(err).To(MatchError(ContainSubstring("EtcdURL: something not URLesc does not validate as url")))
 	})
 })

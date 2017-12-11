@@ -4,7 +4,7 @@ import "github.com/asaskevich/govalidator"
 
 // APIServerConfig is a struct holding data to configure the API Server process
 type APIServerConfig struct {
-	EtcdURL      string `valid:"required,url"`
+	EtcdURL      string `valid:"url"`
 	APIServerURL string `valid:"required,url"`
 }
 

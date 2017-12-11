@@ -80,6 +80,11 @@ func NewEtcdWithBinaryAndConfig(pathToEtcd string, config *EtcdConfig) *Etcd {
 	return etcd
 }
 
+// GetURL returns the URL Etcd is listening on. Clients can use this to connect to Etcd.
+func (e *Etcd) GetURL() string {
+	return e.Config.ClientURL
+}
+
 // Start starts the etcd, waits for it to come up, and returns an error, if occoured.
 func (e *Etcd) Start() error {
 	if err := e.Config.Validate(); err != nil {
