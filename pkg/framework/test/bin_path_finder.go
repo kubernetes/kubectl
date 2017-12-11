@@ -22,6 +22,8 @@ func init() {
 // a resolvable path to the binary in question
 type BinPathFinder func(symbolicName string) (binPath string)
 
+//go:generate counterfeiter . BinPathFinder
+
 // DefaultBinPathFinder is an implementation of BinPathFinder which checks the an environment
 // variable, derived from the symbolic name, and falls back to a default assets location when
 // this variable is not set
