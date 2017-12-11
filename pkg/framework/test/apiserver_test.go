@@ -30,7 +30,6 @@ var _ = Describe("Apiserver", func() {
 		fakeEtcdProcess = &testfakes.FakeFixtureProcess{}
 
 		apiServerConfig = &APIServerConfig{
-			EtcdURL:      "http://this.is.etcd:2345/",
 			APIServerURL: "http://this.is.the.API.server:8080",
 		}
 		apiServer = &APIServer{

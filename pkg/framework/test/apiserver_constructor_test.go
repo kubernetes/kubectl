@@ -16,7 +16,6 @@ var _ = Describe("NewAPIServer", func() {
 
 	It("can construct a properly configured APIServer", func() {
 		config := &APIServerConfig{
-			EtcdURL:      "some etcd URL",
 			APIServerURL: "some APIServer URL",
 		}
 		apiServerBinPathFinder = func(name string) string {

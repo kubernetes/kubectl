@@ -11,7 +11,6 @@ var _ = Describe("APIServerConfig", func() {
 	It("does not error on valid config", func() {
 		conf := &APIServerConfig{
 			APIServerURL: "http://this.is.some.url:1234",
-			EtcdURL:      "http://this.is.another.url/with/a/path/we/dont/care/about",
 		}
 		err := conf.Validate()
 		Expect(err).NotTo(HaveOccurred())
@@ -26,7 +25,6 @@ var _ = Describe("APIServerConfig", func() {
 	It("errors on malformed URLs", func() {
 		conf := &APIServerConfig{
 			APIServerURL: "something not URLish",
-			EtcdURL:      "something not URLesc",
 		}
 		err := conf.Validate()
 		Expect(err).To(MatchError(ContainSubstring("APIServerURL: something not URLish does not validate as url")))
