@@ -17,7 +17,6 @@ type APIServer struct {
 	PathFinder     BinPathFinder
 	ProcessStarter simpleSessionStarter
 	CertDirManager certDirManager
-	Config         *APIServerConfig
 	Etcd           FixtureProcess
 	session        SimpleSession
 	stdOut         *gbytes.Buffer
@@ -32,7 +31,7 @@ type certDirManager interface {
 //go:generate counterfeiter . certDirManager
 
 // NewAPIServer creates a new APIServer Fixture Process
-func NewAPIServer(config *APIServerConfig) (*APIServer, error) {
+func NewAPIServer() (*APIServer, error) {
 	starter := func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
 		return gexec.Start(command, out, err)
 	}
@@ -43,7 +42,6 @@ func NewAPIServer(config *APIServerConfig) (*APIServer, error) {
 	}
 
 	return &APIServer{
-		Config:         config,
 		ProcessStarter: starter,
 		CertDirManager: NewTempDirManager(),
 		Etcd:           etcd,
@@ -51,24 +49,21 @@ func NewAPIServer(config *APIServerConfig) (*APIServer, error) {
 }
 
 // URL returns the URL APIServer is listening on. Clients can use this to connect to APIServer.
-func (s *APIServer) URL() string {
-	// TODO handle errors
-	port, _ := s.AddressManager.Port()
-	host, _ := s.AddressManager.Host()
-	return fmt.Sprintf("http://%s:%d", host, port)
+func (s *APIServer) URL() (string, error) {
+	port, err := s.AddressManager.Port()
+	if err != nil {
+		return "", err
+	}
+	host, err := s.AddressManager.Host()
+	if err != nil {
+		return "", err
+	}
+	return fmt.Sprintf("http://%s:%d", host, port), nil
 }
 
 // Start starts the apiserver, waits for it to come up, and returns an error, if occoured.
 func (s *APIServer) Start() error {
-	if s.PathFinder == nil {
-		s.PathFinder = DefaultBinPathFinder
-	}
-	if s.AddressManager == nil {
-		s.AddressManager = &DefaultAddressManager{}
-	}
-	if err := s.Config.Validate(); err != nil {
-		return err
-	}
+	s.ensureInitialized()
 
 	port, addr, err := s.AddressManager.Initialize("localhost")
 	if err != nil {
@@ -85,8 +80,11 @@ func (s *APIServer) Start() error {
 		return err
 	}
 
-	s.stdOut = gbytes.NewBuffer()
-	s.stdErr = gbytes.NewBuffer()
+	etcdURLString, err := s.Etcd.URL()
+	if err != nil {
+		s.Etcd.Stop()
+		return err
+	}
 
 	args := []string{
 		"--authorization-mode=Node,RBAC",
@@ -96,7 +94,7 @@ func (s *APIServer) Start() error {
 		"--admission-control-config-file=",
 		"--bind-address=0.0.0.0",
 		"--storage-backend=etcd3",
-		fmt.Sprintf("--etcd-servers=%s", s.Etcd.URL()),
+		fmt.Sprintf("--etcd-servers=%s", etcdURLString),
 		fmt.Sprintf("--cert-dir=%s", certDir),
 		fmt.Sprintf("--insecure-port=%d", port),
 		fmt.Sprintf("--insecure-bind-address=%s", addr),
@@ -117,6 +115,18 @@ func (s *APIServer) Start() error {
 	case <-timedOut:
 		return fmt.Errorf("timeout waiting for apiserver to start serving")
 	}
+}
+
+func (s *APIServer) ensureInitialized() {
+	if s.PathFinder == nil {
+		s.PathFinder = DefaultBinPathFinder
+	}
+	if s.AddressManager == nil {
+		s.AddressManager = &DefaultAddressManager{}
+	}
+
+	s.stdOut = gbytes.NewBuffer()
+	s.stdErr = gbytes.NewBuffer()
 }
 
 // Stop stops this process gracefully, waits for its termination, and cleans up the cert directory.

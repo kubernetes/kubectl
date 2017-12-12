@@ -62,8 +62,8 @@ func NewEtcd() (*Etcd, error) {
 }
 
 // URL returns the URL Etcd is listening on. Clients can use this to connect to Etcd.
-func (e *Etcd) URL() string {
-	return e.Config.ClientURL
+func (e *Etcd) URL() (string, error) {
+	return e.Config.ClientURL, nil
 }
 
 // Start starts the etcd, waits for it to come up, and returns an error, if occoured.

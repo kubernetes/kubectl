@@ -20,14 +20,16 @@ type FakeFixtureProcess struct {
 	StopStub        func()
 	stopMutex       sync.RWMutex
 	stopArgsForCall []struct{}
-	URLStub         func() string
+	URLStub         func() (string, error)
 	uRLMutex        sync.RWMutex
 	uRLArgsForCall  []struct{}
 	uRLReturns      struct {
 		result1 string
+		result2 error
 	}
 	uRLReturnsOnCall map[int]struct {
 		result1 string
+		result2 error
 	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
@@ -89,7 +91,7 @@ func (fake *FakeFixtureProcess) StopCallCount() int {
 	return len(fake.stopArgsForCall)
 }
 
-func (fake *FakeFixtureProcess) URL() string {
+func (fake *FakeFixtureProcess) URL() (string, error) {
 	fake.uRLMutex.Lock()
 	ret, specificReturn := fake.uRLReturnsOnCall[len(fake.uRLArgsForCall)]
 	fake.uRLArgsForCall = append(fake.uRLArgsForCall, struct{}{})
@@ -99,9 +101,9 @@ func (fake *FakeFixtureProcess) URL() string {
 		return fake.URLStub()
 	}
 	if specificReturn {
-		return ret.result1
+		return ret.result1, ret.result2
 	}
-	return fake.uRLReturns.result1
+	return fake.uRLReturns.result1, fake.uRLReturns.result2
 }
 
 func (fake *FakeFixtureProcess) URLCallCount() int {
@@ -110,23 +112,26 @@ func (fake *FakeFixtureProcess) URLCallCount() int {
 	return len(fake.uRLArgsForCall)
 }
 
-func (fake *FakeFixtureProcess) URLReturns(result1 string) {
+func (fake *FakeFixtureProcess) URLReturns(result1 string, result2 error) {
 	fake.URLStub = nil
 	fake.uRLReturns = struct {
 		result1 string
-	}{result1}
+		result2 error
+	}{result1, result2}
 }
 
-func (fake *FakeFixtureProcess) URLReturnsOnCall(i int, result1 string) {
+func (fake *FakeFixtureProcess) URLReturnsOnCall(i int, result1 string, result2 error) {
 	fake.URLStub = nil
 	if fake.uRLReturnsOnCall == nil {
 		fake.uRLReturnsOnCall = make(map[int]struct {
 			result1 string
+			result2 error
 		})
 	}
 	fake.uRLReturnsOnCall[i] = struct {
 		result1 string
-	}{result1}
+		result2 error
+	}{result1, result2}
 }
 
 func (fake *FakeFixtureProcess) Invocations() map[string][][]interface{} {

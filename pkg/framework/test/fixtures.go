@@ -1,10 +1,5 @@
 package test
 
-import (
-	"fmt"
-	"net"
-)
-
 // Fixtures is a struct that knows how to start all your test fixtures.
 //
 // Right now, that means Etcd and your APIServer. This is likely to increase in future.
@@ -17,23 +12,16 @@ type Fixtures struct {
 // and other internals.
 type FixtureProcess interface {
 	Start() error
+	//TODO Stop should return an error
 	Stop()
-	URL() string
+	URL() (string, error)
 }
 
 //go:generate counterfeiter . FixtureProcess
 
 // NewFixtures will give you a Fixtures struct that's properly wired together.
 func NewFixtures() (*Fixtures, error) {
-	apiServerConfig := &APIServerConfig{}
-
-	if url, urlErr := getHTTPListenURL(); urlErr == nil {
-		apiServerConfig.APIServerURL = url
-	} else {
-		return nil, urlErr
-	}
-
-	apiServer, err := NewAPIServer(apiServerConfig)
+	apiServer, err := NewAPIServer()
 	if err != nil {
 		return nil, err
 	}
@@ -75,33 +63,6 @@ func (f *Fixtures) Stop() error {
 }
 
 // APIServerURL returns the URL to the APIServer. Clients can use this URL to connect to the APIServer.
-func (f *Fixtures) APIServerURL() string {
+func (f *Fixtures) APIServerURL() (string, error) {
 	return f.APIServer.URL()
-}
-
-func getHTTPListenURL() (url string, err error) {
-	host := "127.0.0.1"
-	port, err := getFreePort(host)
-	if err != nil {
-		return "", err
-	}
-	return fmt.Sprintf("http://%s:%d", host, port), nil
-}
-
-func getFreePort(host string) (port int, err error) {
-	var addr *net.TCPAddr
-	addr, err = net.ResolveTCPAddr("tcp", fmt.Sprintf("%s:0", host))
-	if err != nil {
-		return
-	}
-	var l *net.TCPListener
-	l, err = net.ListenTCP("tcp", addr)
-	if err != nil {
-		return
-	}
-	defer func() {
-		err = l.Close()
-	}()
-
-	return l.Addr().(*net.TCPAddr).Port, nil
 }

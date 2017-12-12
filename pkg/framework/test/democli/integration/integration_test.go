@@ -21,7 +21,8 @@ var _ = Describe("DemoCLI Integration", func() {
 	})
 
 	It("can get a list of pods", func() {
-		apiURL := fixtures.APIServerURL()
+		apiURL, err := fixtures.APIServerURL()
+		Expect(err).NotTo(HaveOccurred())
 
 		command := exec.Command(pathToDemoCommand, "listPods", "--api-url", apiURL)
 		session, err := gexec.Start(command, GinkgoWriter, GinkgoWriter)
