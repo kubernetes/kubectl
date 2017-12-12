@@ -22,18 +22,20 @@ var _ = Describe("Apiserver", func() {
 		apiServer          *APIServer
 		apiServerConfig    *APIServerConfig
 		fakeEtcdProcess    *testfakes.FakeFixtureProcess
+		fakePathFinder     *testfakes.FakeBinPathFinder
 	)
 
 	BeforeEach(func() {
 		fakeSession = &testfakes.FakeSimpleSession{}
 		fakeCertDirManager = &testfakes.FakeCertDirManager{}
 		fakeEtcdProcess = &testfakes.FakeFixtureProcess{}
+		fakePathFinder = &testfakes.FakeBinPathFinder{}
 
 		apiServerConfig = &APIServerConfig{
 			APIServerURL: "http://this.is.the.API.server:8080",
 		}
 		apiServer = &APIServer{
-			Path:           "",
+			PathFinder:     fakePathFinder.Spy,
 			CertDirManager: fakeCertDirManager,
 			Config:         apiServerConfig,
 			Etcd:           fakeEtcdProcess,
@@ -53,7 +55,10 @@ var _ = Describe("Apiserver", func() {
 			fakeSession.ExitCodeReturnsOnCall(0, -1)
 			fakeSession.ExitCodeReturnsOnCall(1, 143)
 
+			fakePathFinder.Returns("/some/path/to/apiserver")
+
 			apiServer.ProcessStarter = func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
+				Expect(command.Path).To(Equal("/some/path/to/apiserver"))
 				fmt.Fprint(err, "Serving insecurely on this.is.the.API.server:8080")
 				return fakeSession, nil
 			}
@@ -65,6 +70,10 @@ var _ = Describe("Apiserver", func() {
 			By("starting Etcd")
 			Expect(fakeEtcdProcess.StartCallCount()).To(Equal(1),
 				"the Etcd process should be started exactly once")
+
+			By("...in turn calls the PathFinder")
+			Expect(fakePathFinder.CallCount()).To(Equal(1))
+			Expect(fakePathFinder.ArgsForCall(0)).To(Equal("kube-apiserver"))
 
 			Eventually(apiServer).Should(gbytes.Say("Everything is fine"))
 			Expect(fakeSession.ExitCodeCallCount()).To(Equal(0))

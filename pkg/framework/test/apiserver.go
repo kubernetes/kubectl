@@ -14,8 +14,7 @@ import (
 
 // APIServer knows how to run a kubernetes apiserver. Set it up with the path to a precompiled binary.
 type APIServer struct {
-	// The path to the apiserver binary
-	Path           string
+	PathFinder     BinPathFinder
 	ProcessStarter simpleSessionStarter
 	CertDirManager certDirManager
 	Config         *APIServerConfig
@@ -32,8 +31,6 @@ type certDirManager interface {
 
 //go:generate counterfeiter . certDirManager
 
-var apiServerBinPathFinder = DefaultBinPathFinder
-
 // NewAPIServer creates a new APIServer Fixture Process
 func NewAPIServer(config *APIServerConfig) (*APIServer, error) {
 	starter := func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
@@ -46,7 +43,6 @@ func NewAPIServer(config *APIServerConfig) (*APIServer, error) {
 	}
 
 	return &APIServer{
-		Path:           apiServerBinPathFinder("kube-apiserver"),
 		Config:         config,
 		ProcessStarter: starter,
 		CertDirManager: NewTempDirManager(),
@@ -61,6 +57,9 @@ func (s *APIServer) URL() string {
 
 // Start starts the apiserver, waits for it to come up, and returns an error, if occoured.
 func (s *APIServer) Start() error {
+	if s.PathFinder == nil {
+		s.PathFinder = DefaultBinPathFinder
+	}
 	if err := s.Config.Validate(); err != nil {
 		return err
 	}
@@ -100,7 +99,7 @@ func (s *APIServer) Start() error {
 	detectedStart := s.stdErr.Detect(fmt.Sprintf("Serving insecurely on %s", clientURL.Host))
 	timedOut := time.After(20 * time.Second)
 
-	command := exec.Command(s.Path, args...)
+	command := exec.Command(s.PathFinder("kube-apiserver"), args...)
 	s.session, err = s.ProcessStarter(command, s.stdOut, s.stdErr)
 	if err != nil {
 		return err
