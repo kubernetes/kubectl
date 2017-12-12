@@ -3,7 +3,6 @@ package test
 import (
 	"fmt"
 	"io"
-	"net/url"
 	"os/exec"
 	"time"
 
@@ -14,6 +13,7 @@ import (
 
 // APIServer knows how to run a kubernetes apiserver. Set it up with the path to a precompiled binary.
 type APIServer struct {
+	AddressManager AddressManager
 	PathFinder     BinPathFinder
 	ProcessStarter simpleSessionStarter
 	CertDirManager certDirManager
@@ -52,7 +52,10 @@ func NewAPIServer(config *APIServerConfig) (*APIServer, error) {
 
 // URL returns the URL APIServer is listening on. Clients can use this to connect to APIServer.
 func (s *APIServer) URL() string {
-	return s.Config.APIServerURL
+	// TODO handle errors
+	port, _ := s.AddressManager.Port()
+	host, _ := s.AddressManager.Host()
+	return fmt.Sprintf("http://%s:%d", host, port)
 }
 
 // Start starts the apiserver, waits for it to come up, and returns an error, if occoured.
@@ -60,27 +63,30 @@ func (s *APIServer) Start() error {
 	if s.PathFinder == nil {
 		s.PathFinder = DefaultBinPathFinder
 	}
+	if s.AddressManager == nil {
+		s.AddressManager = &DefaultAddressManager{}
+	}
 	if err := s.Config.Validate(); err != nil {
 		return err
 	}
 
-	err := s.Etcd.Start()
+	port, addr, err := s.AddressManager.Initialize("localhost")
 	if err != nil {
 		return err
 	}
-
-	s.stdOut = gbytes.NewBuffer()
-	s.stdErr = gbytes.NewBuffer()
 
 	certDir, err := s.CertDirManager.Create()
 	if err != nil {
 		return err
 	}
 
-	clientURL, err := url.Parse(s.Config.APIServerURL)
+	err = s.Etcd.Start()
 	if err != nil {
 		return err
 	}
+
+	s.stdOut = gbytes.NewBuffer()
+	s.stdErr = gbytes.NewBuffer()
 
 	args := []string{
 		"--authorization-mode=Node,RBAC",
@@ -92,11 +98,11 @@ func (s *APIServer) Start() error {
 		"--storage-backend=etcd3",
 		fmt.Sprintf("--etcd-servers=%s", s.Etcd.URL()),
 		fmt.Sprintf("--cert-dir=%s", certDir),
-		fmt.Sprintf("--insecure-port=%s", clientURL.Port()),
-		fmt.Sprintf("--insecure-bind-address=%s", clientURL.Hostname()),
+		fmt.Sprintf("--insecure-port=%d", port),
+		fmt.Sprintf("--insecure-bind-address=%s", addr),
 	}
 
-	detectedStart := s.stdErr.Detect(fmt.Sprintf("Serving insecurely on %s", clientURL.Host))
+	detectedStart := s.stdErr.Detect(fmt.Sprintf("Serving insecurely on %s:%d", addr, port))
 	timedOut := time.After(20 * time.Second)
 
 	command := exec.Command(s.PathFinder("kube-apiserver"), args...)

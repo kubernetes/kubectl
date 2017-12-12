@@ -16,12 +16,6 @@ var _ = Describe("APIServerConfig", func() {
 		Expect(err).NotTo(HaveOccurred())
 	})
 
-	It("errors on empty config", func() {
-		conf := &APIServerConfig{}
-		err := conf.Validate()
-		Expect(err).To(MatchError(ContainSubstring("APIServerURL: non zero value required")))
-	})
-
 	It("errors on malformed URLs", func() {
 		conf := &APIServerConfig{
 			APIServerURL: "something not URLish",
