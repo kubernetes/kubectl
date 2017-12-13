@@ -76,9 +76,12 @@ var _ = Describe("Apiserver", func() {
 				Expect(fakePathFinder.CallCount()).To(Equal(1))
 				Expect(fakePathFinder.ArgsForCall(0)).To(Equal("kube-apiserver"))
 
-				By("...in turn calling the PortFinder")
+				By("...in turn calling the AddressManager")
 				Expect(fakeAddressManager.InitializeCallCount()).To(Equal(1))
 				Expect(fakeAddressManager.InitializeArgsForCall(0)).To(Equal("localhost"))
+
+				By("...in turn calling the CertDirManager")
+				Expect(fakeCertDirManager.CreateCallCount()).To(Equal(1))
 
 				By("...getting the URL of Etcd")
 				Expect(fakeEtcdProcess.URLCallCount()).To(Equal(1))
@@ -92,6 +95,7 @@ var _ = Describe("Apiserver", func() {
 				By("Stopping the API Server")
 				apiServer.Stop()
 
+				Expect(fakeCertDirManager.DestroyCallCount()).To(Equal(1))
 				Expect(fakeEtcdProcess.StopCallCount()).To(Equal(1))
 				Expect(apiServer).To(gexec.Exit(143))
 				Expect(fakeSession.TerminateCallCount()).To(Equal(1))
@@ -195,7 +199,6 @@ var _ = Describe("Apiserver", func() {
 		})
 
 		Context("when we query for the URL before starting the server", func() {
-
 			Context("and so the addressmanager fails to give us a port", func() {
 				It("propagates the failure", func() {
 					fakeAddressManager.PortReturns(0, fmt.Errorf("boom"))
@@ -203,7 +206,6 @@ var _ = Describe("Apiserver", func() {
 					Expect(err).To(MatchError(ContainSubstring("boom")))
 				})
 			})
-
 			Context("and so the addressmanager fails to give us a host", func() {
 				It("propagates the failure", func() {
 					fakeAddressManager.HostReturns("", fmt.Errorf("biff!"))
@@ -211,7 +213,6 @@ var _ = Describe("Apiserver", func() {
 					Expect(err).To(MatchError(ContainSubstring("biff!")))
 				})
 			})
-
 		})
 	})
 })
