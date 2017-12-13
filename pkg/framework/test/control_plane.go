@@ -27,25 +27,7 @@ func NewControlPlane() *ControlPlane {
 
 // Start will start your control plane. To stop it, call Stop().
 func (f *ControlPlane) Start() error {
-	started := make(chan error)
-	starter := func(process ControlPlaneProcess) {
-		started <- process.Start()
-	}
-	processes := []ControlPlaneProcess{
-		f.APIServer,
-	}
-
-	for _, process := range processes {
-		go starter(process)
-	}
-
-	for range processes {
-		if err := <-started; err != nil {
-			return err
-		}
-	}
-
-	return nil
+	return f.APIServer.Start()
 }
 
 // Stop will stop your control plane, and clean up their data.
