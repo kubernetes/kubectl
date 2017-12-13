@@ -16,7 +16,7 @@ type APIServer struct {
 	PathFinder     BinPathFinder
 	ProcessStarter simpleSessionStarter
 	CertDirManager certDirManager
-	Etcd           FixtureProcess
+	Etcd           ControlPlaneProcess
 	session        SimpleSession
 	stdOut         *gbytes.Buffer
 	stdErr         *gbytes.Buffer
@@ -29,7 +29,7 @@ type certDirManager interface {
 
 //go:generate counterfeiter . certDirManager
 
-// NewAPIServer creates a new APIServer Fixture Process
+// NewAPIServer creates a new APIServer Control Plane Process
 func NewAPIServer() (*APIServer, error) {
 	starter := func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
 		return gexec.Start(command, out, err)

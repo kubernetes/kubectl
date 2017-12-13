@@ -13,23 +13,23 @@ import (
 )
 
 var _ = Describe("The Testing Framework", func() {
-	It("Successfully manages the fixtures lifecycle", func() {
+	It("Successfully manages the control plane lifecycle", func() {
 		var err error
-		var fixtures *test.Fixtures
+		var controlPlane *test.ControlPlane
 
-		fixtures, err = test.NewFixtures()
+		controlPlane, err = test.NewControlPlane()
 		Expect(err).NotTo(HaveOccurred())
 
-		By("Starting all the fixture processes")
-		err = fixtures.Start()
-		Expect(err).NotTo(HaveOccurred(), "Expected fixtures to start successfully")
+		By("Starting all the control plane processes")
+		err = controlPlane.Start()
+		Expect(err).NotTo(HaveOccurred(), "Expected controlPlane to start successfully")
 
 		var apiServerURL, etcdClientURL *url.URL
-		etcdUrlString, err := fixtures.APIServer.(*test.APIServer).Etcd.URL()
+		etcdUrlString, err := controlPlane.APIServer.(*test.APIServer).Etcd.URL()
 		Expect(err).NotTo(HaveOccurred())
 		etcdClientURL, err = url.Parse(etcdUrlString)
 		Expect(err).NotTo(HaveOccurred())
-		urlString, err := fixtures.APIServerURL()
+		urlString, err := controlPlane.APIServerURL()
 		Expect(err).NotTo(HaveOccurred())
 		apiServerURL, err = url.Parse(urlString)
 		Expect(err).NotTo(HaveOccurred())
@@ -45,9 +45,9 @@ var _ = Describe("The Testing Framework", func() {
 		Expect(isAPIServerListening()).To(BeTrue(),
 			fmt.Sprintf("Expected APIServer to listen on %s", apiServerURL.Host))
 
-		By("Stopping all the fixture processes")
-		err = fixtures.Stop()
-		Expect(err).NotTo(HaveOccurred(), "Expected fixtures to stop successfully")
+		By("Stopping all the control plane processes")
+		err = controlPlane.Stop()
+		Expect(err).NotTo(HaveOccurred(), "Expected controlPlane to stop successfully")
 
 		By("Ensuring Etcd is not listening anymore")
 		Expect(isEtcdListeningForClients()).To(BeFalse(), "Expected Etcd not to listen for clients anymore")
@@ -56,13 +56,13 @@ var _ = Describe("The Testing Framework", func() {
 		Expect(isAPIServerListening()).To(BeFalse(), "Expected APIServer not to listen anymore")
 	})
 
-	Measure("It should be fast to bring up and tear down the fixtures", func(b Benchmarker) {
+	Measure("It should be fast to bring up and tear down the control plane", func(b Benchmarker) {
 		b.Time("lifecycle", func() {
-			fixtures, err := test.NewFixtures()
+			controlPlane, err := test.NewControlPlane()
 			Expect(err).NotTo(HaveOccurred())
 
-			fixtures.Start()
-			fixtures.Stop()
+			controlPlane.Start()
+			controlPlane.Stop()
 		})
 	}, 10)
 })

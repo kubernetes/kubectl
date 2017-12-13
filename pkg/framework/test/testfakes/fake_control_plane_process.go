@@ -7,7 +7,7 @@ import (
 	"k8s.io/kubectl/pkg/framework/test"
 )
 
-type FakeFixtureProcess struct {
+type FakeControlPlaneProcess struct {
 	StartStub        func() error
 	startMutex       sync.RWMutex
 	startArgsForCall []struct{}
@@ -41,7 +41,7 @@ type FakeFixtureProcess struct {
 	invocationsMutex sync.RWMutex
 }
 
-func (fake *FakeFixtureProcess) Start() error {
+func (fake *FakeControlPlaneProcess) Start() error {
 	fake.startMutex.Lock()
 	ret, specificReturn := fake.startReturnsOnCall[len(fake.startArgsForCall)]
 	fake.startArgsForCall = append(fake.startArgsForCall, struct{}{})
@@ -56,20 +56,20 @@ func (fake *FakeFixtureProcess) Start() error {
 	return fake.startReturns.result1
 }
 
-func (fake *FakeFixtureProcess) StartCallCount() int {
+func (fake *FakeControlPlaneProcess) StartCallCount() int {
 	fake.startMutex.RLock()
 	defer fake.startMutex.RUnlock()
 	return len(fake.startArgsForCall)
 }
 
-func (fake *FakeFixtureProcess) StartReturns(result1 error) {
+func (fake *FakeControlPlaneProcess) StartReturns(result1 error) {
 	fake.StartStub = nil
 	fake.startReturns = struct {
 		result1 error
 	}{result1}
 }
 
-func (fake *FakeFixtureProcess) StartReturnsOnCall(i int, result1 error) {
+func (fake *FakeControlPlaneProcess) StartReturnsOnCall(i int, result1 error) {
 	fake.StartStub = nil
 	if fake.startReturnsOnCall == nil {
 		fake.startReturnsOnCall = make(map[int]struct {
@@ -81,7 +81,7 @@ func (fake *FakeFixtureProcess) StartReturnsOnCall(i int, result1 error) {
 	}{result1}
 }
 
-func (fake *FakeFixtureProcess) Stop() error {
+func (fake *FakeControlPlaneProcess) Stop() error {
 	fake.stopMutex.Lock()
 	ret, specificReturn := fake.stopReturnsOnCall[len(fake.stopArgsForCall)]
 	fake.stopArgsForCall = append(fake.stopArgsForCall, struct{}{})
@@ -96,20 +96,20 @@ func (fake *FakeFixtureProcess) Stop() error {
 	return fake.stopReturns.result1
 }
 
-func (fake *FakeFixtureProcess) StopCallCount() int {
+func (fake *FakeControlPlaneProcess) StopCallCount() int {
 	fake.stopMutex.RLock()
 	defer fake.stopMutex.RUnlock()
 	return len(fake.stopArgsForCall)
 }
 
-func (fake *FakeFixtureProcess) StopReturns(result1 error) {
+func (fake *FakeControlPlaneProcess) StopReturns(result1 error) {
 	fake.StopStub = nil
 	fake.stopReturns = struct {
 		result1 error
 	}{result1}
 }
 
-func (fake *FakeFixtureProcess) StopReturnsOnCall(i int, result1 error) {
+func (fake *FakeControlPlaneProcess) StopReturnsOnCall(i int, result1 error) {
 	fake.StopStub = nil
 	if fake.stopReturnsOnCall == nil {
 		fake.stopReturnsOnCall = make(map[int]struct {
@@ -121,7 +121,7 @@ func (fake *FakeFixtureProcess) StopReturnsOnCall(i int, result1 error) {
 	}{result1}
 }
 
-func (fake *FakeFixtureProcess) URL() (string, error) {
+func (fake *FakeControlPlaneProcess) URL() (string, error) {
 	fake.uRLMutex.Lock()
 	ret, specificReturn := fake.uRLReturnsOnCall[len(fake.uRLArgsForCall)]
 	fake.uRLArgsForCall = append(fake.uRLArgsForCall, struct{}{})
@@ -136,13 +136,13 @@ func (fake *FakeFixtureProcess) URL() (string, error) {
 	return fake.uRLReturns.result1, fake.uRLReturns.result2
 }
 
-func (fake *FakeFixtureProcess) URLCallCount() int {
+func (fake *FakeControlPlaneProcess) URLCallCount() int {
 	fake.uRLMutex.RLock()
 	defer fake.uRLMutex.RUnlock()
 	return len(fake.uRLArgsForCall)
 }
 
-func (fake *FakeFixtureProcess) URLReturns(result1 string, result2 error) {
+func (fake *FakeControlPlaneProcess) URLReturns(result1 string, result2 error) {
 	fake.URLStub = nil
 	fake.uRLReturns = struct {
 		result1 string
@@ -150,7 +150,7 @@ func (fake *FakeFixtureProcess) URLReturns(result1 string, result2 error) {
 	}{result1, result2}
 }
 
-func (fake *FakeFixtureProcess) URLReturnsOnCall(i int, result1 string, result2 error) {
+func (fake *FakeControlPlaneProcess) URLReturnsOnCall(i int, result1 string, result2 error) {
 	fake.URLStub = nil
 	if fake.uRLReturnsOnCall == nil {
 		fake.uRLReturnsOnCall = make(map[int]struct {
@@ -164,7 +164,7 @@ func (fake *FakeFixtureProcess) URLReturnsOnCall(i int, result1 string, result2 
 	}{result1, result2}
 }
 
-func (fake *FakeFixtureProcess) Invocations() map[string][][]interface{} {
+func (fake *FakeControlPlaneProcess) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
 	fake.startMutex.RLock()
@@ -180,7 +180,7 @@ func (fake *FakeFixtureProcess) Invocations() map[string][][]interface{} {
 	return copiedInvocations
 }
 
-func (fake *FakeFixtureProcess) recordInvocation(key string, args []interface{}) {
+func (fake *FakeControlPlaneProcess) recordInvocation(key string, args []interface{}) {
 	fake.invocationsMutex.Lock()
 	defer fake.invocationsMutex.Unlock()
 	if fake.invocations == nil {
@@ -192,4 +192,4 @@ func (fake *FakeFixtureProcess) recordInvocation(key string, args []interface{})
 	fake.invocations[key] = append(fake.invocations[key], args)
 }
 
-var _ test.FixtureProcess = new(FakeFixtureProcess)
+var _ test.ControlPlaneProcess = new(FakeControlPlaneProcess)

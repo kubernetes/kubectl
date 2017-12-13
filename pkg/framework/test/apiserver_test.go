@@ -20,7 +20,7 @@ var _ = Describe("Apiserver", func() {
 		fakeSession        *testfakes.FakeSimpleSession
 		fakeCertDirManager *testfakes.FakeCertDirManager
 		apiServer          *APIServer
-		fakeEtcdProcess    *testfakes.FakeFixtureProcess
+		fakeEtcdProcess    *testfakes.FakeControlPlaneProcess
 		fakePathFinder     *testfakes.FakeBinPathFinder
 		fakeAddressManager *testfakes.FakeAddressManager
 	)
@@ -28,7 +28,7 @@ var _ = Describe("Apiserver", func() {
 	BeforeEach(func() {
 		fakeSession = &testfakes.FakeSimpleSession{}
 		fakeCertDirManager = &testfakes.FakeCertDirManager{}
-		fakeEtcdProcess = &testfakes.FakeFixtureProcess{}
+		fakeEtcdProcess = &testfakes.FakeControlPlaneProcess{}
 		fakePathFinder = &testfakes.FakeBinPathFinder{}
 		fakeAddressManager = &testfakes.FakeAddressManager{}
 

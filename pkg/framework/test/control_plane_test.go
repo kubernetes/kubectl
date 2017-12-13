@@ -10,26 +10,26 @@ import (
 	"k8s.io/kubectl/pkg/framework/test/testfakes"
 )
 
-var _ = Describe("Fixtures", func() {
-	It("can construct a properly wired Fixtures struct", func() {
-		_, err := NewFixtures()
+var _ = Describe("ControlPlane", func() {
+	It("can construct a properly wired ControlPlane struct", func() {
+		_, err := NewControlPlane()
 		Expect(err).NotTo(HaveOccurred())
 	})
 
-	Context("with a properly configured set of Fixtures", func() {
+	Context("with a properly configured set of ControlPlane", func() {
 		var (
-			fakeAPIServerProcess *testfakes.FakeFixtureProcess
-			fixtures             Fixtures
+			fakeAPIServerProcess *testfakes.FakeControlPlaneProcess
+			controlPlane         ControlPlane
 		)
 		BeforeEach(func() {
-			fakeAPIServerProcess = &testfakes.FakeFixtureProcess{}
-			fixtures = Fixtures{
+			fakeAPIServerProcess = &testfakes.FakeControlPlaneProcess{}
+			controlPlane = ControlPlane{
 				APIServer: fakeAPIServerProcess,
 			}
 		})
 
 		It("can start them", func() {
-			err := fixtures.Start()
+			err := controlPlane.Start()
 			Expect(err).NotTo(HaveOccurred())
 
 			By("starting APIServer")
@@ -40,20 +40,20 @@ var _ = Describe("Fixtures", func() {
 		Context("when starting APIServer fails", func() {
 			It("propagates the error", func() {
 				fakeAPIServerProcess.StartReturns(fmt.Errorf("another error"))
-				err := fixtures.Start()
+				err := controlPlane.Start()
 				Expect(err).To(MatchError(ContainSubstring("another error")))
 			})
 		})
 
 		It("can can clean up the temporary directory and stop", func() {
-			fixtures.Stop()
+			controlPlane.Stop()
 			Expect(fakeAPIServerProcess.StopCallCount()).To(Equal(1))
 		})
 
 		Context("when stopping APIServer fails", func() {
 			It("propagates the error", func() {
 				fakeAPIServerProcess.StopReturns(fmt.Errorf("error on stop"))
-				err := fixtures.Stop()
+				err := controlPlane.Stop()
 				Expect(err).To(MatchError(ContainSubstring("error on stop")))
 			})
 		})
@@ -61,7 +61,7 @@ var _ = Describe("Fixtures", func() {
 		It("can be queried for the APIServer URL", func() {
 			fakeAPIServerProcess.URLReturns("some url to the apiserver", nil)
 
-			url, err := fixtures.APIServerURL()
+			url, err := controlPlane.APIServerURL()
 			Expect(err).NotTo(HaveOccurred())
 			Expect(url).To(Equal("some url to the apiserver"))
 		})
@@ -69,7 +69,7 @@ var _ = Describe("Fixtures", func() {
 		Context("when querying the URL fails", func() {
 			It("propagates the error", func() {
 				fakeAPIServerProcess.URLReturns("", fmt.Errorf("URL error"))
-				_, err := fixtures.APIServerURL()
+				_, err := controlPlane.APIServerURL()
 				Expect(err).To(MatchError(ContainSubstring("URL error")))
 			})
 		})
