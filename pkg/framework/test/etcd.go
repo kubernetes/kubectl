@@ -6,8 +6,6 @@ import (
 	"os/exec"
 	"time"
 
-	"net/url"
-
 	"github.com/onsi/gomega"
 	"github.com/onsi/gomega/gbytes"
 	"github.com/onsi/gomega/gexec"
@@ -15,10 +13,10 @@ import (
 
 // Etcd knows how to run an etcd server. Set it up with the path to a precompiled binary.
 type Etcd struct {
+	AddressManager AddressManager
 	PathFinder     BinPathFinder
 	ProcessStarter simpleSessionStarter
 	DataDirManager dataDirManager
-	Config         *EtcdConfig
 	session        SimpleSession
 	stdOut         *gbytes.Buffer
 	stdErr         *gbytes.Buffer
@@ -49,60 +47,50 @@ func NewEtcd() (*Etcd, error) {
 		return gexec.Start(command, out, err)
 	}
 
-	config, err := NewEtcdConfig()
-	if err != nil {
-		return nil, err
-	}
-
 	return &Etcd{
 		ProcessStarter: starter,
 		DataDirManager: NewTempDirManager(),
-		Config:         config,
 	}, nil
 }
 
 // URL returns the URL Etcd is listening on. Clients can use this to connect to Etcd.
 func (e *Etcd) URL() (string, error) {
-	return e.Config.ClientURL, nil
+	port, err := e.AddressManager.Port()
+	if err != nil {
+		return "", err
+	}
+	host, err := e.AddressManager.Host()
+	if err != nil {
+		return "", err
+	}
+	return fmt.Sprintf("http://%s:%d", host, port), nil
 }
 
 // Start starts the etcd, waits for it to come up, and returns an error, if occoured.
 func (e *Etcd) Start() error {
-	if e.PathFinder == nil {
-		e.PathFinder = DefaultBinPathFinder
-	}
+	e.ensureInitialized()
 
-	if err := e.Config.Validate(); err != nil {
+	port, host, err := e.AddressManager.Initialize("localhost")
+	if err != nil {
 		return err
 	}
-
-	e.stdOut = gbytes.NewBuffer()
-	e.stdErr = gbytes.NewBuffer()
 
 	dataDir, err := e.DataDirManager.Create()
 	if err != nil {
 		return err
 	}
 
+	clientURL := fmt.Sprintf("http://%s:%d", host, port)
 	args := []string{
 		"--debug",
-		"--advertise-client-urls",
-		e.Config.ClientURL,
-		"--listen-client-urls",
-		e.Config.ClientURL,
-		"--listen-peer-urls",
-		e.Config.PeerURL,
-		"--data-dir",
-		dataDir,
-	}
-
-	clientURL, err := url.Parse(e.Config.ClientURL)
-	if err != nil {
-		return err
+		"--listen-peer-urls=http://localhost:0",
+		fmt.Sprintf("--advertise-client-urls=%s", clientURL),
+		fmt.Sprintf("--listen-client-urls=%s", clientURL),
+		fmt.Sprintf("--data-dir=%s", dataDir),
 	}
 
 	detectedStart := e.stdErr.Detect(fmt.Sprintf(
-		"serving insecure client requests on %s", clientURL.Host))
+		"serving insecure client requests on %s", host))
 	timedOut := time.After(20 * time.Second)
 
 	command := exec.Command(e.PathFinder("etcd"), args...)
@@ -117,6 +105,19 @@ func (e *Etcd) Start() error {
 	case <-timedOut:
 		return fmt.Errorf("timeout waiting for etcd to start serving")
 	}
+}
+
+func (e *Etcd) ensureInitialized() {
+	if e.PathFinder == nil {
+		e.PathFinder = DefaultBinPathFinder
+	}
+
+	if e.AddressManager == nil {
+		e.AddressManager = &DefaultAddressManager{}
+	}
+
+	e.stdOut = gbytes.NewBuffer()
+	e.stdErr = gbytes.NewBuffer()
 }
 
 // Stop stops this process gracefully, waits for its termination, and cleans up the data directory.
