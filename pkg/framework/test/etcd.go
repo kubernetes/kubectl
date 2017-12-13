@@ -42,6 +42,9 @@ type simpleSessionStarter func(command *exec.Cmd, out, err io.Writer) (SimpleSes
 
 // URL returns the URL Etcd is listening on. Clients can use this to connect to Etcd.
 func (e *Etcd) URL() (string, error) {
+	if e.AddressManager == nil {
+		return "", fmt.Errorf("Etcd's AddressManager is not initialized")
+	}
 	port, err := e.AddressManager.Port()
 	if err != nil {
 		return "", err

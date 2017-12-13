@@ -163,20 +163,28 @@ var _ = Describe("Etcd", func() {
 			Expect(err).NotTo(HaveOccurred())
 			Expect(apiServerURL).To(Equal("http://the.host.for.etcd:6789"))
 		})
-
-		Context("when we query for the URL before starting the server", func() {
-			Context("and so the addressmanager fails to give us a port", func() {
-				It("propagates the failure", func() {
-					fakeAddressManager.PortReturns(0, fmt.Errorf("zort"))
-					_, err := etcd.URL()
-					Expect(err).To(MatchError(ContainSubstring("zort")))
-				})
+		Context("when the addressmanager fails to give us a port", func() {
+			It("propagates the failure", func() {
+				fakeAddressManager.PortReturns(0, fmt.Errorf("zort"))
+				_, err := etcd.URL()
+				Expect(err).To(MatchError(ContainSubstring("zort")))
 			})
-			Context("and so the addressmanager fails to give us a host", func() {
-				It("propagates the failure", func() {
-					fakeAddressManager.HostReturns("", fmt.Errorf("bam!"))
+		})
+		Context("when the addressmanager fails to give us a host", func() {
+			It("propagates the failure", func() {
+				fakeAddressManager.HostReturns("", fmt.Errorf("bam!"))
+				_, err := etcd.URL()
+				Expect(err).To(MatchError(ContainSubstring("bam!")))
+			})
+		})
+		Context("before starting etcd", func() {
+			Context("and therefore the addressmanager has not been initialized", func() {
+				BeforeEach(func() {
+					etcd = &Etcd{}
+				})
+				It("gives a sane error", func() {
 					_, err := etcd.URL()
-					Expect(err).To(MatchError(ContainSubstring("bam!")))
+					Expect(err).To(MatchError(ContainSubstring("not initialized")))
 				})
 			})
 		})

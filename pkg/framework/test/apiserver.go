@@ -31,6 +31,9 @@ type certDirManager interface {
 
 // URL returns the URL APIServer is listening on. Clients can use this to connect to APIServer.
 func (s *APIServer) URL() (string, error) {
+	if s.AddressManager == nil {
+		return "", fmt.Errorf("APIServer's AddressManager is not initialized")
+	}
 	port, err := s.AddressManager.Port()
 	if err != nil {
 		return "", err

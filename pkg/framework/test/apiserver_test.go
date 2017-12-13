@@ -245,20 +245,28 @@ var _ = Describe("Apiserver", func() {
 			Expect(err).NotTo(HaveOccurred())
 			Expect(apiServerURL).To(Equal("http://the.host.for.api.server:5678"))
 		})
-
-		Context("when we query for the URL before starting the server", func() {
-			Context("and so the addressmanager fails to give us a port", func() {
-				It("propagates the failure", func() {
-					fakeAddressManager.PortReturns(0, fmt.Errorf("boom"))
-					_, err := apiServer.URL()
-					Expect(err).To(MatchError(ContainSubstring("boom")))
-				})
+		Context("and so the addressmanager fails to give us a port", func() {
+			It("propagates the failure", func() {
+				fakeAddressManager.PortReturns(0, fmt.Errorf("boom"))
+				_, err := apiServer.URL()
+				Expect(err).To(MatchError(ContainSubstring("boom")))
 			})
-			Context("and so the addressmanager fails to give us a host", func() {
-				It("propagates the failure", func() {
-					fakeAddressManager.HostReturns("", fmt.Errorf("biff!"))
+		})
+		Context("and so the addressmanager fails to give us a host", func() {
+			It("propagates the failure", func() {
+				fakeAddressManager.HostReturns("", fmt.Errorf("biff!"))
+				_, err := apiServer.URL()
+				Expect(err).To(MatchError(ContainSubstring("biff!")))
+			})
+		})
+		Context("before starting the server", func() {
+			Context("and therefore the addressmanager has not been initialized", func() {
+				BeforeEach(func() {
+					apiServer = &APIServer{}
+				})
+				It("gives a sane error", func() {
 					_, err := apiServer.URL()
-					Expect(err).To(MatchError(ContainSubstring("biff!")))
+					Expect(err).To(MatchError(ContainSubstring("not initialized")))
 				})
 			})
 		})
