@@ -11,11 +11,6 @@ import (
 )
 
 var _ = Describe("ControlPlane", func() {
-	It("can construct a properly wired ControlPlane struct", func() {
-		_, err := NewControlPlane()
-		Expect(err).NotTo(HaveOccurred())
-	})
-
 	Context("with a properly configured set of ControlPlane", func() {
 		var (
 			fakeAPIServerProcess *testfakes.FakeControlPlaneProcess

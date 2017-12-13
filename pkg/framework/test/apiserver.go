@@ -29,24 +29,6 @@ type certDirManager interface {
 
 //go:generate counterfeiter . certDirManager
 
-// NewAPIServer creates a new APIServer Control Plane Process
-func NewAPIServer() (*APIServer, error) {
-	starter := func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
-		return gexec.Start(command, out, err)
-	}
-
-	etcd, err := NewEtcd()
-	if err != nil {
-		return nil, err
-	}
-
-	return &APIServer{
-		ProcessStarter: starter,
-		CertDirManager: NewTempDirManager(),
-		Etcd:           etcd,
-	}, nil
-}
-
 // URL returns the URL APIServer is listening on. Clients can use this to connect to APIServer.
 func (s *APIServer) URL() (string, error) {
 	port, err := s.AddressManager.Port()
@@ -124,6 +106,17 @@ func (s *APIServer) ensureInitialized() {
 	}
 	if s.AddressManager == nil {
 		s.AddressManager = &DefaultAddressManager{}
+	}
+	if s.ProcessStarter == nil {
+		s.ProcessStarter = func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
+			return gexec.Start(command, out, err)
+		}
+	}
+	if s.CertDirManager == nil {
+		s.CertDirManager = NewTempDirManager()
+	}
+	if s.Etcd == nil {
+		s.Etcd = &Etcd{}
 	}
 
 	s.stdOut = gbytes.NewBuffer()

@@ -40,18 +40,6 @@ type SimpleSession interface {
 
 type simpleSessionStarter func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error)
 
-// NewEtcd returns a Etcd process configured with sane defaults
-func NewEtcd() (*Etcd, error) {
-	starter := func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
-		return gexec.Start(command, out, err)
-	}
-
-	return &Etcd{
-		ProcessStarter: starter,
-		DataDirManager: NewTempDirManager(),
-	}, nil
-}
-
 // URL returns the URL Etcd is listening on. Clients can use this to connect to Etcd.
 func (e *Etcd) URL() (string, error) {
 	port, err := e.AddressManager.Port()
@@ -113,6 +101,14 @@ func (e *Etcd) ensureInitialized() {
 
 	if e.AddressManager == nil {
 		e.AddressManager = &DefaultAddressManager{}
+	}
+	if e.ProcessStarter == nil {
+		e.ProcessStarter = func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
+			return gexec.Start(command, out, err)
+		}
+	}
+	if e.DataDirManager == nil {
+		e.DataDirManager = NewTempDirManager()
 	}
 
 	e.stdOut = gbytes.NewBuffer()

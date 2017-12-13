@@ -19,17 +19,10 @@ type ControlPlaneProcess interface {
 //go:generate counterfeiter . ControlPlaneProcess
 
 // NewControlPlane will give you a ControlPlane struct that's properly wired together.
-func NewControlPlane() (*ControlPlane, error) {
-	apiServer, err := NewAPIServer()
-	if err != nil {
-		return nil, err
+func NewControlPlane() *ControlPlane {
+	return &ControlPlane{
+		APIServer: &APIServer{},
 	}
-
-	controlPlane := &ControlPlane{
-		APIServer: apiServer,
-	}
-
-	return controlPlane, nil
 }
 
 // Start will start your control plane. To stop it, call Stop().
