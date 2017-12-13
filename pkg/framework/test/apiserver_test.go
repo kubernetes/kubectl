@@ -105,6 +105,36 @@ var _ = Describe("Apiserver", func() {
 			})
 		})
 
+		Context("when the certificate directory cannot be destroyed", func() {
+			It("propagates the error", func() {
+				fakeCertDirManager.DestroyReturns(fmt.Errorf("destroy failed"))
+				fakeAddressManager.InitializeReturns(1234, "this.is.apiserver", nil)
+				apiServer.ProcessStarter = func(Command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
+					fmt.Fprint(err, "Serving insecurely on this.is.apiserver:1234")
+					return fakeSession, nil
+				}
+
+				Expect(apiServer.Start()).To(Succeed())
+				err := apiServer.Stop()
+				Expect(err).To(MatchError(ContainSubstring("destroy failed")))
+			})
+		})
+
+		Context("when etcd cannot be stopped", func() {
+			It("propagates the error", func() {
+				fakeEtcdProcess.StopReturns(fmt.Errorf("stopping etcd failed"))
+				fakeAddressManager.InitializeReturns(1234, "this.is.apiserver", nil)
+				apiServer.ProcessStarter = func(Command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
+					fmt.Fprint(err, "Serving insecurely on this.is.apiserver:1234")
+					return fakeSession, nil
+				}
+
+				Expect(apiServer.Start()).To(Succeed())
+				err := apiServer.Stop()
+				Expect(err).To(MatchError(ContainSubstring("stopping etcd failed")))
+			})
+		})
+
 		Context("when starting etcd fails", func() {
 			It("propagates the error, and does not start the process", func() {
 				fakeEtcdProcess.StartReturnsOnCall(0, fmt.Errorf("starting etcd failed"))
@@ -132,6 +162,24 @@ var _ = Describe("Apiserver", func() {
 				err := apiServer.Start()
 				Expect(err).To(MatchError(ContainSubstring("no etcd url")))
 				Expect(fakeEtcdProcess.StopCallCount()).To(Equal(1))
+			})
+
+			Context("and stopping of etcd fails too", func() {
+				It("propagates the combined error", func() {
+					fakeEtcdProcess.URLReturns("", fmt.Errorf("no etcd url"))
+					fakeEtcdProcess.StopReturns(fmt.Errorf("stopping etcd failed"))
+
+					apiServer.ProcessStarter = func(Command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
+						Expect(true).To(BeFalse(),
+							"the api server process starter shouldn't be called if getting etcd's URL fails")
+						return nil, nil
+					}
+
+					err := apiServer.Start()
+					Expect(err).To(MatchError(ContainSubstring("no etcd url")))
+					Expect(err).To(MatchError(ContainSubstring("stopping etcd failed")))
+					Expect(fakeEtcdProcess.StopCallCount()).To(Equal(1))
+				})
 			})
 		})
 
@@ -166,7 +214,7 @@ var _ = Describe("Apiserver", func() {
 			})
 		})
 
-		Context("when  the starter returns an error", func() {
+		Context("when the starter returns an error", func() {
 			It("propagates the error", func() {
 				apiServer.ProcessStarter = func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
 					return nil, fmt.Errorf("Some error in the apiserver starter.")

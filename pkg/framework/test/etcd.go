@@ -6,7 +6,6 @@ import (
 	"os/exec"
 	"time"
 
-	"github.com/onsi/gomega"
 	"github.com/onsi/gomega/gbytes"
 	"github.com/onsi/gomega/gexec"
 )
@@ -121,13 +120,18 @@ func (e *Etcd) ensureInitialized() {
 }
 
 // Stop stops this process gracefully, waits for its termination, and cleans up the data directory.
-func (e *Etcd) Stop() {
-	if e.session != nil {
-		e.session.Terminate()
-		e.session.Wait(20 * time.Second)
-		err := e.DataDirManager.Destroy()
-		gomega.Expect(err).NotTo(gomega.HaveOccurred())
+func (e *Etcd) Stop() error {
+	if e.session == nil {
+		return nil
 	}
+
+	e.session.Terminate()
+	// TODO have a better way to handle the timeout of Stop()
+	e.session.Wait(20 * time.Second)
+
+	err := e.DataDirManager.Destroy()
+
+	return err
 }
 
 // ExitCode returns the exit code of the process, if it has exited. If it hasn't exited yet, ExitCode returns -1.

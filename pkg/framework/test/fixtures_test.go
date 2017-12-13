@@ -38,7 +38,7 @@ var _ = Describe("Fixtures", func() {
 		})
 
 		Context("when starting APIServer fails", func() {
-			It("wraps the error", func() {
+			It("propagates the error", func() {
 				fakeAPIServerProcess.StartReturns(fmt.Errorf("another error"))
 				err := fixtures.Start()
 				Expect(err).To(MatchError(ContainSubstring("another error")))
@@ -50,6 +50,14 @@ var _ = Describe("Fixtures", func() {
 			Expect(fakeAPIServerProcess.StopCallCount()).To(Equal(1))
 		})
 
+		Context("when stopping APIServer fails", func() {
+			It("propagates the error", func() {
+				fakeAPIServerProcess.StopReturns(fmt.Errorf("error on stop"))
+				err := fixtures.Stop()
+				Expect(err).To(MatchError(ContainSubstring("error on stop")))
+			})
+		})
+
 		It("can be queried for the APIServer URL", func() {
 			fakeAPIServerProcess.URLReturns("some url to the apiserver", nil)
 
@@ -58,5 +66,12 @@ var _ = Describe("Fixtures", func() {
 			Expect(url).To(Equal("some url to the apiserver"))
 		})
 
+		Context("when querying the URL fails", func() {
+			It("propagates the error", func() {
+				fakeAPIServerProcess.URLReturns("", fmt.Errorf("URL error"))
+				_, err := fixtures.APIServerURL()
+				Expect(err).To(MatchError(ContainSubstring("URL error")))
+			})
+		})
 	})
 })

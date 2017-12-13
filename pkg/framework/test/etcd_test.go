@@ -78,7 +78,7 @@ var _ = Describe("Etcd", func() {
 				Expect(fakeDataDirManager.CreateCallCount()).To(Equal(1))
 
 				By("Stopping the Etcd Server")
-				etcd.Stop()
+				Expect(etcd.Stop()).To(Succeed())
 
 				Expect(fakeDataDirManager.DestroyCallCount()).To(Equal(1))
 				Expect(etcd).To(gexec.Exit(143))
@@ -86,6 +86,21 @@ var _ = Describe("Etcd", func() {
 				Expect(fakeSession.WaitCallCount()).To(Equal(1))
 				Expect(fakeSession.ExitCodeCallCount()).To(Equal(2))
 				Expect(fakeDataDirManager.DestroyCallCount()).To(Equal(1))
+			})
+		})
+
+		Context("when the data directory cannot be destroyed", func() {
+			It("propagates the error", func() {
+				fakeDataDirManager.DestroyReturns(fmt.Errorf("destroy failed"))
+				fakeAddressManager.InitializeReturns(1234, "this.is.etcd", nil)
+				etcd.ProcessStarter = func(Command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
+					fmt.Fprint(err, "serving insecure client requests on this.is.etcd:1234")
+					return fakeSession, nil
+				}
+
+				Expect(etcd.Start()).To(Succeed())
+				err := etcd.Stop()
+				Expect(err).To(MatchError(ContainSubstring("destroy failed")))
 			})
 		})
 

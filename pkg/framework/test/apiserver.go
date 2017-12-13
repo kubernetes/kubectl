@@ -6,7 +6,6 @@ import (
 	"os/exec"
 	"time"
 
-	"github.com/onsi/gomega"
 	"github.com/onsi/gomega/gbytes"
 	"github.com/onsi/gomega/gexec"
 )
@@ -82,7 +81,9 @@ func (s *APIServer) Start() error {
 
 	etcdURLString, err := s.Etcd.URL()
 	if err != nil {
-		s.Etcd.Stop()
+		if etcdStopErr := s.Etcd.Stop(); etcdStopErr != nil {
+			return fmt.Errorf("%s, %s", err.Error(), etcdStopErr.Error())
+		}
 		return err
 	}
 
@@ -130,14 +131,23 @@ func (s *APIServer) ensureInitialized() {
 }
 
 // Stop stops this process gracefully, waits for its termination, and cleans up the cert directory.
-func (s *APIServer) Stop() {
-	if s.session != nil {
-		s.session.Terminate()
-		s.session.Wait(20 * time.Second)
-		s.Etcd.Stop()
-		err := s.CertDirManager.Destroy()
-		gomega.Expect(err).NotTo(gomega.HaveOccurred())
+func (s *APIServer) Stop() error {
+	if s.session == nil {
+		return nil
 	}
+
+	s.session.Terminate()
+	// TODO have a better way to handle the timeout of Stop()
+	s.session.Wait(20 * time.Second)
+
+	err := s.Etcd.Stop()
+	if err != nil {
+		return err
+	}
+
+	err = s.CertDirManager.Destroy()
+
+	return err
 }
 
 // ExitCode returns the exit code of the process, if it has exited. If it hasn't exited yet, ExitCode returns -1.

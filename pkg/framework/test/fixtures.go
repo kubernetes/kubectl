@@ -12,8 +12,7 @@ type Fixtures struct {
 // and other internals.
 type FixtureProcess interface {
 	Start() error
-	//TODO Stop should return an error
-	Stop()
+	Stop() error
 	URL() (string, error)
 }
 
@@ -58,8 +57,7 @@ func (f *Fixtures) Start() error {
 
 // Stop will stop all your fixtures, and clean up their data.
 func (f *Fixtures) Stop() error {
-	f.APIServer.Stop()
-	return nil
+	return f.APIServer.Stop()
 }
 
 // APIServerURL returns the URL to the APIServer. Clients can use this URL to connect to the APIServer.

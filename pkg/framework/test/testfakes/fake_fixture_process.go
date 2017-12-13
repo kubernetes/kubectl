@@ -17,13 +17,19 @@ type FakeFixtureProcess struct {
 	startReturnsOnCall map[int]struct {
 		result1 error
 	}
-	StopStub        func()
+	StopStub        func() error
 	stopMutex       sync.RWMutex
 	stopArgsForCall []struct{}
-	URLStub         func() (string, error)
-	uRLMutex        sync.RWMutex
-	uRLArgsForCall  []struct{}
-	uRLReturns      struct {
+	stopReturns     struct {
+		result1 error
+	}
+	stopReturnsOnCall map[int]struct {
+		result1 error
+	}
+	URLStub        func() (string, error)
+	uRLMutex       sync.RWMutex
+	uRLArgsForCall []struct{}
+	uRLReturns     struct {
 		result1 string
 		result2 error
 	}
@@ -75,20 +81,44 @@ func (fake *FakeFixtureProcess) StartReturnsOnCall(i int, result1 error) {
 	}{result1}
 }
 
-func (fake *FakeFixtureProcess) Stop() {
+func (fake *FakeFixtureProcess) Stop() error {
 	fake.stopMutex.Lock()
+	ret, specificReturn := fake.stopReturnsOnCall[len(fake.stopArgsForCall)]
 	fake.stopArgsForCall = append(fake.stopArgsForCall, struct{}{})
 	fake.recordInvocation("Stop", []interface{}{})
 	fake.stopMutex.Unlock()
 	if fake.StopStub != nil {
-		fake.StopStub()
+		return fake.StopStub()
 	}
+	if specificReturn {
+		return ret.result1
+	}
+	return fake.stopReturns.result1
 }
 
 func (fake *FakeFixtureProcess) StopCallCount() int {
 	fake.stopMutex.RLock()
 	defer fake.stopMutex.RUnlock()
 	return len(fake.stopArgsForCall)
+}
+
+func (fake *FakeFixtureProcess) StopReturns(result1 error) {
+	fake.StopStub = nil
+	fake.stopReturns = struct {
+		result1 error
+	}{result1}
+}
+
+func (fake *FakeFixtureProcess) StopReturnsOnCall(i int, result1 error) {
+	fake.StopStub = nil
+	if fake.stopReturnsOnCall == nil {
+		fake.stopReturnsOnCall = make(map[int]struct {
+			result1 error
+		})
+	}
+	fake.stopReturnsOnCall[i] = struct {
+		result1 error
+	}{result1}
 }
 
 func (fake *FakeFixtureProcess) URL() (string, error) {
