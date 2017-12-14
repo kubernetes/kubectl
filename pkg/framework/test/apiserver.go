@@ -17,6 +17,8 @@ type APIServer struct {
 	ProcessStarter simpleSessionStarter
 	CertDirManager certDirManager
 	Etcd           ControlPlaneProcess
+	StopTimeout    time.Duration
+	StartTimeout   time.Duration
 	session        SimpleSession
 	stdOut         *gbytes.Buffer
 	stdErr         *gbytes.Buffer
@@ -87,7 +89,7 @@ func (s *APIServer) Start() error {
 	}
 
 	detectedStart := s.stdErr.Detect(fmt.Sprintf("Serving insecurely on %s:%d", addr, port))
-	timedOut := time.After(20 * time.Second)
+	timedOut := time.After(s.StartTimeout)
 
 	command := exec.Command(s.PathFinder("kube-apiserver"), args...)
 	s.session, err = s.ProcessStarter(command, s.stdOut, s.stdErr)
@@ -121,6 +123,12 @@ func (s *APIServer) ensureInitialized() {
 	if s.Etcd == nil {
 		s.Etcd = &Etcd{}
 	}
+	if s.StopTimeout == 0 {
+		s.StopTimeout = 20 * time.Second
+	}
+	if s.StartTimeout == 0 {
+		s.StartTimeout = 20 * time.Second
+	}
 
 	s.stdOut = gbytes.NewBuffer()
 	s.stdErr = gbytes.NewBuffer()
@@ -132,18 +140,22 @@ func (s *APIServer) Stop() error {
 		return nil
 	}
 
-	s.session.Terminate()
-	// TODO have a better way to handle the timeout of Stop()
-	s.session.Wait(20 * time.Second)
+	session := s.session.Terminate()
+	detectedStop := session.Exited
+	timedOut := time.After(s.StopTimeout)
 
-	err := s.Etcd.Stop()
-	if err != nil {
+	select {
+	case <-detectedStop:
+		break
+	case <-timedOut:
+		return fmt.Errorf("timeout waiting for apiserver to stop")
+	}
+
+	if err := s.Etcd.Stop(); err != nil {
 		return err
 	}
 
-	err = s.CertDirManager.Destroy()
-
-	return err
+	return s.CertDirManager.Destroy()
 }
 
 // ExitCode returns the exit code of the process, if it has exited. If it hasn't exited yet, ExitCode returns -1.
