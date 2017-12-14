@@ -45,7 +45,12 @@ var _ = Describe("DefaultAddressManager", func() {
 			It("propagates the error", func() {
 				_, _, err := defaultAddressManager.Initialize("example.com")
 
-				Expect(err).To(MatchError(ContainSubstring("bind: can't assign requested address")))
+				Expect(err).To(SatisfyAny(
+					// Linux
+					MatchError(ContainSubstring("bind: cannot assign requested address")),
+					// Darwin
+					MatchError(ContainSubstring("bind: can't assign requested address")),
+				))
 			})
 		})
 
