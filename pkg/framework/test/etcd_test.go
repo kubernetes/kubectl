@@ -153,6 +153,18 @@ var _ = Describe("Etcd", func() {
 			})
 		})
 
+		Context("when the starter takes longer than our timeout", func() {
+			It("gives us a timeout error", func() {
+				etcd.StartTimeout = 1 * time.Nanosecond
+				etcd.ProcessStarter = func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
+					return &gexec.Session{}, nil
+				}
+
+				err := etcd.Start()
+				Expect(err).To(MatchError(ContainSubstring("timeout waiting for etcd to start serving")))
+			})
+		})
+
 		Context("when we try to stop a server that hasn't been started", func() {
 			It("is a noop and does not call exit on the session", func() {
 				etcd.ProcessStarter = func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {

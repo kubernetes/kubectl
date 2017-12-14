@@ -234,6 +234,18 @@ var _ = Describe("Apiserver", func() {
 			})
 		})
 
+		Context("when the starter takes longer than our timeout", func() {
+			It("gives us a timeout error", func() {
+				apiServer.StartTimeout = 1 * time.Nanosecond
+				apiServer.ProcessStarter = func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
+					return &gexec.Session{}, nil
+				}
+
+				err := apiServer.Start()
+				Expect(err).To(MatchError(ContainSubstring("timeout waiting for apiserver to start serving")))
+			})
+		})
+
 		Context("when we try to stop a server that hasn't been started", func() {
 			It("is a noop and does not call exit on the session", func() {
 				apiServer.ProcessStarter = func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
