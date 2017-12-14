@@ -17,33 +17,25 @@ var _ = Describe("The Testing Framework", func() {
 		var err error
 		var fixtures *test.Fixtures
 
-		fixtures, err = test.NewFixtures(defaultPathToEtcd, defaultPathToApiserver)
+		fixtures, err = test.NewFixtures()
 		Expect(err).NotTo(HaveOccurred())
 
 		By("Starting all the fixture processes")
 		err = fixtures.Start()
 		Expect(err).NotTo(HaveOccurred(), "Expected fixtures to start successfully")
 
-		apiServerConf := fixtures.APIServer.(*test.APIServer).Config
-		etcdConf := fixtures.Etcd.(*test.Etcd).Config
-
-		var apiServerURL, etcdClientURL, etcdPeerURL *url.URL
-		etcdClientURL, err = url.Parse(etcdConf.ClientURL)
+		var apiServerURL, etcdClientURL *url.URL
+		etcdClientURL, err = url.Parse(fixtures.APIServer.(*test.APIServer).Etcd.URL())
 		Expect(err).NotTo(HaveOccurred())
-		etcdPeerURL, err = url.Parse(etcdConf.PeerURL)
-		Expect(err).NotTo(HaveOccurred())
-		apiServerURL, err = url.Parse(apiServerConf.APIServerURL)
+		apiServerURL, err = url.Parse(fixtures.APIServerURL())
 		Expect(err).NotTo(HaveOccurred())
 
 		isEtcdListeningForClients := isSomethingListeningOnPort(etcdClientURL.Host)
-		isEtcdListeningForPeers := isSomethingListeningOnPort(etcdPeerURL.Host)
 		isAPIServerListening := isSomethingListeningOnPort(apiServerURL.Host)
 
 		By("Ensuring Etcd is listening")
 		Expect(isEtcdListeningForClients()).To(BeTrue(),
 			fmt.Sprintf("Expected Etcd to listen for clients on %s,", etcdClientURL.Host))
-		Expect(isEtcdListeningForPeers()).To(BeTrue(),
-			fmt.Sprintf("Expected Etcd to listen for peers on %s,", etcdPeerURL.Host))
 
 		By("Ensuring APIServer is listening")
 		Expect(isAPIServerListening()).To(BeTrue(),
@@ -55,7 +47,6 @@ var _ = Describe("The Testing Framework", func() {
 
 		By("Ensuring Etcd is not listening anymore")
 		Expect(isEtcdListeningForClients()).To(BeFalse(), "Expected Etcd not to listen for clients anymore")
-		Expect(isEtcdListeningForPeers()).To(BeFalse(), "Expected Etcd not to listen for peers anymore")
 
 		By("Ensuring APIServer is not listening anymore")
 		Expect(isAPIServerListening()).To(BeFalse(), "Expected APIServer not to listen anymore")
@@ -63,7 +54,7 @@ var _ = Describe("The Testing Framework", func() {
 
 	Measure("It should be fast to bring up and tear down the fixtures", func(b Benchmarker) {
 		b.Time("lifecycle", func() {
-			fixtures, err := test.NewFixtures(defaultPathToEtcd, defaultPathToApiserver)
+			fixtures, err := test.NewFixtures()
 			Expect(err).NotTo(HaveOccurred())
 
 			fixtures.Start()

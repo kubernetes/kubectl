@@ -19,6 +19,7 @@ type APIServer struct {
 	ProcessStarter simpleSessionStarter
 	CertDirManager certDirManager
 	Config         *APIServerConfig
+	Etcd           FixtureProcess
 	session        SimpleSession
 	stdOut         *gbytes.Buffer
 	stdErr         *gbytes.Buffer
@@ -31,25 +32,41 @@ type certDirManager interface {
 
 //go:generate counterfeiter . certDirManager
 
+var apiServerBinPathFinder = DefaultBinPathFinder
+
 // NewAPIServer creates a new APIServer Fixture Process
-func NewAPIServer(pathToAPIServer string, config *APIServerConfig) *APIServer {
+func NewAPIServer(config *APIServerConfig) (*APIServer, error) {
 	starter := func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
 		return gexec.Start(command, out, err)
 	}
 
-	apiserver := &APIServer{
-		Path:           pathToAPIServer,
-		ProcessStarter: starter,
-		CertDirManager: NewTempDirManager(),
-		Config:         config,
+	etcd, err := NewEtcd()
+	if err != nil {
+		return nil, err
 	}
 
-	return apiserver
+	return &APIServer{
+		Path:           apiServerBinPathFinder("kube-apiserver"),
+		Config:         config,
+		ProcessStarter: starter,
+		CertDirManager: NewTempDirManager(),
+		Etcd:           etcd,
+	}, nil
+}
+
+// URL returns the URL APIServer is listening on. Clients can use this to connect to APIServer.
+func (s *APIServer) URL() string {
+	return s.Config.APIServerURL
 }
 
 // Start starts the apiserver, waits for it to come up, and returns an error, if occoured.
 func (s *APIServer) Start() error {
 	if err := s.Config.Validate(); err != nil {
+		return err
+	}
+
+	err := s.Etcd.Start()
+	if err != nil {
 		return err
 	}
 
@@ -74,7 +91,7 @@ func (s *APIServer) Start() error {
 		"--admission-control-config-file=",
 		"--bind-address=0.0.0.0",
 		"--storage-backend=etcd3",
-		fmt.Sprintf("--etcd-servers=%s", s.Config.EtcdURL),
+		fmt.Sprintf("--etcd-servers=%s", s.Etcd.URL()),
 		fmt.Sprintf("--cert-dir=%s", certDir),
 		fmt.Sprintf("--insecure-port=%s", clientURL.Port()),
 		fmt.Sprintf("--insecure-bind-address=%s", clientURL.Hostname()),
@@ -102,6 +119,7 @@ func (s *APIServer) Stop() {
 	if s.session != nil {
 		s.session.Terminate()
 		s.session.Wait(20 * time.Second)
+		s.Etcd.Stop()
 		err := s.CertDirManager.Destroy()
 		gomega.Expect(err).NotTo(gomega.HaveOccurred())
 	}

@@ -17,9 +17,18 @@ type FakeFixtureProcess struct {
 	startReturnsOnCall map[int]struct {
 		result1 error
 	}
-	StopStub         func()
-	stopMutex        sync.RWMutex
-	stopArgsForCall  []struct{}
+	StopStub        func()
+	stopMutex       sync.RWMutex
+	stopArgsForCall []struct{}
+	URLStub         func() string
+	uRLMutex        sync.RWMutex
+	uRLArgsForCall  []struct{}
+	uRLReturns      struct {
+		result1 string
+	}
+	uRLReturnsOnCall map[int]struct {
+		result1 string
+	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
 }
@@ -80,6 +89,46 @@ func (fake *FakeFixtureProcess) StopCallCount() int {
 	return len(fake.stopArgsForCall)
 }
 
+func (fake *FakeFixtureProcess) URL() string {
+	fake.uRLMutex.Lock()
+	ret, specificReturn := fake.uRLReturnsOnCall[len(fake.uRLArgsForCall)]
+	fake.uRLArgsForCall = append(fake.uRLArgsForCall, struct{}{})
+	fake.recordInvocation("URL", []interface{}{})
+	fake.uRLMutex.Unlock()
+	if fake.URLStub != nil {
+		return fake.URLStub()
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	return fake.uRLReturns.result1
+}
+
+func (fake *FakeFixtureProcess) URLCallCount() int {
+	fake.uRLMutex.RLock()
+	defer fake.uRLMutex.RUnlock()
+	return len(fake.uRLArgsForCall)
+}
+
+func (fake *FakeFixtureProcess) URLReturns(result1 string) {
+	fake.URLStub = nil
+	fake.uRLReturns = struct {
+		result1 string
+	}{result1}
+}
+
+func (fake *FakeFixtureProcess) URLReturnsOnCall(i int, result1 string) {
+	fake.URLStub = nil
+	if fake.uRLReturnsOnCall == nil {
+		fake.uRLReturnsOnCall = make(map[int]struct {
+			result1 string
+		})
+	}
+	fake.uRLReturnsOnCall[i] = struct {
+		result1 string
+	}{result1}
+}
+
 func (fake *FakeFixtureProcess) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
@@ -87,6 +136,8 @@ func (fake *FakeFixtureProcess) Invocations() map[string][][]interface{} {
 	defer fake.startMutex.RUnlock()
 	fake.stopMutex.RLock()
 	defer fake.stopMutex.RUnlock()
+	fake.uRLMutex.RLock()
+	defer fake.uRLMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
 	for key, value := range fake.invocations {
 		copiedInvocations[key] = value

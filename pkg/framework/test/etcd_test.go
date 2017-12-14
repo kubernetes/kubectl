@@ -1,17 +1,15 @@
 package test_test
 
 import (
+	"fmt"
 	"io"
 	"os/exec"
-
-	. "k8s.io/kubectl/pkg/framework/test"
-
-	"fmt"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/gbytes"
 	"github.com/onsi/gomega/gexec"
+	. "k8s.io/kubectl/pkg/framework/test"
 	"k8s.io/kubectl/pkg/framework/test/testfakes"
 )
 
@@ -37,6 +35,10 @@ var _ = Describe("Etcd", func() {
 			DataDirManager: fakeDataDirManager,
 			Config:         etcdConfig,
 		}
+	})
+
+	It("can be queried for the port it listens on", func() {
+		Expect(etcd.URL()).To(Equal("http://this.is.etcd.listening.for.clients:1234"))
 	})
 
 	Context("when given a path to a binary that runs for a long time", func() {

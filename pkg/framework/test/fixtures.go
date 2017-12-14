@@ -9,15 +9,7 @@ import (
 //
 // Right now, that means Etcd and your APIServer. This is likely to increase in future.
 type Fixtures struct {
-	Etcd      FixtureProcess
 	APIServer FixtureProcess
-	Config    FixturesConfig
-}
-
-// FixturesConfig is a datastructure that exposes configuration that should be used by clients to talk
-// to the fixture processes.
-type FixturesConfig struct {
-	APIServerURL string
 }
 
 // FixtureProcess knows how to start and stop a Fixture processes.
@@ -26,33 +18,28 @@ type FixturesConfig struct {
 type FixtureProcess interface {
 	Start() error
 	Stop()
+	URL() string
 }
 
 //go:generate counterfeiter . FixtureProcess
 
 // NewFixtures will give you a Fixtures struct that's properly wired together.
-func NewFixtures(pathToEtcd, pathToAPIServer string) (*Fixtures, error) {
-	etcdConfig, err := NewEtcdConfig()
-	if err != nil {
-		return nil, err
-	}
-
+func NewFixtures() (*Fixtures, error) {
 	apiServerConfig := &APIServerConfig{}
 
 	if url, urlErr := getHTTPListenURL(); urlErr == nil {
 		apiServerConfig.APIServerURL = url
-		apiServerConfig.EtcdURL = etcdConfig.ClientURL
 	} else {
 		return nil, urlErr
 	}
 
-	fixtures := &Fixtures{
-		Etcd:      NewEtcdWithBinaryAndConfig(pathToEtcd, etcdConfig),
-		APIServer: NewAPIServer(pathToAPIServer, apiServerConfig),
+	apiServer, err := NewAPIServer(apiServerConfig)
+	if err != nil {
+		return nil, err
 	}
 
-	fixtures.Config = FixturesConfig{
-		APIServerURL: apiServerConfig.APIServerURL,
+	fixtures := &Fixtures{
+		APIServer: apiServer,
 	}
 
 	return fixtures, nil
@@ -65,7 +52,6 @@ func (f *Fixtures) Start() error {
 		started <- process.Start()
 	}
 	processes := []FixtureProcess{
-		f.Etcd,
 		f.APIServer,
 	}
 
@@ -85,8 +71,12 @@ func (f *Fixtures) Start() error {
 // Stop will stop all your fixtures, and clean up their data.
 func (f *Fixtures) Stop() error {
 	f.APIServer.Stop()
-	f.Etcd.Stop()
 	return nil
+}
+
+// APIServerURL returns the URL to the APIServer. Clients can use this URL to connect to the APIServer.
+func (f *Fixtures) APIServerURL() string {
+	return f.APIServer.URL()
 }
 
 func getHTTPListenURL() (url string, err error) {
