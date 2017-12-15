@@ -1,6 +1,20 @@
-# ktl (kubectl2) design proposal
+# ktl (kubectl2)
 
-## TL;DR
+## Metadata
+
+## Table of Contents
+
+- [Title](#title)
+   - [Metadata](#metadata)
+   - [Table of Contents](#table-of-contents)
+   - [Summary](#summary)
+   - [Motivation](#motivation)
+   - [Reference-level explanation](#reference-level-explanation)
+   - [Graduation Criteria](#graduation-criteria)
+   - [Alternatives](#alternatives-optional)
+   - [Unresolved Questions](#unresolved-questions-optional)
+
+## Summary
 
 - Stop trying to wholesale move kubectl out of kubernetes/kubernetes
   - we have been working on this for a year with limited success
@@ -9,7 +23,7 @@
 - `ktl` is built and released frequently
   - vendored sub commands follow their own release cycles and updated by released the vendored code
 
-## Background
+## Motivation
 
 The core Kubernetes cli is published as a single binary called `kubectl`.
 `kubectl` is a statically linked go binary in the kubernetes/kubernetes
@@ -98,7 +112,7 @@ Even if these are good ideas, don't let them distract us from meeting our goals 
 - fix issues with the existing kubectl commands
 - dog fooding the plugin mechanism for core commands
 
-## Proposal
+## Reference-level explanation
 
 - build a new cli binary `ktl` (kubectl2) under the `kubernetes/ktl` repo that dispatches to commands developed in other repos
 - keep old cli commands in `kubernetes/kubernetes/cmd/kubectl` and vendor them into `kubectl/ktl`
@@ -181,7 +195,13 @@ release notes from vendored commands.
 - publish binary to gs:// bucket
 - publish binary + release notes to GitHub releases page
 
-## Keeping the kubectl name vs rebranding
+## Graduation Criteria
+
+None
+
+## Alternatives [optional]
+
+### Keeping the kubectl name instead of rebranding
 
 Alternatively we could call the new command `kubectl` and attach all of the legacy kubectl commands
 at the root level.  This would make it look and feel exactly like `kubectl`, but allow for new pieces
@@ -207,8 +227,11 @@ Renaming to ktl: Need to get everyone to use the new command
 - Easier to restructure command layout
 - Easier to redefine command wide things - such as version skew support
 
-## More alternatives considered
 
-*Don't vendor in commands, make them plugins instead*
+### Don't vendor in commands, make them plugins instead*
 
-- This is a more complicated approach that can be considered in a later iteration.
+This would be a more complicated approach that can be considered in a later iteration.
+
+## Unresolved Questions [optional]
+
+- Should we rename / restructure the command, or keep kubectl and all the bagage that comes with?
