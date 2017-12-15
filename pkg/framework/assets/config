@@ -1,0 +1,20 @@
+apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority:
+    server: https://notreal.com:1234
+  name: local
+contexts:
+- context:
+    cluster: local
+    user: myself
+  name: local
+current-context: local
+kind: Config
+preferences: {}
+users:
+- name: myself
+  user:
+    as-user-extra: {}
+    username: foo
+    password: bar
