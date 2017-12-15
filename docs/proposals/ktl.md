@@ -75,6 +75,12 @@ that do not work with version skew or support extensibility.  We have since grow
 but they are still pervasive.  Frequently, is it much faster and effective to rewrite large pieces
 instead of trying to refactor them into different designs.
 
+Some examples of anti-patterns:
+
+- Relying on specific compiled in API types for generic operations (scale, rollback)
+- Using internal type definitions (printers, various other commands)
+- Round tripping objects read from the server through go structures (some exceptions where this maybe ok)
+
 ## Goals for ktl
 
 Thing we need.
