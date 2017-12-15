@@ -21,7 +21,7 @@ var _ = Describe("DemoCLI Integration", func() {
 	})
 
 	It("can get a list of pods", func() {
-		apiURL, err := fixtures.APIServerURL()
+		apiURL, err := controlPlane.APIServerURL()
 		Expect(err).NotTo(HaveOccurred())
 
 		command := exec.Command(pathToDemoCommand, "listPods", "--api-url", apiURL)

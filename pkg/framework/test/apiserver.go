@@ -6,7 +6,6 @@ import (
 	"os/exec"
 	"time"
 
-	"github.com/onsi/gomega"
 	"github.com/onsi/gomega/gbytes"
 	"github.com/onsi/gomega/gexec"
 )
@@ -17,7 +16,7 @@ type APIServer struct {
 	PathFinder     BinPathFinder
 	ProcessStarter simpleSessionStarter
 	CertDirManager certDirManager
-	Etcd           FixtureProcess
+	Etcd           ControlPlaneProcess
 	session        SimpleSession
 	stdOut         *gbytes.Buffer
 	stdErr         *gbytes.Buffer
@@ -30,26 +29,11 @@ type certDirManager interface {
 
 //go:generate counterfeiter . certDirManager
 
-// NewAPIServer creates a new APIServer Fixture Process
-func NewAPIServer() (*APIServer, error) {
-	starter := func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
-		return gexec.Start(command, out, err)
-	}
-
-	etcd, err := NewEtcd()
-	if err != nil {
-		return nil, err
-	}
-
-	return &APIServer{
-		ProcessStarter: starter,
-		CertDirManager: NewTempDirManager(),
-		Etcd:           etcd,
-	}, nil
-}
-
 // URL returns the URL APIServer is listening on. Clients can use this to connect to APIServer.
 func (s *APIServer) URL() (string, error) {
+	if s.AddressManager == nil {
+		return "", fmt.Errorf("APIServer's AddressManager is not initialized")
+	}
 	port, err := s.AddressManager.Port()
 	if err != nil {
 		return "", err
@@ -82,7 +66,9 @@ func (s *APIServer) Start() error {
 
 	etcdURLString, err := s.Etcd.URL()
 	if err != nil {
-		s.Etcd.Stop()
+		if etcdStopErr := s.Etcd.Stop(); etcdStopErr != nil {
+			return fmt.Errorf("%s, %s", err.Error(), etcdStopErr.Error())
+		}
 		return err
 	}
 
@@ -124,20 +110,40 @@ func (s *APIServer) ensureInitialized() {
 	if s.AddressManager == nil {
 		s.AddressManager = &DefaultAddressManager{}
 	}
+	if s.ProcessStarter == nil {
+		s.ProcessStarter = func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
+			return gexec.Start(command, out, err)
+		}
+	}
+	if s.CertDirManager == nil {
+		s.CertDirManager = NewTempDirManager()
+	}
+	if s.Etcd == nil {
+		s.Etcd = &Etcd{}
+	}
 
 	s.stdOut = gbytes.NewBuffer()
 	s.stdErr = gbytes.NewBuffer()
 }
 
 // Stop stops this process gracefully, waits for its termination, and cleans up the cert directory.
-func (s *APIServer) Stop() {
-	if s.session != nil {
-		s.session.Terminate()
-		s.session.Wait(20 * time.Second)
-		s.Etcd.Stop()
-		err := s.CertDirManager.Destroy()
-		gomega.Expect(err).NotTo(gomega.HaveOccurred())
+func (s *APIServer) Stop() error {
+	if s.session == nil {
+		return nil
 	}
+
+	s.session.Terminate()
+	// TODO have a better way to handle the timeout of Stop()
+	s.session.Wait(20 * time.Second)
+
+	err := s.Etcd.Stop()
+	if err != nil {
+		return err
+	}
+
+	err = s.CertDirManager.Destroy()
+
+	return err
 }
 
 // ExitCode returns the exit code of the process, if it has exited. If it hasn't exited yet, ExitCode returns -1.

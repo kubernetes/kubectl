@@ -17,7 +17,7 @@ func TestIntegration(t *testing.T) {
 
 var (
 	pathToDemoCommand string
-	fixtures          *test.Fixtures
+	controlPlane      *test.ControlPlane
 )
 
 var _ = BeforeSuite(func() {
@@ -25,14 +25,14 @@ var _ = BeforeSuite(func() {
 	pathToDemoCommand, err = gexec.Build("k8s.io/kubectl/pkg/framework/test/democli/")
 	Expect(err).NotTo(HaveOccurred())
 
-	fixtures, err = test.NewFixtures()
+	controlPlane = test.NewControlPlane()
 	Expect(err).NotTo(HaveOccurred())
 
-	err = fixtures.Start()
+	err = controlPlane.Start()
 	Expect(err).NotTo(HaveOccurred())
 })
 
 var _ = AfterSuite(func() {
-	fixtures.Stop()
+	controlPlane.Stop()
 	gexec.CleanupBuildArtifacts()
 })

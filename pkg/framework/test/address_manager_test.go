@@ -45,7 +45,12 @@ var _ = Describe("DefaultAddressManager", func() {
 			It("propagates the error", func() {
 				_, _, err := defaultAddressManager.Initialize("example.com")
 
-				Expect(err).To(MatchError(ContainSubstring("bind: can't assign requested address")))
+				Expect(err).To(SatisfyAny(
+					// Linux
+					MatchError(ContainSubstring("bind: cannot assign requested address")),
+					// Darwin
+					MatchError(ContainSubstring("bind: can't assign requested address")),
+				))
 			})
 		})
 
@@ -84,33 +89,5 @@ var _ = Describe("DefaultAddressManager", func() {
 			Expect(actualHost).To(Equal(expectedHost))
 		})
 
-	})
-})
-
-var _ = Describe("DefaultPortFinder", func() {
-	It("returns a free port and an address to bind to", func() {
-		port, addr, err := DefaultPortFinder("127.0.0.1")
-
-		Expect(err).NotTo(HaveOccurred())
-		Expect(addr).To(Equal("127.0.0.1"))
-		Expect(port).To(BeNumerically(">=", 1))
-		Expect(port).To(BeNumerically("<=", 65535))
-	})
-
-	It("errrors on invalid host", func() {
-		_, _, err := DefaultPortFinder("this is not a hostname")
-
-		Expect(err).To(MatchError(ContainSubstring("no such host")))
-	})
-
-	Context("when using a DNS name", func() {
-		It("returns a free port and an address to bind to", func() {
-			port, addr, err := DefaultPortFinder("localhost")
-
-			Expect(err).NotTo(HaveOccurred())
-			Expect(addr).To(Equal("127.0.0.1"))
-			Expect(port).To(BeNumerically(">=", 1))
-			Expect(port).To(BeNumerically("<=", 65535))
-		})
 	})
 })

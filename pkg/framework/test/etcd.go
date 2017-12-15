@@ -6,19 +6,16 @@ import (
 	"os/exec"
 	"time"
 
-	"net/url"
-
-	"github.com/onsi/gomega"
 	"github.com/onsi/gomega/gbytes"
 	"github.com/onsi/gomega/gexec"
 )
 
 // Etcd knows how to run an etcd server. Set it up with the path to a precompiled binary.
 type Etcd struct {
+	AddressManager AddressManager
 	PathFinder     BinPathFinder
 	ProcessStarter simpleSessionStarter
 	DataDirManager dataDirManager
-	Config         *EtcdConfig
 	session        SimpleSession
 	stdOut         *gbytes.Buffer
 	stdErr         *gbytes.Buffer
@@ -43,66 +40,47 @@ type SimpleSession interface {
 
 type simpleSessionStarter func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error)
 
-// NewEtcd returns a Etcd process configured with sane defaults
-func NewEtcd() (*Etcd, error) {
-	starter := func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
-		return gexec.Start(command, out, err)
-	}
-
-	config, err := NewEtcdConfig()
-	if err != nil {
-		return nil, err
-	}
-
-	return &Etcd{
-		ProcessStarter: starter,
-		DataDirManager: NewTempDirManager(),
-		Config:         config,
-	}, nil
-}
-
 // URL returns the URL Etcd is listening on. Clients can use this to connect to Etcd.
 func (e *Etcd) URL() (string, error) {
-	return e.Config.ClientURL, nil
+	if e.AddressManager == nil {
+		return "", fmt.Errorf("Etcd's AddressManager is not initialized")
+	}
+	port, err := e.AddressManager.Port()
+	if err != nil {
+		return "", err
+	}
+	host, err := e.AddressManager.Host()
+	if err != nil {
+		return "", err
+	}
+	return fmt.Sprintf("http://%s:%d", host, port), nil
 }
 
 // Start starts the etcd, waits for it to come up, and returns an error, if occoured.
 func (e *Etcd) Start() error {
-	if e.PathFinder == nil {
-		e.PathFinder = DefaultBinPathFinder
-	}
+	e.ensureInitialized()
 
-	if err := e.Config.Validate(); err != nil {
+	port, host, err := e.AddressManager.Initialize("localhost")
+	if err != nil {
 		return err
 	}
-
-	e.stdOut = gbytes.NewBuffer()
-	e.stdErr = gbytes.NewBuffer()
 
 	dataDir, err := e.DataDirManager.Create()
 	if err != nil {
 		return err
 	}
 
+	clientURL := fmt.Sprintf("http://%s:%d", host, port)
 	args := []string{
 		"--debug",
-		"--advertise-client-urls",
-		e.Config.ClientURL,
-		"--listen-client-urls",
-		e.Config.ClientURL,
-		"--listen-peer-urls",
-		e.Config.PeerURL,
-		"--data-dir",
-		dataDir,
-	}
-
-	clientURL, err := url.Parse(e.Config.ClientURL)
-	if err != nil {
-		return err
+		"--listen-peer-urls=http://localhost:0",
+		fmt.Sprintf("--advertise-client-urls=%s", clientURL),
+		fmt.Sprintf("--listen-client-urls=%s", clientURL),
+		fmt.Sprintf("--data-dir=%s", dataDir),
 	}
 
 	detectedStart := e.stdErr.Detect(fmt.Sprintf(
-		"serving insecure client requests on %s", clientURL.Host))
+		"serving insecure client requests on %s", host))
 	timedOut := time.After(20 * time.Second)
 
 	command := exec.Command(e.PathFinder("etcd"), args...)
@@ -119,14 +97,40 @@ func (e *Etcd) Start() error {
 	}
 }
 
-// Stop stops this process gracefully, waits for its termination, and cleans up the data directory.
-func (e *Etcd) Stop() {
-	if e.session != nil {
-		e.session.Terminate()
-		e.session.Wait(20 * time.Second)
-		err := e.DataDirManager.Destroy()
-		gomega.Expect(err).NotTo(gomega.HaveOccurred())
+func (e *Etcd) ensureInitialized() {
+	if e.PathFinder == nil {
+		e.PathFinder = DefaultBinPathFinder
 	}
+
+	if e.AddressManager == nil {
+		e.AddressManager = &DefaultAddressManager{}
+	}
+	if e.ProcessStarter == nil {
+		e.ProcessStarter = func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
+			return gexec.Start(command, out, err)
+		}
+	}
+	if e.DataDirManager == nil {
+		e.DataDirManager = NewTempDirManager()
+	}
+
+	e.stdOut = gbytes.NewBuffer()
+	e.stdErr = gbytes.NewBuffer()
+}
+
+// Stop stops this process gracefully, waits for its termination, and cleans up the data directory.
+func (e *Etcd) Stop() error {
+	if e.session == nil {
+		return nil
+	}
+
+	e.session.Terminate()
+	// TODO have a better way to handle the timeout of Stop()
+	e.session.Wait(20 * time.Second)
+
+	err := e.DataDirManager.Destroy()
+
+	return err
 }
 
 // ExitCode returns the exit code of the process, if it has exited. If it hasn't exited yet, ExitCode returns -1.
