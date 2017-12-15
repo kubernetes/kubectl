@@ -17,6 +17,7 @@ var _ = Describe("Etcd", func() {
 	var (
 		fakeSession        *testfakes.FakeSimpleSession
 		fakeDataDirManager *testfakes.FakeDataDirManager
+		fakePathFinder     *testfakes.FakeBinPathFinder
 		etcd               *Etcd
 		etcdConfig         *EtcdConfig
 	)
@@ -24,6 +25,7 @@ var _ = Describe("Etcd", func() {
 	BeforeEach(func() {
 		fakeSession = &testfakes.FakeSimpleSession{}
 		fakeDataDirManager = &testfakes.FakeDataDirManager{}
+		fakePathFinder = &testfakes.FakeBinPathFinder{}
 
 		etcdConfig = &EtcdConfig{
 			ClientURL: "http://this.is.etcd.listening.for.clients:1234",
@@ -31,14 +33,16 @@ var _ = Describe("Etcd", func() {
 		}
 
 		etcd = &Etcd{
-			Path:           "",
+			PathFinder:     fakePathFinder.Spy,
 			DataDirManager: fakeDataDirManager,
 			Config:         etcdConfig,
 		}
 	})
 
 	It("can be queried for the port it listens on", func() {
-		Expect(etcd.URL()).To(Equal("http://this.is.etcd.listening.for.clients:1234"))
+		etcdURL, err := etcd.URL()
+		Expect(err).NotTo(HaveOccurred())
+		Expect(etcdURL).To(Equal("http://this.is.etcd.listening.for.clients:1234"))
 	})
 
 	Context("when given a path to a binary that runs for a long time", func() {
@@ -49,8 +53,10 @@ var _ = Describe("Etcd", func() {
 
 			fakeSession.ExitCodeReturnsOnCall(0, -1)
 			fakeSession.ExitCodeReturnsOnCall(1, 143)
+			fakePathFinder.ReturnsOnCall(0, "/path/to/some/etcd")
 
 			etcd.ProcessStarter = func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
+				Expect(command.Path).To(Equal("/path/to/some/etcd"))
 				fmt.Fprint(err, "serving insecure client requests on this.is.etcd.listening.for.clients:1234")
 				return fakeSession, nil
 			}
@@ -58,6 +64,10 @@ var _ = Describe("Etcd", func() {
 			By("Starting the Etcd Server")
 			err := etcd.Start()
 			Expect(err).NotTo(HaveOccurred())
+
+			By("...in turn calling the PathFinder")
+			Expect(fakePathFinder.CallCount()).To(Equal(1))
+			Expect(fakePathFinder.ArgsForCall(0)).To(Equal("etcd"))
 
 			Eventually(etcd).Should(gbytes.Say("Everything is dandy"))
 			Expect(fakeSession.ExitCodeCallCount()).To(Equal(0))

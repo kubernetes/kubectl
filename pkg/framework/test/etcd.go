@@ -15,7 +15,7 @@ import (
 
 // Etcd knows how to run an etcd server. Set it up with the path to a precompiled binary.
 type Etcd struct {
-	Path           string
+	PathFinder     BinPathFinder
 	ProcessStarter simpleSessionStarter
 	DataDirManager dataDirManager
 	Config         *EtcdConfig
@@ -43,8 +43,6 @@ type SimpleSession interface {
 
 type simpleSessionStarter func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error)
 
-var etcdBinPathFinder = DefaultBinPathFinder
-
 // NewEtcd returns a Etcd process configured with sane defaults
 func NewEtcd() (*Etcd, error) {
 	starter := func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
@@ -57,36 +55,23 @@ func NewEtcd() (*Etcd, error) {
 	}
 
 	return &Etcd{
-		Path:           etcdBinPathFinder("etcd"),
 		ProcessStarter: starter,
 		DataDirManager: NewTempDirManager(),
 		Config:         config,
 	}, nil
 }
 
-// NewEtcdWithBinaryAndConfig returns a Etcd process, using the handed in binary and config.
-func NewEtcdWithBinaryAndConfig(pathToEtcd string, config *EtcdConfig) *Etcd {
-	starter := func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
-		return gexec.Start(command, out, err)
-	}
-
-	etcd := &Etcd{
-		Path:           pathToEtcd,
-		ProcessStarter: starter,
-		DataDirManager: NewTempDirManager(),
-		Config:         config,
-	}
-
-	return etcd
-}
-
 // URL returns the URL Etcd is listening on. Clients can use this to connect to Etcd.
-func (e *Etcd) URL() string {
-	return e.Config.ClientURL
+func (e *Etcd) URL() (string, error) {
+	return e.Config.ClientURL, nil
 }
 
 // Start starts the etcd, waits for it to come up, and returns an error, if occoured.
 func (e *Etcd) Start() error {
+	if e.PathFinder == nil {
+		e.PathFinder = DefaultBinPathFinder
+	}
+
 	if err := e.Config.Validate(); err != nil {
 		return err
 	}
@@ -120,7 +105,7 @@ func (e *Etcd) Start() error {
 		"serving insecure client requests on %s", clientURL.Host))
 	timedOut := time.After(20 * time.Second)
 
-	command := exec.Command(e.Path, args...)
+	command := exec.Command(e.PathFinder("etcd"), args...)
 	e.session, err = e.ProcessStarter(command, e.stdOut, e.stdErr)
 	if err != nil {
 		return err

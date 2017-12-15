@@ -51,9 +51,10 @@ var _ = Describe("Fixtures", func() {
 		})
 
 		It("can be queried for the APIServer URL", func() {
-			fakeAPIServerProcess.URLReturns("some url to the apiserver")
+			fakeAPIServerProcess.URLReturns("some url to the apiserver", nil)
 
-			url := fixtures.APIServerURL()
+			url, err := fixtures.APIServerURL()
+			Expect(err).NotTo(HaveOccurred())
 			Expect(url).To(Equal("some url to the apiserver"))
 		})
 
