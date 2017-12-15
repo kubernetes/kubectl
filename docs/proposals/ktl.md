@@ -196,12 +196,12 @@ Steps:
 
 Tradeoffs:
 
-Keeping kubectl as name:
+Keeping kubectl as name: Need to make it continue to look and act like kubectl
 
 - Minimal change from users perspective
 - Can easily swap with existing kubectl without updating docs, blog posts, etc
 
-Renaming to ktl:
+Renaming to ktl: Need to get everyone to use the new command
 
 - Easier to phase out old commands with new ones while changing behavior
 - Easier to restructure command layout
