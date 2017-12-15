@@ -10,12 +10,15 @@ import (
 	"github.com/onsi/gomega/gexec"
 )
 
-// Etcd knows how to run an etcd server. Set it up with the path to a precompiled binary.
+// Etcd knows how to run an etcd server.
+//
+// The documentation and examples for the Etcd's properties can be found in
+// in the documentation for the `APIServer`, as both implement a `ControlPaneProcess`.
 type Etcd struct {
 	AddressManager AddressManager
 	PathFinder     BinPathFinder
-	ProcessStarter simpleSessionStarter
-	DataDirManager dataDirManager
+	ProcessStarter SimpleSessionStarter
+	DataDirManager DataDirManager
 	StopTimeout    time.Duration
 	StartTimeout   time.Duration
 	session        SimpleSession
@@ -23,14 +26,17 @@ type Etcd struct {
 	stdErr         *gbytes.Buffer
 }
 
-type dataDirManager interface {
+// DataDirManager knows how to manage a data directory to be used by Etcd.
+type DataDirManager interface {
 	Create() (string, error)
 	Destroy() error
 }
 
-//go:generate counterfeiter . dataDirManager
+//go:generate counterfeiter . DataDirManager
 
-// SimpleSession describes a CLI session. You can get output, and you can kill it. It is implemented by *gexec.Session.
+// SimpleSession describes a CLI session. You can get output, the exit code, and you can terminate it.
+//
+// It is implemented by *gexec.Session.
 type SimpleSession interface {
 	Buffer() *gbytes.Buffer
 	ExitCode() int
@@ -39,7 +45,9 @@ type SimpleSession interface {
 
 //go:generate counterfeiter . SimpleSession
 
-type simpleSessionStarter func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error)
+// SimpleSessionStarter knows how to start a exec.Cmd with a writer for both StdOut & StdErr and returning it wrapped
+// in a `SimpleSession`.
+type SimpleSessionStarter func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error)
 
 // URL returns the URL Etcd is listening on. Clients can use this to connect to Etcd.
 func (e *Etcd) URL() (string, error) {

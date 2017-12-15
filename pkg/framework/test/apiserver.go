@@ -10,26 +10,65 @@ import (
 	"github.com/onsi/gomega/gexec"
 )
 
-// APIServer knows how to run a kubernetes apiserver. Set it up with the path to a precompiled binary.
+// APIServer knows how to run a kubernetes apiserver.
 type APIServer struct {
+	// AddressManager, after being `Initialize()`d, can be queried for a port and a host the APIServer can bind
+	// to. It is the responsibility of the AddressManager to find a free port.
+	// If not specified, the `DefaultAddressManager` is used, which returns a random free port.
+	//
+	// You can customise this if, e.g. you need to listen on a non-local interface on a certain range
+	// of ports which are not blocked by your firewall. In this case, you can hand in a special
+	// AddressManager as shown in the `FirewalledAddressManager` example.
 	AddressManager AddressManager
-	PathFinder     BinPathFinder
-	ProcessStarter simpleSessionStarter
-	CertDirManager certDirManager
-	Etcd           ControlPlaneProcess
-	StopTimeout    time.Duration
-	StartTimeout   time.Duration
-	session        SimpleSession
-	stdOut         *gbytes.Buffer
-	stdErr         *gbytes.Buffer
+
+	// PathFinder is used to resolve a symbolic name, "kube-apiserver" in this case, to a name / path to a binary
+	// to run.
+	// If not specified, the DefaultBinPathFinder is used, which tries to resolve the binary name from the environment
+	// or from a fixed assets directory.
+	//
+	// You can customise this if, e.g. you need to specify a fixed path. You can pass in a different BinPathFinder as
+	// shown in the `SpecialPathFinder` example.
+	PathFinder BinPathFinder
+
+	// ProcessStarter is a way to hook into how a the APIServer process is started. By default `gexec.Start(...)` is
+	// used to run the process.
+	//
+	// You can customize this if, e.g. you want to pass additional arguments or do extra logging.
+	// See the `SpecialPathFinder` example.
+	ProcessStarter SimpleSessionStarter
+
+	// CertDirManager is responsible to provide a directory where the APIServer can find and store certain
+	// certificates and keys, and to clean up after the APIServer was shut down
+	// If not specified, a empty temporary directory is created and deleted.
+	//
+	// You can customise this if, e.g. you wish to pre-populate the directory with certs & keys from your central
+	// secrets store.  See the `CredHubCertDirManager` example.
+	CertDirManager CertDirManager
+
+	// Etcd is an implementation of a ControlPlaneProcess and is responsible to run Etcd and provide its coordinates.
+	// If not specified, a brand new instance of Etcd is brought up.
+	//
+	// You can customise this if, e.g. you wish to use a already existing and running Etcd.
+	// See the example `RemoteEtcd`.
+	Etcd ControlPlaneProcess
+
+	// StopTimeout, StartTimeout specify the time the APIServer is allowed to take when stopping resp. starting
+	// before and error is emitted.
+	StopTimeout  time.Duration
+	StartTimeout time.Duration
+
+	session SimpleSession
+	stdOut  *gbytes.Buffer
+	stdErr  *gbytes.Buffer
 }
 
-type certDirManager interface {
+// CertDirManager knows how to manage a certificate directory for an APIServer.
+type CertDirManager interface {
 	Create() (string, error)
 	Destroy() error
 }
 
-//go:generate counterfeiter . certDirManager
+//go:generate counterfeiter . CertDirManager
 
 // URL returns the URL APIServer is listening on. Clients can use this to connect to APIServer.
 func (s *APIServer) URL() (string, error) {

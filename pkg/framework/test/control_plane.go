@@ -1,3 +1,4 @@
+// Package test an integration test framework for k8s
 package test
 
 // ControlPlane is a struct that knows how to start your test control plane.
