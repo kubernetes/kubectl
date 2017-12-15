@@ -8,6 +8,8 @@ import (
 
 	"fmt"
 
+	"time"
+
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/gbytes"
@@ -23,6 +25,7 @@ var _ = Describe("Apiserver", func() {
 		fakeEtcdProcess    *testfakes.FakeControlPlaneProcess
 		fakePathFinder     *testfakes.FakeBinPathFinder
 		fakeAddressManager *testfakes.FakeAddressManager
+		apiServerStopper   chan struct{}
 	)
 
 	BeforeEach(func() {
@@ -32,11 +35,18 @@ var _ = Describe("Apiserver", func() {
 		fakePathFinder = &testfakes.FakeBinPathFinder{}
 		fakeAddressManager = &testfakes.FakeAddressManager{}
 
+		apiServerStopper = make(chan struct{}, 1)
+		fakeSession.TerminateReturns(&gexec.Session{
+			Exited: apiServerStopper,
+		})
+		close(apiServerStopper)
+
 		apiServer = &APIServer{
 			AddressManager: fakeAddressManager,
 			PathFinder:     fakePathFinder.Spy,
 			CertDirManager: fakeCertDirManager,
 			Etcd:           fakeEtcdProcess,
+			StopTimeout:    500 * time.Millisecond,
 		}
 	})
 
@@ -93,13 +103,12 @@ var _ = Describe("Apiserver", func() {
 				Expect(fakeCertDirManager.CreateCallCount()).To(Equal(1))
 
 				By("Stopping the API Server")
-				apiServer.Stop()
+				Expect(apiServer.Stop()).To(Succeed())
 
 				Expect(fakeCertDirManager.DestroyCallCount()).To(Equal(1))
 				Expect(fakeEtcdProcess.StopCallCount()).To(Equal(1))
 				Expect(apiServer).To(gexec.Exit(143))
 				Expect(fakeSession.TerminateCallCount()).To(Equal(1))
-				Expect(fakeSession.WaitCallCount()).To(Equal(1))
 				Expect(fakeSession.ExitCodeCallCount()).To(Equal(2))
 				Expect(fakeCertDirManager.DestroyCallCount()).To(Equal(1))
 			})
@@ -225,6 +234,18 @@ var _ = Describe("Apiserver", func() {
 			})
 		})
 
+		Context("when the starter takes longer than our timeout", func() {
+			It("gives us a timeout error", func() {
+				apiServer.StartTimeout = 1 * time.Nanosecond
+				apiServer.ProcessStarter = func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
+					return &gexec.Session{}, nil
+				}
+
+				err := apiServer.Start()
+				Expect(err).To(MatchError(ContainSubstring("timeout waiting for apiserver to start serving")))
+			})
+		})
+
 		Context("when we try to stop a server that hasn't been started", func() {
 			It("is a noop and does not call exit on the session", func() {
 				apiServer.ProcessStarter = func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
@@ -235,6 +256,25 @@ var _ = Describe("Apiserver", func() {
 			})
 		})
 
+		Context("when Stop() times out", func() {
+			JustBeforeEach(func() {
+				apiServerStopperWillNeverBeUsed := make(chan struct{}, 1)
+				fakeSession.TerminateReturns(&gexec.Session{
+					Exited: apiServerStopperWillNeverBeUsed,
+				})
+			})
+			It("propagates the error", func() {
+				fakeAddressManager.InitializeReturns(1234, "this.is.apiserver", nil)
+				apiServer.ProcessStarter = func(Command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
+					fmt.Fprint(err, "Serving insecurely on this.is.apiserver:1234")
+					return fakeSession, nil
+				}
+
+				Expect(apiServer.Start()).To(Succeed())
+				err := apiServer.Stop()
+				Expect(err).To(MatchError(ContainSubstring("timeout")))
+			})
+		})
 	})
 
 	Describe("querying the server for its URL", func() {

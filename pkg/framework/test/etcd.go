@@ -16,6 +16,8 @@ type Etcd struct {
 	PathFinder     BinPathFinder
 	ProcessStarter simpleSessionStarter
 	DataDirManager dataDirManager
+	StopTimeout    time.Duration
+	StartTimeout   time.Duration
 	session        SimpleSession
 	stdOut         *gbytes.Buffer
 	stdErr         *gbytes.Buffer
@@ -32,7 +34,6 @@ type dataDirManager interface {
 type SimpleSession interface {
 	Buffer() *gbytes.Buffer
 	ExitCode() int
-	Wait(timeout ...interface{}) *gexec.Session
 	Terminate() *gexec.Session
 }
 
@@ -81,7 +82,7 @@ func (e *Etcd) Start() error {
 
 	detectedStart := e.stdErr.Detect(fmt.Sprintf(
 		"serving insecure client requests on %s", host))
-	timedOut := time.After(20 * time.Second)
+	timedOut := time.After(e.StartTimeout)
 
 	command := exec.Command(e.PathFinder("etcd"), args...)
 	e.session, err = e.ProcessStarter(command, e.stdOut, e.stdErr)
@@ -113,6 +114,12 @@ func (e *Etcd) ensureInitialized() {
 	if e.DataDirManager == nil {
 		e.DataDirManager = NewTempDirManager()
 	}
+	if e.StopTimeout == 0 {
+		e.StopTimeout = 20 * time.Second
+	}
+	if e.StartTimeout == 0 {
+		e.StartTimeout = 20 * time.Second
+	}
 
 	e.stdOut = gbytes.NewBuffer()
 	e.stdErr = gbytes.NewBuffer()
@@ -124,13 +131,18 @@ func (e *Etcd) Stop() error {
 		return nil
 	}
 
-	e.session.Terminate()
-	// TODO have a better way to handle the timeout of Stop()
-	e.session.Wait(20 * time.Second)
+	session := e.session.Terminate()
+	detectedStop := session.Exited
+	timedOut := time.After(e.StopTimeout)
 
-	err := e.DataDirManager.Destroy()
+	select {
+	case <-detectedStop:
+		break
+	case <-timedOut:
+		return fmt.Errorf("timeout waiting for etcd to stop")
+	}
 
-	return err
+	return e.DataDirManager.Destroy()
 }
 
 // ExitCode returns the exit code of the process, if it has exited. If it hasn't exited yet, ExitCode returns -1.

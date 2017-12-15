@@ -5,6 +5,8 @@ import (
 	"io"
 	"os/exec"
 
+	"time"
+
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/gbytes"
@@ -20,6 +22,7 @@ var _ = Describe("Etcd", func() {
 		fakePathFinder     *testfakes.FakeBinPathFinder
 		fakeAddressManager *testfakes.FakeAddressManager
 		etcd               *Etcd
+		etcdStopper        chan struct{}
 	)
 
 	BeforeEach(func() {
@@ -28,10 +31,17 @@ var _ = Describe("Etcd", func() {
 		fakePathFinder = &testfakes.FakeBinPathFinder{}
 		fakeAddressManager = &testfakes.FakeAddressManager{}
 
+		etcdStopper = make(chan struct{}, 1)
+		fakeSession.TerminateReturns(&gexec.Session{
+			Exited: etcdStopper,
+		})
+		close(etcdStopper)
+
 		etcd = &Etcd{
 			AddressManager: fakeAddressManager,
 			PathFinder:     fakePathFinder.Spy,
 			DataDirManager: fakeDataDirManager,
+			StopTimeout:    500 * time.Millisecond,
 		}
 	})
 
@@ -83,7 +93,6 @@ var _ = Describe("Etcd", func() {
 				Expect(fakeDataDirManager.DestroyCallCount()).To(Equal(1))
 				Expect(etcd).To(gexec.Exit(143))
 				Expect(fakeSession.TerminateCallCount()).To(Equal(1))
-				Expect(fakeSession.WaitCallCount()).To(Equal(1))
 				Expect(fakeSession.ExitCodeCallCount()).To(Equal(2))
 				Expect(fakeDataDirManager.DestroyCallCount()).To(Equal(1))
 			})
@@ -144,6 +153,18 @@ var _ = Describe("Etcd", func() {
 			})
 		})
 
+		Context("when the starter takes longer than our timeout", func() {
+			It("gives us a timeout error", func() {
+				etcd.StartTimeout = 1 * time.Nanosecond
+				etcd.ProcessStarter = func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
+					return &gexec.Session{}, nil
+				}
+
+				err := etcd.Start()
+				Expect(err).To(MatchError(ContainSubstring("timeout waiting for etcd to start serving")))
+			})
+		})
+
 		Context("when we try to stop a server that hasn't been started", func() {
 			It("is a noop and does not call exit on the session", func() {
 				etcd.ProcessStarter = func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
@@ -151,6 +172,27 @@ var _ = Describe("Etcd", func() {
 				}
 				etcd.Stop()
 				Expect(fakeSession.ExitCodeCallCount()).To(Equal(0))
+			})
+		})
+
+		Context("when Stop() times out", func() {
+			JustBeforeEach(func() {
+				etcdStopperWillNotBeUsed := make(chan struct{})
+				fakeSession.TerminateReturns(&gexec.Session{
+					Exited: etcdStopperWillNotBeUsed,
+				})
+			})
+			It("propagates the error", func() {
+				fakeAddressManager.InitializeReturns(1234, "this.is.etcd", nil)
+
+				etcd.ProcessStarter = func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
+					fmt.Fprint(err, "serving insecure client requests on this.is.etcd:1234")
+					return fakeSession, nil
+				}
+
+				Expect(etcd.Start()).To(Succeed())
+				err := etcd.Stop()
+				Expect(err).To(MatchError(ContainSubstring("timeout")))
 			})
 		})
 	})

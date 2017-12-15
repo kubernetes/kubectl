@@ -28,17 +28,6 @@ type FakeSimpleSession struct {
 	exitCodeReturnsOnCall map[int]struct {
 		result1 int
 	}
-	WaitStub        func(timeout ...interface{}) *gexec.Session
-	waitMutex       sync.RWMutex
-	waitArgsForCall []struct {
-		timeout []interface{}
-	}
-	waitReturns struct {
-		result1 *gexec.Session
-	}
-	waitReturnsOnCall map[int]struct {
-		result1 *gexec.Session
-	}
 	TerminateStub        func() *gexec.Session
 	terminateMutex       sync.RWMutex
 	terminateArgsForCall []struct{}
@@ -132,54 +121,6 @@ func (fake *FakeSimpleSession) ExitCodeReturnsOnCall(i int, result1 int) {
 	}{result1}
 }
 
-func (fake *FakeSimpleSession) Wait(timeout ...interface{}) *gexec.Session {
-	fake.waitMutex.Lock()
-	ret, specificReturn := fake.waitReturnsOnCall[len(fake.waitArgsForCall)]
-	fake.waitArgsForCall = append(fake.waitArgsForCall, struct {
-		timeout []interface{}
-	}{timeout})
-	fake.recordInvocation("Wait", []interface{}{timeout})
-	fake.waitMutex.Unlock()
-	if fake.WaitStub != nil {
-		return fake.WaitStub(timeout...)
-	}
-	if specificReturn {
-		return ret.result1
-	}
-	return fake.waitReturns.result1
-}
-
-func (fake *FakeSimpleSession) WaitCallCount() int {
-	fake.waitMutex.RLock()
-	defer fake.waitMutex.RUnlock()
-	return len(fake.waitArgsForCall)
-}
-
-func (fake *FakeSimpleSession) WaitArgsForCall(i int) []interface{} {
-	fake.waitMutex.RLock()
-	defer fake.waitMutex.RUnlock()
-	return fake.waitArgsForCall[i].timeout
-}
-
-func (fake *FakeSimpleSession) WaitReturns(result1 *gexec.Session) {
-	fake.WaitStub = nil
-	fake.waitReturns = struct {
-		result1 *gexec.Session
-	}{result1}
-}
-
-func (fake *FakeSimpleSession) WaitReturnsOnCall(i int, result1 *gexec.Session) {
-	fake.WaitStub = nil
-	if fake.waitReturnsOnCall == nil {
-		fake.waitReturnsOnCall = make(map[int]struct {
-			result1 *gexec.Session
-		})
-	}
-	fake.waitReturnsOnCall[i] = struct {
-		result1 *gexec.Session
-	}{result1}
-}
-
 func (fake *FakeSimpleSession) Terminate() *gexec.Session {
 	fake.terminateMutex.Lock()
 	ret, specificReturn := fake.terminateReturnsOnCall[len(fake.terminateArgsForCall)]
@@ -227,8 +168,6 @@ func (fake *FakeSimpleSession) Invocations() map[string][][]interface{} {
 	defer fake.bufferMutex.RUnlock()
 	fake.exitCodeMutex.RLock()
 	defer fake.exitCodeMutex.RUnlock()
-	fake.waitMutex.RLock()
-	defer fake.waitMutex.RUnlock()
 	fake.terminateMutex.RLock()
 	defer fake.terminateMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
