@@ -26,7 +26,7 @@ Benefits of this approach:
 - static binary makes it simple for users to install the cli
 - single binary limits the size of the install (MB) vs distributing ~50 separate go commands (GB)
 - centralizing the development facilitates the construction of shared libraries and infrastructure
-- leveraging the kubernetes/kubenretes repo infrastructure provides a process to build and release
+- leveraging the kubernetes/kubernetes repo infrastructure provides a process to build and release
 
 Challenges of this approach:
 
@@ -181,22 +181,34 @@ release notes from vendored commands.
 - publish binary to gs:// bucket
 - publish binary + release notes to GitHub releases page
 
-## Alternatives considers
+## Keeping the kubectl name vs rebranding
+
+Alternatively we could call the new command `kubectl` and attach all of the legacy kubectl commands
+at the root level.  This would make it look and feel exactly like `kubectl`, but allow for new pieces
+to be built out of kubernetes/kubernetes.
+
+Steps:
+
+- rename `kubernetes/kubernets/cmd/kubectl` to `kubernetes/kubernets/cmd/legacykubectl`
+- rename `kubernetes/kubernets/pkg/kubectl` to `kubernetes/kubernets/pkg/legacykubectl`
+- create new `kubernetes/kubectl/cmd/kubectl` command
+- vendor kubectl subcommands directly under `kubernetes/kubectl/cmd/kubectl` root command
+
+Tradeoffs:
+
+Keeping kubectl as name:
+
+- Minimal change from users perspective
+- Can easily swap with existing kubectl without updating docs, blog posts, etc
+
+Renaming to ktl:
+
+- Easier to phase out old commands with new ones while changing behavior
+- Easier to restructure command layout
+- Easier to redefine command wide things - such as version skew support
+
+## More alternatives considered
 
 *Don't vendor in commands, make them plugins instead*
 
 - This is a more complicated approach that can be considered in a later iteration.
-
-*Name `ktl` -> `kubectl` instead and attach `kubectl` subcommands directly to the root so
-that users don't see a different interface*
-
-- Many of the commands should be rewritten and have the behavior slightly modified to be more correct.
-  Renaming the binary allows us to expose the new command under a different name - avoiding breaking compatibility
-- This also allows us to more easily refine the design and architecture by
-  - restructuring the command groupings
-  - dropping commands we want to phase out
-
-But what about all the old blog posts, docs, books?
-
-- These become out of date anyway as new and improved solutions are built (e.g. new APIs are introduced)
-- Docs can be updated
