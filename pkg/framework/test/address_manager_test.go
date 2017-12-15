@@ -18,7 +18,7 @@ var _ = Describe("DefaultAddressManager", func() {
 
 	Describe("Initialize", func() {
 		It("returns a free port and an address to bind to", func() {
-			port, host, err := defaultAddressManager.Initialize("localhost")
+			port, host, err := defaultAddressManager.Initialize()
 
 			Expect(err).NotTo(HaveOccurred())
 			Expect(host).To(Equal("127.0.0.1"))
@@ -33,32 +33,11 @@ var _ = Describe("DefaultAddressManager", func() {
 			Expect(err).NotTo(HaveOccurred())
 		})
 
-		Context("when given an invalid hostname", func() {
-			It("propagates the error", func() {
-				_, _, err := defaultAddressManager.Initialize("this is not a hostname")
-
-				Expect(err).To(MatchError(ContainSubstring("no such host")))
-			})
-		})
-
-		Context("when given a hostname that we don't have permission to listen on", func() {
-			It("propagates the error", func() {
-				_, _, err := defaultAddressManager.Initialize("example.com")
-
-				Expect(err).To(SatisfyAny(
-					// Linux
-					MatchError(ContainSubstring("bind: cannot assign requested address")),
-					// Darwin
-					MatchError(ContainSubstring("bind: can't assign requested address")),
-				))
-			})
-		})
-
 		Context("initialized multiple times", func() {
 			It("fails", func() {
-				_, _, err := defaultAddressManager.Initialize("localhost")
+				_, _, err := defaultAddressManager.Initialize()
 				Expect(err).NotTo(HaveOccurred())
-				_, _, err = defaultAddressManager.Initialize("localhost")
+				_, _, err = defaultAddressManager.Initialize()
 				Expect(err).To(MatchError(ContainSubstring("already initialized")))
 			})
 		})
@@ -69,7 +48,7 @@ var _ = Describe("DefaultAddressManager", func() {
 			Expect(err).To(MatchError(ContainSubstring("not initialized yet")))
 		})
 		It("returns the same port as previously allocated by Initialize", func() {
-			expectedPort, _, err := defaultAddressManager.Initialize("localhost")
+			expectedPort, _, err := defaultAddressManager.Initialize()
 			Expect(err).NotTo(HaveOccurred())
 			actualPort, err := defaultAddressManager.Port()
 			Expect(err).NotTo(HaveOccurred())
@@ -82,7 +61,7 @@ var _ = Describe("DefaultAddressManager", func() {
 			Expect(err).To(MatchError(ContainSubstring("not initialized yet")))
 		})
 		It("returns the same port as previously allocated by Initialize", func() {
-			_, expectedHost, err := defaultAddressManager.Initialize("localhost")
+			_, expectedHost, err := defaultAddressManager.Initialize()
 			Expect(err).NotTo(HaveOccurred())
 			actualHost, err := defaultAddressManager.Host()
 			Expect(err).NotTo(HaveOccurred())

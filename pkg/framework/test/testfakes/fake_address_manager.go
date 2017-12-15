@@ -8,12 +8,10 @@ import (
 )
 
 type FakeAddressManager struct {
-	InitializeStub        func(host string) (port int, resolvedAddress string, err error)
+	InitializeStub        func() (port int, resolvedAddress string, err error)
 	initializeMutex       sync.RWMutex
-	initializeArgsForCall []struct {
-		host string
-	}
-	initializeReturns struct {
+	initializeArgsForCall []struct{}
+	initializeReturns     struct {
 		result1 int
 		result2 string
 		result3 error
@@ -49,16 +47,14 @@ type FakeAddressManager struct {
 	invocationsMutex sync.RWMutex
 }
 
-func (fake *FakeAddressManager) Initialize(host string) (port int, resolvedAddress string, err error) {
+func (fake *FakeAddressManager) Initialize() (port int, resolvedAddress string, err error) {
 	fake.initializeMutex.Lock()
 	ret, specificReturn := fake.initializeReturnsOnCall[len(fake.initializeArgsForCall)]
-	fake.initializeArgsForCall = append(fake.initializeArgsForCall, struct {
-		host string
-	}{host})
-	fake.recordInvocation("Initialize", []interface{}{host})
+	fake.initializeArgsForCall = append(fake.initializeArgsForCall, struct{}{})
+	fake.recordInvocation("Initialize", []interface{}{})
 	fake.initializeMutex.Unlock()
 	if fake.InitializeStub != nil {
-		return fake.InitializeStub(host)
+		return fake.InitializeStub()
 	}
 	if specificReturn {
 		return ret.result1, ret.result2, ret.result3
@@ -70,12 +66,6 @@ func (fake *FakeAddressManager) InitializeCallCount() int {
 	fake.initializeMutex.RLock()
 	defer fake.initializeMutex.RUnlock()
 	return len(fake.initializeArgsForCall)
-}
-
-func (fake *FakeAddressManager) InitializeArgsForCall(i int) string {
-	fake.initializeMutex.RLock()
-	defer fake.initializeMutex.RUnlock()
-	return fake.initializeArgsForCall[i].host
 }
 
 func (fake *FakeAddressManager) InitializeReturns(result1 int, result2 string, result3 error) {

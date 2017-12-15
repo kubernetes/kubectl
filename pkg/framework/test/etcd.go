@@ -61,7 +61,7 @@ func (e *Etcd) URL() (string, error) {
 func (e *Etcd) Start() error {
 	e.ensureInitialized()
 
-	port, host, err := e.AddressManager.Initialize("localhost")
+	port, host, err := e.AddressManager.Initialize()
 	if err != nil {
 		return err
 	}

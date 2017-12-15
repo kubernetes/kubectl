@@ -51,7 +51,7 @@ func (s *APIServer) URL() (string, error) {
 func (s *APIServer) Start() error {
 	s.ensureInitialized()
 
-	port, addr, err := s.AddressManager.Initialize("localhost")
+	port, addr, err := s.AddressManager.Initialize()
 	if err != nil {
 		return err
 	}

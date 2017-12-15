@@ -8,7 +8,7 @@ import (
 // AddressManager knows how to generate and remember a single address on some
 // local interface for a service to listen on.
 type AddressManager interface {
-	Initialize(host string) (port int, resolvedAddress string, err error)
+	Initialize() (port int, resolvedAddress string, err error)
 	Host() (string, error)
 	Port() (int, error)
 }
@@ -22,13 +22,13 @@ type DefaultAddressManager struct {
 	host string
 }
 
-// Initialize returns a address a process can listen on. Given a hostname it returns an address,
+// Initialize returns a address a process can listen on. It returns
 // a tuple consisting of a free port and the hostname resolved to its IP.
-func (d *DefaultAddressManager) Initialize(host string) (port int, resolvedHost string, err error) {
+func (d *DefaultAddressManager) Initialize() (port int, resolvedHost string, err error) {
 	if d.port != 0 {
 		return 0, "", fmt.Errorf("this DefaultAddressManager is already initialized")
 	}
-	addr, err := net.ResolveTCPAddr("tcp", fmt.Sprintf("%s:0", host))
+	addr, err := net.ResolveTCPAddr("tcp", "localhost:0")
 	if err != nil {
 		return
 	}

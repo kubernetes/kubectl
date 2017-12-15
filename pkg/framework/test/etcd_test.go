@@ -76,7 +76,6 @@ var _ = Describe("Etcd", func() {
 
 				By("...in turn calling using the AddressManager")
 				Expect(fakeAddressManager.InitializeCallCount()).To(Equal(1))
-				Expect(fakeAddressManager.InitializeArgsForCall(0)).To(Equal("localhost"))
 
 				By("...in turn using the DataDirManager")
 				Expect(fakeDataDirManager.CreateCallCount()).To(Equal(1))
