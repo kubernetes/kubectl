@@ -19,7 +19,6 @@ var _ = Describe("Etcd", func() {
 	var (
 		fakeSession        *testfakes.FakeSimpleSession
 		fakeDataDirManager *testfakes.FakeDataDirManager
-		fakePathFinder     *testfakes.FakeBinPathFinder
 		fakeAddressManager *testfakes.FakeAddressManager
 		etcd               *Etcd
 		etcdStopper        chan struct{}
@@ -28,7 +27,6 @@ var _ = Describe("Etcd", func() {
 	BeforeEach(func() {
 		fakeSession = &testfakes.FakeSimpleSession{}
 		fakeDataDirManager = &testfakes.FakeDataDirManager{}
-		fakePathFinder = &testfakes.FakeBinPathFinder{}
 		fakeAddressManager = &testfakes.FakeAddressManager{}
 
 		etcdStopper = make(chan struct{}, 1)
@@ -39,7 +37,7 @@ var _ = Describe("Etcd", func() {
 
 		etcd = &Etcd{
 			AddressManager: fakeAddressManager,
-			PathFinder:     fakePathFinder.Spy,
+			Path:           "/path/to/some/etcd",
 			DataDirManager: fakeDataDirManager,
 			StopTimeout:    500 * time.Millisecond,
 		}
@@ -55,7 +53,6 @@ var _ = Describe("Etcd", func() {
 				fakeSession.ExitCodeReturnsOnCall(0, -1)
 				fakeSession.ExitCodeReturnsOnCall(1, 143)
 
-				fakePathFinder.ReturnsOnCall(0, "/path/to/some/etcd")
 				fakeAddressManager.InitializeReturns(1234, "this.is.etcd.listening.for.clients", nil)
 
 				etcd.ProcessStarter = func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
@@ -69,10 +66,6 @@ var _ = Describe("Etcd", func() {
 				By("Starting the Etcd Server")
 				err := etcd.Start()
 				Expect(err).NotTo(HaveOccurred())
-
-				By("...in turn calling the PathFinder")
-				Expect(fakePathFinder.CallCount()).To(Equal(1))
-				Expect(fakePathFinder.ArgsForCall(0)).To(Equal("etcd"))
 
 				By("...in turn calling using the AddressManager")
 				Expect(fakeAddressManager.InitializeCallCount()).To(Equal(1))

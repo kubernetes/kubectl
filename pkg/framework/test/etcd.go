@@ -16,7 +16,7 @@ import (
 // in the documentation for the `APIServer`, as both implement a `ControlPaneProcess`.
 type Etcd struct {
 	AddressManager AddressManager
-	PathFinder     BinPathFinder
+	Path           string
 	ProcessStarter SimpleSessionStarter
 	DataDirManager DataDirManager
 	StopTimeout    time.Duration
@@ -92,7 +92,7 @@ func (e *Etcd) Start() error {
 		"serving insecure client requests on %s", host))
 	timedOut := time.After(e.StartTimeout)
 
-	command := exec.Command(e.PathFinder("etcd"), args...)
+	command := exec.Command(e.Path, args...)
 	e.session, err = e.ProcessStarter(command, e.stdOut, e.stdErr)
 	if err != nil {
 		return err
@@ -107,8 +107,8 @@ func (e *Etcd) Start() error {
 }
 
 func (e *Etcd) ensureInitialized() {
-	if e.PathFinder == nil {
-		e.PathFinder = DefaultBinPathFinder
+	if e.Path == "" {
+		e.Path = DefaultBinPathFinder("etcd")
 	}
 
 	if e.AddressManager == nil {
