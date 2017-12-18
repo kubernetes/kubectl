@@ -21,14 +21,11 @@ type APIServer struct {
 	// AddressManager as shown in the `FirewalledAddressManager` example.
 	AddressManager AddressManager
 
-	// PathFinder is used to resolve a symbolic name, "kube-apiserver" in this case, to a name / path to a binary
-	// to run.
-	// If not specified, the DefaultBinPathFinder is used, which tries to resolve the binary name from the environment
-	// or from a fixed assets directory.
-	//
-	// You can customise this if, e.g. you need to specify a fixed path. You can pass in a different BinPathFinder as
-	// shown in the `SpecialPathFinder` example.
-	PathFinder BinPathFinder
+	// Path is the path to the apiserver binary. If this is left as the empty
+	// string, we will use DefaultBinPathFinder to attempt to locate a binary, by
+	// checking for the TEST_ASSET_KUBE_APISERVER environment variable, and the
+	// default test assets directory.
+	Path string
 
 	// ProcessStarter is a way to hook into how a the APIServer process is started. By default `gexec.Start(...)` is
 	// used to run the process.
@@ -130,7 +127,7 @@ func (s *APIServer) Start() error {
 	detectedStart := s.stdErr.Detect(fmt.Sprintf("Serving insecurely on %s:%d", addr, port))
 	timedOut := time.After(s.StartTimeout)
 
-	command := exec.Command(s.PathFinder("kube-apiserver"), args...)
+	command := exec.Command(s.Path, args...)
 	s.session, err = s.ProcessStarter(command, s.stdOut, s.stdErr)
 	if err != nil {
 		return err
@@ -145,8 +142,8 @@ func (s *APIServer) Start() error {
 }
 
 func (s *APIServer) ensureInitialized() {
-	if s.PathFinder == nil {
-		s.PathFinder = DefaultBinPathFinder
+	if s.Path == "" {
+		s.Path = DefaultBinPathFinder("kube-apiserver")
 	}
 	if s.AddressManager == nil {
 		s.AddressManager = &DefaultAddressManager{}

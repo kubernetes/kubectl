@@ -23,7 +23,6 @@ var _ = Describe("Apiserver", func() {
 		fakeCertDirManager *testfakes.FakeCertDirManager
 		apiServer          *APIServer
 		fakeEtcdProcess    *testfakes.FakeControlPlaneProcess
-		fakePathFinder     *testfakes.FakeBinPathFinder
 		fakeAddressManager *testfakes.FakeAddressManager
 		apiServerStopper   chan struct{}
 	)
@@ -32,7 +31,6 @@ var _ = Describe("Apiserver", func() {
 		fakeSession = &testfakes.FakeSimpleSession{}
 		fakeCertDirManager = &testfakes.FakeCertDirManager{}
 		fakeEtcdProcess = &testfakes.FakeControlPlaneProcess{}
-		fakePathFinder = &testfakes.FakeBinPathFinder{}
 		fakeAddressManager = &testfakes.FakeAddressManager{}
 
 		apiServerStopper = make(chan struct{}, 1)
@@ -43,7 +41,7 @@ var _ = Describe("Apiserver", func() {
 
 		apiServer = &APIServer{
 			AddressManager: fakeAddressManager,
-			PathFinder:     fakePathFinder.Spy,
+			Path:           "/some/path/to/apiserver",
 			CertDirManager: fakeCertDirManager,
 			Etcd:           fakeEtcdProcess,
 			StopTimeout:    500 * time.Millisecond,
@@ -61,7 +59,6 @@ var _ = Describe("Apiserver", func() {
 				fakeSession.ExitCodeReturnsOnCall(0, -1)
 				fakeSession.ExitCodeReturnsOnCall(1, 143)
 
-				fakePathFinder.Returns("/some/path/to/apiserver")
 				fakeAddressManager.InitializeReturns(1234, "this.is.the.API.server", nil)
 				fakeEtcdProcess.URLReturns("the etcd url", nil)
 
@@ -81,10 +78,6 @@ var _ = Describe("Apiserver", func() {
 				By("...in turn starting Etcd")
 				Expect(fakeEtcdProcess.StartCallCount()).To(Equal(1),
 					"the Etcd process should be started exactly once")
-
-				By("...in turn calling the PathFinder")
-				Expect(fakePathFinder.CallCount()).To(Equal(1))
-				Expect(fakePathFinder.ArgsForCall(0)).To(Equal("kube-apiserver"))
 
 				By("...in turn calling the AddressManager")
 				Expect(fakeAddressManager.InitializeCallCount()).To(Equal(1))
