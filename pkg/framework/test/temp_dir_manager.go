@@ -6,9 +6,13 @@ import (
 )
 
 // TempDirMaker can create directories.
+//
+// It is implemented by `ioutil.TempDir`
 type TempDirMaker func(dir, prefix string) (name string, err error)
 
 // TempDirRemover can delete directories
+//
+// It is implemented by `os.RemoveAll`
 type TempDirRemover func(dir string) error
 
 // NewTempDirManager returns a new manager for creation and deleteion of temporary directories.

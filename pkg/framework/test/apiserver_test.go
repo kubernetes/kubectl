@@ -88,7 +88,6 @@ var _ = Describe("Apiserver", func() {
 
 				By("...in turn calling the AddressManager")
 				Expect(fakeAddressManager.InitializeCallCount()).To(Equal(1))
-				Expect(fakeAddressManager.InitializeArgsForCall(0)).To(Equal("localhost"))
 
 				By("...in turn calling the CertDirManager")
 				Expect(fakeCertDirManager.CreateCallCount()).To(Equal(1))
