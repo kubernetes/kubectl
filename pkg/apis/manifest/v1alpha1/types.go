@@ -137,7 +137,7 @@ type Secret struct {
 	Generic `json:",inline,omitempty" yaml:",inline,omitempty"`
 
 	// TLS secret.
-	TLS TLS `json:"tls,omitempty" yaml:"tls,omitempty"`
+	TLS *TLS `json:"tls,omitempty" yaml:"tls,omitempty"`
 
 	// TODO: support more secret types, e.g. DockerRegistry
 }
@@ -145,19 +145,21 @@ type Secret struct {
 // Generic contains some generic sources for configmap or secret.
 // Only one field can be set.
 type Generic struct {
-	// Literal format should be a key and literal value, e.g. `somekey=somevalue`
+	// LiteralSources is a list of literal sources.
+	// Each literal source should be a key and literal value, e.g. `somekey=somevalue`
 	// It will be similar to kubectl create configmap|secret --from-literal
-	Literal string `json:"literal,omitempty" yaml:"literal,omitempty"`
+	LiteralSources []string `json:"literals,omitempty" yaml:"literals,omitempty"`
 
-	// File format can be specified using its file path, in which case file basename will be used as configmap key,
+	// FileSources is a list of file sources.
+	// Each file source can be specified using its file path, in which case file basename will be used as configmap key,
 	// or optionally with a key and file path, in which case the given key will be used.
 	// Specifying a directory will iterate each named file in the directory whose basename is a valid configmap key.
 	// It will be similar to kubectl create configmap|secret --from-file
-	File string `json:"file,omitempty" yaml:"file,omitempty"`
+	FileSources []string `json:"files,omitempty" yaml:"files,omitempty"`
 
-	// EnvFile format should be a path to a file to read lines of key=val pairs to create a configmap.
+	// EnvSource format should be a path to a file to read lines of key=val pairs to create a configmap.
 	// i.e. a Docker .env file or a .ini file.
-	EnvFile string `json:"envFile,omitempty" yaml:"envFile,omitempty"`
+	EnvSource string `json:"env,omitempty" yaml:"env,omitempty"`
 }
 
 // TLS contains cert and key paths.
