@@ -17,16 +17,15 @@ import (
 
 var _ = Describe("Etcd", func() {
 	var (
-		fakeSession        *testfakes.FakeSimpleSession
-		fakeDataDirManager *testfakes.FakeDataDirManager
-		fakeAddressManager *testfakes.FakeAddressManager
-		etcd               *Etcd
-		etcdStopper        chan struct{}
+		fakeSession         *testfakes.FakeSimpleSession
+		fakeAddressManager  *testfakes.FakeAddressManager
+		etcd                *Etcd
+		etcdStopper         chan struct{}
+		dataDirCleanupCount int
 	)
 
 	BeforeEach(func() {
 		fakeSession = &testfakes.FakeSimpleSession{}
-		fakeDataDirManager = &testfakes.FakeDataDirManager{}
 		fakeAddressManager = &testfakes.FakeAddressManager{}
 
 		etcdStopper = make(chan struct{}, 1)
@@ -38,8 +37,14 @@ var _ = Describe("Etcd", func() {
 		etcd = &Etcd{
 			AddressManager: fakeAddressManager,
 			Path:           "/path/to/some/etcd",
-			DataDirManager: fakeDataDirManager,
-			StopTimeout:    500 * time.Millisecond,
+			DataDir: &Directory{
+				Path: "/path/to/some/etcd",
+				Cleanup: func() error {
+					dataDirCleanupCount += 1
+					return nil
+				},
+			},
+			StopTimeout: 500 * time.Millisecond,
 		}
 	})
 
@@ -70,29 +75,26 @@ var _ = Describe("Etcd", func() {
 				By("...in turn calling using the AddressManager")
 				Expect(fakeAddressManager.InitializeCallCount()).To(Equal(1))
 
-				By("...in turn using the DataDirManager")
-				Expect(fakeDataDirManager.CreateCallCount()).To(Equal(1))
-
 				Eventually(etcd).Should(gbytes.Say("Everything is dandy"))
 				Expect(fakeSession.ExitCodeCallCount()).To(Equal(0))
 				Expect(etcd).NotTo(gexec.Exit())
 				Expect(fakeSession.ExitCodeCallCount()).To(Equal(1))
-				Expect(fakeDataDirManager.CreateCallCount()).To(Equal(1))
 
 				By("Stopping the Etcd Server")
 				Expect(etcd.Stop()).To(Succeed())
 
-				Expect(fakeDataDirManager.DestroyCallCount()).To(Equal(1))
+				Expect(dataDirCleanupCount).To(Equal(1))
 				Expect(etcd).To(gexec.Exit(143))
 				Expect(fakeSession.TerminateCallCount()).To(Equal(1))
 				Expect(fakeSession.ExitCodeCallCount()).To(Equal(2))
-				Expect(fakeDataDirManager.DestroyCallCount()).To(Equal(1))
 			})
 		})
 
 		Context("when the data directory cannot be destroyed", func() {
 			It("propagates the error", func() {
-				fakeDataDirManager.DestroyReturns(fmt.Errorf("destroy failed"))
+				etcd.DataDir.Cleanup = func() error {
+					return fmt.Errorf("destroy failed")
+				}
 				fakeAddressManager.InitializeReturns(1234, "this.is.etcd", nil)
 				etcd.ProcessStarter = func(Command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
 					fmt.Fprint(err, "serving insecure client requests on this.is.etcd:1234")
@@ -105,18 +107,22 @@ var _ = Describe("Etcd", func() {
 			})
 		})
 
-		Context("when the data directory cannot be created", func() {
-			It("propagates the error", func() {
-				fakeDataDirManager.CreateReturnsOnCall(0, "", fmt.Errorf("Error on directory creation."))
-
+		Context("when there is no function to cleanup the data directory", func() {
+			It("does not panic", func() {
+				etcd.DataDir.Cleanup = nil
+				fakeAddressManager.InitializeReturns(1234, "this.is.etcd", nil)
 				etcd.ProcessStarter = func(Command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
-					Expect(true).To(BeFalse(),
-						"the etcd process starter shouldn't be called if getting a free port fails")
-					return nil, nil
+					fmt.Fprint(err, "serving insecure client requests on this.is.etcd:1234")
+					return fakeSession, nil
 				}
 
-				err := etcd.Start()
-				Expect(err).To(MatchError(ContainSubstring("Error on directory creation.")))
+				Expect(etcd.Start()).To(Succeed())
+
+				var err error
+				Expect(func() {
+					err = etcd.Stop()
+				}).NotTo(Panic())
+				Expect(err).NotTo(HaveOccurred())
 			})
 		})
 
