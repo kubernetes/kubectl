@@ -34,13 +34,8 @@ type APIServer struct {
 	// See the `SpecialPathFinder` example.
 	ProcessStarter SimpleSessionStarter
 
-	// CertDirManager is responsible to provide a directory where the APIServer can find and store certain
-	// certificates and keys, and to clean up after the APIServer was shut down
-	// If not specified, a empty temporary directory is created and deleted.
-	//
-	// You can customise this if, e.g. you wish to pre-populate the directory with certs & keys from your central
-	// secrets store.  See the `CredHubCertDirManager` example.
-	CertDirManager CertDirManager
+	// CertDir is a struct holding a path to a certificate directory and a function to cleanup that directory.
+	CertDir *CertDir
 
 	// Etcd is an implementation of a ControlPlaneProcess and is responsible to run Etcd and provide its coordinates.
 	// If not specified, a brand new instance of Etcd is brought up.
@@ -85,14 +80,12 @@ func (s *APIServer) URL() (string, error) {
 
 // Start starts the apiserver, waits for it to come up, and returns an error, if occoured.
 func (s *APIServer) Start() error {
-	s.ensureInitialized()
-
-	port, addr, err := s.AddressManager.Initialize()
+	err := s.ensureInitialized()
 	if err != nil {
 		return err
 	}
 
-	certDir, err := s.CertDirManager.Create()
+	port, addr, err := s.AddressManager.Initialize()
 	if err != nil {
 		return err
 	}
@@ -119,7 +112,7 @@ func (s *APIServer) Start() error {
 		"--bind-address=0.0.0.0",
 		"--storage-backend=etcd3",
 		fmt.Sprintf("--etcd-servers=%s", etcdURLString),
-		fmt.Sprintf("--cert-dir=%s", certDir),
+		fmt.Sprintf("--cert-dir=%s", s.CertDir.Path),
 		fmt.Sprintf("--insecure-port=%d", port),
 		fmt.Sprintf("--insecure-bind-address=%s", addr),
 	}
@@ -141,7 +134,7 @@ func (s *APIServer) Start() error {
 	}
 }
 
-func (s *APIServer) ensureInitialized() {
+func (s *APIServer) ensureInitialized() error {
 	if s.Path == "" {
 		s.Path = DefaultBinPathFinder("kube-apiserver")
 	}
@@ -153,8 +146,12 @@ func (s *APIServer) ensureInitialized() {
 			return gexec.Start(command, out, err)
 		}
 	}
-	if s.CertDirManager == nil {
-		s.CertDirManager = NewTempDirManager()
+	if s.CertDir == nil {
+		certDir, err := newCertDir()
+		if err != nil {
+			return err
+		}
+		s.CertDir = certDir
 	}
 	if s.Etcd == nil {
 		s.Etcd = &Etcd{}
@@ -168,6 +165,8 @@ func (s *APIServer) ensureInitialized() {
 
 	s.stdOut = gbytes.NewBuffer()
 	s.stdErr = gbytes.NewBuffer()
+
+	return nil
 }
 
 // Stop stops this process gracefully, waits for its termination, and cleans up the cert directory.
@@ -191,7 +190,10 @@ func (s *APIServer) Stop() error {
 		return err
 	}
 
-	return s.CertDirManager.Destroy()
+	if s.CertDir.Cleanup == nil {
+		return nil
+	}
+	return s.CertDir.Cleanup()
 }
 
 // ExitCode returns the exit code of the process, if it has exited. If it hasn't exited yet, ExitCode returns -1.

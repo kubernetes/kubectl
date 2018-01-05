@@ -20,16 +20,15 @@ import (
 var _ = Describe("Apiserver", func() {
 	var (
 		fakeSession        *testfakes.FakeSimpleSession
-		fakeCertDirManager *testfakes.FakeCertDirManager
 		apiServer          *APIServer
 		fakeEtcdProcess    *testfakes.FakeControlPlaneProcess
 		fakeAddressManager *testfakes.FakeAddressManager
 		apiServerStopper   chan struct{}
+		cleanupCallCount   int
 	)
 
 	BeforeEach(func() {
 		fakeSession = &testfakes.FakeSimpleSession{}
-		fakeCertDirManager = &testfakes.FakeCertDirManager{}
 		fakeEtcdProcess = &testfakes.FakeControlPlaneProcess{}
 		fakeAddressManager = &testfakes.FakeAddressManager{}
 
@@ -42,9 +41,15 @@ var _ = Describe("Apiserver", func() {
 		apiServer = &APIServer{
 			AddressManager: fakeAddressManager,
 			Path:           "/some/path/to/apiserver",
-			CertDirManager: fakeCertDirManager,
-			Etcd:           fakeEtcdProcess,
-			StopTimeout:    500 * time.Millisecond,
+			CertDir: &CertDir{
+				Path: "/some/path/to/certdir",
+				Cleanup: func() error {
+					cleanupCallCount += 1
+					return nil
+				},
+			},
+			Etcd:        fakeEtcdProcess,
+			StopTimeout: 500 * time.Millisecond,
 		}
 	})
 
@@ -66,6 +71,7 @@ var _ = Describe("Apiserver", func() {
 					Expect(command.Args).To(ContainElement("--insecure-port=1234"))
 					Expect(command.Args).To(ContainElement("--insecure-bind-address=this.is.the.API.server"))
 					Expect(command.Args).To(ContainElement("--etcd-servers=the etcd url"))
+					Expect(command.Args).To(ContainElement("--cert-dir=/some/path/to/certdir"))
 					Expect(command.Path).To(Equal("/some/path/to/apiserver"))
 					fmt.Fprint(err, "Serving insecurely on this.is.the.API.server:1234")
 					return fakeSession, nil
@@ -82,9 +88,6 @@ var _ = Describe("Apiserver", func() {
 				By("...in turn calling the AddressManager")
 				Expect(fakeAddressManager.InitializeCallCount()).To(Equal(1))
 
-				By("...in turn calling the CertDirManager")
-				Expect(fakeCertDirManager.CreateCallCount()).To(Equal(1))
-
 				By("...getting the URL of Etcd")
 				Expect(fakeEtcdProcess.URLCallCount()).To(Equal(1))
 
@@ -92,23 +95,21 @@ var _ = Describe("Apiserver", func() {
 				Expect(fakeSession.ExitCodeCallCount()).To(Equal(0))
 				Expect(apiServer).NotTo(gexec.Exit())
 				Expect(fakeSession.ExitCodeCallCount()).To(Equal(1))
-				Expect(fakeCertDirManager.CreateCallCount()).To(Equal(1))
 
 				By("Stopping the API Server")
 				Expect(apiServer.Stop()).To(Succeed())
 
-				Expect(fakeCertDirManager.DestroyCallCount()).To(Equal(1))
+				Expect(cleanupCallCount).To(Equal(1))
 				Expect(fakeEtcdProcess.StopCallCount()).To(Equal(1))
 				Expect(apiServer).To(gexec.Exit(143))
 				Expect(fakeSession.TerminateCallCount()).To(Equal(1))
 				Expect(fakeSession.ExitCodeCallCount()).To(Equal(2))
-				Expect(fakeCertDirManager.DestroyCallCount()).To(Equal(1))
 			})
 		})
 
 		Context("when the certificate directory cannot be destroyed", func() {
 			It("propagates the error", func() {
-				fakeCertDirManager.DestroyReturns(fmt.Errorf("destroy failed"))
+				apiServer.CertDir.Cleanup = func() error { return fmt.Errorf("destroy failed") }
 				fakeAddressManager.InitializeReturns(1234, "this.is.apiserver", nil)
 				apiServer.ProcessStarter = func(Command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
 					fmt.Fprint(err, "Serving insecurely on this.is.apiserver:1234")
@@ -118,6 +119,25 @@ var _ = Describe("Apiserver", func() {
 				Expect(apiServer.Start()).To(Succeed())
 				err := apiServer.Stop()
 				Expect(err).To(MatchError(ContainSubstring("destroy failed")))
+			})
+		})
+
+		Context("when there is on function to cleanup the certificate directory", func() {
+			It("does not panic", func() {
+				apiServer.CertDir.Cleanup = nil
+				fakeAddressManager.InitializeReturns(1234, "this.is.apiserver", nil)
+				apiServer.ProcessStarter = func(Command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
+					fmt.Fprint(err, "Serving insecurely on this.is.apiserver:1234")
+					return fakeSession, nil
+				}
+
+				Expect(apiServer.Start()).To(Succeed())
+
+				var err error
+				Expect(func() {
+					err = apiServer.Stop()
+				}).NotTo(Panic())
+				Expect(err).NotTo(HaveOccurred())
 			})
 		})
 
@@ -181,22 +201,6 @@ var _ = Describe("Apiserver", func() {
 					Expect(err).To(MatchError(ContainSubstring("stopping etcd failed")))
 					Expect(fakeEtcdProcess.StopCallCount()).To(Equal(1))
 				})
-			})
-		})
-
-		Context("when the certificate directory cannot be created", func() {
-			It("propagates the error, and does not start any process", func() {
-				fakeCertDirManager.CreateReturnsOnCall(0, "", fmt.Errorf("Error on cert directory creation."))
-
-				apiServer.ProcessStarter = func(Command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
-					Expect(true).To(BeFalse(),
-						"the api server process starter shouldn't be called if creating the cert dir fails")
-					return nil, nil
-				}
-
-				err := apiServer.Start()
-				Expect(err).To(MatchError(ContainSubstring("Error on cert directory creation.")))
-				Expect(fakeEtcdProcess.StartCallCount()).To(Equal(0))
 			})
 		})
 
