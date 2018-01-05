@@ -54,14 +54,6 @@ type APIServer struct {
 	stdErr  *gbytes.Buffer
 }
 
-// CertDirManager knows how to manage a certificate directory for an APIServer.
-type CertDirManager interface {
-	Create() (string, error)
-	Destroy() error
-}
-
-//go:generate counterfeiter . CertDirManager
-
 // URL returns the URL APIServer is listening on. Clients can use this to connect to APIServer.
 func (s *APIServer) URL() (string, error) {
 	if s.AddressManager == nil {
