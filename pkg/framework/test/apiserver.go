@@ -6,20 +6,17 @@ import (
 	"os/exec"
 	"time"
 
+	"net/url"
+
 	"github.com/onsi/gomega/gbytes"
 	"github.com/onsi/gomega/gexec"
 )
 
 // APIServer knows how to run a kubernetes apiserver.
 type APIServer struct {
-	// AddressManager, after being `Initialize()`d, can be queried for a port and a host the APIServer can bind
-	// to. It is the responsibility of the AddressManager to find a free port.
-	// If not specified, the `DefaultAddressManager` is used, which returns a random free port.
-	//
-	// You can customise this if, e.g. you need to listen on a non-local interface on a certain range
-	// of ports which are not blocked by your firewall. In this case, you can hand in a special
-	// AddressManager as shown in the `FirewalledAddressManager` example.
-	AddressManager AddressManager
+	// Address is the address, a host and a port, the ApiServer should listen on for client connections.
+	// If this is not specified, the DefaultAddressManager is used to determine this address.
+	Address *url.URL
 
 	// Path is the path to the apiserver binary. If this is left as the empty
 	// string, we will use DefaultBinPathFinder to attempt to locate a binary, by
@@ -56,28 +53,15 @@ type APIServer struct {
 
 // URL returns the URL APIServer is listening on. Clients can use this to connect to APIServer.
 func (s *APIServer) URL() (string, error) {
-	if s.AddressManager == nil {
-		return "", fmt.Errorf("APIServer's AddressManager is not initialized")
+	if s.Address == nil {
+		return "", fmt.Errorf("APIServer's Address is not initialized or configured")
 	}
-	port, err := s.AddressManager.Port()
-	if err != nil {
-		return "", err
-	}
-	host, err := s.AddressManager.Host()
-	if err != nil {
-		return "", err
-	}
-	return fmt.Sprintf("http://%s:%d", host, port), nil
+	return s.Address.String(), nil
 }
 
 // Start starts the apiserver, waits for it to come up, and returns an error, if occoured.
 func (s *APIServer) Start() error {
 	err := s.ensureInitialized()
-	if err != nil {
-		return err
-	}
-
-	port, addr, err := s.AddressManager.Initialize()
 	if err != nil {
 		return err
 	}
@@ -105,11 +89,11 @@ func (s *APIServer) Start() error {
 		"--storage-backend=etcd3",
 		fmt.Sprintf("--etcd-servers=%s", etcdURLString),
 		fmt.Sprintf("--cert-dir=%s", s.CertDir.Path),
-		fmt.Sprintf("--insecure-port=%d", port),
-		fmt.Sprintf("--insecure-bind-address=%s", addr),
+		fmt.Sprintf("--insecure-port=%s", s.Address.Port()),
+		fmt.Sprintf("--insecure-bind-address=%s", s.Address.Hostname()),
 	}
 
-	detectedStart := s.stdErr.Detect(fmt.Sprintf("Serving insecurely on %s:%d", addr, port))
+	detectedStart := s.stdErr.Detect(fmt.Sprintf("Serving insecurely on %s", s.Address.Host))
 	timedOut := time.After(s.StartTimeout)
 
 	command := exec.Command(s.Path, args...)
@@ -130,8 +114,16 @@ func (s *APIServer) ensureInitialized() error {
 	if s.Path == "" {
 		s.Path = DefaultBinPathFinder("kube-apiserver")
 	}
-	if s.AddressManager == nil {
-		s.AddressManager = &DefaultAddressManager{}
+	if s.Address == nil {
+		am := &DefaultAddressManager{}
+		port, host, err := am.Initialize()
+		if err != nil {
+			return err
+		}
+		s.Address = &url.URL{
+			Scheme: "http",
+			Host:   fmt.Sprintf("%s:%d", host, port),
+		}
 	}
 	if s.ProcessStarter == nil {
 		s.ProcessStarter = func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {

@@ -10,6 +10,8 @@ import (
 
 	"time"
 
+	"net/url"
+
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/gbytes"
@@ -19,18 +21,16 @@ import (
 
 var _ = Describe("Apiserver", func() {
 	var (
-		fakeSession        *testfakes.FakeSimpleSession
-		apiServer          *APIServer
-		fakeEtcdProcess    *testfakes.FakeControlPlaneProcess
-		fakeAddressManager *testfakes.FakeAddressManager
-		apiServerStopper   chan struct{}
-		cleanupCallCount   int
+		fakeSession      *testfakes.FakeSimpleSession
+		apiServer        *APIServer
+		fakeEtcdProcess  *testfakes.FakeControlPlaneProcess
+		apiServerStopper chan struct{}
+		cleanupCallCount int
 	)
 
 	BeforeEach(func() {
 		fakeSession = &testfakes.FakeSimpleSession{}
 		fakeEtcdProcess = &testfakes.FakeControlPlaneProcess{}
-		fakeAddressManager = &testfakes.FakeAddressManager{}
 
 		apiServerStopper = make(chan struct{}, 1)
 		fakeSession.TerminateReturns(&gexec.Session{
@@ -39,8 +39,8 @@ var _ = Describe("Apiserver", func() {
 		close(apiServerStopper)
 
 		apiServer = &APIServer{
-			AddressManager: fakeAddressManager,
-			Path:           "/some/path/to/apiserver",
+			Address: &url.URL{Scheme: "http", Host: "the.host.for.api.server:5678"},
+			Path:    "/some/path/to/apiserver",
 			CertDir: &Directory{
 				Path: "/some/path/to/certdir",
 				Cleanup: func() error {
@@ -56,7 +56,6 @@ var _ = Describe("Apiserver", func() {
 	Describe("starting and stopping the server", func() {
 		Context("when given a path to a binary that runs for a long time", func() {
 			It("can start and stop that binary", func() {
-				//TODO Break this long test up
 				sessionBuffer := gbytes.NewBuffer()
 				fmt.Fprint(sessionBuffer, "Everything is fine")
 				fakeSession.BufferReturns(sessionBuffer)
@@ -64,7 +63,7 @@ var _ = Describe("Apiserver", func() {
 				fakeSession.ExitCodeReturnsOnCall(0, -1)
 				fakeSession.ExitCodeReturnsOnCall(1, 143)
 
-				fakeAddressManager.InitializeReturns(1234, "this.is.the.API.server", nil)
+				apiServer.Address = &url.URL{Scheme: "http", Host: "this.is.the.API.server:1234"}
 				fakeEtcdProcess.URLReturns("the etcd url", nil)
 
 				apiServer.ProcessStarter = func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
@@ -84,9 +83,6 @@ var _ = Describe("Apiserver", func() {
 				By("...in turn starting Etcd")
 				Expect(fakeEtcdProcess.StartCallCount()).To(Equal(1),
 					"the Etcd process should be started exactly once")
-
-				By("...in turn calling the AddressManager")
-				Expect(fakeAddressManager.InitializeCallCount()).To(Equal(1))
 
 				By("...getting the URL of Etcd")
 				Expect(fakeEtcdProcess.URLCallCount()).To(Equal(1))
@@ -110,7 +106,7 @@ var _ = Describe("Apiserver", func() {
 		Context("when the certificate directory cannot be destroyed", func() {
 			It("propagates the error", func() {
 				apiServer.CertDir.Cleanup = func() error { return fmt.Errorf("destroy failed") }
-				fakeAddressManager.InitializeReturns(1234, "this.is.apiserver", nil)
+				apiServer.Address = &url.URL{Scheme: "http", Host: "this.is.apiserver:1234"}
 				apiServer.ProcessStarter = func(Command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
 					fmt.Fprint(err, "Serving insecurely on this.is.apiserver:1234")
 					return fakeSession, nil
@@ -125,7 +121,7 @@ var _ = Describe("Apiserver", func() {
 		Context("when there is on function to cleanup the certificate directory", func() {
 			It("does not panic", func() {
 				apiServer.CertDir.Cleanup = nil
-				fakeAddressManager.InitializeReturns(1234, "this.is.apiserver", nil)
+				apiServer.Address = &url.URL{Scheme: "http", Host: "this.is.apiserver:1234"}
 				apiServer.ProcessStarter = func(Command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
 					fmt.Fprint(err, "Serving insecurely on this.is.apiserver:1234")
 					return fakeSession, nil
@@ -144,7 +140,7 @@ var _ = Describe("Apiserver", func() {
 		Context("when etcd cannot be stopped", func() {
 			It("propagates the error", func() {
 				fakeEtcdProcess.StopReturns(fmt.Errorf("stopping etcd failed"))
-				fakeAddressManager.InitializeReturns(1234, "this.is.apiserver", nil)
+				apiServer.Address = &url.URL{Scheme: "http", Host: "this.is.apiserver:1234"}
 				apiServer.ProcessStarter = func(Command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
 					fmt.Fprint(err, "Serving insecurely on this.is.apiserver:1234")
 					return fakeSession, nil
@@ -204,20 +200,6 @@ var _ = Describe("Apiserver", func() {
 			})
 		})
 
-		Context("when the address manager fails to get a new address", func() {
-			It("propagates the error and does not start any process", func() {
-				fakeAddressManager.InitializeReturns(0, "", fmt.Errorf("some error finding a free port"))
-
-				apiServer.ProcessStarter = func(Command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
-					Expect(true).To(BeFalse(),
-						"the api server process starter shouldn't be called if getting a free port fails")
-					return nil, nil
-				}
-
-				Expect(apiServer.Start()).To(MatchError(ContainSubstring("some error finding a free port")))
-				Expect(fakeEtcdProcess.StartCallCount()).To(Equal(0))
-			})
-		})
 
 		Context("when the starter returns an error", func() {
 			It("propagates the error", func() {
@@ -260,7 +242,7 @@ var _ = Describe("Apiserver", func() {
 				})
 			})
 			It("propagates the error", func() {
-				fakeAddressManager.InitializeReturns(1234, "this.is.apiserver", nil)
+				apiServer.Address = &url.URL{Scheme: "http", Host: "this.is.apiserver:1234"}
 				apiServer.ProcessStarter = func(Command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
 					fmt.Fprint(err, "Serving insecurely on this.is.apiserver:1234")
 					return fakeSession, nil
@@ -275,28 +257,13 @@ var _ = Describe("Apiserver", func() {
 
 	Describe("querying the server for its URL", func() {
 		It("can be queried for the URL it listens on", func() {
-			fakeAddressManager.HostReturns("the.host.for.api.server", nil)
-			fakeAddressManager.PortReturns(5678, nil)
 			apiServerURL, err := apiServer.URL()
 			Expect(err).NotTo(HaveOccurred())
 			Expect(apiServerURL).To(Equal("http://the.host.for.api.server:5678"))
 		})
-		Context("and so the addressmanager fails to give us a port", func() {
-			It("propagates the failure", func() {
-				fakeAddressManager.PortReturns(0, fmt.Errorf("boom"))
-				_, err := apiServer.URL()
-				Expect(err).To(MatchError(ContainSubstring("boom")))
-			})
-		})
-		Context("and so the addressmanager fails to give us a host", func() {
-			It("propagates the failure", func() {
-				fakeAddressManager.HostReturns("", fmt.Errorf("biff!"))
-				_, err := apiServer.URL()
-				Expect(err).To(MatchError(ContainSubstring("biff!")))
-			})
-		})
+
 		Context("before starting the server", func() {
-			Context("and therefore the addressmanager has not been initialized", func() {
+			Context("and therefore the address has not been initialized", func() {
 				BeforeEach(func() {
 					apiServer = &APIServer{}
 				})
