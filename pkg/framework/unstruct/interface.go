@@ -100,5 +100,5 @@ type Value interface {
 
 // New creates a representation of the given Value.
 func New(value interface{}) Value {
-	nil
+	return &baseValue{data: value}
 }
