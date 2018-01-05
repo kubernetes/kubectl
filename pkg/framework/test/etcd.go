@@ -6,6 +6,8 @@ import (
 	"os/exec"
 	"time"
 
+	"net/url"
+
 	"github.com/onsi/gomega/gbytes"
 	"github.com/onsi/gomega/gexec"
 )
@@ -15,7 +17,7 @@ import (
 // The documentation and examples for the Etcd's properties can be found in
 // in the documentation for the `APIServer`, as both implement a `ControlPaneProcess`.
 type Etcd struct {
-	AddressManager AddressManager
+	Address        *url.URL
 	Path           string
 	ProcessStarter SimpleSessionStarter
 	DataDir        *Directory
@@ -43,18 +45,10 @@ type SimpleSessionStarter func(command *exec.Cmd, out, err io.Writer) (SimpleSes
 
 // URL returns the URL Etcd is listening on. Clients can use this to connect to Etcd.
 func (e *Etcd) URL() (string, error) {
-	if e.AddressManager == nil {
-		return "", fmt.Errorf("Etcd's AddressManager is not initialized")
+	if e.Address == nil {
+		return "", fmt.Errorf("Etcd's Address not initialized or configured")
 	}
-	port, err := e.AddressManager.Port()
-	if err != nil {
-		return "", err
-	}
-	host, err := e.AddressManager.Host()
-	if err != nil {
-		return "", err
-	}
-	return fmt.Sprintf("http://%s:%d", host, port), nil
+	return e.Address.String(), nil
 }
 
 // Start starts the etcd, waits for it to come up, and returns an error, if occoured.
@@ -64,22 +58,16 @@ func (e *Etcd) Start() error {
 		return err
 	}
 
-	port, host, err := e.AddressManager.Initialize()
-	if err != nil {
-		return err
-	}
-
-	clientURL := fmt.Sprintf("http://%s:%d", host, port)
 	args := []string{
 		"--debug",
 		"--listen-peer-urls=http://localhost:0",
-		fmt.Sprintf("--advertise-client-urls=%s", clientURL),
-		fmt.Sprintf("--listen-client-urls=%s", clientURL),
+		fmt.Sprintf("--advertise-client-urls=%s", e.Address),
+		fmt.Sprintf("--listen-client-urls=%s", e.Address),
 		fmt.Sprintf("--data-dir=%s", e.DataDir.Path),
 	}
 
 	detectedStart := e.stdErr.Detect(fmt.Sprintf(
-		"serving insecure client requests on %s", host))
+		"serving insecure client requests on %s", e.Address.Hostname()))
 	timedOut := time.After(e.StartTimeout)
 
 	command := exec.Command(e.Path, args...)
@@ -100,9 +88,17 @@ func (e *Etcd) ensureInitialized() error {
 	if e.Path == "" {
 		e.Path = DefaultBinPathFinder("etcd")
 	}
+	if e.Address == nil {
+		am := &DefaultAddressManager{}
+		port, host, err := am.Initialize()
+		if err != nil {
+			return err
+		}
 
-	if e.AddressManager == nil {
-		e.AddressManager = &DefaultAddressManager{}
+		e.Address = &url.URL{
+			Scheme: "http",
+			Host:   fmt.Sprintf("%s:%d", host, port),
+		}
 	}
 	if e.ProcessStarter == nil {
 		e.ProcessStarter = func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {

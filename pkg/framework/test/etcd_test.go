@@ -7,6 +7,8 @@ import (
 
 	"time"
 
+	"net/url"
+
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/gbytes"
@@ -18,7 +20,6 @@ import (
 var _ = Describe("Etcd", func() {
 	var (
 		fakeSession         *testfakes.FakeSimpleSession
-		fakeAddressManager  *testfakes.FakeAddressManager
 		etcd                *Etcd
 		etcdStopper         chan struct{}
 		dataDirCleanupCount int
@@ -26,7 +27,6 @@ var _ = Describe("Etcd", func() {
 
 	BeforeEach(func() {
 		fakeSession = &testfakes.FakeSimpleSession{}
-		fakeAddressManager = &testfakes.FakeAddressManager{}
 
 		etcdStopper = make(chan struct{}, 1)
 		fakeSession.TerminateReturns(&gexec.Session{
@@ -35,8 +35,7 @@ var _ = Describe("Etcd", func() {
 		close(etcdStopper)
 
 		etcd = &Etcd{
-			AddressManager: fakeAddressManager,
-			Path:           "/path/to/some/etcd",
+			Path: "/path/to/some/etcd",
 			DataDir: &Directory{
 				Path: "/path/to/some/etcd",
 				Cleanup: func() error {
@@ -58,7 +57,7 @@ var _ = Describe("Etcd", func() {
 				fakeSession.ExitCodeReturnsOnCall(0, -1)
 				fakeSession.ExitCodeReturnsOnCall(1, 143)
 
-				fakeAddressManager.InitializeReturns(1234, "this.is.etcd.listening.for.clients", nil)
+				etcd.Address = &url.URL{Scheme: "http", Host: "this.is.etcd.listening.for.clients:1234"}
 
 				etcd.ProcessStarter = func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
 					Expect(command.Args).To(ContainElement(fmt.Sprintf("--advertise-client-urls=http://%s:%d", "this.is.etcd.listening.for.clients", 1234)))
@@ -71,9 +70,6 @@ var _ = Describe("Etcd", func() {
 				By("Starting the Etcd Server")
 				err := etcd.Start()
 				Expect(err).NotTo(HaveOccurred())
-
-				By("...in turn calling using the AddressManager")
-				Expect(fakeAddressManager.InitializeCallCount()).To(Equal(1))
 
 				Eventually(etcd).Should(gbytes.Say("Everything is dandy"))
 				Expect(fakeSession.ExitCodeCallCount()).To(Equal(0))
@@ -95,7 +91,7 @@ var _ = Describe("Etcd", func() {
 				etcd.DataDir.Cleanup = func() error {
 					return fmt.Errorf("destroy failed")
 				}
-				fakeAddressManager.InitializeReturns(1234, "this.is.etcd", nil)
+				etcd.Address = &url.URL{Scheme: "http", Host: "this.is.etcd:1234"}
 				etcd.ProcessStarter = func(Command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
 					fmt.Fprint(err, "serving insecure client requests on this.is.etcd:1234")
 					return fakeSession, nil
@@ -110,7 +106,7 @@ var _ = Describe("Etcd", func() {
 		Context("when there is no function to cleanup the data directory", func() {
 			It("does not panic", func() {
 				etcd.DataDir.Cleanup = nil
-				fakeAddressManager.InitializeReturns(1234, "this.is.etcd", nil)
+				etcd.Address = &url.URL{Scheme: "http", Host: "this.is.etcd:1234"}
 				etcd.ProcessStarter = func(Command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
 					fmt.Fprint(err, "serving insecure client requests on this.is.etcd:1234")
 					return fakeSession, nil
@@ -123,20 +119,6 @@ var _ = Describe("Etcd", func() {
 					err = etcd.Stop()
 				}).NotTo(Panic())
 				Expect(err).NotTo(HaveOccurred())
-			})
-		})
-
-		Context("when the address manager fails to get a new address", func() {
-			It("propagates the error and does not start any process", func() {
-				fakeAddressManager.InitializeReturns(0, "", fmt.Errorf("some error finding a free port"))
-
-				etcd.ProcessStarter = func(Command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
-					Expect(true).To(BeFalse(),
-						"the etcd process starter shouldn't be called if getting a free port fails")
-					return nil, nil
-				}
-
-				Expect(etcd.Start()).To(MatchError(ContainSubstring("some error finding a free port")))
 			})
 		})
 
@@ -181,7 +163,7 @@ var _ = Describe("Etcd", func() {
 				})
 			})
 			It("propagates the error", func() {
-				fakeAddressManager.InitializeReturns(1234, "this.is.etcd", nil)
+				etcd.Address = &url.URL{Scheme: "http", Host: "this.is.etcd:1234"}
 
 				etcd.ProcessStarter = func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
 					fmt.Fprint(err, "serving insecure client requests on this.is.etcd:1234")
@@ -197,25 +179,10 @@ var _ = Describe("Etcd", func() {
 
 	Describe("querying the server for its URL", func() {
 		It("can be queried for the URL it listens on", func() {
-			fakeAddressManager.HostReturns("the.host.for.etcd", nil)
-			fakeAddressManager.PortReturns(6789, nil)
+			etcd.Address = &url.URL{Scheme: "http", Host: "the.host.for.etcd:6789"}
 			apiServerURL, err := etcd.URL()
 			Expect(err).NotTo(HaveOccurred())
 			Expect(apiServerURL).To(Equal("http://the.host.for.etcd:6789"))
-		})
-		Context("when the addressmanager fails to give us a port", func() {
-			It("propagates the failure", func() {
-				fakeAddressManager.PortReturns(0, fmt.Errorf("zort"))
-				_, err := etcd.URL()
-				Expect(err).To(MatchError(ContainSubstring("zort")))
-			})
-		})
-		Context("when the addressmanager fails to give us a host", func() {
-			It("propagates the failure", func() {
-				fakeAddressManager.HostReturns("", fmt.Errorf("bam!"))
-				_, err := etcd.URL()
-				Expect(err).To(MatchError(ContainSubstring("bam!")))
-			})
 		})
 		Context("before starting etcd", func() {
 			Context("and therefore the addressmanager has not been initialized", func() {
