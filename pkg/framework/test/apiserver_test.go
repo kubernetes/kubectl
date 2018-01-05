@@ -41,7 +41,7 @@ var _ = Describe("Apiserver", func() {
 		apiServer = &APIServer{
 			AddressManager: fakeAddressManager,
 			Path:           "/some/path/to/apiserver",
-			CertDir: &CertDir{
+			CertDir: &Directory{
 				Path: "/some/path/to/certdir",
 				Cleanup: func() error {
 					cleanupCallCount += 1

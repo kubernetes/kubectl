@@ -7,7 +7,7 @@ import (
 
 var _ = Describe("NewCertDir", func() {
 	It("returns a valid CertDir struct", func() {
-		certDir, err := newCertDir()
+		certDir, err := newDirectory()
 		Expect(err).NotTo(HaveOccurred())
 		Expect(certDir.Path).To(BeADirectory())
 		Expect(certDir.Cleanup()).To(Succeed())

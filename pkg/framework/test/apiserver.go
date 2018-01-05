@@ -35,7 +35,7 @@ type APIServer struct {
 	ProcessStarter SimpleSessionStarter
 
 	// CertDir is a struct holding a path to a certificate directory and a function to cleanup that directory.
-	CertDir *CertDir
+	CertDir *Directory
 
 	// Etcd is an implementation of a ControlPlaneProcess and is responsible to run Etcd and provide its coordinates.
 	// If not specified, a brand new instance of Etcd is brought up.
@@ -147,7 +147,7 @@ func (s *APIServer) ensureInitialized() error {
 		}
 	}
 	if s.CertDir == nil {
-		certDir, err := newCertDir()
+		certDir, err := newDirectory()
 		if err != nil {
 			return err
 		}
