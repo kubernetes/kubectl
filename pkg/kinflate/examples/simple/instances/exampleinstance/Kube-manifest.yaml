@@ -19,20 +19,22 @@ resources:
 - ../../package
 #These are strategic merge patch overlays in the form of API resources
 patches:
-- deployment.yaml
+- deployment/deployment.yaml
 #There could also be configmaps in Base, which would make these overlays
 configmaps:
 - type: env
   namePrefix: app-env
-  file: app.env
+  env: configmap/app.env
 - type: file
   namePrefix: app-config
-  file: app-init.ini
+  files:
+  - configmap/app-init.ini
 #There could be secrets in Base, if just using a fork/rebase workflow
 secrets:
 - type: tls
   namePrefix: app-tls
-  certFile: tls.cert
-  keyFile: tls.key
+  tls:
+    certFile: secret/tls.cert
+    keyFile: secret/tls.key
 recursive: false
 prune: true # I’d make this the default
