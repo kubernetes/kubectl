@@ -200,7 +200,6 @@ var _ = Describe("Apiserver", func() {
 			})
 		})
 
-
 		Context("when the starter returns an error", func() {
 			It("propagates the error", func() {
 				apiServer.ProcessStarter = func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
