@@ -21,7 +21,7 @@ type Etcd struct {
 	Address        *url.URL
 	Path           string
 	ProcessStarter SimpleSessionStarter
-	DataDir        *Directory
+	DataDir        *CleanableDirectory
 	StopTimeout    time.Duration
 	StartTimeout   time.Duration
 	session        SimpleSession

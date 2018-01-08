@@ -36,8 +36,8 @@ var _ = Describe("Etcd", func() {
 
 		etcd = &Etcd{
 			Path: "/path/to/some/etcd",
-			DataDir: &Directory{
-				Path: "/path/to/some/etcd",
+			DataDir: &CleanableDirectory{
+				Path: "/path/to/some/data",
 				Cleanup: func() error {
 					dataDirCleanupCount += 1
 					return nil
@@ -60,8 +60,9 @@ var _ = Describe("Etcd", func() {
 				etcd.Address = &url.URL{Scheme: "http", Host: "this.is.etcd.listening.for.clients:1234"}
 
 				etcd.ProcessStarter = func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
-					Expect(command.Args).To(ContainElement(fmt.Sprintf("--advertise-client-urls=http://%s:%d", "this.is.etcd.listening.for.clients", 1234)))
-					Expect(command.Args).To(ContainElement(fmt.Sprintf("--listen-client-urls=http://%s:%d", "this.is.etcd.listening.for.clients", 1234)))
+					Expect(command.Args).To(ContainElement("--advertise-client-urls=http://this.is.etcd.listening.for.clients:1234"))
+					Expect(command.Args).To(ContainElement("--listen-client-urls=http://this.is.etcd.listening.for.clients:1234"))
+					Expect(command.Args).To(ContainElement("--data-dir=/path/to/some/data"))
 					Expect(command.Path).To(Equal("/path/to/some/etcd"))
 					fmt.Fprint(err, "serving insecure client requests on this.is.etcd.listening.for.clients:1234")
 					return fakeSession, nil

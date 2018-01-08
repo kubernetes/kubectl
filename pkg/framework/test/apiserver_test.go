@@ -41,7 +41,7 @@ var _ = Describe("Apiserver", func() {
 		apiServer = &APIServer{
 			Address: &url.URL{Scheme: "http", Host: "the.host.for.api.server:5678"},
 			Path:    "/some/path/to/apiserver",
-			CertDir: &Directory{
+			CertDir: &CleanableDirectory{
 				Path: "/some/path/to/certdir",
 				Cleanup: func() error {
 					cleanupCallCount += 1
