@@ -14,7 +14,6 @@ import (
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"github.com/onsi/gomega/gbytes"
 	"github.com/onsi/gomega/gexec"
 	"k8s.io/kubectl/pkg/framework/test/testfakes"
 )
@@ -56,10 +55,6 @@ var _ = Describe("Apiserver", func() {
 	Describe("starting and stopping the server", func() {
 		Context("when given a path to a binary that runs for a long time", func() {
 			It("can start and stop that binary", func() {
-				sessionBuffer := gbytes.NewBuffer()
-				fmt.Fprint(sessionBuffer, "Everything is fine")
-				fakeSession.BufferReturns(sessionBuffer)
-
 				fakeSession.ExitCodeReturnsOnCall(0, -1)
 				fakeSession.ExitCodeReturnsOnCall(1, 143)
 
@@ -86,8 +81,6 @@ var _ = Describe("Apiserver", func() {
 
 				By("...getting the URL of Etcd")
 				Expect(fakeEtcdProcess.URLCallCount()).To(Equal(1))
-
-				Eventually(apiServer).Should(gbytes.Say("Everything is fine"))
 
 				By("Stopping the API Server")
 				Expect(apiServer.Stop()).To(Succeed())

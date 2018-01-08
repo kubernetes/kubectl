@@ -180,8 +180,3 @@ func (s *APIServer) Stop() error {
 	}
 	return s.CertDir.Cleanup()
 }
-
-// Buffer implements the gbytes.BufferProvider interface and returns the stdout of the process
-func (s *APIServer) Buffer() *gbytes.Buffer {
-	return s.session.Buffer()
-}

@@ -148,8 +148,3 @@ func (e *Etcd) Stop() error {
 	}
 	return e.DataDir.Cleanup()
 }
-
-// Buffer implements the gbytes.BufferProvider interface and returns the stdout of the process
-func (e *Etcd) Buffer() *gbytes.Buffer {
-	return e.session.Buffer()
-}

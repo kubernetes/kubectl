@@ -11,7 +11,6 @@ import (
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"github.com/onsi/gomega/gbytes"
 	"github.com/onsi/gomega/gexec"
 	. "k8s.io/kubectl/pkg/framework/test"
 	"k8s.io/kubectl/pkg/framework/test/testfakes"
@@ -50,10 +49,6 @@ var _ = Describe("Etcd", func() {
 	Describe("starting and stopping etcd", func() {
 		Context("when given a path to a binary that runs for a long time", func() {
 			It("can start and stop that binary", func() {
-				sessionBuffer := gbytes.NewBuffer()
-				fmt.Fprintf(sessionBuffer, "Everything is dandy")
-				fakeSession.BufferReturns(sessionBuffer)
-
 				fakeSession.ExitCodeReturnsOnCall(0, -1)
 				fakeSession.ExitCodeReturnsOnCall(1, 143)
 
@@ -71,8 +66,6 @@ var _ = Describe("Etcd", func() {
 				By("Starting the Etcd Server")
 				err := etcd.Start()
 				Expect(err).NotTo(HaveOccurred())
-
-				Eventually(etcd).Should(gbytes.Say("Everything is dandy"))
 
 				By("Stopping the Etcd Server")
 				Expect(etcd.Stop()).To(Succeed())
