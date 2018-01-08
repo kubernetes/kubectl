@@ -16,7 +16,7 @@ import (
 // APIServer knows how to run a kubernetes apiserver.
 type APIServer struct {
 	// Address is the address, a host and a port, the ApiServer should listen on for client connections.
-	// If this is not specified, the DefaultAddressManager is used to determine this address.
+	// If this is not specified, we default to a random free port on localhost.
 	Address *url.URL
 
 	// Path is the path to the apiserver binary. If this is left as the empty
@@ -116,7 +116,7 @@ func (s *APIServer) ensureInitialized() error {
 		s.Path = internal.BinPathFinder("kube-apiserver")
 	}
 	if s.Address == nil {
-		am := &DefaultAddressManager{}
+		am := &internal.AddressManager{}
 		port, host, err := am.Initialize()
 		if err != nil {
 			return err

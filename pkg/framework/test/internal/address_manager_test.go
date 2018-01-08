@@ -1,7 +1,7 @@
-package test_test
+package internal_test
 
 import (
-	. "k8s.io/kubectl/pkg/framework/test"
+	. "k8s.io/kubectl/pkg/framework/test/internal"
 
 	"fmt"
 	"net"
@@ -10,15 +10,15 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("DefaultAddressManager", func() {
-	var defaultAddressManager *DefaultAddressManager
+var _ = Describe("AddressManager", func() {
+	var addressManager *AddressManager
 	BeforeEach(func() {
-		defaultAddressManager = &DefaultAddressManager{}
+		addressManager = &AddressManager{}
 	})
 
 	Describe("Initialize", func() {
 		It("returns a free port and an address to bind to", func() {
-			port, host, err := defaultAddressManager.Initialize()
+			port, host, err := addressManager.Initialize()
 
 			Expect(err).NotTo(HaveOccurred())
 			Expect(host).To(Equal("127.0.0.1"))
@@ -35,38 +35,37 @@ var _ = Describe("DefaultAddressManager", func() {
 
 		Context("initialized multiple times", func() {
 			It("fails", func() {
-				_, _, err := defaultAddressManager.Initialize()
+				_, _, err := addressManager.Initialize()
 				Expect(err).NotTo(HaveOccurred())
-				_, _, err = defaultAddressManager.Initialize()
+				_, _, err = addressManager.Initialize()
 				Expect(err).To(MatchError(ContainSubstring("already initialized")))
 			})
 		})
 	})
 	Describe("Port", func() {
 		It("returns an error if Initialize has not been called yet", func() {
-			_, err := defaultAddressManager.Port()
+			_, err := addressManager.Port()
 			Expect(err).To(MatchError(ContainSubstring("not initialized yet")))
 		})
 		It("returns the same port as previously allocated by Initialize", func() {
-			expectedPort, _, err := defaultAddressManager.Initialize()
+			expectedPort, _, err := addressManager.Initialize()
 			Expect(err).NotTo(HaveOccurred())
-			actualPort, err := defaultAddressManager.Port()
+			actualPort, err := addressManager.Port()
 			Expect(err).NotTo(HaveOccurred())
 			Expect(actualPort).To(Equal(expectedPort))
 		})
 	})
 	Describe("Host", func() {
 		It("returns an error if Initialize has not been called yet", func() {
-			_, err := defaultAddressManager.Host()
+			_, err := addressManager.Host()
 			Expect(err).To(MatchError(ContainSubstring("not initialized yet")))
 		})
 		It("returns the same port as previously allocated by Initialize", func() {
-			_, expectedHost, err := defaultAddressManager.Initialize()
+			_, expectedHost, err := addressManager.Initialize()
 			Expect(err).NotTo(HaveOccurred())
-			actualHost, err := defaultAddressManager.Host()
+			actualHost, err := addressManager.Host()
 			Expect(err).NotTo(HaveOccurred())
 			Expect(actualHost).To(Equal(expectedHost))
 		})
-
 	})
 })

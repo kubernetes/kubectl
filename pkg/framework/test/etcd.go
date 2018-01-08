@@ -90,7 +90,7 @@ func (e *Etcd) ensureInitialized() error {
 		e.Path = internal.BinPathFinder("etcd")
 	}
 	if e.Address == nil {
-		am := &DefaultAddressManager{}
+		am := &internal.AddressManager{}
 		port, host, err := am.Initialize()
 		if err != nil {
 			return err
