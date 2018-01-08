@@ -1,4 +1,4 @@
-package test
+package internal
 
 import (
 	"os"
@@ -7,7 +7,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("DefaultBinPathFinder", func() {
+var _ = Describe("BinPathFinder", func() {
 	Context("when relying on the default assets path", func() {
 		var (
 			previousAssetsPath string
@@ -20,7 +20,7 @@ var _ = Describe("DefaultBinPathFinder", func() {
 			assetsPath = previousAssetsPath
 		})
 		It("returns the default path when no env var is configured", func() {
-			binPath := DefaultBinPathFinder("some_bin")
+			binPath := BinPathFinder("some_bin")
 			Expect(binPath).To(Equal("/some/path/assets/bin/some_bin"))
 		})
 	})
@@ -46,20 +46,20 @@ var _ = Describe("DefaultBinPathFinder", func() {
 			}
 		})
 		It("returns the path from the env", func() {
-			binPath := DefaultBinPathFinder("another_symbolic_name")
+			binPath := BinPathFinder("another_symbolic_name")
 			Expect(binPath).To(Equal("/path/to/some_bin.exe"))
 		})
 
 		It("sanitizes the environment variable name", func() {
 			By("cleaning all non-underscore punctuation")
-			binPath := DefaultBinPathFinder("another-symbolic name")
+			binPath := BinPathFinder("another-symbolic name")
 			Expect(binPath).To(Equal("/path/to/some_bin.exe"))
-			binPath = DefaultBinPathFinder("another+symbolic\\name")
+			binPath = BinPathFinder("another+symbolic\\name")
 			Expect(binPath).To(Equal("/path/to/some_bin.exe"))
-			binPath = DefaultBinPathFinder("another=symbolic.name")
+			binPath = BinPathFinder("another=symbolic.name")
 			Expect(binPath).To(Equal("/path/to/some_bin.exe"))
 			By("removing numbers from the beginning of the name")
-			binPath = DefaultBinPathFinder("12another_symbolic_name")
+			binPath = BinPathFinder("12another_symbolic_name")
 			Expect(binPath).To(Equal("/path/to/some_bin.exe"))
 		})
 	})

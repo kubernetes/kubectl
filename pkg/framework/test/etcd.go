@@ -10,6 +10,7 @@ import (
 
 	"github.com/onsi/gomega/gbytes"
 	"github.com/onsi/gomega/gexec"
+	"k8s.io/kubectl/pkg/framework/test/internal"
 )
 
 // Etcd knows how to run an etcd server.
@@ -86,7 +87,7 @@ func (e *Etcd) Start() error {
 
 func (e *Etcd) ensureInitialized() error {
 	if e.Path == "" {
-		e.Path = DefaultBinPathFinder("etcd")
+		e.Path = internal.BinPathFinder("etcd")
 	}
 	if e.Address == nil {
 		am := &DefaultAddressManager{}

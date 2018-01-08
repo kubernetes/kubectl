@@ -10,6 +10,7 @@ import (
 
 	"github.com/onsi/gomega/gbytes"
 	"github.com/onsi/gomega/gexec"
+	"k8s.io/kubectl/pkg/framework/test/internal"
 )
 
 // APIServer knows how to run a kubernetes apiserver.
@@ -19,9 +20,9 @@ type APIServer struct {
 	Address *url.URL
 
 	// Path is the path to the apiserver binary. If this is left as the empty
-	// string, we will use DefaultBinPathFinder to attempt to locate a binary, by
-	// checking for the TEST_ASSET_KUBE_APISERVER environment variable, and the
-	// default test assets directory.
+	// string, we will attempt to locate a binary, by checking for the
+	// TEST_ASSET_KUBE_APISERVER environment variable, and the default test
+	// assets directory.
 	Path string
 
 	// ProcessStarter is a way to hook into how a the APIServer process is started. By default `gexec.Start(...)` is
@@ -112,7 +113,7 @@ func (s *APIServer) Start() error {
 
 func (s *APIServer) ensureInitialized() error {
 	if s.Path == "" {
-		s.Path = DefaultBinPathFinder("kube-apiserver")
+		s.Path = internal.BinPathFinder("kube-apiserver")
 	}
 	if s.Address == nil {
 		am := &DefaultAddressManager{}
