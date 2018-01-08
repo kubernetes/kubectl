@@ -18,21 +18,13 @@ type Etcd struct {
 	AddressManager AddressManager
 	Path           string
 	ProcessStarter SimpleSessionStarter
-	DataDirManager DataDirManager
+	DataDir        *Directory
 	StopTimeout    time.Duration
 	StartTimeout   time.Duration
 	session        SimpleSession
 	stdOut         *gbytes.Buffer
 	stdErr         *gbytes.Buffer
 }
-
-// DataDirManager knows how to manage a data directory to be used by Etcd.
-type DataDirManager interface {
-	Create() (string, error)
-	Destroy() error
-}
-
-//go:generate counterfeiter . DataDirManager
 
 // SimpleSession describes a CLI session. You can get output, the exit code, and you can terminate it.
 //
@@ -67,14 +59,12 @@ func (e *Etcd) URL() (string, error) {
 
 // Start starts the etcd, waits for it to come up, and returns an error, if occoured.
 func (e *Etcd) Start() error {
-	e.ensureInitialized()
-
-	port, host, err := e.AddressManager.Initialize()
+	err := e.ensureInitialized()
 	if err != nil {
 		return err
 	}
 
-	dataDir, err := e.DataDirManager.Create()
+	port, host, err := e.AddressManager.Initialize()
 	if err != nil {
 		return err
 	}
@@ -85,7 +75,7 @@ func (e *Etcd) Start() error {
 		"--listen-peer-urls=http://localhost:0",
 		fmt.Sprintf("--advertise-client-urls=%s", clientURL),
 		fmt.Sprintf("--listen-client-urls=%s", clientURL),
-		fmt.Sprintf("--data-dir=%s", dataDir),
+		fmt.Sprintf("--data-dir=%s", e.DataDir.Path),
 	}
 
 	detectedStart := e.stdErr.Detect(fmt.Sprintf(
@@ -106,7 +96,7 @@ func (e *Etcd) Start() error {
 	}
 }
 
-func (e *Etcd) ensureInitialized() {
+func (e *Etcd) ensureInitialized() error {
 	if e.Path == "" {
 		e.Path = DefaultBinPathFinder("etcd")
 	}
@@ -119,8 +109,12 @@ func (e *Etcd) ensureInitialized() {
 			return gexec.Start(command, out, err)
 		}
 	}
-	if e.DataDirManager == nil {
-		e.DataDirManager = NewTempDirManager()
+	if e.DataDir == nil {
+		dataDir, err := newDirectory()
+		if err != nil {
+			return err
+		}
+		e.DataDir = dataDir
 	}
 	if e.StopTimeout == 0 {
 		e.StopTimeout = 20 * time.Second
@@ -131,6 +125,8 @@ func (e *Etcd) ensureInitialized() {
 
 	e.stdOut = gbytes.NewBuffer()
 	e.stdErr = gbytes.NewBuffer()
+
+	return nil
 }
 
 // Stop stops this process gracefully, waits for its termination, and cleans up the data directory.
@@ -150,7 +146,10 @@ func (e *Etcd) Stop() error {
 		return fmt.Errorf("timeout waiting for etcd to stop")
 	}
 
-	return e.DataDirManager.Destroy()
+	if e.DataDir.Cleanup == nil {
+		return nil
+	}
+	return e.DataDir.Cleanup()
 }
 
 // ExitCode returns the exit code of the process, if it has exited. If it hasn't exited yet, ExitCode returns -1.
