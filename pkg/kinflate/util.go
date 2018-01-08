@@ -21,14 +21,26 @@ import (
 	"io/ioutil"
 	"path"
 
-	"gopkg.in/yaml.v2"
+	"github.com/ghodss/yaml"
 
 	"k8s.io/apimachinery/pkg/api/meta"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
+	"k8s.io/apimachinery/pkg/runtime"
 	manifest "k8s.io/kubectl/pkg/apis/manifest/v1alpha1"
 )
 
 const kubeManifestFileName = "Kube-manifest.yaml"
+
+type resource struct {
+	resources  []string
+	configmaps []manifest.ConfigMap
+	secrets    []manifest.Secret
+}
+
+type newNameObject struct {
+	newName string
+	obj     runtime.Object
+}
 
 // loadBaseAndOverlayPkg returns:
 // - List of FilenameOptions, each FilenameOptions contains all the files and whether recursive for each base defined in overlay kube-manifest.yaml.
