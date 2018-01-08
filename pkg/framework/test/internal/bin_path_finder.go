@@ -1,4 +1,4 @@
-package test
+package internal
 
 import (
 	"os"
@@ -15,19 +15,12 @@ func init() {
 	if !ok {
 		panic("Could not determine the path of the BinPathFinder")
 	}
-	assetsPath = filepath.Join(filepath.Dir(thisFile), "assets", "bin")
+	assetsPath = filepath.Join(filepath.Dir(thisFile), "..", "assets", "bin")
 }
 
-// BinPathFinder is the signature of a function translating a symbolic name of a binary to
-// a resolvable path to the binary in question
-type BinPathFinder func(symbolicName string) (binPath string)
-
-//go:generate counterfeiter . BinPathFinder
-
-// DefaultBinPathFinder is an implementation of BinPathFinder which checks the an environment
-// variable, derived from the symbolic name, and falls back to a default assets location when
-// this variable is not set
-func DefaultBinPathFinder(symbolicName string) (binPath string) {
+// BinPathFinder checks the an environment variable, derived from the symbolic name,
+// and falls back to a default assets location when this variable is not set
+func BinPathFinder(symbolicName string) (binPath string) {
 	punctuationPattern := regexp.MustCompile("[^A-Z0-9]+")
 	sanitizedName := punctuationPattern.ReplaceAllString(strings.ToUpper(symbolicName), "_")
 	leadingNumberPattern := regexp.MustCompile("^[0-9]+")

@@ -11,7 +11,6 @@ import (
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"github.com/onsi/gomega/gbytes"
 	"github.com/onsi/gomega/gexec"
 	. "k8s.io/kubectl/pkg/framework/test"
 	"k8s.io/kubectl/pkg/framework/test/testfakes"
@@ -36,8 +35,8 @@ var _ = Describe("Etcd", func() {
 
 		etcd = &Etcd{
 			Path: "/path/to/some/etcd",
-			DataDir: &Directory{
-				Path: "/path/to/some/etcd",
+			DataDir: &CleanableDirectory{
+				Path: "/path/to/some/data",
 				Cleanup: func() error {
 					dataDirCleanupCount += 1
 					return nil
@@ -50,18 +49,15 @@ var _ = Describe("Etcd", func() {
 	Describe("starting and stopping etcd", func() {
 		Context("when given a path to a binary that runs for a long time", func() {
 			It("can start and stop that binary", func() {
-				sessionBuffer := gbytes.NewBuffer()
-				fmt.Fprintf(sessionBuffer, "Everything is dandy")
-				fakeSession.BufferReturns(sessionBuffer)
-
 				fakeSession.ExitCodeReturnsOnCall(0, -1)
 				fakeSession.ExitCodeReturnsOnCall(1, 143)
 
 				etcd.Address = &url.URL{Scheme: "http", Host: "this.is.etcd.listening.for.clients:1234"}
 
 				etcd.ProcessStarter = func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
-					Expect(command.Args).To(ContainElement(fmt.Sprintf("--advertise-client-urls=http://%s:%d", "this.is.etcd.listening.for.clients", 1234)))
-					Expect(command.Args).To(ContainElement(fmt.Sprintf("--listen-client-urls=http://%s:%d", "this.is.etcd.listening.for.clients", 1234)))
+					Expect(command.Args).To(ContainElement("--advertise-client-urls=http://this.is.etcd.listening.for.clients:1234"))
+					Expect(command.Args).To(ContainElement("--listen-client-urls=http://this.is.etcd.listening.for.clients:1234"))
+					Expect(command.Args).To(ContainElement("--data-dir=/path/to/some/data"))
 					Expect(command.Path).To(Equal("/path/to/some/etcd"))
 					fmt.Fprint(err, "serving insecure client requests on this.is.etcd.listening.for.clients:1234")
 					return fakeSession, nil
@@ -71,18 +67,11 @@ var _ = Describe("Etcd", func() {
 				err := etcd.Start()
 				Expect(err).NotTo(HaveOccurred())
 
-				Eventually(etcd).Should(gbytes.Say("Everything is dandy"))
-				Expect(fakeSession.ExitCodeCallCount()).To(Equal(0))
-				Expect(etcd).NotTo(gexec.Exit())
-				Expect(fakeSession.ExitCodeCallCount()).To(Equal(1))
-
 				By("Stopping the Etcd Server")
 				Expect(etcd.Stop()).To(Succeed())
 
 				Expect(dataDirCleanupCount).To(Equal(1))
-				Expect(etcd).To(gexec.Exit(143))
 				Expect(fakeSession.TerminateCallCount()).To(Equal(1))
-				Expect(fakeSession.ExitCodeCallCount()).To(Equal(2))
 			})
 		})
 

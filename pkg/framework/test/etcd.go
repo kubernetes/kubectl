@@ -10,6 +10,7 @@ import (
 
 	"github.com/onsi/gomega/gbytes"
 	"github.com/onsi/gomega/gexec"
+	"k8s.io/kubectl/pkg/framework/test/internal"
 )
 
 // Etcd knows how to run an etcd server.
@@ -20,7 +21,7 @@ type Etcd struct {
 	Address        *url.URL
 	Path           string
 	ProcessStarter SimpleSessionStarter
-	DataDir        *Directory
+	DataDir        *CleanableDirectory
 	StopTimeout    time.Duration
 	StartTimeout   time.Duration
 	session        SimpleSession
@@ -86,10 +87,10 @@ func (e *Etcd) Start() error {
 
 func (e *Etcd) ensureInitialized() error {
 	if e.Path == "" {
-		e.Path = DefaultBinPathFinder("etcd")
+		e.Path = internal.BinPathFinder("etcd")
 	}
 	if e.Address == nil {
-		am := &DefaultAddressManager{}
+		am := &internal.AddressManager{}
 		port, host, err := am.Initialize()
 		if err != nil {
 			return err
@@ -146,14 +147,4 @@ func (e *Etcd) Stop() error {
 		return nil
 	}
 	return e.DataDir.Cleanup()
-}
-
-// ExitCode returns the exit code of the process, if it has exited. If it hasn't exited yet, ExitCode returns -1.
-func (e *Etcd) ExitCode() int {
-	return e.session.ExitCode()
-}
-
-// Buffer implements the gbytes.BufferProvider interface and returns the stdout of the process
-func (e *Etcd) Buffer() *gbytes.Buffer {
-	return e.session.Buffer()
 }

@@ -10,18 +10,19 @@ import (
 
 	"github.com/onsi/gomega/gbytes"
 	"github.com/onsi/gomega/gexec"
+	"k8s.io/kubectl/pkg/framework/test/internal"
 )
 
 // APIServer knows how to run a kubernetes apiserver.
 type APIServer struct {
 	// Address is the address, a host and a port, the ApiServer should listen on for client connections.
-	// If this is not specified, the DefaultAddressManager is used to determine this address.
+	// If this is not specified, we default to a random free port on localhost.
 	Address *url.URL
 
 	// Path is the path to the apiserver binary. If this is left as the empty
-	// string, we will use DefaultBinPathFinder to attempt to locate a binary, by
-	// checking for the TEST_ASSET_KUBE_APISERVER environment variable, and the
-	// default test assets directory.
+	// string, we will attempt to locate a binary, by checking for the
+	// TEST_ASSET_KUBE_APISERVER environment variable, and the default test
+	// assets directory.
 	Path string
 
 	// ProcessStarter is a way to hook into how a the APIServer process is started. By default `gexec.Start(...)` is
@@ -32,7 +33,7 @@ type APIServer struct {
 	ProcessStarter SimpleSessionStarter
 
 	// CertDir is a struct holding a path to a certificate directory and a function to cleanup that directory.
-	CertDir *Directory
+	CertDir *CleanableDirectory
 
 	// Etcd is an implementation of a ControlPlaneProcess and is responsible to run Etcd and provide its coordinates.
 	// If not specified, a brand new instance of Etcd is brought up.
@@ -112,10 +113,10 @@ func (s *APIServer) Start() error {
 
 func (s *APIServer) ensureInitialized() error {
 	if s.Path == "" {
-		s.Path = DefaultBinPathFinder("kube-apiserver")
+		s.Path = internal.BinPathFinder("kube-apiserver")
 	}
 	if s.Address == nil {
-		am := &DefaultAddressManager{}
+		am := &internal.AddressManager{}
 		port, host, err := am.Initialize()
 		if err != nil {
 			return err
@@ -178,14 +179,4 @@ func (s *APIServer) Stop() error {
 		return nil
 	}
 	return s.CertDir.Cleanup()
-}
-
-// ExitCode returns the exit code of the process, if it has exited. If it hasn't exited yet, ExitCode returns -1.
-func (s *APIServer) ExitCode() int {
-	return s.session.ExitCode()
-}
-
-// Buffer implements the gbytes.BufferProvider interface and returns the stdout of the process
-func (s *APIServer) Buffer() *gbytes.Buffer {
-	return s.session.Buffer()
 }

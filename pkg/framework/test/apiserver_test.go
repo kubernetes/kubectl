@@ -14,7 +14,6 @@ import (
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"github.com/onsi/gomega/gbytes"
 	"github.com/onsi/gomega/gexec"
 	"k8s.io/kubectl/pkg/framework/test/testfakes"
 )
@@ -41,7 +40,7 @@ var _ = Describe("Apiserver", func() {
 		apiServer = &APIServer{
 			Address: &url.URL{Scheme: "http", Host: "the.host.for.api.server:5678"},
 			Path:    "/some/path/to/apiserver",
-			CertDir: &Directory{
+			CertDir: &CleanableDirectory{
 				Path: "/some/path/to/certdir",
 				Cleanup: func() error {
 					cleanupCallCount += 1
@@ -56,10 +55,6 @@ var _ = Describe("Apiserver", func() {
 	Describe("starting and stopping the server", func() {
 		Context("when given a path to a binary that runs for a long time", func() {
 			It("can start and stop that binary", func() {
-				sessionBuffer := gbytes.NewBuffer()
-				fmt.Fprint(sessionBuffer, "Everything is fine")
-				fakeSession.BufferReturns(sessionBuffer)
-
 				fakeSession.ExitCodeReturnsOnCall(0, -1)
 				fakeSession.ExitCodeReturnsOnCall(1, 143)
 
@@ -87,19 +82,12 @@ var _ = Describe("Apiserver", func() {
 				By("...getting the URL of Etcd")
 				Expect(fakeEtcdProcess.URLCallCount()).To(Equal(1))
 
-				Eventually(apiServer).Should(gbytes.Say("Everything is fine"))
-				Expect(fakeSession.ExitCodeCallCount()).To(Equal(0))
-				Expect(apiServer).NotTo(gexec.Exit())
-				Expect(fakeSession.ExitCodeCallCount()).To(Equal(1))
-
 				By("Stopping the API Server")
 				Expect(apiServer.Stop()).To(Succeed())
 
 				Expect(cleanupCallCount).To(Equal(1))
 				Expect(fakeEtcdProcess.StopCallCount()).To(Equal(1))
-				Expect(apiServer).To(gexec.Exit(143))
 				Expect(fakeSession.TerminateCallCount()).To(Equal(1))
-				Expect(fakeSession.ExitCodeCallCount()).To(Equal(2))
 			})
 		})
 
