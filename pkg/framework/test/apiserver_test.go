@@ -88,18 +88,13 @@ var _ = Describe("Apiserver", func() {
 				Expect(fakeEtcdProcess.URLCallCount()).To(Equal(1))
 
 				Eventually(apiServer).Should(gbytes.Say("Everything is fine"))
-				Expect(fakeSession.ExitCodeCallCount()).To(Equal(0))
-				Expect(apiServer).NotTo(gexec.Exit())
-				Expect(fakeSession.ExitCodeCallCount()).To(Equal(1))
 
 				By("Stopping the API Server")
 				Expect(apiServer.Stop()).To(Succeed())
 
 				Expect(cleanupCallCount).To(Equal(1))
 				Expect(fakeEtcdProcess.StopCallCount()).To(Equal(1))
-				Expect(apiServer).To(gexec.Exit(143))
 				Expect(fakeSession.TerminateCallCount()).To(Equal(1))
-				Expect(fakeSession.ExitCodeCallCount()).To(Equal(2))
 			})
 		})
 

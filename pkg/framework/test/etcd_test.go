@@ -73,17 +73,12 @@ var _ = Describe("Etcd", func() {
 				Expect(err).NotTo(HaveOccurred())
 
 				Eventually(etcd).Should(gbytes.Say("Everything is dandy"))
-				Expect(fakeSession.ExitCodeCallCount()).To(Equal(0))
-				Expect(etcd).NotTo(gexec.Exit())
-				Expect(fakeSession.ExitCodeCallCount()).To(Equal(1))
 
 				By("Stopping the Etcd Server")
 				Expect(etcd.Stop()).To(Succeed())
 
 				Expect(dataDirCleanupCount).To(Equal(1))
-				Expect(etcd).To(gexec.Exit(143))
 				Expect(fakeSession.TerminateCallCount()).To(Equal(1))
-				Expect(fakeSession.ExitCodeCallCount()).To(Equal(2))
 			})
 		})
 

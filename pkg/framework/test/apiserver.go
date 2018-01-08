@@ -181,11 +181,6 @@ func (s *APIServer) Stop() error {
 	return s.CertDir.Cleanup()
 }
 
-// ExitCode returns the exit code of the process, if it has exited. If it hasn't exited yet, ExitCode returns -1.
-func (s *APIServer) ExitCode() int {
-	return s.session.ExitCode()
-}
-
 // Buffer implements the gbytes.BufferProvider interface and returns the stdout of the process
 func (s *APIServer) Buffer() *gbytes.Buffer {
 	return s.session.Buffer()

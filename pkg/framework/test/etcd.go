@@ -149,11 +149,6 @@ func (e *Etcd) Stop() error {
 	return e.DataDir.Cleanup()
 }
 
-// ExitCode returns the exit code of the process, if it has exited. If it hasn't exited yet, ExitCode returns -1.
-func (e *Etcd) ExitCode() int {
-	return e.session.ExitCode()
-}
-
 // Buffer implements the gbytes.BufferProvider interface and returns the stdout of the process
 func (e *Etcd) Buffer() *gbytes.Buffer {
 	return e.session.Buffer()
