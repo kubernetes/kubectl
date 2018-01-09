@@ -1,5 +1,5 @@
 /*
-Copyright 2016 The Kubernetes Authors.
+Copyright 2018 The Kubernetes Authors.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,13 +14,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package framework
+package pluginutils
 
 import (
 	"encoding/json"
 	"errors"
 	"fmt"
 	"os"
+	"path/filepath"
+	"runtime"
 	"time"
 
 	restclient "k8s.io/client-go/rest"
@@ -35,7 +37,13 @@ func InitConfig() (*restclient.Config, error) {
 	// then the value of the KUBECONFIG env var (if any), and defaulting
 	// to ~/.kube/config as a last resort.
 	home := os.Getenv("HOME")
-	kubeconfig := home + "/.kube/config"
+	if runtime.GOOS == "windows" {
+		home := os.Getenv("HOMEDRIVE") + os.Getenv("HOMEPATH")
+		if home == "" {
+			home = os.Getenv("USERPROFILE")
+		}
+	}
+	kubeconfig := filepath.Join(home, ".kube", "config")
 
 	kubeconfigEnv := os.Getenv("KUBECONFIG")
 	if len(kubeconfigEnv) > 0 {
@@ -68,14 +76,6 @@ func InitConfig() (*restclient.Config, error) {
 }
 
 func clientFromConfig(path string) (*restclient.Config, string, error) {
-	if path == "-" {
-		cfg, err := restclient.InClusterConfig()
-		if err != nil {
-			return nil, "", fmt.Errorf("cluster config not available: %v", err)
-		}
-		return cfg, "", nil
-	}
-
 	rules := &clientcmd.ClientConfigLoadingRules{ExplicitPath: path}
 	credentials, err := rules.Load()
 	if err != nil {
