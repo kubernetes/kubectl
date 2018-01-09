@@ -7,7 +7,8 @@ kind: Manifest
 metadata:
   name: mungebot
 resources:
-- deployment.yaml
+- deployment/deployment.yaml
+- service/service.yaml
 #Recursive would be similar to kubectl --recursive behavior, extended to look for Kube-manifest.yaml
 recursive: false
 #Whether PersistentVolumeClaims should be deleted with the other resources
