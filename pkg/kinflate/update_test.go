@@ -21,6 +21,8 @@ import (
 	"testing"
 
 	"github.com/ghodss/yaml"
+
+	"k8s.io/apimachinery/pkg/runtime/schema"
 )
 
 type testCase struct {
@@ -58,6 +60,45 @@ spec:
 `)
 
 var testCases = []testCase{
+	{
+		description: "change name according to map and add prefix",
+		in:          input,
+		expected: []byte(`
+metadata:
+  labels:
+    app: foo
+spec:
+  containers:
+  - image: nginx:1.7.9
+    name: nginx
+  - image: busybox
+    name: busybox
+    volumeMounts:
+    - mountPath: /tmp/env
+      name: app-env
+    - mountPath: /tmp/tls
+      name: app-tls
+  selector:
+    app: foo
+  volumes:
+  - configMap:
+      name: someprefix-app-env-somehash
+    name: app-env
+  - name: app-tls
+    secret:
+      name: app-tls
+`),
+		pathToField: []string{"spec", "volumes", "configMap", "name"},
+		fn: changeNameAccordingToMapAndAddPrefix(
+			map[groupVersionKindName]newNameObject{
+				groupVersionKindName{
+					gvk:  schema.GroupVersionKind{Group: "somegroup", Version: "someversion", Kind: "somekind"},
+					name: "app-env",
+				}: {newName: "app-env-somehash"},
+			},
+			schema.GroupVersionKind{Group: "somegroup", Version: "someversion", Kind: "somekind"},
+			"someprefix-"),
+	},
 	{
 		description: "add prefix",
 		in:          input,

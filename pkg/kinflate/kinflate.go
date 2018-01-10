@@ -179,7 +179,7 @@ func (o *kinflateOptions) RunKinflate(cmd *cobra.Command, out, errOut io.Writer)
 	// Inject the labels, annotations and name prefix.
 	// Then print the object.
 	for _, jsonObj := range baseResouceMap {
-		yamlObj, err := updateMetadata(jsonObj, overlayPkg)
+		yamlObj, err := updateMetadata(jsonObj, overlayPkg, nil)
 		if err != nil {
 			return err
 		}
