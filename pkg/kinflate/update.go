@@ -71,6 +71,24 @@ func mutateField(m map[string]interface{}, pathToField []string, fn func(interfa
 	}
 }
 
+func changeNameAccordingToMapAndAddPrefix(m map[groupVersionKindName]newNameObject, gvk schema.GroupVersionKind, prefix string) func(interface{}) (interface{}, error) {
+	return func(in interface{}) (interface{}, error) {
+		s, ok := in.(string)
+		if !ok {
+			return nil, fmt.Errorf("%#v is expectd to be %T", in, s)
+		}
+		gvkn := groupVersionKindName{
+			gvk:  gvk,
+			name: s,
+		}
+		newNameObject, found := m[gvkn]
+		if !found {
+			return nil, fmt.Errorf("failed to find %#v in %#v", gvkn, m)
+		}
+		return prefix + newNameObject.newName, nil
+	}
+}
+
 func addPrefix(prefix string) func(interface{}) (interface{}, error) {
 	return func(in interface{}) (interface{}, error) {
 		s, ok := in.(string)
@@ -94,7 +112,7 @@ func addMap(additionalMap map[string]string) func(interface{}) (interface{}, err
 	}
 }
 
-func updatePodTemplateSpecMetadata(obj *unstructured.Unstructured, overlayPkg *manifest.Manifest) error {
+func updatePodTemplateSpecMetadata(obj *unstructured.Unstructured, overlayPkg *manifest.Manifest, gvknToNewNameObject map[groupVersionKindName]newNameObject) error {
 	pts := &ptvisitor.PodTemplateSpecVisitor{
 		Object: obj,
 		MungeFn: func(podTemplateSpec map[string]interface{}) error {
@@ -107,11 +125,11 @@ func updatePodTemplateSpecMetadata(obj *unstructured.Unstructured, overlayPkg *m
 				return err
 			}
 
-			err = updatePodSpecForConfigMap(podTemplateSpec, overlayPkg)
+			err = updatePodSpecForConfigMap(podTemplateSpec, overlayPkg, gvknToNewNameObject)
 			if err != nil {
 				return err
 			}
-			return updatePodSpecForSecret(podTemplateSpec, overlayPkg)
+			return updatePodSpecForSecret(podTemplateSpec, overlayPkg, gvknToNewNameObject)
 		},
 	}
 
@@ -135,30 +153,43 @@ func updatePodTemplateSpecMetadata(obj *unstructured.Unstructured, overlayPkg *m
 
 // update the configmap name in spec.volumes.configMap.name and
 // spec.containers.env.configMapKeyRef.
-func updatePodSpecForConfigMap(podTemplateSpec map[string]interface{}, overlayPkg *manifest.Manifest) error {
-	return updatePodSpecBasedOnFieldKey(podTemplateSpec, "configMap", overlayPkg)
+func updatePodSpecForConfigMap(podTemplateSpec map[string]interface{}, overlayPkg *manifest.Manifest, gvknToNewNameObject map[groupVersionKindName]newNameObject) error {
+	gvk := schema.GroupVersionKind{
+		Version: "v1",
+		Kind:    "ConfigMap",
+	}
+	return updatePodSpecBasedOnFieldKey(podTemplateSpec, "configMap", gvk, overlayPkg, gvknToNewNameObject)
 }
 
 // update the secret name in spec.volumes.secret.name and
 // spec.containers.env.secretKeyRef.
-func updatePodSpecForSecret(podTemplateSpec map[string]interface{}, overlayPkg *manifest.Manifest) error {
-	return updatePodSpecBasedOnFieldKey(podTemplateSpec, "secret", overlayPkg)
+func updatePodSpecForSecret(podTemplateSpec map[string]interface{}, overlayPkg *manifest.Manifest, gvknToNewNameObject map[groupVersionKindName]newNameObject) error {
+	gvk := schema.GroupVersionKind{
+		Version: "v1",
+		Kind:    "Secret",
+	}
+	return updatePodSpecBasedOnFieldKey(podTemplateSpec, "secret", gvk, overlayPkg, gvknToNewNameObject)
 }
 
-func updatePodSpecBasedOnFieldKey(podTemplateSpec map[string]interface{}, fieldKey string, overlayPkg *manifest.Manifest) error {
-	err := mutateField(podTemplateSpec, []string{"spec", "volumes", fieldKey, "name"}, addPrefix(overlayPkg.NamePrefix))
+func updatePodSpecBasedOnFieldKey(
+	podTemplateSpec map[string]interface{},
+	fieldKey string,
+	gvk schema.GroupVersionKind,
+	overlayPkg *manifest.Manifest,
+	gvknToNewNameObject map[groupVersionKindName]newNameObject) error {
+	err := mutateField(podTemplateSpec, []string{"spec", "volumes", fieldKey, "name"}, changeNameAccordingToMapAndAddPrefix(gvknToNewNameObject, gvk, overlayPkg.NamePrefix))
 	if err != nil {
 		return err
 	}
-	err = mutateField(podTemplateSpec, []string{"spec", "containers", "env", "valueFrom", fieldKey + "KeyRef", "name"}, addPrefix(overlayPkg.NamePrefix))
+	err = mutateField(podTemplateSpec, []string{"spec", "containers", "env", "valueFrom", fieldKey + "KeyRef", "name"}, changeNameAccordingToMapAndAddPrefix(gvknToNewNameObject, gvk, overlayPkg.NamePrefix))
 	if err != nil {
 		return err
 	}
-	return mutateField(podTemplateSpec, []string{"spec", "containers", "envFrom", fieldKey + "Ref", "name"}, addPrefix(overlayPkg.NamePrefix))
+	return mutateField(podTemplateSpec, []string{"spec", "containers", "envFrom", fieldKey + "Ref", "name"}, changeNameAccordingToMapAndAddPrefix(gvknToNewNameObject, gvk, overlayPkg.NamePrefix))
 }
 
 // updateMetadata will inject the labels and annotations and add name prefix.
-func updateMetadata(jsonObj []byte, overlayPkg *manifest.Manifest) ([]byte, error) {
+func updateMetadata(jsonObj []byte, overlayPkg *manifest.Manifest, gvknToNewNameObject map[groupVersionKindName]newNameObject) ([]byte, error) {
 	if len(jsonObj) == 0 || overlayPkg == nil {
 		return nil, nil
 	}
@@ -168,7 +199,7 @@ func updateMetadata(jsonObj []byte, overlayPkg *manifest.Manifest) ([]byte, erro
 		return nil, err
 	}
 
-	err = updatePodTemplateSpecMetadata(obj.(*unstructured.Unstructured), overlayPkg)
+	err = updatePodTemplateSpecMetadata(obj.(*unstructured.Unstructured), overlayPkg, gvknToNewNameObject)
 	if err != nil {
 		return nil, err
 	}
