@@ -23,8 +23,6 @@ import (
 
 	"github.com/ghodss/yaml"
 
-	"k8s.io/apimachinery/pkg/api/meta"
-	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime"
 	manifest "k8s.io/kubectl/pkg/apis/manifest/v1alpha1"
 )
@@ -89,40 +87,4 @@ func loadManifestPkg(filename string) (*manifest.Manifest, error) {
 	// TODO: support json
 	err = yaml.Unmarshal(bytes, &pkg)
 	return &pkg, err
-}
-
-// updateMetadata will inject the labels and annotations and add name prefix.
-func updateMetadata(jsonObj []byte, overlayPkg *manifest.Manifest) ([]byte, error) {
-	if len(jsonObj) == 0 || overlayPkg == nil {
-		return nil, nil
-	}
-
-	obj, _, err := unstructured.UnstructuredJSONScheme.Decode(jsonObj, nil, nil)
-
-	accessor, err := meta.Accessor(obj)
-	if err != nil {
-		return nil, err
-	}
-
-	accessor.SetName(overlayPkg.NamePrefix + accessor.GetName())
-
-	labels := accessor.GetLabels()
-	if labels == nil {
-		labels = map[string]string{}
-	}
-	for k, v := range overlayPkg.ObjectLabels {
-		labels[k] = v
-	}
-	accessor.SetLabels(labels)
-
-	annotations := accessor.GetAnnotations()
-	if annotations == nil {
-		annotations = map[string]string{}
-	}
-	for k, v := range overlayPkg.ObjectAnnotations {
-		annotations[k] = v
-	}
-	accessor.SetAnnotations(annotations)
-
-	return yaml.Marshal(obj)
 }
