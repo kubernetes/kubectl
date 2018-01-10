@@ -17,16 +17,41 @@ limitations under the License.
 package main
 
 import (
+	"bytes"
+	"io/ioutil"
+	"os"
+	"reflect"
 	"testing"
+
+	"github.com/spf13/cobra"
 )
 
-// TODO: real tests
-// e.g. make an inmemory file system, put yaml in there, inflate it
-// to a buffer, compare to expected results, etc.
-// a script in there, have script write file
 func TestTrueMain(t *testing.T) {
-	err := TestableMain()
+	const updateEnvVar = "UPDATE_KINFLATE_EXPECTED_DATA"
+	updateKinflateExpected := os.Getenv(updateEnvVar) == "true"
+
+	input := "testdata/simple/in/instances/exampleinstance/"
+	expected := "testdata/simple/out/expected.yaml"
+	cmdMungeFn := func(cmd *cobra.Command) {
+		cmd.Flags().Set("filename", input)
+	}
+	buf := bytes.NewBuffer([]byte{})
+
+	err := TestableMain(buf, os.Stderr, cmdMungeFn)
 	if err != nil {
-		t.Errorf("Unexpected error: %v", err)
+		t.Errorf("unexpected error: %v", err)
+	}
+
+	actualBytes := buf.Bytes()
+	if !updateKinflateExpected {
+		expectedBytes, err := ioutil.ReadFile(expected)
+		if err != nil {
+			t.Errorf("unexpected error: %v", err)
+		}
+		if !reflect.DeepEqual(actualBytes, expectedBytes) {
+			t.Errorf("%s\ndoesn't equal expected:\n%s\n", actualBytes, expectedBytes)
+		}
+	} else {
+		ioutil.WriteFile(expected, actualBytes, 0644)
 	}
 }

@@ -17,22 +17,25 @@ limitations under the License.
 package main
 
 import (
-	"fmt"
+	"io"
 	"os"
+
+	"github.com/spf13/cobra"
 
 	"k8s.io/kubectl/pkg/kinflate"
 )
 
 // TestableMain allows test coverage for main.
-func TestableMain() error {
-	fmt.Println("Hello world.")
-	return nil
+func TestableMain(out, errOut io.Writer, cmdMungeFn func(*cobra.Command)) error {
+	cmd := kinflate.NewCmdKinflate(out, errOut)
+	if cmdMungeFn != nil {
+		cmdMungeFn(cmd)
+	}
+	return cmd.Execute()
 }
 
 func main() {
-	TestableMain()
-	cmd := kinflate.NewCmdKinflate(os.Stdout, os.Stderr)
-	err := cmd.Execute()
+	err := TestableMain(os.Stdout, os.Stderr, nil)
 	if err != nil {
 		os.Exit(1)
 	}
