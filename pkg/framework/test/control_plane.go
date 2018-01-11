@@ -5,16 +5,7 @@ package test
 //
 // Right now, that means Etcd and your APIServer. This is likely to increase in future.
 type ControlPlane struct {
-	APIServer ControlPlaneProcess
-}
-
-// ControlPlaneProcess knows how to start and stop a ControlPlane process.
-// This interface is potentially going to be expanded to e.g. allow access to the processes StdOut/StdErr
-// and other internals.
-type ControlPlaneProcess interface {
-	Start() error
-	Stop() error
-	URL() (string, error)
+	APIServer *APIServer
 }
 
 //go:generate counterfeiter . ControlPlaneProcess

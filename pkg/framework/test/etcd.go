@@ -2,11 +2,13 @@ package test
 
 import (
 	"fmt"
-	"io"
+	"io/ioutil"
 	"os/exec"
 	"time"
 
 	"net/url"
+
+	"os"
 
 	"github.com/onsi/gomega/gbytes"
 	"github.com/onsi/gomega/gexec"
@@ -18,31 +20,16 @@ import (
 // The documentation and examples for the Etcd's properties can be found in
 // in the documentation for the `APIServer`, as both implement a `ControlPaneProcess`.
 type Etcd struct {
-	Address        *url.URL
-	Path           string
-	ProcessStarter SimpleSessionStarter
-	DataDir        *CleanableDirectory
-	StopTimeout    time.Duration
-	StartTimeout   time.Duration
-	session        SimpleSession
-	stdOut         *gbytes.Buffer
-	stdErr         *gbytes.Buffer
+	Address       *url.URL
+	Path          string
+	DataDir       string
+	actualDataDir string
+	StopTimeout   time.Duration
+	StartTimeout  time.Duration
+	session       *gexec.Session
+	stdOut        *gbytes.Buffer
+	stdErr        *gbytes.Buffer
 }
-
-// SimpleSession describes a CLI session. You can get output, the exit code, and you can terminate it.
-//
-// It is implemented by *gexec.Session.
-type SimpleSession interface {
-	Buffer() *gbytes.Buffer
-	ExitCode() int
-	Terminate() *gexec.Session
-}
-
-//go:generate counterfeiter . SimpleSession
-
-// SimpleSessionStarter knows how to start a exec.Cmd with a writer for both StdOut & StdErr and returning it wrapped
-// in a `SimpleSession`.
-type SimpleSessionStarter func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error)
 
 // URL returns the URL Etcd is listening on. Clients can use this to connect to Etcd.
 func (e *Etcd) URL() (string, error) {
@@ -64,7 +51,7 @@ func (e *Etcd) Start() error {
 		"--listen-peer-urls=http://localhost:0",
 		fmt.Sprintf("--advertise-client-urls=%s", e.Address),
 		fmt.Sprintf("--listen-client-urls=%s", e.Address),
-		fmt.Sprintf("--data-dir=%s", e.DataDir.Path),
+		fmt.Sprintf("--data-dir=%s", e.actualDataDir),
 	}
 
 	detectedStart := e.stdErr.Detect(fmt.Sprintf(
@@ -72,7 +59,7 @@ func (e *Etcd) Start() error {
 	timedOut := time.After(e.StartTimeout)
 
 	command := exec.Command(e.Path, args...)
-	e.session, err = e.ProcessStarter(command, e.stdOut, e.stdErr)
+	e.session, err = gexec.Start(command, e.stdOut, e.stdErr)
 	if err != nil {
 		return err
 	}
@@ -101,18 +88,16 @@ func (e *Etcd) ensureInitialized() error {
 			Host:   fmt.Sprintf("%s:%d", host, port),
 		}
 	}
-	if e.ProcessStarter == nil {
-		e.ProcessStarter = func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
-			return gexec.Start(command, out, err)
-		}
-	}
-	if e.DataDir == nil {
-		dataDir, err := newDirectory()
+	if e.DataDir == "" {
+		dataDir, err := ioutil.TempDir("", "k8s_test_framework_")
 		if err != nil {
 			return err
 		}
-		e.DataDir = dataDir
+		e.actualDataDir = dataDir
+	} else {
+		e.actualDataDir = e.DataDir
 	}
+
 	if e.StopTimeout == 0 {
 		e.StopTimeout = 20 * time.Second
 	}
@@ -143,8 +128,9 @@ func (e *Etcd) Stop() error {
 		return fmt.Errorf("timeout waiting for etcd to stop")
 	}
 
-	if e.DataDir.Cleanup == nil {
-		return nil
+	if e.DataDir == "" {
+		return os.RemoveAll(e.actualDataDir)
 	}
-	return e.DataDir.Cleanup()
+
+	return nil
 }

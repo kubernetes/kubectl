@@ -23,7 +23,7 @@ var _ = Describe("The Testing Framework", func() {
 		Expect(err).NotTo(HaveOccurred(), "Expected controlPlane to start successfully")
 
 		var apiServerURL, etcdClientURL *url.URL
-		etcdUrlString, err := controlPlane.APIServer.(*test.APIServer).Etcd.URL()
+		etcdUrlString, err := controlPlane.APIServer.Etcd.URL()
 		Expect(err).NotTo(HaveOccurred())
 		etcdClientURL, err = url.Parse(etcdUrlString)
 		Expect(err).NotTo(HaveOccurred())

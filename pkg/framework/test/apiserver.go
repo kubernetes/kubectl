@@ -2,11 +2,14 @@ package test
 
 import (
 	"fmt"
-	"io"
 	"os/exec"
 	"time"
 
 	"net/url"
+
+	"os"
+
+	"io/ioutil"
 
 	"github.com/onsi/gomega/gbytes"
 	"github.com/onsi/gomega/gexec"
@@ -25,29 +28,23 @@ type APIServer struct {
 	// assets directory.
 	Path string
 
-	// ProcessStarter is a way to hook into how a the APIServer process is started. By default `gexec.Start(...)` is
-	// used to run the process.
-	//
-	// You can customize this if, e.g. you want to pass additional arguments or do extra logging.
-	// See the `SpecialPathFinder` example.
-	ProcessStarter SimpleSessionStarter
-
 	// CertDir is a struct holding a path to a certificate directory and a function to cleanup that directory.
-	CertDir *CleanableDirectory
+	CertDir       string
+	actualCertDir string
 
 	// Etcd is an implementation of a ControlPlaneProcess and is responsible to run Etcd and provide its coordinates.
 	// If not specified, a brand new instance of Etcd is brought up.
 	//
 	// You can customise this if, e.g. you wish to use a already existing and running Etcd.
 	// See the example `RemoteEtcd`.
-	Etcd ControlPlaneProcess
+	Etcd *Etcd
 
 	// StopTimeout, StartTimeout specify the time the APIServer is allowed to take when stopping resp. starting
 	// before and error is emitted.
 	StopTimeout  time.Duration
 	StartTimeout time.Duration
 
-	session SimpleSession
+	session *gexec.Session
 	stdOut  *gbytes.Buffer
 	stdErr  *gbytes.Buffer
 }
@@ -89,7 +86,7 @@ func (s *APIServer) Start() error {
 		"--bind-address=0.0.0.0",
 		"--storage-backend=etcd3",
 		fmt.Sprintf("--etcd-servers=%s", etcdURLString),
-		fmt.Sprintf("--cert-dir=%s", s.CertDir.Path),
+		fmt.Sprintf("--cert-dir=%s", s.actualCertDir),
 		fmt.Sprintf("--insecure-port=%s", s.Address.Port()),
 		fmt.Sprintf("--insecure-bind-address=%s", s.Address.Hostname()),
 	}
@@ -98,7 +95,7 @@ func (s *APIServer) Start() error {
 	timedOut := time.After(s.StartTimeout)
 
 	command := exec.Command(s.Path, args...)
-	s.session, err = s.ProcessStarter(command, s.stdOut, s.stdErr)
+	s.session, err = gexec.Start(command, s.stdOut, s.stdErr)
 	if err != nil {
 		return err
 	}
@@ -126,17 +123,12 @@ func (s *APIServer) ensureInitialized() error {
 			Host:   fmt.Sprintf("%s:%d", host, port),
 		}
 	}
-	if s.ProcessStarter == nil {
-		s.ProcessStarter = func(command *exec.Cmd, out, err io.Writer) (SimpleSession, error) {
-			return gexec.Start(command, out, err)
-		}
-	}
-	if s.CertDir == nil {
-		certDir, err := newDirectory()
+	if s.CertDir == "" {
+		certDir, err := ioutil.TempDir("", "k8s_test_framework_")
 		if err != nil {
 			return err
 		}
-		s.CertDir = certDir
+		s.actualCertDir = certDir
 	}
 	if s.Etcd == nil {
 		s.Etcd = &Etcd{}
@@ -175,8 +167,8 @@ func (s *APIServer) Stop() error {
 		return err
 	}
 
-	if s.CertDir.Cleanup == nil {
-		return nil
+	if s.CertDir == "" {
+		return os.RemoveAll(s.actualCertDir)
 	}
-	return s.CertDir.Cleanup()
+	return nil
 }
