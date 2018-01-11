@@ -22,16 +22,17 @@ var _ = Describe("The Testing Framework", func() {
 		err = controlPlane.Start()
 		Expect(err).NotTo(HaveOccurred(), "Expected controlPlane to start successfully")
 
-		var apiServerURL, etcdClientURL *url.URL
-		etcdClientURL = controlPlane.APIServer.Etcd.URL
+		var apiServerURL *url.URL
+		//var etcdClientURL *url.URL
+		//etcdClientURL = controlPlane.APIServer.Etcd.URL
 		apiServerURL = controlPlane.APIURL()
 
-		isEtcdListeningForClients := isSomethingListeningOnPort(etcdClientURL.Host)
+		//isEtcdListeningForClients := isSomethingListeningOnPort(etcdClientURL.Host)
 		isAPIServerListening := isSomethingListeningOnPort(apiServerURL.Host)
 
-		By("Ensuring Etcd is listening")
-		Expect(isEtcdListeningForClients()).To(BeTrue(),
-			fmt.Sprintf("Expected Etcd to listen for clients on %s,", etcdClientURL.Host))
+		//By("Ensuring Etcd is listening")
+		//Expect(isEtcdListeningForClients()).To(BeTrue(),
+		//	fmt.Sprintf("Expected Etcd to listen for clients on %s,", etcdClientURL.Host))
 
 		By("Ensuring APIServer is listening")
 		Expect(isAPIServerListening()).To(BeTrue(),
@@ -41,8 +42,8 @@ var _ = Describe("The Testing Framework", func() {
 		err = controlPlane.Stop()
 		Expect(err).NotTo(HaveOccurred(), "Expected controlPlane to stop successfully")
 
-		By("Ensuring Etcd is not listening anymore")
-		Expect(isEtcdListeningForClients()).To(BeFalse(), "Expected Etcd not to listen for clients anymore")
+		//By("Ensuring Etcd is not listening anymore")
+		//Expect(isEtcdListeningForClients()).To(BeFalse(), "Expected Etcd not to listen for clients anymore")
 
 		By("Ensuring APIServer is not listening anymore")
 		Expect(isAPIServerListening()).To(BeFalse(), "Expected APIServer not to listen anymore")

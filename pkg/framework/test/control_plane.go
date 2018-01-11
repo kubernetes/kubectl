@@ -31,5 +31,5 @@ func (f *ControlPlane) Stop() error {
 
 // APIURL returns the URL you should connect to to talk to your API.
 func (f *ControlPlane) APIURL() *url.URL {
-	return f.APIServer.URL
+	return f.APIServer.commonStuff.URL
 }

@@ -2,16 +2,12 @@ package test
 
 import (
 	"fmt"
-	"os/exec"
 	"time"
 
 	"net/url"
 
-	"os"
+	"os/exec"
 
-	"io/ioutil"
-
-	"github.com/onsi/gomega/gbytes"
 	"github.com/onsi/gomega/gexec"
 	"k8s.io/kubectl/pkg/framework/test/internal"
 )
@@ -29,8 +25,8 @@ type APIServer struct {
 	Path string
 
 	// CertDir is a struct holding a path to a certificate directory and a function to cleanup that directory.
-	CertDir       string
-	actualCertDir string
+	CertDir              string
+	certDirNeedsCleaning bool
 
 	// Etcd is an implementation of a ControlPlaneProcess and is responsible to run Etcd and provide its coordinates.
 	// If not specified, a brand new instance of Etcd is brought up.
@@ -45,13 +41,17 @@ type APIServer struct {
 	StartTimeout time.Duration
 
 	session *gexec.Session
-	stdOut  *gbytes.Buffer
-	stdErr  *gbytes.Buffer
+
+	commonStuff internal.CommonStuff
+
+	process internal.Process
 }
 
 // Start starts the apiserver, waits for it to come up, and returns an error, if occoured.
 func (s *APIServer) Start() error {
-	err := s.ensureInitialized()
+	var err error
+
+	err = s.ensureInitialized()
 	if err != nil {
 		return err
 	}
@@ -61,7 +61,7 @@ func (s *APIServer) Start() error {
 		return err
 	}
 
-	etcdURLString := s.Etcd.URL.String()
+	etcdURLString := s.Etcd.commonStuff.URL.String()
 
 	args := []string{
 		"--authorization-mode=Node,RBAC",
@@ -72,89 +72,47 @@ func (s *APIServer) Start() error {
 		"--bind-address=0.0.0.0",
 		"--storage-backend=etcd3",
 		fmt.Sprintf("--etcd-servers=%s", etcdURLString),
-		fmt.Sprintf("--cert-dir=%s", s.actualCertDir),
-		fmt.Sprintf("--insecure-port=%s", s.URL.Port()),
-		fmt.Sprintf("--insecure-bind-address=%s", s.URL.Hostname()),
+		fmt.Sprintf("--cert-dir=%s", s.commonStuff.Dir),
+		fmt.Sprintf("--insecure-port=%s", s.commonStuff.URL.Port()),
+		fmt.Sprintf("--insecure-bind-address=%s", s.commonStuff.URL.Hostname()),
 	}
 
-	detectedStart := s.stdErr.Detect(fmt.Sprintf("Serving insecurely on %s", s.URL.Host))
-	timedOut := time.After(s.StartTimeout)
+	s.session, err = s.process.Start(
+		exec.Command(s.commonStuff.Path, args...),
+		fmt.Sprintf("Serving insecurely on %s", s.commonStuff.URL.Host),
+		s.commonStuff.StartTimeout)
+	return err
+}
 
-	command := exec.Command(s.Path, args...)
-	s.session, err = gexec.Start(command, s.stdOut, s.stdErr)
+func (s *APIServer) ensureInitialized() error {
+	var err error
+
+	s.commonStuff, err = s.process.EnsureInitialized(
+		s.Path, "kube-apiserver",
+		s.URL, s.CertDir, s.StartTimeout, s.StopTimeout,
+	)
 	if err != nil {
 		return err
 	}
 
-	select {
-	case <-detectedStart:
-		return nil
-	case <-timedOut:
-		return fmt.Errorf("timeout waiting for apiserver to start serving")
-	}
-}
-
-func (s *APIServer) ensureInitialized() error {
-	if s.Path == "" {
-		s.Path = internal.BinPathFinder("kube-apiserver")
-	}
-	if s.URL == nil {
-		am := &internal.AddressManager{}
-		port, host, err := am.Initialize()
-		if err != nil {
-			return err
-		}
-		s.URL = &url.URL{
-			Scheme: "http",
-			Host:   fmt.Sprintf("%s:%d", host, port),
-		}
-	}
-	if s.CertDir == "" {
-		certDir, err := ioutil.TempDir("", "k8s_test_framework_")
-		if err != nil {
-			return err
-		}
-		s.actualCertDir = certDir
-	}
 	if s.Etcd == nil {
 		s.Etcd = &Etcd{}
 	}
-	if s.StopTimeout == 0 {
-		s.StopTimeout = 20 * time.Second
-	}
-	if s.StartTimeout == 0 {
-		s.StartTimeout = 20 * time.Second
-	}
-
-	s.stdOut = gbytes.NewBuffer()
-	s.stdErr = gbytes.NewBuffer()
 
 	return nil
 }
 
 // Stop stops this process gracefully, waits for its termination, and cleans up the cert directory.
 func (s *APIServer) Stop() error {
-	if s.session == nil {
-		return nil
-	}
-
-	session := s.session.Terminate()
-	detectedStop := session.Exited
-	timedOut := time.After(s.StopTimeout)
-
-	select {
-	case <-detectedStop:
-		break
-	case <-timedOut:
-		return fmt.Errorf("timeout waiting for apiserver to stop")
-	}
-
-	if err := s.Etcd.Stop(); err != nil {
+	err := s.process.Stop(
+		s.session,
+		s.commonStuff.StopTimeout,
+		s.commonStuff.Dir,
+		s.commonStuff.DirNeedsCleaning,
+	)
+	if err != nil {
 		return err
 	}
 
-	if s.CertDir == "" {
-		return os.RemoveAll(s.actualCertDir)
-	}
-	return nil
+	return s.Etcd.Stop()
 }
