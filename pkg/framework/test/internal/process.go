@@ -23,9 +23,7 @@ type CommonStuff struct {
 	StartTimeout     time.Duration
 }
 
-type Process struct{}
-
-func (Process) Start(command *exec.Cmd, startMessage string, startTimeout time.Duration) (*gexec.Session, error) {
+func Start(command *exec.Cmd, startMessage string, startTimeout time.Duration) (*gexec.Session, error) {
 	stdErr := gbytes.NewBuffer()
 	detectedStart := stdErr.Detect(startMessage)
 	timedOut := time.After(startTimeout)
@@ -44,7 +42,7 @@ func (Process) Start(command *exec.Cmd, startMessage string, startTimeout time.D
 
 }
 
-func (Process) Stop(session *gexec.Session, stopTimeout time.Duration, dirToClean string, dirNeedsCleaning bool) error {
+func Stop(session *gexec.Session, stopTimeout time.Duration, dirToClean string, dirNeedsCleaning bool) error {
 	if session == nil {
 		return nil
 	}
@@ -66,9 +64,9 @@ func (Process) Stop(session *gexec.Session, stopTimeout time.Duration, dirToClea
 	return nil
 }
 
-func (Process) EnsureInitialized(
-	path string,
+func NewCommonStuff(
 	symbolicName string,
+	path string,
 	listenURL *url.URL,
 	dir string,
 	startTimeout time.Duration,

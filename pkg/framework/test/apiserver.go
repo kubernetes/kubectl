@@ -25,8 +25,7 @@ type APIServer struct {
 	Path string
 
 	// CertDir is a struct holding a path to a certificate directory and a function to cleanup that directory.
-	CertDir              string
-	certDirNeedsCleaning bool
+	CertDir string
 
 	// Etcd is an implementation of a ControlPlaneProcess and is responsible to run Etcd and provide its coordinates.
 	// If not specified, a brand new instance of Etcd is brought up.
@@ -43,8 +42,6 @@ type APIServer struct {
 	session *gexec.Session
 
 	commonStuff internal.CommonStuff
-
-	process internal.Process
 }
 
 // Start starts the apiserver, waits for it to come up, and returns an error, if occoured.
@@ -77,19 +74,24 @@ func (s *APIServer) Start() error {
 		fmt.Sprintf("--insecure-bind-address=%s", s.commonStuff.URL.Hostname()),
 	}
 
-	s.session, err = s.process.Start(
+	s.session, err = internal.Start(
 		exec.Command(s.commonStuff.Path, args...),
 		fmt.Sprintf("Serving insecurely on %s", s.commonStuff.URL.Host),
-		s.commonStuff.StartTimeout)
+		s.commonStuff.StartTimeout,
+	)
+
 	return err
 }
 
 func (s *APIServer) ensureInitialized() error {
 	var err error
 
-	s.commonStuff, err = s.process.EnsureInitialized(
-		s.Path, "kube-apiserver",
-		s.URL, s.CertDir, s.StartTimeout, s.StopTimeout,
+	s.commonStuff, err = internal.NewCommonStuff(
+		"kube-apiserver",
+		s.Path,
+		s.URL,
+		s.CertDir,
+		s.StartTimeout, s.StopTimeout,
 	)
 	if err != nil {
 		return err
@@ -104,7 +106,7 @@ func (s *APIServer) ensureInitialized() error {
 
 // Stop stops this process gracefully, waits for its termination, and cleans up the cert directory.
 func (s *APIServer) Stop() error {
-	err := s.process.Stop(
+	err := internal.Stop(
 		s.session,
 		s.commonStuff.StopTimeout,
 		s.commonStuff.Dir,
