@@ -73,6 +73,10 @@ func NewProcessState(
 	startTimeout time.Duration,
 	stopTimeout time.Duration,
 ) (ProcessState, error) {
+	if path == "" && symbolicName == "" {
+		return ProcessState{}, fmt.Errorf("Either a path or a symbolic name need to be set")
+	}
+
 	state := ProcessState{
 		Path:             path,
 		URL:              listenURL,

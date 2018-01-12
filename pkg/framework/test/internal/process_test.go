@@ -1,17 +1,16 @@
 package internal_test
 
 import (
-	. "k8s.io/kubectl/pkg/framework/test/internal"
-
-	"os/exec"
-
-	"time"
-
+	"io/ioutil"
+	"net/url"
 	"os"
+	"os/exec"
+	"time"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/gexec"
+	. "k8s.io/kubectl/pkg/framework/test/internal"
 )
 
 var _ = Describe("Start", func() {
@@ -101,6 +100,115 @@ var _ = Describe("Stop", func() {
 			Expect(tmpDir).NotTo(BeAnExistingFile())
 		})
 	})
+})
+
+var _ = Describe("NewProcessState", func() {
+	var (
+		name         string
+		path         string
+		listenURL    *url.URL
+		dir          string
+		startTimeout time.Duration
+		stopTimeout  time.Duration
+	)
+	BeforeEach(func() {
+		name = "some name"
+		path = "some path"
+		listenURL = &url.URL{Host: "some host"}
+		dir = "some dir"
+		startTimeout = 1 * time.Second
+		stopTimeout = 1 * time.Second
+	})
+
+	It("creates a new ProcessState struct", func() {
+		procState, err := NewProcessState(name, path, listenURL, dir, startTimeout, stopTimeout)
+
+		Expect(err).NotTo(HaveOccurred())
+		Expect(procState.Path).To(Equal(path))
+		Expect(procState.URL).To(Equal(listenURL))
+		Expect(procState.Dir).To(Equal(dir))
+		Expect(procState.StartTimeout).To(Equal(startTimeout))
+		Expect(procState.StopTimeout).To(Equal(stopTimeout))
+		Expect(procState.DirNeedsCleaning).To(BeFalse())
+	})
+
+	Context("When path is empty but symbolic name is set", func() {
+		BeforeEach(func() {
+			path = ""
+		})
+		It("defaults the path", func() {
+			procState, err := NewProcessState(name, path, listenURL, dir, startTimeout, stopTimeout)
+
+			Expect(err).NotTo(HaveOccurred())
+			Expect(procState.Path).To(ContainSubstring("assets/bin/some name"))
+		})
+	})
+
+	Context("When symbolic name is empty but path is set", func() {
+		BeforeEach(func() {
+			name = ""
+		})
+		It("defaults the path", func() {
+			procState, err := NewProcessState(name, path, listenURL, dir, startTimeout, stopTimeout)
+
+			Expect(err).NotTo(HaveOccurred())
+			Expect(procState.Path).To(ContainSubstring("some path"))
+		})
+	})
+
+	Context("When symbolic name and the path are empty", func() {
+		BeforeEach(func() {
+			name = ""
+			path = ""
+		})
+		It("errors", func() {
+			_, err := NewProcessState(name, path, listenURL, dir, startTimeout, stopTimeout)
+			Expect(err).To(MatchError("Either a path or a symbolic name need to be set"))
+		})
+	})
+
+	Context("When listen URL is not set", func() {
+		BeforeEach(func() {
+			listenURL = nil
+		})
+		It("defaults the URL", func() {
+			procState, err := NewProcessState(name, path, listenURL, dir, startTimeout, stopTimeout)
+
+			Expect(err).NotTo(HaveOccurred())
+			Expect(procState.URL).NotTo(BeNil())
+			Expect(procState.URL.Host).NotTo(BeEmpty())
+		})
+	})
+
+	Context("When the directory is not set", func() {
+		BeforeEach(func() {
+			dir = ""
+		})
+		It("defaults to and creates a new directory and sets the directory cleanup flag", func() {
+			procState, err := NewProcessState(name, path, listenURL, dir, startTimeout, stopTimeout)
+
+			Expect(err).NotTo(HaveOccurred())
+			Expect(procState.Dir).To(BeADirectory())
+			Expect(procState.DirNeedsCleaning).To(BeTrue())
+
+			Expect(os.RemoveAll(procState.Dir)).To(Succeed())
+		})
+	})
+
+	Context("When timeouts are not set", func() {
+		BeforeEach(func() {
+			startTimeout = 0
+			stopTimeout = 0
+		})
+		It("defaults both timeouts", func() {
+			procState, err := NewProcessState(name, path, listenURL, dir, startTimeout, stopTimeout)
+
+			Expect(err).NotTo(HaveOccurred())
+			Expect(procState.StartTimeout).NotTo(BeZero())
+			Expect(procState.StopTimeout).NotTo(BeZero())
+		})
+	})
+
 })
 
 func getSimpleCommand() *exec.Cmd {
