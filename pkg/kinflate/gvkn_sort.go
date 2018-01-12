@@ -1,5 +1,5 @@
 /*
-Copyright 2017 The Kubernetes Authors.
+Copyright 2018 The Kubernetes Authors.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,30 +14,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package main
+package kinflate
 
-import (
-	"io"
-	"os"
+type ByGVKN []groupVersionKindName
 
-	"github.com/spf13/cobra"
-
-	"k8s.io/kubectl/pkg/kinflate"
-)
-
-// TestableMain allows test coverage for main.
-func TestableMain(out, errOut io.Writer, cmdMungeFn func(*cobra.Command)) error {
-	cmd := kinflate.NewCmdKinflate(out, errOut)
-	if cmdMungeFn != nil {
-		cmdMungeFn(cmd)
+func (a ByGVKN) Len() int      { return len(a) }
+func (a ByGVKN) Swap(i, j int) { a[i], a[j] = a[j], a[i] }
+func (a ByGVKN) Less(i, j int) bool {
+	if a[i].gvk.String() != a[j].gvk.String() {
+		return a[i].gvk.String() < a[j].gvk.String()
 	}
-	return cmd.Execute()
-}
-
-func main() {
-	err := TestableMain(os.Stdout, os.Stderr, nil)
-	if err != nil {
-		os.Exit(1)
-	}
-	os.Exit(0)
+	return a[i].name < a[j].name
 }

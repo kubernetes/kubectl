@@ -19,13 +19,11 @@ package kinflate
 import (
 	"fmt"
 	"io"
-	"io/ioutil"
+	"os"
+	"sort"
 
-	"github.com/ghodss/yaml"
 	"github.com/spf13/cobra"
 
-	"k8s.io/apimachinery/pkg/api/meta"
-	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/util/strategicpatch"
@@ -57,15 +55,18 @@ func NewCmdKinflate(out, errOut io.Writer) *cobra.Command {
 		Run: func(cmd *cobra.Command, args []string) {
 			err := o.Validate(cmd, args)
 			if err != nil {
-				panic(err)
+				fmt.Fprintf(errOut, "error: %v\n", err)
+				os.Exit(1)
 			}
 			err = o.Complete(cmd, args)
 			if err != nil {
-				panic(err)
+				fmt.Fprintf(errOut, "error: %v\n", err)
+				os.Exit(1)
 			}
 			err = o.RunKinflate(cmd, out, errOut)
 			if err != nil {
-				panic(err)
+				fmt.Fprintf(errOut, "error: %v\n", err)
+				os.Exit(1)
 			}
 		},
 	}
@@ -88,63 +89,36 @@ func (o *kinflateOptions) Complete(cmd *cobra.Command, args []string) error {
 
 // RunKinflate runs kinflate command (do real work).
 func (o *kinflateOptions) RunKinflate(cmd *cobra.Command, out, errOut io.Writer) error {
-	decoder := unstructured.UnstructuredJSONScheme
-
-	baseFiles, overlayFiles, overlayPkg, err := loadBaseAndOverlayPkg(o.manifestDir)
+	baseResources, overlayResource, overlayPkg, err := loadBaseAndOverlayPkg(o.manifestDir)
 	if err != nil {
 		return err
 	}
 
-	// This func will build a visitor given filenameOptions.
-	// It will visit each info and populate the map.
-	populateResourceMap := func(files []string, m map[groupVersionKindName][]byte) error {
-		for _, file := range files {
-			content, err := ioutil.ReadFile(file)
-			if err != nil {
-				return err
-			}
-
-			// try converting to json, if there is a error, probably because the content is already json.
-			jsoncontent, err := yaml.YAMLToJSON(content)
-			if err != nil {
-				fmt.Fprintf(errOut, "error when trying to convert yaml to json: %v\n", err)
-			} else {
-				content = jsoncontent
-			}
-
-			obj, gvk, err := decoder.Decode(content, nil, nil)
-			if err != nil {
-				return err
-			}
-			accessor, err := meta.Accessor(obj)
-			if err != nil {
-				return err
-			}
-			name := accessor.GetName()
-			gvkn := groupVersionKindName{gvk: *gvk, name: name}
-			if err != nil {
-				return err
-			}
-			if _, found := m[gvkn]; found {
-				return fmt.Errorf("unexpected same groupVersionKindName: %#v", gvkn)
-			}
-			m[gvkn] = content
-		}
-		return nil
-	}
+	gvknToNewNameObject := map[groupVersionKindName]newNameObject{}
 
 	// map from GroupVersionKind to marshaled json bytes
 	overlayResouceMap := map[groupVersionKindName][]byte{}
-	err = populateResourceMap(overlayFiles, overlayResouceMap)
+	err = populateResourceMap(overlayResource.resources, overlayResouceMap, errOut)
+	if err != nil {
+		return err
+	}
+
+	err = populateMapOfConfigMapAndSecret(overlayResource, gvknToNewNameObject)
 	if err != nil {
 		return err
 	}
 
 	// map from GroupVersionKind to marshaled json bytes
 	baseResouceMap := map[groupVersionKindName][]byte{}
-	err = populateResourceMap(baseFiles, baseResouceMap)
-	if err != nil {
-		return err
+	for _, baseResource := range baseResources {
+		err = populateResourceMap(baseResource.resources, baseResouceMap, errOut)
+		if err != nil {
+			return err
+		}
+		err = populateMapOfConfigMapAndSecret(baseResource, gvknToNewNameObject)
+		if err != nil {
+			return err
+		}
 	}
 
 	// Strategic merge the resources exist in both base and overlay.
@@ -176,10 +150,29 @@ func (o *kinflateOptions) RunKinflate(cmd *cobra.Command, out, errOut io.Writer)
 		}
 	}
 
+	cmAndSecretGVKN := []groupVersionKindName{}
+	for gvkn := range gvknToNewNameObject {
+		cmAndSecretGVKN = append(cmAndSecretGVKN, gvkn)
+	}
+	sort.Sort(ByGVKN(cmAndSecretGVKN))
+	for _, gvkn := range cmAndSecretGVKN {
+		nameAndobj := gvknToNewNameObject[gvkn]
+		yamlObj, err := updateObjectMetadata(nameAndobj.obj, overlayPkg)
+		if err != nil {
+			return err
+		}
+		fmt.Fprintf(out, "---\n%s", yamlObj)
+	}
+
 	// Inject the labels, annotations and name prefix.
 	// Then print the object.
-	for _, jsonObj := range baseResouceMap {
-		yamlObj, err := updateMetadata(jsonObj, overlayPkg, nil)
+	resourceGVKN := []groupVersionKindName{}
+	for gvkn := range baseResouceMap {
+		resourceGVKN = append(resourceGVKN, gvkn)
+	}
+	sort.Sort(ByGVKN(resourceGVKN))
+	for _, gvkn := range resourceGVKN {
+		yamlObj, err := updateMetadata(baseResouceMap[gvkn], overlayPkg, gvknToNewNameObject)
 		if err != nil {
 			return err
 		}
