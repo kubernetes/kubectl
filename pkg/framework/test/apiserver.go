@@ -8,7 +8,6 @@ import (
 
 	"os/exec"
 
-	"github.com/onsi/gomega/gexec"
 	"k8s.io/kubectl/pkg/framework/test/internal"
 )
 
@@ -39,8 +38,6 @@ type APIServer struct {
 	StopTimeout  time.Duration
 	StartTimeout time.Duration
 
-	session *gexec.Session
-
 	processState internal.ProcessState
 }
 
@@ -58,8 +55,6 @@ func (s *APIServer) Start() error {
 		return err
 	}
 
-	etcdURLString := s.Etcd.processState.URL.String()
-
 	args := []string{
 		"--authorization-mode=Node,RBAC",
 		"--runtime-config=admissionregistration.k8s.io/v1alpha1",
@@ -68,13 +63,13 @@ func (s *APIServer) Start() error {
 		"--admission-control-config-file=",
 		"--bind-address=0.0.0.0",
 		"--storage-backend=etcd3",
-		fmt.Sprintf("--etcd-servers=%s", etcdURLString),
+		fmt.Sprintf("--etcd-servers=%s", s.Etcd.processState.URL.String()),
 		fmt.Sprintf("--cert-dir=%s", s.processState.Dir),
 		fmt.Sprintf("--insecure-port=%s", s.processState.URL.Port()),
 		fmt.Sprintf("--insecure-bind-address=%s", s.processState.URL.Hostname()),
 	}
 
-	s.session, err = internal.Start(
+	s.processState.Session, err = internal.Start(
 		exec.Command(s.processState.Path, args...),
 		fmt.Sprintf("Serving insecurely on %s", s.processState.URL.Host),
 		s.processState.StartTimeout,
@@ -107,7 +102,7 @@ func (s *APIServer) ensureInitialized() error {
 // Stop stops this process gracefully, waits for its termination, and cleans up the cert directory.
 func (s *APIServer) Stop() error {
 	err := internal.Stop(
-		s.session,
+		s.processState.Session,
 		s.processState.StopTimeout,
 		s.processState.Dir,
 		s.processState.DirNeedsCleaning,

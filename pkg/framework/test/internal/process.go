@@ -21,6 +21,7 @@ type ProcessState struct {
 	Path             string
 	StopTimeout      time.Duration
 	StartTimeout     time.Duration
+	Session          *gexec.Session
 }
 
 func Start(command *exec.Cmd, startMessage string, startTimeout time.Duration) (*gexec.Session, error) {

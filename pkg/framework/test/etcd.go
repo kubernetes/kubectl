@@ -7,7 +7,6 @@ import (
 
 	"net/url"
 
-	"github.com/onsi/gomega/gexec"
 	"k8s.io/kubectl/pkg/framework/test/internal"
 )
 
@@ -21,7 +20,6 @@ type Etcd struct {
 	DataDir      string
 	StopTimeout  time.Duration
 	StartTimeout time.Duration
-	session      *gexec.Session
 
 	processState internal.ProcessState
 }
@@ -41,7 +39,7 @@ func (e *Etcd) Start() error {
 		fmt.Sprintf("--data-dir=%s", e.processState.Dir),
 	}
 
-	e.session, err = internal.Start(
+	e.processState.Session, err = internal.Start(
 		exec.Command(e.processState.Path, args...),
 		fmt.Sprintf("serving insecure client requests on %s", e.processState.URL.Hostname()),
 		e.processState.StartTimeout,
@@ -65,7 +63,7 @@ func (e *Etcd) ensureInitialized() error {
 // Stop stops this process gracefully, waits for its termination, and cleans up the data directory.
 func (e *Etcd) Stop() error {
 	return internal.Stop(
-		e.session,
+		e.processState.Session,
 		e.processState.StopTimeout,
 		e.processState.Dir,
 		e.processState.DirNeedsCleaning,
