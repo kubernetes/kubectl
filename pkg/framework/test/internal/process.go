@@ -28,7 +28,7 @@ func Start(command *exec.Cmd, startMessage string, startTimeout time.Duration) (
 	detectedStart := stdErr.Detect(startMessage)
 	timedOut := time.After(startTimeout)
 
-	session, err := gexec.Start(command, gbytes.NewBuffer(), stdErr)
+	session, err := gexec.Start(command, nil, stdErr)
 	if err != nil {
 		return session, err
 	}
@@ -37,7 +37,8 @@ func Start(command *exec.Cmd, startMessage string, startTimeout time.Duration) (
 	case <-detectedStart:
 		return session, nil
 	case <-timedOut:
-		return session, fmt.Errorf("timeout waiting for apiserver to start serving")
+		session.Terminate()
+		return session, fmt.Errorf("timeout waiting for process to start serving")
 	}
 
 }
