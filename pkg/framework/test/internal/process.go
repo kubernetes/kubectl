@@ -55,7 +55,7 @@ func Stop(session *gexec.Session, stopTimeout time.Duration, dirToClean string, 
 	case <-detectedStop:
 		break
 	case <-timedOut:
-		return fmt.Errorf("timeout waiting for etcd to stop")
+		return fmt.Errorf("timeout waiting for process to stop")
 	}
 
 	if dirNeedsCleaning {
