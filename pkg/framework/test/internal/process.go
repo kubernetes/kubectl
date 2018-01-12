@@ -21,10 +21,56 @@ type ProcessState struct {
 	Path             string
 	StopTimeout      time.Duration
 	StartTimeout     time.Duration
-	Session          *gexec.Session
+	Session          *gexec.Session // TODO private?
+	Args             []string
 }
 
-func Start(command *exec.Cmd, startMessage string, startTimeout time.Duration) (*gexec.Session, error) {
+// TODO explore ProcessInputs, Defaulter, ProcessState, ...
+//type ProcessInput struct {
+//	URL              *url.URL
+//	Dir              string
+//	DirNeedsCleaning bool
+//	Path             string
+//	StopTimeout      time.Duration
+//	StartTimeout     time.Duration
+//}
+//
+//type ProcessState2 struct {
+//	ProcessInput
+//	Args        []string
+//	StartString string
+//}
+//
+//func DoDefaulting(url, *url.URL) ProcessInput {
+//	return ProcessInput{}
+//}
+//
+//func NewProcessState(input ProcessInput, args []string, startthing string) ProcessState {
+//	return ProcessState2{input, args, startthing}
+//}
+
+func (ps *ProcessState) Start(startMessage string) (err error) {
+	ps.Session, err = Start(
+		ps.Path,
+		ps.Args,
+		startMessage,
+		ps.StartTimeout,
+	)
+	return
+}
+
+func (ps *ProcessState) Stop() error {
+	return Stop(
+		ps.Session,
+		ps.StopTimeout,
+		ps.Dir,
+		ps.DirNeedsCleaning,
+	)
+}
+
+func Start(path string, args []string, startMessage string, startTimeout time.Duration) (*gexec.Session, error) {
+	command := exec.Command(path, args...)
+
 	stdErr := gbytes.NewBuffer()
 	detectedStart := stdErr.Detect(startMessage)
 	timedOut := time.After(startTimeout)
@@ -73,12 +119,12 @@ func NewProcessState(
 	dir string,
 	startTimeout time.Duration,
 	stopTimeout time.Duration,
-) (ProcessState, error) {
+) (*ProcessState, error) {
 	if path == "" && symbolicName == "" {
-		return ProcessState{}, fmt.Errorf("Either a path or a symbolic name need to be set")
+		return nil, fmt.Errorf("Either a path or a symbolic name need to be set")
 	}
 
-	state := ProcessState{
+	state := &ProcessState{
 		Path:             path,
 		URL:              listenURL,
 		Dir:              dir,
@@ -95,7 +141,7 @@ func NewProcessState(
 		am := &AddressManager{}
 		port, host, err := am.Initialize()
 		if err != nil {
-			return ProcessState{}, err
+			return nil, err
 		}
 		state.URL = &url.URL{
 			Scheme: "http",
@@ -106,7 +152,7 @@ func NewProcessState(
 	if dir == "" {
 		newDir, err := ioutil.TempDir("", "k8s_test_framework_")
 		if err != nil {
-			return ProcessState{}, err
+			return nil, err
 		}
 		state.Dir = newDir
 		state.DirNeedsCleaning = true

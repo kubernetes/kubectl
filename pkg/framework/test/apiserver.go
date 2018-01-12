@@ -6,8 +6,6 @@ import (
 
 	"net/url"
 
-	"os/exec"
-
 	"k8s.io/kubectl/pkg/framework/test/internal"
 )
 
@@ -38,48 +36,21 @@ type APIServer struct {
 	StopTimeout  time.Duration
 	StartTimeout time.Duration
 
-	processState internal.ProcessState
+	processState *internal.ProcessState
 }
 
 // Start starts the apiserver, waits for it to come up, and returns an error, if occoured.
 func (s *APIServer) Start() error {
 	var err error
 
-	err = s.ensureInitialized()
-	if err != nil {
-		return err
+	if s.Etcd == nil {
+		s.Etcd = &Etcd{}
 	}
 
 	err = s.Etcd.Start()
 	if err != nil {
 		return err
 	}
-
-	args := []string{
-		"--authorization-mode=Node,RBAC",
-		"--runtime-config=admissionregistration.k8s.io/v1alpha1",
-		"--v=3", "--vmodule=",
-		"--admission-control=Initializers,NamespaceLifecycle,LimitRanger,ServiceAccount,SecurityContextDeny,DefaultStorageClass,DefaultTolerationSeconds,GenericAdmissionWebhook,ResourceQuota",
-		"--admission-control-config-file=",
-		"--bind-address=0.0.0.0",
-		"--storage-backend=etcd3",
-		fmt.Sprintf("--etcd-servers=%s", s.Etcd.processState.URL.String()),
-		fmt.Sprintf("--cert-dir=%s", s.processState.Dir),
-		fmt.Sprintf("--insecure-port=%s", s.processState.URL.Port()),
-		fmt.Sprintf("--insecure-bind-address=%s", s.processState.URL.Hostname()),
-	}
-
-	s.processState.Session, err = internal.Start(
-		exec.Command(s.processState.Path, args...),
-		fmt.Sprintf("Serving insecurely on %s", s.processState.URL.Host),
-		s.processState.StartTimeout,
-	)
-
-	return err
-}
-
-func (s *APIServer) ensureInitialized() error {
-	var err error
 
 	s.processState, err = internal.NewProcessState(
 		"kube-apiserver",
@@ -92,21 +63,31 @@ func (s *APIServer) ensureInitialized() error {
 		return err
 	}
 
-	if s.Etcd == nil {
-		s.Etcd = &Etcd{}
+	s.processState.Args = []string{
+		"--authorization-mode=Node,RBAC",
+		"--runtime-config=admissionregistration.k8s.io/v1alpha1",
+		"--v=3", "--vmodule=",
+		"--admission-control=Initializers,NamespaceLifecycle,LimitRanger,ServiceAccount,SecurityContextDeny,DefaultStorageClass,DefaultTolerationSeconds,GenericAdmissionWebhook,ResourceQuota",
+		"--admission-control-config-file=",
+		"--bind-address=0.0.0.0",
+		"--storage-backend=etcd3",
+		fmt.Sprintf("--etcd-servers=%s", s.Etcd.processState.URL.String()),
+		fmt.Sprintf("--cert-dir=%s", s.processState.Dir),
+		fmt.Sprintf("--insecure-port=%s", s.processState.URL.Port()),
+		fmt.Sprintf("--insecure-bind-address=%s", s.processState.URL.Hostname()),
+	}
+	if err != nil {
+		return err
 	}
 
-	return nil
+	s.processState.Start(fmt.Sprintf("Serving insecurely on %s", s.processState.URL.Host))
+
+	return err
 }
 
 // Stop stops this process gracefully, waits for its termination, and cleans up the cert directory.
 func (s *APIServer) Stop() error {
-	err := internal.Stop(
-		s.processState.Session,
-		s.processState.StopTimeout,
-		s.processState.Dir,
-		s.processState.DirNeedsCleaning,
-	)
+	err := s.processState.Stop()
 	if err != nil {
 		return err
 	}

@@ -2,7 +2,6 @@ package test
 
 import (
 	"fmt"
-	"os/exec"
 	"time"
 
 	"net/url"
@@ -21,35 +20,13 @@ type Etcd struct {
 	StopTimeout  time.Duration
 	StartTimeout time.Duration
 
-	processState internal.ProcessState
+	processState *internal.ProcessState
 }
 
 // Start starts the etcd, waits for it to come up, and returns an error, if occoured.
 func (e *Etcd) Start() error {
-	err := e.ensureInitialized()
-	if err != nil {
-		return err
-	}
-
-	args := []string{
-		"--debug",
-		"--listen-peer-urls=http://localhost:0",
-		fmt.Sprintf("--advertise-client-urls=%s", e.processState.URL),
-		fmt.Sprintf("--listen-client-urls=%s", e.processState.URL),
-		fmt.Sprintf("--data-dir=%s", e.processState.Dir),
-	}
-
-	e.processState.Session, err = internal.Start(
-		exec.Command(e.processState.Path, args...),
-		fmt.Sprintf("serving insecure client requests on %s", e.processState.URL.Hostname()),
-		e.processState.StartTimeout,
-	)
-
-	return err
-}
-
-func (e *Etcd) ensureInitialized() error {
 	var err error
+
 	e.processState, err = internal.NewProcessState(
 		"etcd",
 		e.Path,
@@ -57,15 +34,22 @@ func (e *Etcd) ensureInitialized() error {
 		e.DataDir,
 		e.StartTimeout, e.StopTimeout,
 	)
-	return err
+	if err != nil {
+		return err
+	}
+
+	e.processState.Args = []string{
+		"--debug",
+		"--listen-peer-urls=http://localhost:0",
+		fmt.Sprintf("--advertise-client-urls=%s", e.processState.URL),
+		fmt.Sprintf("--listen-client-urls=%s", e.processState.URL),
+		fmt.Sprintf("--data-dir=%s", e.processState.Dir),
+	}
+
+	return e.processState.Start(fmt.Sprintf("serving insecure client requests on %s", e.processState.URL.Hostname()))
 }
 
 // Stop stops this process gracefully, waits for its termination, and cleans up the data directory.
 func (e *Etcd) Stop() error {
-	return internal.Stop(
-		e.processState.Session,
-		e.processState.StopTimeout,
-		e.processState.Dir,
-		e.processState.DirNeedsCleaning,
-	)
+	return e.processState.Stop()
 }
