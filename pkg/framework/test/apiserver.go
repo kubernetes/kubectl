@@ -41,7 +41,7 @@ type APIServer struct {
 
 	session *gexec.Session
 
-	commonStuff internal.CommonStuff
+	processState internal.ProcessState
 }
 
 // Start starts the apiserver, waits for it to come up, and returns an error, if occoured.
@@ -58,7 +58,7 @@ func (s *APIServer) Start() error {
 		return err
 	}
 
-	etcdURLString := s.Etcd.commonStuff.URL.String()
+	etcdURLString := s.Etcd.processState.URL.String()
 
 	args := []string{
 		"--authorization-mode=Node,RBAC",
@@ -69,15 +69,15 @@ func (s *APIServer) Start() error {
 		"--bind-address=0.0.0.0",
 		"--storage-backend=etcd3",
 		fmt.Sprintf("--etcd-servers=%s", etcdURLString),
-		fmt.Sprintf("--cert-dir=%s", s.commonStuff.Dir),
-		fmt.Sprintf("--insecure-port=%s", s.commonStuff.URL.Port()),
-		fmt.Sprintf("--insecure-bind-address=%s", s.commonStuff.URL.Hostname()),
+		fmt.Sprintf("--cert-dir=%s", s.processState.Dir),
+		fmt.Sprintf("--insecure-port=%s", s.processState.URL.Port()),
+		fmt.Sprintf("--insecure-bind-address=%s", s.processState.URL.Hostname()),
 	}
 
 	s.session, err = internal.Start(
-		exec.Command(s.commonStuff.Path, args...),
-		fmt.Sprintf("Serving insecurely on %s", s.commonStuff.URL.Host),
-		s.commonStuff.StartTimeout,
+		exec.Command(s.processState.Path, args...),
+		fmt.Sprintf("Serving insecurely on %s", s.processState.URL.Host),
+		s.processState.StartTimeout,
 	)
 
 	return err
@@ -86,7 +86,7 @@ func (s *APIServer) Start() error {
 func (s *APIServer) ensureInitialized() error {
 	var err error
 
-	s.commonStuff, err = internal.NewCommonStuff(
+	s.processState, err = internal.NewProcessState(
 		"kube-apiserver",
 		s.Path,
 		s.URL,
@@ -108,9 +108,9 @@ func (s *APIServer) ensureInitialized() error {
 func (s *APIServer) Stop() error {
 	err := internal.Stop(
 		s.session,
-		s.commonStuff.StopTimeout,
-		s.commonStuff.Dir,
-		s.commonStuff.DirNeedsCleaning,
+		s.processState.StopTimeout,
+		s.processState.Dir,
+		s.processState.DirNeedsCleaning,
 	)
 	if err != nil {
 		return err

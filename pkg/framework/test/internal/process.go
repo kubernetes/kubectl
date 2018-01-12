@@ -14,7 +14,7 @@ import (
 	"github.com/onsi/gomega/gexec"
 )
 
-type CommonStuff struct {
+type ProcessState struct {
 	URL              *url.URL
 	Dir              string
 	DirNeedsCleaning bool
@@ -64,15 +64,15 @@ func Stop(session *gexec.Session, stopTimeout time.Duration, dirToClean string, 
 	return nil
 }
 
-func NewCommonStuff(
+func NewProcessState(
 	symbolicName string,
 	path string,
 	listenURL *url.URL,
 	dir string,
 	startTimeout time.Duration,
 	stopTimeout time.Duration,
-) (CommonStuff, error) {
-	common := CommonStuff{
+) (ProcessState, error) {
+	state := ProcessState{
 		Path:             path,
 		URL:              listenURL,
 		Dir:              dir,
@@ -82,16 +82,16 @@ func NewCommonStuff(
 	}
 
 	if path == "" {
-		common.Path = BinPathFinder(symbolicName)
+		state.Path = BinPathFinder(symbolicName)
 	}
 
 	if listenURL == nil {
 		am := &AddressManager{}
 		port, host, err := am.Initialize()
 		if err != nil {
-			return CommonStuff{}, err
+			return ProcessState{}, err
 		}
-		common.URL = &url.URL{
+		state.URL = &url.URL{
 			Scheme: "http",
 			Host:   fmt.Sprintf("%s:%d", host, port),
 		}
@@ -100,19 +100,19 @@ func NewCommonStuff(
 	if dir == "" {
 		newDir, err := ioutil.TempDir("", "k8s_test_framework_")
 		if err != nil {
-			return CommonStuff{}, err
+			return ProcessState{}, err
 		}
-		common.Dir = newDir
-		common.DirNeedsCleaning = true
+		state.Dir = newDir
+		state.DirNeedsCleaning = true
 	}
 
 	if stopTimeout == 0 {
-		common.StopTimeout = 20 * time.Second
+		state.StopTimeout = 20 * time.Second
 	}
 
 	if startTimeout == 0 {
-		common.StartTimeout = 20 * time.Second
+		state.StartTimeout = 20 * time.Second
 	}
 
-	return common, nil
+	return state, nil
 }

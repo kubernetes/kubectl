@@ -23,7 +23,7 @@ type Etcd struct {
 	StartTimeout time.Duration
 	session      *gexec.Session
 
-	commonStuff internal.CommonStuff
+	processState internal.ProcessState
 }
 
 // Start starts the etcd, waits for it to come up, and returns an error, if occoured.
@@ -36,15 +36,15 @@ func (e *Etcd) Start() error {
 	args := []string{
 		"--debug",
 		"--listen-peer-urls=http://localhost:0",
-		fmt.Sprintf("--advertise-client-urls=%s", e.commonStuff.URL),
-		fmt.Sprintf("--listen-client-urls=%s", e.commonStuff.URL),
-		fmt.Sprintf("--data-dir=%s", e.commonStuff.Dir),
+		fmt.Sprintf("--advertise-client-urls=%s", e.processState.URL),
+		fmt.Sprintf("--listen-client-urls=%s", e.processState.URL),
+		fmt.Sprintf("--data-dir=%s", e.processState.Dir),
 	}
 
 	e.session, err = internal.Start(
-		exec.Command(e.commonStuff.Path, args...),
-		fmt.Sprintf("serving insecure client requests on %s", e.commonStuff.URL.Hostname()),
-		e.commonStuff.StartTimeout,
+		exec.Command(e.processState.Path, args...),
+		fmt.Sprintf("serving insecure client requests on %s", e.processState.URL.Hostname()),
+		e.processState.StartTimeout,
 	)
 
 	return err
@@ -52,7 +52,7 @@ func (e *Etcd) Start() error {
 
 func (e *Etcd) ensureInitialized() error {
 	var err error
-	e.commonStuff, err = internal.NewCommonStuff(
+	e.processState, err = internal.NewProcessState(
 		"etcd",
 		e.Path,
 		e.URL,
@@ -66,8 +66,8 @@ func (e *Etcd) ensureInitialized() error {
 func (e *Etcd) Stop() error {
 	return internal.Stop(
 		e.session,
-		e.commonStuff.StopTimeout,
-		e.commonStuff.Dir,
-		e.commonStuff.DirNeedsCleaning,
+		e.processState.StopTimeout,
+		e.processState.Dir,
+		e.processState.DirNeedsCleaning,
 	)
 }
