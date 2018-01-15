@@ -54,52 +54,46 @@ var _ = Describe("Start method", func() {
 	})
 })
 
-var _ = Describe("Stop", func() {
-	var (
-		session *gexec.Session
-		timeout time.Duration
-	)
-	BeforeEach(func() {
+var _ = Describe("Stop method", func() {
+	It("can stop a process", func() {
 		var err error
-		command := getSimpleCommand()
 
-		timeout = 10 * time.Second
-		session, err = gexec.Start(command, nil, nil)
+		processState := &ProcessState{}
+		processState.Session, err = gexec.Start(getSimpleCommand(), nil, nil)
 		Expect(err).NotTo(HaveOccurred())
+		processState.StopTimeout = 10 * time.Second
+
+		Expect(processState.Stop()).To(Succeed())
 	})
 
-	It("can stop a session", func() {
-		err := Stop(session, timeout, "", false)
-
-		Expect(err).NotTo(HaveOccurred())
-		Expect(session.ExitCode()).To(Equal(143))
-	})
-
-	Context("when command cannot be stopped", func() {
-		BeforeEach(func() {
-			session.Exited = make(chan struct{})
-			timeout = 200 * time.Millisecond
-		})
-		It("runs into a timeout", func() {
-			err := Stop(session, timeout, "", false)
-			Expect(err).To(MatchError(ContainSubstring("timeout")))
-		})
-	})
-
-	Context("when directory needs cleanup", func() {
-		var (
-			tmpDir string
-		)
-		BeforeEach(func() {
+	Context("when the command cannot be stopped", func() {
+		It("returns a timeout error", func() {
 			var err error
-			tmpDir, err = ioutil.TempDir("", "k8s_test_framework_tests_")
+
+			processState := &ProcessState{}
+			processState.Session, err = gexec.Start(getSimpleCommand(), nil, nil)
 			Expect(err).NotTo(HaveOccurred())
-			Expect(tmpDir).To(BeAnExistingFile())
+			processState.Session.Exited = make(chan struct{})
+			processState.StopTimeout = 200 * time.Millisecond
+
+			Expect(processState.Stop()).To(MatchError(ContainSubstring("timeout")))
 		})
+	})
+
+	Context("when the directory needs to be cleaned up", func() {
 		It("removes the directory", func() {
-			err := Stop(session, timeout, tmpDir, true)
+			var err error
+
+			processState := &ProcessState{}
+			processState.Session, err = gexec.Start(getSimpleCommand(), nil, nil)
 			Expect(err).NotTo(HaveOccurred())
-			Expect(tmpDir).NotTo(BeAnExistingFile())
+			processState.Dir, err = ioutil.TempDir("", "k8s_test_framework_")
+			Expect(err).NotTo(HaveOccurred())
+			processState.DirNeedsCleaning = true
+			processState.StopTimeout = 200 * time.Millisecond
+
+			Expect(processState.Stop()).To(Succeed())
+			Expect(processState.Dir).NotTo(BeAnExistingFile())
 		})
 	})
 })

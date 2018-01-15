@@ -87,64 +87,34 @@ func DoDefaulting(
 	return defaults, nil
 }
 
-//type ProcessState2 struct {
-//	ProcessInput
-//	Args        []string
-//	StartString string
-//}
-//
-//func NewProcessState(input ProcessInput, args []string, startthing string) ProcessState {
-//	return ProcessState2{input, args, startthing}
-//}
-
 func (ps *ProcessState) Start() (err error) {
-	ps.Session, err = Start(
-		ps.Path,
-		ps.Args,
-		ps.StartMessage,
-		ps.StartTimeout,
-	)
-	return
-}
-
-func (ps *ProcessState) Stop() error {
-	return Stop(
-		ps.Session,
-		ps.StopTimeout,
-		ps.Dir,
-		ps.DirNeedsCleaning,
-	)
-}
-
-func Start(path string, args []string, startMessage string, startTimeout time.Duration) (*gexec.Session, error) {
-	command := exec.Command(path, args...)
+	command := exec.Command(ps.Path, ps.Args...)
 
 	stdErr := gbytes.NewBuffer()
-	detectedStart := stdErr.Detect(startMessage)
-	timedOut := time.After(startTimeout)
+	detectedStart := stdErr.Detect(ps.StartMessage)
+	timedOut := time.After(ps.StartTimeout)
 
-	session, err := gexec.Start(command, nil, stdErr)
+	ps.Session, err = gexec.Start(command, nil, stdErr)
 	if err != nil {
-		return session, err
+		return err
 	}
 
 	select {
 	case <-detectedStart:
-		return session, nil
+		return nil
 	case <-timedOut:
-		session.Terminate()
-		return session, fmt.Errorf("timeout waiting for process to start serving")
+		ps.Session.Terminate()
+		return fmt.Errorf("timeout waiting for process to start serving")
 	}
-
 }
 
-func Stop(session *gexec.Session, stopTimeout time.Duration, dirToClean string, dirNeedsCleaning bool) error {
-	if session == nil {
+func (ps *ProcessState) Stop() error {
+	if ps.Session == nil {
 		return nil
 	}
 
-	detectedStop := session.Terminate().Exited
-	timedOut := time.After(stopTimeout)
+	detectedStop := ps.Session.Terminate().Exited
+	timedOut := time.After(ps.StopTimeout)
 
 	select {
 	case <-detectedStop:
@@ -153,8 +123,8 @@ func Stop(session *gexec.Session, stopTimeout time.Duration, dirToClean string, 
 		return fmt.Errorf("timeout waiting for process to stop")
 	}
 
-	if dirNeedsCleaning {
-		return os.RemoveAll(dirToClean)
+	if ps.DirNeedsCleaning {
+		return os.RemoveAll(ps.Dir)
 	}
 
 	return nil
