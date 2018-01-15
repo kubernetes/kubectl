@@ -275,7 +275,7 @@ func TestConstructSecret(t *testing.T) {
 func TestPopulateMap(t *testing.T) {
 	anotherCm := literalConfigMap.DeepCopy()
 	expectedMap := map[groupVersionKindName]newNameObject{
-		groupVersionKindName{
+		{
 			gvk: schema.GroupVersionKind{
 				Version: "v1",
 				Kind:    "ConfigMap",
@@ -285,7 +285,7 @@ func TestPopulateMap(t *testing.T) {
 			newName: "newconfigmap",
 			obj:     literalConfigMap,
 		},
-		groupVersionKindName{
+		{
 			gvk: schema.GroupVersionKind{
 				Version: "v1",
 				Kind:    "Secret",
@@ -348,7 +348,7 @@ func TestPopulateMapOfConfigMapAndSecret(t *testing.T) {
 	tlsSecretWithNewName := tlsSecret.DeepCopy()
 	tlsSecretWithNewName.Name = "tlsSecret-h4m4f95g75"
 	expectedMap := map[groupVersionKindName]newNameObject{
-		groupVersionKindName{
+		{
 			gvk: schema.GroupVersionKind{
 				Version: "v1",
 				Kind:    "ConfigMap",
@@ -358,7 +358,7 @@ func TestPopulateMapOfConfigMapAndSecret(t *testing.T) {
 			newName: "literalConfigMap-c8tc8tb6b7",
 			obj:     literalConfigMapWithNewName,
 		},
-		groupVersionKindName{
+		{
 			gvk: schema.GroupVersionKind{
 				Version: "v1",
 				Kind:    "Secret",
