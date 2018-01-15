@@ -52,12 +52,15 @@ func (s *APIServer) Start() error {
 		return err
 	}
 
-	s.processState, err = internal.NewProcessState(
+	s.processState = &internal.ProcessState{}
+
+	s.processState.DefaultedProcessInput, err = internal.DoDefaulting(
 		"kube-apiserver",
-		s.Path,
 		s.URL,
 		s.CertDir,
-		s.StartTimeout, s.StopTimeout,
+		s.Path,
+		s.StartTimeout,
+		s.StopTimeout,
 	)
 	if err != nil {
 		return err
@@ -80,7 +83,9 @@ func (s *APIServer) Start() error {
 		return err
 	}
 
-	s.processState.Start(fmt.Sprintf("Serving insecurely on %s", s.processState.URL.Host))
+	s.processState.StartMessage = fmt.Sprintf("Serving insecurely on %s", s.processState.URL.Host)
+
+	s.processState.Start()
 
 	return err
 }

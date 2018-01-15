@@ -15,14 +15,10 @@ import (
 )
 
 type ProcessState struct {
-	URL              *url.URL
-	Dir              string
-	DirNeedsCleaning bool
-	Path             string
-	StopTimeout      time.Duration
-	StartTimeout     time.Duration
-	Session          *gexec.Session // TODO private?
-	Args             []string
+	DefaultedProcessInput
+	Session      *gexec.Session // TODO private?
+	StartMessage string
+	Args         []string
 }
 
 // TODO explore ProcessInputs, Defaulter, ProcessState, ...
@@ -101,11 +97,11 @@ func DoDefaulting(
 //	return ProcessState2{input, args, startthing}
 //}
 
-func (ps *ProcessState) Start(startMessage string) (err error) {
+func (ps *ProcessState) Start() (err error) {
 	ps.Session, err = Start(
 		ps.Path,
 		ps.Args,
-		startMessage,
+		ps.StartMessage,
 		ps.StartTimeout,
 	)
 	return
@@ -162,61 +158,4 @@ func Stop(session *gexec.Session, stopTimeout time.Duration, dirToClean string, 
 	}
 
 	return nil
-}
-
-func NewProcessState(
-	symbolicName string,
-	path string,
-	listenURL *url.URL,
-	dir string,
-	startTimeout time.Duration,
-	stopTimeout time.Duration,
-) (*ProcessState, error) {
-	if path == "" && symbolicName == "" {
-		return nil, fmt.Errorf("Either a path or a symbolic name need to be set")
-	}
-
-	state := &ProcessState{
-		Path:             path,
-		URL:              listenURL,
-		Dir:              dir,
-		DirNeedsCleaning: false,
-		StartTimeout:     startTimeout,
-		StopTimeout:      stopTimeout,
-	}
-
-	if path == "" {
-		state.Path = BinPathFinder(symbolicName)
-	}
-
-	if listenURL == nil {
-		am := &AddressManager{}
-		port, host, err := am.Initialize()
-		if err != nil {
-			return nil, err
-		}
-		state.URL = &url.URL{
-			Scheme: "http",
-			Host:   fmt.Sprintf("%s:%d", host, port),
-		}
-	}
-
-	if dir == "" {
-		newDir, err := ioutil.TempDir("", "k8s_test_framework_")
-		if err != nil {
-			return nil, err
-		}
-		state.Dir = newDir
-		state.DirNeedsCleaning = true
-	}
-
-	if stopTimeout == 0 {
-		state.StopTimeout = 20 * time.Second
-	}
-
-	if startTimeout == 0 {
-		state.StartTimeout = 20 * time.Second
-	}
-
-	return state, nil
 }

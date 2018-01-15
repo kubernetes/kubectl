@@ -27,12 +27,15 @@ type Etcd struct {
 func (e *Etcd) Start() error {
 	var err error
 
-	e.processState, err = internal.NewProcessState(
+	e.processState = &internal.ProcessState{}
+
+	e.processState.DefaultedProcessInput, err = internal.DoDefaulting(
 		"etcd",
-		e.Path,
 		e.URL,
 		e.DataDir,
-		e.StartTimeout, e.StopTimeout,
+		e.Path,
+		e.StartTimeout,
+		e.StopTimeout,
 	)
 	if err != nil {
 		return err
@@ -41,12 +44,14 @@ func (e *Etcd) Start() error {
 	e.processState.Args = []string{
 		"--debug",
 		"--listen-peer-urls=http://localhost:0",
-		fmt.Sprintf("--advertise-client-urls=%s", e.processState.URL),
-		fmt.Sprintf("--listen-client-urls=%s", e.processState.URL),
+		fmt.Sprintf("--advertise-client-urls=%s", e.processState.URL.String()),
+		fmt.Sprintf("--listen-client-urls=%s", e.processState.URL.String()),
 		fmt.Sprintf("--data-dir=%s", e.processState.Dir),
 	}
 
-	return e.processState.Start(fmt.Sprintf("serving insecure client requests on %s", e.processState.URL.Hostname()))
+	e.processState.StartMessage = fmt.Sprintf("serving insecure client requests on %s", e.processState.URL.Hostname())
+
+	return e.processState.Start()
 }
 
 // Stop stops this process gracefully, waits for its termination, and cleans up the data directory.
