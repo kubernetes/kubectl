@@ -26,23 +26,75 @@ type ProcessState struct {
 }
 
 // TODO explore ProcessInputs, Defaulter, ProcessState, ...
-//type ProcessInput struct {
-//	URL              *url.URL
-//	Dir              string
-//	DirNeedsCleaning bool
-//	Path             string
-//	StopTimeout      time.Duration
-//	StartTimeout     time.Duration
-//}
-//
+type DefaultedProcessInput struct {
+	URL              url.URL
+	Dir              string
+	DirNeedsCleaning bool
+	Path             string
+	StopTimeout      time.Duration
+	StartTimeout     time.Duration
+}
+
+func DoDefaulting(
+	name string,
+	listenUrl *url.URL,
+	dir string,
+	path string,
+	startTimeout time.Duration,
+	stopTimeout time.Duration,
+) (DefaultedProcessInput, error) {
+	defaults := DefaultedProcessInput{
+		Dir:          dir,
+		Path:         path,
+		StartTimeout: startTimeout,
+		StopTimeout:  stopTimeout,
+	}
+
+	if listenUrl == nil {
+		am := &AddressManager{}
+		port, host, err := am.Initialize()
+		if err != nil {
+			return DefaultedProcessInput{}, err
+		}
+		defaults.URL = url.URL{
+			Scheme: "http",
+			Host:   fmt.Sprintf("%s:%d", host, port),
+		}
+	} else {
+		defaults.URL = *listenUrl
+	}
+
+	if dir == "" {
+		newDir, err := ioutil.TempDir("", "k8s_test_framework_")
+		if err != nil {
+			return DefaultedProcessInput{}, err
+		}
+		defaults.Dir = newDir
+		defaults.DirNeedsCleaning = true
+	}
+
+	if path == "" {
+		if name == "" {
+			return DefaultedProcessInput{}, fmt.Errorf("must have at least one of name or path")
+		}
+		defaults.Path = BinPathFinder(name)
+	}
+
+	if startTimeout == 0 {
+		defaults.StartTimeout = 20 * time.Second
+	}
+
+	if stopTimeout == 0 {
+		defaults.StopTimeout = 20 * time.Second
+	}
+
+	return defaults, nil
+}
+
 //type ProcessState2 struct {
 //	ProcessInput
 //	Args        []string
 //	StartString string
-//}
-//
-//func DoDefaulting(url, *url.URL) ProcessInput {
-//	return ProcessInput{}
 //}
 //
 //func NewProcessState(input ProcessInput, args []string, startthing string) ProcessState {

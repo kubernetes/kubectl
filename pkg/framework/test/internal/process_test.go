@@ -203,7 +203,71 @@ var _ = Describe("NewProcessState", func() {
 			Expect(procState.StopTimeout).NotTo(BeZero())
 		})
 	})
+})
 
+var _ = Describe("DoDefaulting", func() {
+	Context("when all inputs are provided", func() {
+		It("passes them through", func() {
+			defaults, err := DoDefaulting(
+				"some name",
+				&url.URL{Host: "some.host.to.listen.on"},
+				"/some/dir",
+				"/some/path/to/some/bin",
+				20*time.Hour,
+				65537*time.Millisecond,
+			)
+			Expect(err).NotTo(HaveOccurred())
+
+			Expect(defaults.URL).To(Equal(url.URL{Host: "some.host.to.listen.on"}))
+			Expect(defaults.Dir).To(Equal("/some/dir"))
+			Expect(defaults.DirNeedsCleaning).To(BeFalse())
+			Expect(defaults.Path).To(Equal("/some/path/to/some/bin"))
+			Expect(defaults.StartTimeout).To(Equal(20 * time.Hour))
+			Expect(defaults.StopTimeout).To(Equal(65537 * time.Millisecond))
+		})
+	})
+
+	Context("when inputs are empty", func() {
+		It("defaults them", func() {
+			defaults, err := DoDefaulting(
+				"some name",
+				nil,
+				"",
+				"",
+				0,
+				0,
+			)
+			Expect(err).NotTo(HaveOccurred())
+
+			Expect(defaults.Dir).To(BeADirectory())
+			Expect(os.RemoveAll(defaults.Dir)).To(Succeed())
+			Expect(defaults.DirNeedsCleaning).To(BeTrue())
+
+			Expect(defaults.URL).NotTo(BeZero())
+			Expect(defaults.URL.Scheme).To(Equal("http"))
+			Expect(defaults.URL.Hostname()).NotTo(BeEmpty())
+			Expect(defaults.URL.Port()).NotTo(BeEmpty())
+
+			Expect(defaults.Path).NotTo(BeEmpty())
+
+			Expect(defaults.StartTimeout).NotTo(BeZero())
+			Expect(defaults.StopTimeout).NotTo(BeZero())
+		})
+	})
+
+	Context("when neither name nor path are provided", func() {
+		It("returns an error", func() {
+			_, err := DoDefaulting(
+				"",
+				nil,
+				"",
+				"",
+				0,
+				0,
+			)
+			Expect(err).To(MatchError("must have at least one of name or path"))
+		})
+	})
 })
 
 var simpleBashScript = []string{
