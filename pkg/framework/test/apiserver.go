@@ -2,9 +2,8 @@ package test
 
 import (
 	"fmt"
-	"time"
-
 	"net/url"
+	"time"
 
 	"k8s.io/kubectl/pkg/framework/test/internal"
 )
@@ -29,7 +28,7 @@ type APIServer struct {
 	//
 	// You can customise this if, e.g. you wish to use a already existing and running Etcd.
 	// See the example `RemoteEtcd`.
-	Etcd *Etcd
+	EtcdURL *url.URL
 
 	// StopTimeout, StartTimeout specify the time the APIServer is allowed to take when stopping resp. starting
 	// before and error is emitted.
@@ -42,15 +41,6 @@ type APIServer struct {
 // Start starts the apiserver, waits for it to come up, and returns an error, if occoured.
 func (s *APIServer) Start() error {
 	var err error
-
-	if s.Etcd == nil {
-		s.Etcd = &Etcd{}
-	}
-
-	err = s.Etcd.Start()
-	if err != nil {
-		return err
-	}
 
 	s.processState = &internal.ProcessState{}
 
@@ -66,36 +56,23 @@ func (s *APIServer) Start() error {
 		return err
 	}
 
-	s.processState.Args = []string{
-		"--authorization-mode=Node,RBAC",
-		"--runtime-config=admissionregistration.k8s.io/v1alpha1",
-		"--v=3", "--vmodule=",
-		"--admission-control=Initializers,NamespaceLifecycle,LimitRanger,ServiceAccount,SecurityContextDeny,DefaultStorageClass,DefaultTolerationSeconds,GenericAdmissionWebhook,ResourceQuota",
-		"--admission-control-config-file=",
-		"--bind-address=0.0.0.0",
-		"--storage-backend=etcd3",
-		fmt.Sprintf("--etcd-servers=%s", s.Etcd.processState.URL.String()),
-		fmt.Sprintf("--cert-dir=%s", s.processState.Dir),
-		fmt.Sprintf("--insecure-port=%s", s.processState.URL.Port()),
-		fmt.Sprintf("--insecure-bind-address=%s", s.processState.URL.Hostname()),
-	}
+	s.processState.Args, err = internal.MakeAPIServerArgs(
+		s.processState.DefaultedProcessInput,
+		s.EtcdURL,
+	)
 	if err != nil {
 		return err
 	}
 
-	s.processState.StartMessage = fmt.Sprintf("Serving insecurely on %s", s.processState.URL.Host)
+	s.processState.StartMessage = fmt.Sprintf(
+		"Serving insecurely on %s",
+		s.processState.URL.Host,
+	)
 
-	s.processState.Start()
-
-	return err
+	return s.processState.Start()
 }
 
 // Stop stops this process gracefully, waits for its termination, and cleans up the cert directory.
 func (s *APIServer) Stop() error {
-	err := s.processState.Stop()
-	if err != nil {
-		return err
-	}
-
-	return s.Etcd.Stop()
+	return s.processState.Stop()
 }
