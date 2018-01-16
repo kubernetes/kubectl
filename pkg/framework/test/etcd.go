@@ -41,13 +41,7 @@ func (e *Etcd) Start() error {
 		return err
 	}
 
-	e.processState.Args = []string{
-		"--debug",
-		"--listen-peer-urls=http://localhost:0",
-		fmt.Sprintf("--advertise-client-urls=%s", e.processState.URL.String()),
-		fmt.Sprintf("--listen-client-urls=%s", e.processState.URL.String()),
-		fmt.Sprintf("--data-dir=%s", e.processState.Dir),
-	}
+	e.processState.Args = internal.MakeEtcdArgs(e.processState.DefaultedProcessInput)
 
 	e.processState.StartMessage = fmt.Sprintf("serving insecure client requests on %s", e.processState.URL.Hostname())
 
