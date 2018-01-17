@@ -1,4 +1,3 @@
-// Package test an integration test framework for k8s
 package test
 
 import (
@@ -7,13 +6,15 @@ import (
 
 // ControlPlane is a struct that knows how to start your test control plane.
 //
-// Right now, that means Etcd and your APIServer. This is likely to increase in future.
+// Right now, that means Etcd and your APIServer. This is likely to increase in
+// future.
 type ControlPlane struct {
 	APIServer *APIServer
 	Etcd      *Etcd
 }
 
-// NewControlPlane will give you a ControlPlane struct that's properly wired together.
+// NewControlPlane will give you a ControlPlane struct that's properly wired
+// together.
 func NewControlPlane() *ControlPlane {
 	etcd := &Etcd{}
 	apiserver := &APIServer{}
@@ -24,7 +25,7 @@ func NewControlPlane() *ControlPlane {
 	}
 }
 
-// Start will start your control plane. To stop it, call Stop().
+// Start will start your control plane processes. To stop them, call Stop().
 func (f *ControlPlane) Start() error {
 	if err := f.Etcd.Start(); err != nil {
 		return err
@@ -34,7 +35,7 @@ func (f *ControlPlane) Start() error {
 	return f.APIServer.Start()
 }
 
-// Stop will stop your control plane, and clean up their data.
+// Stop will stop your control plane processes, and clean up their data.
 func (f *ControlPlane) Stop() error {
 	if err := f.APIServer.Stop(); err != nil {
 		return err
