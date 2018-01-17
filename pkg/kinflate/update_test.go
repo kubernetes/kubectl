@@ -91,7 +91,7 @@ spec:
 		pathToField: []string{"spec", "volumes", "configMap", "name"},
 		fn: changeNameAccordingToMapAndAddPrefix(
 			map[groupVersionKindName]newNameObject{
-				groupVersionKindName{
+				{
 					gvk:  schema.GroupVersionKind{Group: "somegroup", Version: "someversion", Kind: "somekind"},
 					name: "app-env",
 				}: {newName: "app-env-somehash"},
