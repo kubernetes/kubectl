@@ -26,11 +26,7 @@ import (
 // TestableMain allows test coverage for main.
 func TestableMain(stdin io.Reader, stdout, stderr io.Writer) error {
 	cmd := apply.NewCmdApply(stdin, stdout, stderr)
-	err := cmd.Execute()
-	if err != nil {
-		return err
-	}
-	return nil
+	return cmd.Execute()
 }
 
 func main() {
