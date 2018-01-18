@@ -59,17 +59,17 @@ func InitConfig() (*restclient.Config, error) {
 	}
 
 	if len(kubeconfig) == 0 {
-		return nil, errors.New(fmt.Sprintf("error iniializing config. The KUBECONFIG environment variable must be defined."))
+		return nil, fmt.Errorf("error initializing config. The KUBECONFIG environment variable must be defined.")
 	}
 
 	clientConfig, _, err := clientFromConfig(kubeconfig)
 	if err != nil {
-		return nil, errors.New(fmt.Sprintf("error obtaining kubectl config: %v", err))
+		return nil, fmt.Errorf("error obtaining kubectl config: %v", err)
 	}
 
 	err = applyGlobalOptionsToConfig(clientConfig)
 	if err != nil {
-		return nil, errors.New(fmt.Sprintf("error processing global plugin options: %v", err))
+		return nil, fmt.Errorf("error processing global plugin options: %v", err)
 	}
 
 	return clientConfig, nil
