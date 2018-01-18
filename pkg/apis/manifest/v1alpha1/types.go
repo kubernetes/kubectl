@@ -87,6 +87,9 @@ type Manifest struct {
 	// URLs and globs.
 	Resources []string `json:"resources,omitempty" yaml:"resources,omitempty"`
 
+	// Relative path to other packages directories..
+	Packages []string `json:"packages,omitempty" yaml:"packages,omitempty"`
+
 	// An Patch entry is very similar to an Resource entry.
 	// It specifies the relative paths within the package, and could be any
 	// format that kubectl -f allows.
