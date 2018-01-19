@@ -16,12 +16,68 @@ limitations under the License.
 
 package util
 
-type prefixNameOptions struct {
-	prefix string
+import (
+	"fmt"
+
+	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
+)
+
+type PrefixNameOptions struct {
+	prefix      string
+	pathsConfig *PathsConfig
 }
 
-var _ Interface = &prefixNameOptions{}
+var _ Transformer = &PrefixNameOptions{}
 
-func (o *prefixNameOptions) Run(in []byte) []byte {
+var DefaultNamePrefixPathsConfig = &PathsConfig{
+	[]PathConfig{
+		{
+			Path:               []string{"metadata", "name"},
+			CreateIfNotPresent: false,
+		},
+	},
+}
+
+func (o *PrefixNameOptions) Complete(prefix string, pathsConfig *PathsConfig) {
+	o.prefix = prefix
+	if pathsConfig == nil {
+		pathsConfig = DefaultNamePrefixPathsConfig
+	}
+	o.pathsConfig = pathsConfig
+}
+
+func (o *PrefixNameOptions) Transform(m map[GroupVersionKindName]*unstructured.Unstructured) error {
+	for gvkn := range m {
+		obj := m[gvkn]
+		objMap := obj.UnstructuredContent()
+		for _, path := range o.pathsConfig.Paths {
+			err := mutateField(objMap, path.Path, path.CreateIfNotPresent, o.addPrefix)
+			if err != nil {
+				return err
+			}
+		}
+	}
 	return nil
+}
+
+func (o *PrefixNameOptions) TransformBytes(in []byte) ([]byte, error) {
+	m, err := Decode(in)
+	if err != nil {
+		return nil, err
+	}
+
+	err = o.Transform(m)
+	if err != nil {
+		return nil, err
+	}
+
+	return Encode(m)
+}
+
+func (o *PrefixNameOptions) addPrefix(in interface{}) (interface{}, error) {
+	s, ok := in.(string)
+	if !ok {
+		return nil, fmt.Errorf("%#v is expectd to be %T", in, s)
+	}
+	return o.prefix + s, nil
 }

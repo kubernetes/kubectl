@@ -16,6 +16,18 @@ limitations under the License.
 
 package util
 
-type Interface interface {
-	Run([]byte) []byte
+import (
+	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
+)
+
+type Transformer interface {
+	// Transform takes a map GroupVersionKindName->Unstructured and do
+	// some transformation (e.g. prefix name or apply additional labels) on
+	// the objects in the same map.
+	Transform(m map[GroupVersionKindName]*unstructured.Unstructured) error
+	// TransformBytes is a wrapper of func Transform.
+	// It takes a byte array, converts it into a map GroupVersionKindName->Unstructured.
+	// Then call Transform to do the transformation.
+	// It returns a byte array of encoded transformed objects.
+	TransformBytes([]byte) ([]byte, error)
 }
