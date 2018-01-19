@@ -30,29 +30,37 @@ import (
 	ptvisitor "k8s.io/kubectl/pkg/kinflate/pod_template_visitor"
 )
 
-func mutateField(m map[string]interface{}, pathToField []string, fn func(interface{}) (interface{}, error)) error {
+type mutateFunc func(interface{}) (interface{}, error)
+
+func mutateField(m map[string]interface{}, pathToField []string, createIfNotPresent bool, fns ...mutateFunc) error {
 	if len(pathToField) == 0 {
 		return nil
 	}
 
-	v, found := m[pathToField[0]]
+	_, found := m[pathToField[0]]
 	if !found {
-		return nil
+		if !createIfNotPresent {
+			return nil
+		}
+		m[pathToField[0]] = map[string]interface{}{}
 	}
 
 	if len(pathToField) == 1 {
 		var err error
-		m[pathToField[0]], err = fn(m[pathToField[0]])
-		if err != nil {
-			return err
+		for _, fn := range fns {
+			m[pathToField[0]], err = fn(m[pathToField[0]])
+			if err != nil {
+				return err
+			}
 		}
 		return nil
 	}
 
+	v := m[pathToField[0]]
 	newPathToField := pathToField[1:]
 	switch typedV := v.(type) {
 	case map[string]interface{}:
-		return mutateField(typedV, newPathToField, fn)
+		return mutateField(typedV, newPathToField, createIfNotPresent, fns...)
 	case []interface{}:
 		for i := range typedV {
 			item := typedV[i]
@@ -60,7 +68,7 @@ func mutateField(m map[string]interface{}, pathToField []string, fn func(interfa
 			if !ok {
 				return fmt.Errorf("%#v is expectd to be %T", item, typedItem)
 			}
-			err := mutateField(typedItem, newPathToField, fn)
+			err := mutateField(typedItem, newPathToField, createIfNotPresent, fns...)
 			if err != nil {
 				return err
 			}
@@ -71,7 +79,7 @@ func mutateField(m map[string]interface{}, pathToField []string, fn func(interfa
 	}
 }
 
-func changeNameAccordingToMapAndAddPrefix(m map[groupVersionKindName]newNameObject, gvk schema.GroupVersionKind, prefix string) func(interface{}) (interface{}, error) {
+func changeNameAccordingToMap(m map[groupVersionKindName]newNameObject, gvk schema.GroupVersionKind) func(interface{}) (interface{}, error) {
 	return func(in interface{}) (interface{}, error) {
 		s, ok := in.(string)
 		if !ok {
@@ -85,7 +93,7 @@ func changeNameAccordingToMapAndAddPrefix(m map[groupVersionKindName]newNameObje
 		if !found {
 			return nil, fmt.Errorf("failed to find %#v in %#v", gvkn, m)
 		}
-		return prefix + newNameObject.newName, nil
+		return newNameObject.newName, nil
 	}
 }
 
@@ -116,11 +124,11 @@ func updatePodTemplateSpecMetadata(obj *unstructured.Unstructured, overlayPkg *m
 	pts := &ptvisitor.PodTemplateSpecVisitor{
 		Object: obj,
 		MungeFn: func(podTemplateSpec map[string]interface{}) error {
-			err := mutateField(podTemplateSpec, []string{"labels"}, addMap(overlayPkg.Labels))
+			err := mutateField(podTemplateSpec, []string{"metadata", "labels"}, true, addMap(overlayPkg.ObjectLabels))
 			if err != nil {
 				return err
 			}
-			err = mutateField(podTemplateSpec, []string{"annotations"}, addMap(overlayPkg.Annotations))
+			err = mutateField(podTemplateSpec, []string{"annotations"}, true, addMap(overlayPkg.ObjectAnnotations))
 			if err != nil {
 				return err
 			}
@@ -177,15 +185,15 @@ func updatePodSpecBasedOnFieldKey(
 	gvk schema.GroupVersionKind,
 	overlayPkg *manifest.Manifest,
 	gvknToNewNameObject map[groupVersionKindName]newNameObject) error {
-	err := mutateField(podTemplateSpec, []string{"spec", "volumes", fieldKey, "name"}, changeNameAccordingToMapAndAddPrefix(gvknToNewNameObject, gvk, overlayPkg.NamePrefix))
+	err := mutateField(podTemplateSpec, []string{"spec", "volumes", fieldKey, "name"}, false, changeNameAccordingToMap(gvknToNewNameObject, gvk), addPrefix(overlayPkg.NamePrefix))
 	if err != nil {
 		return err
 	}
-	err = mutateField(podTemplateSpec, []string{"spec", "containers", "env", "valueFrom", fieldKey + "KeyRef", "name"}, changeNameAccordingToMapAndAddPrefix(gvknToNewNameObject, gvk, overlayPkg.NamePrefix))
+	err = mutateField(podTemplateSpec, []string{"spec", "containers", "env", "valueFrom", fieldKey + "KeyRef", "name"}, false, changeNameAccordingToMap(gvknToNewNameObject, gvk), addPrefix(overlayPkg.NamePrefix))
 	if err != nil {
 		return err
 	}
-	return mutateField(podTemplateSpec, []string{"spec", "containers", "envFrom", fieldKey + "Ref", "name"}, changeNameAccordingToMapAndAddPrefix(gvknToNewNameObject, gvk, overlayPkg.NamePrefix))
+	return mutateField(podTemplateSpec, []string{"spec", "containers", "envFrom", fieldKey + "Ref", "name"}, false, changeNameAccordingToMap(gvknToNewNameObject, gvk), addPrefix(overlayPkg.NamePrefix))
 }
 
 // updateMetadata will inject the labels and annotations and add name prefix.
@@ -249,5 +257,5 @@ func updateObjectMetadata(obj runtime.Object, overlayPkg *manifest.Manifest) ([]
 
 func updateServiceSelector(obj *unstructured.Unstructured, labels map[string]string) error {
 	objMap := obj.UnstructuredContent()
-	return mutateField(objMap, []string{"spec", "selector"}, addMap(labels))
+	return mutateField(objMap, []string{"spec", "selector"}, true, addMap(labels))
 }

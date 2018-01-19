@@ -77,9 +77,13 @@ metadata:
 spec:
   replicas: 2
   template:
+    annotations:
+      note: This is a test annotation
     metadata:
       labels:
         app: mungebot
+        org: kubernetes
+        repo: test-infra
     spec:
       containers:
       - env:

@@ -26,11 +26,12 @@ import (
 )
 
 type testCase struct {
-	description string
-	in          []byte
-	expected    []byte
-	pathToField []string
-	fn          func(interface{}) (interface{}, error)
+	description        string
+	in                 []byte
+	expected           []byte
+	pathToField        []string
+	createIfNotPresent bool
+	fns                []mutateFunc
 }
 
 var input = []byte(`
@@ -89,15 +90,17 @@ spec:
       name: app-tls
 `),
 		pathToField: []string{"spec", "volumes", "configMap", "name"},
-		fn: changeNameAccordingToMapAndAddPrefix(
-			map[groupVersionKindName]newNameObject{
-				{
-					gvk:  schema.GroupVersionKind{Group: "somegroup", Version: "someversion", Kind: "somekind"},
-					name: "app-env",
-				}: {newName: "app-env-somehash"},
-			},
-			schema.GroupVersionKind{Group: "somegroup", Version: "someversion", Kind: "somekind"},
-			"someprefix-"),
+		fns: []mutateFunc{
+			changeNameAccordingToMap(
+				map[groupVersionKindName]newNameObject{
+					{
+						gvk:  schema.GroupVersionKind{Group: "somegroup", Version: "someversion", Kind: "somekind"},
+						name: "app-env",
+					}: {newName: "app-env-somehash"},
+				},
+				schema.GroupVersionKind{Group: "somegroup", Version: "someversion", Kind: "somekind"}),
+			addPrefix("someprefix-"),
+		},
 	},
 	{
 		description: "add prefix",
@@ -128,7 +131,7 @@ spec:
       name: app-tls
 `),
 		pathToField: []string{"spec", "volumes", "configMap", "name"},
-		fn:          addPrefix("someprefix-"),
+		fns:         []mutateFunc{addPrefix("someprefix-")},
 	},
 	{
 		description: "add map",
@@ -160,7 +163,42 @@ spec:
       name: app-tls
 `),
 		pathToField: []string{"spec", "selector"},
-		fn:          addMap(map[string]string{"component": "bar"}),
+		fns:         []mutateFunc{addMap(map[string]string{"component": "bar"})},
+	},
+	{
+		description:        "add map to non-existing path",
+		createIfNotPresent: true,
+		in:                 input,
+		expected: []byte(`
+metadata:
+  labels:
+    app: foo
+spec:
+  foo:
+    bar:
+      somekey: somevalue
+  containers:
+  - image: nginx:1.7.9
+    name: nginx
+  - image: busybox
+    name: busybox
+    volumeMounts:
+    - mountPath: /tmp/env
+      name: app-env
+    - mountPath: /tmp/tls
+      name: app-tls
+  selector:
+    app: foo
+  volumes:
+  - configMap:
+      name: app-env
+    name: app-env
+  - name: app-tls
+    secret:
+      name: app-tls
+`),
+		pathToField: []string{"spec", "foo", "bar"},
+		fns:         []mutateFunc{addMap(map[string]string{"somekey": "somevalue"})},
 	},
 }
 
@@ -171,7 +209,7 @@ func TestUpdate(t *testing.T) {
 		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
 		}
-		err = mutateField(m, tc.pathToField, tc.fn)
+		err = mutateField(m, tc.pathToField, tc.createIfNotPresent, tc.fns...)
 		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
 		}
