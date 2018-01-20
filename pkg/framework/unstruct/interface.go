@@ -102,3 +102,11 @@ type Value interface {
 func New(value interface{}) Value {
 	return &baseValue{data: value}
 }
+
+// Root returns the root for a given Value.
+func Root(v Value) Value {
+	for v.Parent() != nil {
+		v = v.Parent()
+	}
+	return v
+}
