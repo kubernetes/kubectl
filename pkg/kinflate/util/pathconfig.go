@@ -20,7 +20,3 @@ type PathConfig struct {
 	Path               []string
 	CreateIfNotPresent bool
 }
-
-type PathsConfig struct {
-	Paths []PathConfig
-}

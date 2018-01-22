@@ -21,13 +21,6 @@ import (
 )
 
 type Transformer interface {
-	// Transform takes a map GroupVersionKindName->Unstructured and do
-	// some transformation (e.g. prefix name or apply additional labels) on
-	// the objects in the same map.
+	// Transform modifies objects in a map, e.g. add prefixes or additional labels.
 	Transform(m map[GroupVersionKindName]*unstructured.Unstructured) error
-	// TransformBytes is a wrapper of func Transform.
-	// It takes a byte array, converts it into a map GroupVersionKindName->Unstructured.
-	// Then call Transform to do the transformation.
-	// It returns a byte array of encoded transformed objects.
-	TransformBytes([]byte) ([]byte, error)
 }

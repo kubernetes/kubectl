@@ -26,7 +26,7 @@ import (
 
 var prefixNameOps = PrefixNameOptions{
 	prefix:      "someprefix-",
-	pathsConfig: DefaultNamePrefixPathsConfig,
+	pathConfigs: DefaultNamePrefixPathConfigs,
 }
 
 var namePrefixedCm1 = unstructured.Unstructured{

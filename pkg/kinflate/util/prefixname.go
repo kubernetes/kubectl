@@ -22,35 +22,35 @@ import (
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 )
 
+// PrefixNameOptions contains the prefix and the path config for each field that
+// the name prefix will be applied.
 type PrefixNameOptions struct {
 	prefix      string
-	pathsConfig *PathsConfig
+	pathConfigs []PathConfig
 }
 
 var _ Transformer = &PrefixNameOptions{}
 
-var DefaultNamePrefixPathsConfig = &PathsConfig{
-	[]PathConfig{
-		{
-			Path:               []string{"metadata", "name"},
-			CreateIfNotPresent: false,
-		},
+var DefaultNamePrefixPathConfigs = []PathConfig{
+	{
+		Path:               []string{"metadata", "name"},
+		CreateIfNotPresent: false,
 	},
 }
 
-func (o *PrefixNameOptions) Complete(prefix string, pathsConfig *PathsConfig) {
+func (o *PrefixNameOptions) Complete(prefix string, pathConfigs []PathConfig) {
 	o.prefix = prefix
-	if pathsConfig == nil {
-		pathsConfig = DefaultNamePrefixPathsConfig
+	if pathConfigs == nil {
+		pathConfigs = DefaultNamePrefixPathConfigs
 	}
-	o.pathsConfig = pathsConfig
+	o.pathConfigs = pathConfigs
 }
 
 func (o *PrefixNameOptions) Transform(m map[GroupVersionKindName]*unstructured.Unstructured) error {
 	for gvkn := range m {
 		obj := m[gvkn]
 		objMap := obj.UnstructuredContent()
-		for _, path := range o.pathsConfig.Paths {
+		for _, path := range o.pathConfigs {
 			err := mutateField(objMap, path.Path, path.CreateIfNotPresent, o.addPrefix)
 			if err != nil {
 				return err
