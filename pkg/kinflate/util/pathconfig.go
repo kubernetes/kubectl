@@ -16,7 +16,17 @@ limitations under the License.
 
 package util
 
+import (
+	"k8s.io/apimachinery/pkg/runtime/schema"
+)
+
 type PathConfig struct {
-	Path               []string
+	// If true, it will create the path if it is not found.
 	CreateIfNotPresent bool
+	// The GVK that this path tied to.
+	// If unset, it applied to any GVK
+	// If some fields are set, it applies to all matching GVK.
+	GroupVersionKind *schema.GroupVersionKind
+	// Path to the field that will be munged.
+	Path []string
 }

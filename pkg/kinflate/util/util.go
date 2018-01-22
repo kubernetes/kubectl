@@ -20,6 +20,7 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"reflect"
 	"sort"
 
 	"github.com/ghodss/yaml"
@@ -109,6 +110,53 @@ func Encode(in map[GroupVersionKindName]*unstructured.Unstructured) ([]byte, err
 		firstObj = false
 	}
 	return buf.Bytes(), nil
+}
+
+// SelectByGVK returns true if selector is a superset of in; otherwise, false.
+func SelectByGVK(in schema.GroupVersionKind, selector *schema.GroupVersionKind) bool {
+	if selector == nil {
+		return true
+	}
+	if len(selector.Group) > 0 {
+		if in.Group != selector.Group {
+			return false
+		}
+	}
+	if len(selector.Version) > 0 {
+		if in.Version != selector.Version {
+			return false
+		}
+	}
+	if len(selector.Kind) > 0 {
+		if in.Kind != selector.Kind {
+			return false
+		}
+	}
+	return true
+}
+
+func CompareMap(m1, m2 map[GroupVersionKindName]*unstructured.Unstructured) error {
+	if len(m1) != len(m2) {
+		keySet1 := []GroupVersionKindName{}
+		keySet2 := []GroupVersionKindName{}
+		for gvkn := range m1 {
+			keySet1 = append(keySet1, gvkn)
+		}
+		for gvkn := range m1 {
+			keySet2 = append(keySet2, gvkn)
+		}
+		return fmt.Errorf("maps has different number of entries: %#v doesn't equals %#v", keySet1, keySet2)
+	}
+	for gvkn, obj1 := range m1 {
+		obj2, found := m2[gvkn]
+		if !found {
+			return fmt.Errorf("%#v doesn't exist in %#v", gvkn, m2)
+		}
+		if !reflect.DeepEqual(obj1, obj2) {
+			return fmt.Errorf("%#v doesn't match %#v", obj1, obj2)
+		}
+	}
+	return nil
 }
 
 type mutateFunc func(interface{}) (interface{}, error)

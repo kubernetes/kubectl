@@ -22,31 +22,30 @@ import (
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 )
 
-// PrefixNameOptions contains the prefix and the path config for each field that
-// the name prefix will be applied.
-type PrefixNameOptions struct {
-	prefix      string
-	pathConfigs []PathConfig
+type ApplyAdditionalMapOptions struct {
+	additionalMap map[string]string
+	pathConfigs   []PathConfig
 }
 
-var _ Transformer = &PrefixNameOptions{}
+var _ Transformer = &ApplyAdditionalMapOptions{}
 
-var DefaultNamePrefixPathConfigs = []PathConfig{
-	{
-		Path:               []string{"metadata", "name"},
-		CreateIfNotPresent: false,
-	},
-}
-
-func (o *PrefixNameOptions) Complete(prefix string, pathConfigs []PathConfig) {
-	o.prefix = prefix
+func (o *ApplyAdditionalMapOptions) CompleteForLabels(m map[string]string, pathConfigs []PathConfig) {
+	o.additionalMap = m
 	if pathConfigs == nil {
-		pathConfigs = DefaultNamePrefixPathConfigs
+		pathConfigs = DefaultLabelsPathConfigs
 	}
 	o.pathConfigs = pathConfigs
 }
 
-func (o *PrefixNameOptions) Transform(m map[GroupVersionKindName]*unstructured.Unstructured) error {
+func (o *ApplyAdditionalMapOptions) CompleteForAnnotations(m map[string]string, pathConfigs []PathConfig) {
+	o.additionalMap = m
+	if pathConfigs == nil {
+		pathConfigs = DefaultAnnotationsPathConfigs
+	}
+	o.pathConfigs = pathConfigs
+}
+
+func (o *ApplyAdditionalMapOptions) Transform(m map[GroupVersionKindName]*unstructured.Unstructured) error {
 	for gvkn := range m {
 		obj := m[gvkn]
 		objMap := obj.UnstructuredContent()
@@ -54,7 +53,7 @@ func (o *PrefixNameOptions) Transform(m map[GroupVersionKindName]*unstructured.U
 			if !SelectByGVK(gvkn.gvk, path.GroupVersionKind) {
 				continue
 			}
-			err := mutateField(objMap, path.Path, path.CreateIfNotPresent, o.addPrefix)
+			err := mutateField(objMap, path.Path, path.CreateIfNotPresent, o.addMap)
 			if err != nil {
 				return err
 			}
@@ -63,7 +62,7 @@ func (o *PrefixNameOptions) Transform(m map[GroupVersionKindName]*unstructured.U
 	return nil
 }
 
-func (o *PrefixNameOptions) TransformBytes(in []byte) ([]byte, error) {
+func (o *ApplyAdditionalMapOptions) TransformBytes(in []byte) ([]byte, error) {
 	m, err := Decode(in)
 	if err != nil {
 		return nil, err
@@ -77,10 +76,13 @@ func (o *PrefixNameOptions) TransformBytes(in []byte) ([]byte, error) {
 	return Encode(m)
 }
 
-func (o *PrefixNameOptions) addPrefix(in interface{}) (interface{}, error) {
-	s, ok := in.(string)
+func (o *ApplyAdditionalMapOptions) addMap(in interface{}) (interface{}, error) {
+	m, ok := in.(map[string]interface{})
 	if !ok {
-		return nil, fmt.Errorf("%#v is expectd to be %T", in, s)
+		return nil, fmt.Errorf("%#v is expectd to be %T", in, m)
 	}
-	return o.prefix + s, nil
+	for k, v := range o.additionalMap {
+		m[k] = v
+	}
+	return m, nil
 }
