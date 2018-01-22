@@ -32,3 +32,24 @@ type PathConfig struct {
 	// Path to the field that will be munged.
 	Path []string
 }
+
+// referencePathConfig contains the configuration of a field that references
+// the name of another resource whose GroupVersionKind is specified in referencedGVK.
+// e.g. pod.spec.template.volumes.configMap.name references the name of a configmap
+// Its corresponding referencePathConfig will look like:
+//
+//	referencePathConfig{
+//	referencedGVK: schema.GroupVersionKind{Version: "v1", Kind: "ConfigMap"},
+//	pathConfigs: []PathConfig{
+//		{
+//			GroupVersionKind: &schema.GroupVersionKind{Version: "v1", Kind: "Pod"},
+//			Path:             []string{"spec", "volumes", "configMap", "name"},
+//		},
+//	}
+type referencePathConfig struct {
+	// referencedGVK is the GroupVersionKind that is referenced by
+	// the PathConfig's GVK in the path of PathConfig.Path.
+	referencedGVK schema.GroupVersionKind
+	// PathConfig is the GVK that is referencing the referencedGVK object's name.
+	pathConfigs []PathConfig
+}
