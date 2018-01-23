@@ -17,6 +17,7 @@ limitations under the License.
 package util
 
 import (
+	"fmt"
 	"reflect"
 	"testing"
 
@@ -57,19 +58,19 @@ func createMap() map[GroupVersionKindName]*unstructured.Unstructured {
 	}
 	return map[GroupVersionKindName]*unstructured.Unstructured{
 		{
-			gvk:  schema.GroupVersionKind{Version: "v1", Kind: "ConfigMap"},
-			name: "cm1",
+			GVK:  schema.GroupVersionKind{Version: "v1", Kind: "ConfigMap"},
+			Name: "cm1",
 		}: &cm1,
 		{
-			gvk:  schema.GroupVersionKind{Version: "v1", Kind: "ConfigMap"},
-			name: "cm2",
+			GVK:  schema.GroupVersionKind{Version: "v1", Kind: "ConfigMap"},
+			Name: "cm2",
 		}: &cm2,
 	}
 }
 
 func TestDecode(t *testing.T) {
 	expected := createMap()
-	m, err := Decode(encoded)
+	m, err := Decode(encoded, nil)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -103,7 +104,7 @@ func TestFilterByGVK(t *testing.T) {
 			expected:    true,
 		},
 		{
-			description: "gvk matches",
+			description: "GVK matches",
 			in: schema.GroupVersionKind{
 				Group:   "group1",
 				Version: "version1",
@@ -194,4 +195,28 @@ func TestFilterByGVK(t *testing.T) {
 			t.Fatalf("unexpected filter result for test case: %v", tc.description)
 		}
 	}
+}
+
+func compareMap(m1, m2 map[GroupVersionKindName]*unstructured.Unstructured) error {
+	if len(m1) != len(m2) {
+		keySet1 := []GroupVersionKindName{}
+		keySet2 := []GroupVersionKindName{}
+		for GVKn := range m1 {
+			keySet1 = append(keySet1, GVKn)
+		}
+		for GVKn := range m1 {
+			keySet2 = append(keySet2, GVKn)
+		}
+		return fmt.Errorf("maps has different number of entries: %#v doesn't equals %#v", keySet1, keySet2)
+	}
+	for GVKn, obj1 := range m1 {
+		obj2, found := m2[GVKn]
+		if !found {
+			return fmt.Errorf("%#v doesn't exist in %#v", GVKn, m2)
+		}
+		if !reflect.DeepEqual(obj1, obj2) {
+			return fmt.Errorf("%#v doesn't match %#v", obj1, obj2)
+		}
+	}
+	return nil
 }

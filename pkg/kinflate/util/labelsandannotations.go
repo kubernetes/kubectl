@@ -22,35 +22,41 @@ import (
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 )
 
-type ApplyAdditionalMapOptions struct {
-	additionalMap map[string]string
-	pathConfigs   []PathConfig
+// MapTransformationOptions contains a map string->string and path configs
+// The map will be applied to the fields specified in path configs.
+type MapTransformationOptions struct {
+	m           map[string]string
+	pathConfigs []PathConfig
 }
 
-var _ Transformer = &ApplyAdditionalMapOptions{}
+var _ Transformer = &MapTransformationOptions{}
 
-func (o *ApplyAdditionalMapOptions) CompleteForLabels(m map[string]string, pathConfigs []PathConfig) {
-	o.additionalMap = m
+// CompleteForLabels fills up the MapTransformationOptions for labels transformation.
+func (o *MapTransformationOptions) CompleteForLabels(m map[string]string, pathConfigs []PathConfig) {
+	o.m = m
 	if pathConfigs == nil {
 		pathConfigs = DefaultLabelsPathConfigs
 	}
 	o.pathConfigs = pathConfigs
 }
 
-func (o *ApplyAdditionalMapOptions) CompleteForAnnotations(m map[string]string, pathConfigs []PathConfig) {
-	o.additionalMap = m
+// CompleteForAnnotations fills up the MapTransformationOptions for annotations transformation.
+func (o *MapTransformationOptions) CompleteForAnnotations(m map[string]string, pathConfigs []PathConfig) {
+	o.m = m
 	if pathConfigs == nil {
 		pathConfigs = DefaultAnnotationsPathConfigs
 	}
 	o.pathConfigs = pathConfigs
 }
 
-func (o *ApplyAdditionalMapOptions) Transform(m map[GroupVersionKindName]*unstructured.Unstructured) error {
+// Transform apply each <key, value> pair in the MapTransformationOptions to the
+// fields specified in MapTransformationOptions.
+func (o *MapTransformationOptions) Transform(m map[GroupVersionKindName]*unstructured.Unstructured) error {
 	for gvkn := range m {
 		obj := m[gvkn]
 		objMap := obj.UnstructuredContent()
 		for _, path := range o.pathConfigs {
-			if !SelectByGVK(gvkn.gvk, path.GroupVersionKind) {
+			if !SelectByGVK(gvkn.GVK, path.GroupVersionKind) {
 				continue
 			}
 			err := mutateField(objMap, path.Path, path.CreateIfNotPresent, o.addMap)
@@ -62,26 +68,12 @@ func (o *ApplyAdditionalMapOptions) Transform(m map[GroupVersionKindName]*unstru
 	return nil
 }
 
-func (o *ApplyAdditionalMapOptions) TransformBytes(in []byte) ([]byte, error) {
-	m, err := Decode(in)
-	if err != nil {
-		return nil, err
-	}
-
-	err = o.Transform(m)
-	if err != nil {
-		return nil, err
-	}
-
-	return Encode(m)
-}
-
-func (o *ApplyAdditionalMapOptions) addMap(in interface{}) (interface{}, error) {
+func (o *MapTransformationOptions) addMap(in interface{}) (interface{}, error) {
 	m, ok := in.(map[string]interface{})
 	if !ok {
 		return nil, fmt.Errorf("%#v is expectd to be %T", in, m)
 	}
-	for k, v := range o.additionalMap {
+	for k, v := range o.m {
 		m[k] = v
 	}
 	return m, nil

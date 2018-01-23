@@ -21,8 +21,8 @@ type ByGVKN []GroupVersionKindName
 func (a ByGVKN) Len() int      { return len(a) }
 func (a ByGVKN) Swap(i, j int) { a[i], a[j] = a[j], a[i] }
 func (a ByGVKN) Less(i, j int) bool {
-	if a[i].gvk.String() != a[j].gvk.String() {
-		return a[i].gvk.String() < a[j].gvk.String()
+	if a[i].GVK.String() != a[j].GVK.String() {
+		return a[i].GVK.String() < a[j].GVK.String()
 	}
-	return a[i].name < a[j].name
+	return a[i].Name < a[j].Name
 }

@@ -20,7 +20,6 @@ import (
 	"bytes"
 	"fmt"
 	"io"
-	"reflect"
 	"sort"
 
 	"github.com/ghodss/yaml"
@@ -31,13 +30,18 @@ import (
 	k8syaml "k8s.io/apimachinery/pkg/util/yaml"
 )
 
+// GroupVersionKindName contains GroupVersionKind and original name of the resource.
 type GroupVersionKindName struct {
-	gvk schema.GroupVersionKind
-	// name of the resource.
-	name string
+	// GroupVersionKind of the resource.
+	GVK schema.GroupVersionKind
+	// original name of the resource before transformation.
+	Name string
 }
 
-func Decode(in []byte) (map[GroupVersionKindName]*unstructured.Unstructured, error) {
+// Decode decodes a list of objects in byte array format.
+// Decoded object will be inserted in `into` if it's not nil. Otherwise, it will
+// construct a new map and return it.
+func Decode(in []byte, into map[GroupVersionKindName]*unstructured.Unstructured) (map[GroupVersionKindName]*unstructured.Unstructured, error) {
 	decoder := k8syaml.NewYAMLOrJSONDecoder(bytes.NewReader(in), 1024)
 	objs := []*unstructured.Unstructured{}
 
@@ -54,7 +58,9 @@ func Decode(in []byte) (map[GroupVersionKindName]*unstructured.Unstructured, err
 		return nil, err
 	}
 
-	m := map[GroupVersionKindName]*unstructured.Unstructured{}
+	if into == nil {
+		into = map[GroupVersionKindName]*unstructured.Unstructured{}
+	}
 	for i := range objs {
 		metaAccessor, err := meta.Accessor(objs[i])
 		if err != nil {
@@ -73,14 +79,15 @@ func Decode(in []byte) (map[GroupVersionKindName]*unstructured.Unstructured, err
 		}
 		gvk := gv.WithKind(kind)
 		gvkn := GroupVersionKindName{
-			gvk:  gvk,
-			name: name,
+			GVK:  gvk,
+			Name: name,
 		}
-		m[gvkn] = objs[i]
+		into[gvkn] = objs[i]
 	}
-	return m, nil
+	return into, nil
 }
 
+// Encode encodes the map `in` and output the encoded objects separated by `---`.
 func Encode(in map[GroupVersionKindName]*unstructured.Unstructured) ([]byte, error) {
 	gvknList := []GroupVersionKindName{}
 	for gvkn := range in {
@@ -112,7 +119,13 @@ func Encode(in map[GroupVersionKindName]*unstructured.Unstructured) ([]byte, err
 	return buf.Bytes(), nil
 }
 
-// SelectByGVK returns true if selector is a superset of in; otherwise, false.
+// SelectByGVK returns true if `selector` selects `in`; otherwise, false.
+// If `selector` and `in` are the same, return true.
+// If `selector` is nil, it is considered as a wildcard and always return true.
+// e.g. selector <Group: "", Version: "", Kind: "Deployemt"> CAN select
+// <Group: "extensions", Version: "v1beta1", Kind: "Deployemt">.
+// selector <Group: "apps", Version: "", Kind: "Deployemt"> CANNOT select
+// <Group: "extensions", Version: "v1beta1", Kind: "Deployemt">.
 func SelectByGVK(in schema.GroupVersionKind, selector *schema.GroupVersionKind) bool {
 	if selector == nil {
 		return true
@@ -133,30 +146,6 @@ func SelectByGVK(in schema.GroupVersionKind, selector *schema.GroupVersionKind) 
 		}
 	}
 	return true
-}
-
-func CompareMap(m1, m2 map[GroupVersionKindName]*unstructured.Unstructured) error {
-	if len(m1) != len(m2) {
-		keySet1 := []GroupVersionKindName{}
-		keySet2 := []GroupVersionKindName{}
-		for gvkn := range m1 {
-			keySet1 = append(keySet1, gvkn)
-		}
-		for gvkn := range m1 {
-			keySet2 = append(keySet2, gvkn)
-		}
-		return fmt.Errorf("maps has different number of entries: %#v doesn't equals %#v", keySet1, keySet2)
-	}
-	for gvkn, obj1 := range m1 {
-		obj2, found := m2[gvkn]
-		if !found {
-			return fmt.Errorf("%#v doesn't exist in %#v", gvkn, m2)
-		}
-		if !reflect.DeepEqual(obj1, obj2) {
-			return fmt.Errorf("%#v doesn't match %#v", obj1, obj2)
-		}
-	}
-	return nil
 }
 
 type mutateFunc func(interface{}) (interface{}, error)
