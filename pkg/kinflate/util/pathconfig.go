@@ -20,6 +20,8 @@ import (
 	"k8s.io/apimachinery/pkg/runtime/schema"
 )
 
+// PathConfig contains the configuration of a field, including the GVK it ties to,
+// path to the field, etc.
 type PathConfig struct {
 	// If true, it will create the path if it is not found.
 	CreateIfNotPresent bool

@@ -36,40 +36,35 @@ metadata:
   name: cm2
 `)
 
-func createMap() map[GroupVersionKindName]*unstructured.Unstructured {
-	cm1 := unstructured.Unstructured{
+func makeConfigMap(name string) *unstructured.Unstructured {
+	return &unstructured.Unstructured{
 		Object: map[string]interface{}{
 			"apiVersion": "v1",
 			"kind":       "ConfigMap",
 			"metadata": map[string]interface{}{
-				"name": "cm1",
+				"name": name,
 			},
 		},
 	}
+}
 
-	cm2 := unstructured.Unstructured{
-		Object: map[string]interface{}{
-			"apiVersion": "v1",
-			"kind":       "ConfigMap",
-			"metadata": map[string]interface{}{
-				"name": "cm2",
-			},
-		},
-	}
+func makeConfigMaps(name1InGVKN, name2InGVKN, name1InObj, name2InObj string) map[GroupVersionKindName]*unstructured.Unstructured {
+	cm1 := makeConfigMap(name1InObj)
+	cm2 := makeConfigMap(name2InObj)
 	return map[GroupVersionKindName]*unstructured.Unstructured{
 		{
 			GVK:  schema.GroupVersionKind{Version: "v1", Kind: "ConfigMap"},
-			Name: "cm1",
-		}: &cm1,
+			Name: name1InGVKN,
+		}: cm1,
 		{
 			GVK:  schema.GroupVersionKind{Version: "v1", Kind: "ConfigMap"},
-			Name: "cm2",
-		}: &cm2,
+			Name: name2InGVKN,
+		}: cm2,
 	}
 }
 
 func TestDecode(t *testing.T) {
-	expected := createMap()
+	expected := makeConfigMaps("cm1", "cm2", "cm1", "cm2")
 	m, err := Decode(encoded, nil)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -80,7 +75,7 @@ func TestDecode(t *testing.T) {
 }
 
 func TestEncode(t *testing.T) {
-	out, err := Encode(createMap())
+	out, err := Encode(makeConfigMaps("cm1", "cm2", "cm1", "cm2"))
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}

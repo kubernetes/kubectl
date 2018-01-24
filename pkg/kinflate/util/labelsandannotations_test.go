@@ -209,6 +209,9 @@ func makeLabeledMap() map[GroupVersionKindName]*unstructured.Unstructured {
 func TestLabelsRun(t *testing.T) {
 	m := makeTestMap()
 	lt, err := NewDefaultingLabelsMapTransformer(map[string]string{"label-key1": "label-value1", "label-key2": "label-value2"})
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
 	err = lt.Transform(m)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -318,6 +321,9 @@ func makeAnnotatedMap() map[GroupVersionKindName]*unstructured.Unstructured {
 func TestAnnotationsRun(t *testing.T) {
 	m := makeTestMap()
 	at, err := NewDefaultingAnnotationsMapTransformer(map[string]string{"anno-key1": "anno-value1", "anno-key2": "anno-value2"})
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
 	err = at.Transform(m)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)

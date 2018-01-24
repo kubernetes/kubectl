@@ -16,7 +16,14 @@ limitations under the License.
 
 package util
 
+import (
+	"sort"
+)
+
+// ByGVKN implements the sort interface.
 type ByGVKN []GroupVersionKindName
+
+var _ sort.Interface = ByGVKN{}
 
 func (a ByGVKN) Len() int      { return len(a) }
 func (a ByGVKN) Swap(i, j int) { a[i], a[j] = a[j], a[i] }
