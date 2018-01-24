@@ -19,54 +19,21 @@ package util
 import (
 	"reflect"
 	"testing"
-
-	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
-	"k8s.io/apimachinery/pkg/runtime/schema"
 )
 
-var prefixNameOps = PrefixNameOptions{
-	prefix:      "someprefix-",
-	pathConfigs: DefaultNamePrefixPathConfigs,
-}
-
-var namePrefixedCm1 = unstructured.Unstructured{
-	Object: map[string]interface{}{
-		"apiVersion": "v1",
-		"kind":       "ConfigMap",
-		"metadata": map[string]interface{}{
-			"name": "someprefix-cm1",
-		},
-	},
-}
-
-var namePrefixedCm2 = unstructured.Unstructured{
-	Object: map[string]interface{}{
-		"apiVersion": "v1",
-		"kind":       "ConfigMap",
-		"metadata": map[string]interface{}{
-			"name": "someprefix-cm2",
-		},
-	},
-}
-
-var namePrefixedM = map[GroupVersionKindName]*unstructured.Unstructured{
-	{
-		GVK:  schema.GroupVersionKind{Version: "v1", Kind: "ConfigMap"},
-		Name: "cm1",
-	}: &namePrefixedCm1,
-	{
-		GVK:  schema.GroupVersionKind{Version: "v1", Kind: "ConfigMap"},
-		Name: "cm2",
-	}: &namePrefixedCm2,
-}
-
 func TestPrefixNameRun(t *testing.T) {
-	m := createMap()
-	err := prefixNameOps.Transform(m)
+	m := makeConfigMaps("cm1", "cm2", "cm1", "cm2")
+	npt, err := NewDefaultingNamePrefixTransformer("someprefix-")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	if !reflect.DeepEqual(m, namePrefixedM) {
-		t.Fatalf("%s doesn't match expected %s", m, namePrefixedM)
+	err = npt.Transform(m)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	expected := makeConfigMaps("cm1", "cm2", "someprefix-cm1", "someprefix-cm2")
+	if !reflect.DeepEqual(m, expected) {
+		err = compareMap(m, expected)
+		t.Fatalf("actual doesn't match expected: %v", err)
 	}
 }

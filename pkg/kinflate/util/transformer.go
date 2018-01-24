@@ -20,6 +20,7 @@ import (
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 )
 
+// Transformer can transform objects.
 type Transformer interface {
 	// Transform modifies objects in a map, e.g. add prefixes or additional labels.
 	Transform(m map[GroupVersionKindName]*unstructured.Unstructured) error
