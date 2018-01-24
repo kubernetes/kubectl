@@ -51,6 +51,9 @@ func (o *PrefixNameOptions) Transform(m map[GroupVersionKindName]*unstructured.U
 		obj := m[gvkn]
 		objMap := obj.UnstructuredContent()
 		for _, path := range o.pathConfigs {
+			if !SelectByGVK(gvkn.GVK, path.GroupVersionKind) {
+				continue
+			}
 			err := mutateField(objMap, path.Path, path.CreateIfNotPresent, o.addPrefix)
 			if err != nil {
 				return err
@@ -58,20 +61,6 @@ func (o *PrefixNameOptions) Transform(m map[GroupVersionKindName]*unstructured.U
 		}
 	}
 	return nil
-}
-
-func (o *PrefixNameOptions) TransformBytes(in []byte) ([]byte, error) {
-	m, err := Decode(in)
-	if err != nil {
-		return nil, err
-	}
-
-	err = o.Transform(m)
-	if err != nil {
-		return nil, err
-	}
-
-	return Encode(m)
 }
 
 func (o *PrefixNameOptions) addPrefix(in interface{}) (interface{}, error) {

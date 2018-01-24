@@ -51,12 +51,12 @@ var namePrefixedCm2 = unstructured.Unstructured{
 
 var namePrefixedM = map[GroupVersionKindName]*unstructured.Unstructured{
 	{
-		gvk:  schema.GroupVersionKind{Version: "v1", Kind: "ConfigMap"},
-		name: "cm1",
+		GVK:  schema.GroupVersionKind{Version: "v1", Kind: "ConfigMap"},
+		Name: "cm1",
 	}: &namePrefixedCm1,
 	{
-		gvk:  schema.GroupVersionKind{Version: "v1", Kind: "ConfigMap"},
-		name: "cm2",
+		GVK:  schema.GroupVersionKind{Version: "v1", Kind: "ConfigMap"},
+		Name: "cm2",
 	}: &namePrefixedCm2,
 }
 
