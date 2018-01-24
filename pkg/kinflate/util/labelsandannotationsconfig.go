@@ -20,9 +20,9 @@ import (
 	"k8s.io/apimachinery/pkg/runtime/schema"
 )
 
-// DefaultLabelsPathConfigs is the default configuration for mutating labels and
+// defaultLabelsPathConfigs is the default configuration for mutating labels and
 // selector fields for native k8s APIs.
-var DefaultLabelsPathConfigs = []PathConfig{
+var defaultLabelsPathConfigs = []PathConfig{
 	{
 		Path:               []string{"metadata", "labels"},
 		CreateIfNotPresent: true,
@@ -109,9 +109,9 @@ var DefaultLabelsPathConfigs = []PathConfig{
 	},
 }
 
-// DefaultLabelsPathConfigs is the default configuration for mutating annotations
+// defaultLabelsPathConfigs is the default configuration for mutating annotations
 // fields for native k8s APIs.
-var DefaultAnnotationsPathConfigs = []PathConfig{
+var defaultAnnotationsPathConfigs = []PathConfig{
 	{
 		Path:               []string{"metadata", "annotations"},
 		CreateIfNotPresent: true,

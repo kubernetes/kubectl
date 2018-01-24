@@ -17,41 +17,45 @@ limitations under the License.
 package util
 
 import (
+	"errors"
 	"fmt"
 
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 )
 
-// MapTransformationOptions contains a map string->string and path configs
+// MapTransformer contains a map string->string and path configs
 // The map will be applied to the fields specified in path configs.
-type MapTransformationOptions struct {
+type MapTransformer struct {
 	m           map[string]string
 	pathConfigs []PathConfig
 }
 
-var _ Transformer = &MapTransformationOptions{}
+var _ Transformer = &MapTransformer{}
 
-// CompleteForLabels fills up the MapTransformationOptions for labels transformation.
-func (o *MapTransformationOptions) CompleteForLabels(m map[string]string, pathConfigs []PathConfig) {
-	o.m = m
-	if pathConfigs == nil {
-		pathConfigs = DefaultLabelsPathConfigs
-	}
-	o.pathConfigs = pathConfigs
+// NewDefaultingLabelsMapTransformer construct a MapTransformer with defaultLabelsPathConfigs.
+func NewDefaultingLabelsMapTransformer(m map[string]string) (Transformer, error) {
+	return NewMapTransformer(defaultLabelsPathConfigs, m)
 }
 
-// CompleteForAnnotations fills up the MapTransformationOptions for annotations transformation.
-func (o *MapTransformationOptions) CompleteForAnnotations(m map[string]string, pathConfigs []PathConfig) {
-	o.m = m
-	if pathConfigs == nil {
-		pathConfigs = DefaultAnnotationsPathConfigs
-	}
-	o.pathConfigs = pathConfigs
+// NewDefaultingAnnotationsMapTransformer construct a MapTransformer with defaultAnnotationsPathConfigs.
+func NewDefaultingAnnotationsMapTransformer(m map[string]string) (Transformer, error) {
+	return NewMapTransformer(defaultAnnotationsPathConfigs, m)
 }
 
-// Transform apply each <key, value> pair in the MapTransformationOptions to the
-// fields specified in MapTransformationOptions.
-func (o *MapTransformationOptions) Transform(m map[GroupVersionKindName]*unstructured.Unstructured) error {
+// NewMapTransformer construct a MapTransformer.
+func NewMapTransformer(pc []PathConfig, m map[string]string) (Transformer, error) {
+	if m == nil {
+		return nil, errors.New("map is not expected to be nil")
+	}
+	if pc == nil {
+		return nil, errors.New("pathConfigs is not expected to be nil")
+	}
+	return &MapTransformer{pathConfigs: pc, m: m}, nil
+}
+
+// Transform apply each <key, value> pair in the MapTransformer to the
+// fields specified in MapTransformer.
+func (o *MapTransformer) Transform(m map[GroupVersionKindName]*unstructured.Unstructured) error {
 	for gvkn := range m {
 		obj := m[gvkn]
 		objMap := obj.UnstructuredContent()
@@ -68,7 +72,7 @@ func (o *MapTransformationOptions) Transform(m map[GroupVersionKindName]*unstruc
 	return nil
 }
 
-func (o *MapTransformationOptions) addMap(in interface{}) (interface{}, error) {
+func (o *MapTransformer) addMap(in interface{}) (interface{}, error) {
 	m, ok := in.(map[string]interface{})
 	if !ok {
 		return nil, fmt.Errorf("%#v is expectd to be %T", in, m)

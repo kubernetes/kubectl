@@ -24,16 +24,6 @@ import (
 	"k8s.io/apimachinery/pkg/runtime/schema"
 )
 
-var labelsOps = MapTransformationOptions{
-	m:           map[string]string{"label-key1": "label-value1", "label-key2": "label-value2"},
-	pathConfigs: DefaultLabelsPathConfigs,
-}
-
-var annotationsOps = MapTransformationOptions{
-	m:           map[string]string{"anno-key1": "anno-value1", "anno-key2": "anno-value2"},
-	pathConfigs: DefaultAnnotationsPathConfigs,
-}
-
 func makeConfigmap() *unstructured.Unstructured {
 	return &unstructured.Unstructured{
 		Object: map[string]interface{}{
@@ -218,7 +208,8 @@ func makeLabeledMap() map[GroupVersionKindName]*unstructured.Unstructured {
 
 func TestLabelsRun(t *testing.T) {
 	m := makeTestMap()
-	err := labelsOps.Transform(m)
+	lt, err := NewDefaultingLabelsMapTransformer(map[string]string{"label-key1": "label-value1", "label-key2": "label-value2"})
+	err = lt.Transform(m)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -326,7 +317,8 @@ func makeAnnotatedMap() map[GroupVersionKindName]*unstructured.Unstructured {
 
 func TestAnnotationsRun(t *testing.T) {
 	m := makeTestMap()
-	err := annotationsOps.Transform(m)
+	at, err := NewDefaultingAnnotationsMapTransformer(map[string]string{"anno-key1": "anno-value1", "anno-key2": "anno-value2"})
+	err = at.Transform(m)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
