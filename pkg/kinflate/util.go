@@ -59,17 +59,27 @@ func loadBaseAndOverlayPkg(f string) ([]*resource, *resource, *manifest.Manifest
 	// Recursive: overlay.Recursive
 
 	overlayResource := adjustPathsForConfigMapAndSecret(overlay, []string{f})
-	overlayResource.resources, err = adjustPaths(overlay.Patches, []string{f})
+	patchResources, err := adjustPaths(overlay.Patches, []string{f})
 	if err != nil {
 		return nil, nil, nil, err
 	}
 
-	if len(overlay.Resources) == 0 {
-		return nil, nil, nil, errors.New("expect at least one base, but got 0")
+	resources, err := adjustPaths(overlay.Resources, []string{f})
+	if err != nil {
+		return nil, nil, nil, err
+	}
+	overlayResource.resources = append(patchResources, resources...)
+
+	if len(overlay.Resources) == 0 && len(overlay.Packages) == 0 {
+		return nil, nil, nil, errors.New("expect at least one resource or one package, but got 0")
 	}
 
+	if err != nil {
+		return nil, nil, nil, err
+	}
 	var baseResources []*resource
-	for _, base := range overlay.Resources {
+
+	for _, base := range overlay.Packages {
 		baseManifest, err := loadManifestPkg(path.Join(f, base, kubeManifestFileName))
 		if err != nil {
 			return nil, nil, nil, err

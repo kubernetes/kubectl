@@ -15,7 +15,7 @@ objectLabels:
   repo: test-infra
 objectAnnotations:
   note: This is a test annotation
-resources:
+packages:
 - ../../package
 #These are strategic merge patch overlays in the form of API resources
 patches:
