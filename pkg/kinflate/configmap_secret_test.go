@@ -23,63 +23,72 @@ import (
 
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	manifest "k8s.io/kubectl/pkg/apis/manifest/v1alpha1"
+	kutil "k8s.io/kubectl/pkg/kinflate/util"
 )
 
-var envConfigMap = &corev1.ConfigMap{
-	TypeMeta: metav1.TypeMeta{
-		APIVersion: "v1",
-		Kind:       "ConfigMap",
-	},
-	ObjectMeta: metav1.ObjectMeta{
-		Name: "envConfigMap",
-	},
-	Data: map[string]string{
-		"DB_USERNAME": "admin",
-		"DB_PASSWORD": "somepw",
-	},
+func makeEnvConfigMap(name string) *corev1.ConfigMap {
+	return &corev1.ConfigMap{
+		TypeMeta: metav1.TypeMeta{
+			APIVersion: "v1",
+			Kind:       "ConfigMap",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name: name,
+		},
+		Data: map[string]string{
+			"DB_USERNAME": "admin",
+			"DB_PASSWORD": "somepw",
+		},
+	}
 }
 
-var fileConfigMap = &corev1.ConfigMap{
-	TypeMeta: metav1.TypeMeta{
-		APIVersion: "v1",
-		Kind:       "ConfigMap",
-	},
-	ObjectMeta: metav1.ObjectMeta{
-		Name: "fileConfigMap",
-	},
-	Data: map[string]string{
-		"app-init.ini": `FOO=bar
+func makeFileConfigMap(name string) *corev1.ConfigMap {
+	return &corev1.ConfigMap{
+		TypeMeta: metav1.TypeMeta{
+			APIVersion: "v1",
+			Kind:       "ConfigMap",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name: name,
+		},
+		Data: map[string]string{
+			"app-init.ini": `FOO=bar
 BAR=baz
 `,
-	},
+		},
+	}
 }
 
-var literalConfigMap = &corev1.ConfigMap{
-	TypeMeta: metav1.TypeMeta{
-		APIVersion: "v1",
-		Kind:       "ConfigMap",
-	},
-	ObjectMeta: metav1.ObjectMeta{
-		Name: "literalConfigMap",
-	},
-	Data: map[string]string{
-		"a": "x",
-		"b": "y",
-	},
+func makeLiteralConfigMap(name string) *corev1.ConfigMap {
+	return &corev1.ConfigMap{
+		TypeMeta: metav1.TypeMeta{
+			APIVersion: "v1",
+			Kind:       "ConfigMap",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name: name,
+		},
+		Data: map[string]string{
+			"a": "x",
+			"b": "y",
+		},
+	}
 }
 
-var tlsSecret = &corev1.Secret{
-	TypeMeta: metav1.TypeMeta{
-		APIVersion: "v1",
-		Kind:       "Secret",
-	},
-	ObjectMeta: metav1.ObjectMeta{
-		Name: "tlsSecret",
-	},
-	Data: map[string][]byte{
-		corev1.TLSCertKey: []byte(`-----BEGIN CERTIFICATE-----
+func makeTLSSecret(name string) *corev1.Secret {
+	return &corev1.Secret{
+		TypeMeta: metav1.TypeMeta{
+			APIVersion: "v1",
+			Kind:       "Secret",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name: name,
+		},
+		Data: map[string][]byte{
+			corev1.TLSCertKey: []byte(`-----BEGIN CERTIFICATE-----
 MIIB0zCCAX2gAwIBAgIJAI/M7BYjwB+uMA0GCSqGSIb3DQEBBQUAMEUxCzAJBgNV
 BAYTAkFVMRMwEQYDVQQIDApTb21lLVN0YXRlMSEwHwYDVQQKDBhJbnRlcm5ldCBX
 aWRnaXRzIFB0eSBMdGQwHhcNMTIwOTEyMjE1MjAyWhcNMTUwOTEyMjE1MjAyWjBF
@@ -92,7 +101,7 @@ MAMBAf8wDQYJKoZIhvcNAQEFBQADQQBJlffJHybjDGxRMqaRmDhX0+6v02TUKZsW
 r5QuVbpQhH6u+0UgcW0jp9QwpxoPTLTWGXEWBBBurxFwiCBhkQ+V
 -----END CERTIFICATE-----
 `),
-		corev1.TLSPrivateKeyKey: []byte(`-----BEGIN RSA PRIVATE KEY-----
+			corev1.TLSPrivateKeyKey: []byte(`-----BEGIN RSA PRIVATE KEY-----
 MIIBOwIBAAJBANLJhPHhITqQbPklG3ibCVxwGMRfp/v4XqhfdQHdcVfHap6NQ5Wo
 k/4xIA+ui35/MmNartNuC+BdZ1tMuVCPFZcCAwEAAQJAEJ2N+zsR0Xn8/Q6twa4G
 6OB1M1WO+k+ztnX/1SvNeWu8D6GImtupLTYgjZcHufykj09jiHmjHx8u8ZZB/o1N
@@ -102,54 +111,61 @@ xVLHwDXh/6NJAiEAl2oHGGLz64BuAfjKrqwz7qMYr9HCLIe/YsoWq/olzScCIQDi
 D2lWusoe2/nEqfDVVWGWlyJ7yOmqaVm/iNUN9B2N2g==
 -----END RSA PRIVATE KEY-----
 `),
-	},
-	Type: corev1.SecretTypeTLS,
+		},
+		Type: corev1.SecretTypeTLS,
+	}
 }
 
-var envSecret = &corev1.Secret{
-	TypeMeta: metav1.TypeMeta{
-		APIVersion: "v1",
-		Kind:       "Secret",
-	},
-	ObjectMeta: metav1.ObjectMeta{
-		Name: "envSecret",
-	},
-	Data: map[string][]byte{
-		"DB_USERNAME": []byte("admin"),
-		"DB_PASSWORD": []byte("somepw"),
-	},
-	Type: corev1.SecretTypeOpaque,
+func makeEnvSecret(name string) *corev1.Secret {
+	return &corev1.Secret{
+		TypeMeta: metav1.TypeMeta{
+			APIVersion: "v1",
+			Kind:       "Secret",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name: name,
+		},
+		Data: map[string][]byte{
+			"DB_USERNAME": []byte("admin"),
+			"DB_PASSWORD": []byte("somepw"),
+		},
+		Type: corev1.SecretTypeOpaque,
+	}
 }
 
-var fileSecret = &corev1.Secret{
-	TypeMeta: metav1.TypeMeta{
-		APIVersion: "v1",
-		Kind:       "Secret",
-	},
-	ObjectMeta: metav1.ObjectMeta{
-		Name: "fileSecret",
-	},
-	Data: map[string][]byte{
-		"app-init.ini": []byte(`FOO=bar
+func makeFileSecret(name string) *corev1.Secret {
+	return &corev1.Secret{
+		TypeMeta: metav1.TypeMeta{
+			APIVersion: "v1",
+			Kind:       "Secret",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name: name,
+		},
+		Data: map[string][]byte{
+			"app-init.ini": []byte(`FOO=bar
 BAR=baz
 `),
-	},
-	Type: corev1.SecretTypeOpaque,
+		},
+		Type: corev1.SecretTypeOpaque,
+	}
 }
 
-var literalSecret = &corev1.Secret{
-	TypeMeta: metav1.TypeMeta{
-		APIVersion: "v1",
-		Kind:       "Secret",
-	},
-	ObjectMeta: metav1.ObjectMeta{
-		Name: "literalSecret",
-	},
-	Data: map[string][]byte{
-		"a": []byte("x"),
-		"b": []byte("y"),
-	},
-	Type: corev1.SecretTypeOpaque,
+func makeLiteralSecret(name string) *corev1.Secret {
+	return &corev1.Secret{
+		TypeMeta: metav1.TypeMeta{
+			APIVersion: "v1",
+			Kind:       "Secret",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name: name,
+		},
+		Data: map[string][]byte{
+			"a": []byte("x"),
+			"b": []byte("y"),
+		},
+		Type: corev1.SecretTypeOpaque,
+	}
 }
 
 func TestConstructConfigMap(t *testing.T) {
@@ -169,7 +185,7 @@ func TestConstructConfigMap(t *testing.T) {
 					EnvSource: "examples/simple/instances/exampleinstance/configmap/app.env",
 				},
 			},
-			expected: envConfigMap,
+			expected: makeEnvConfigMap("envConfigMap"),
 		},
 		{
 			description: "construct config map from file",
@@ -180,7 +196,7 @@ func TestConstructConfigMap(t *testing.T) {
 					FileSources: []string{"examples/simple/instances/exampleinstance/configmap/app-init.ini"},
 				},
 			},
-			expected: fileConfigMap,
+			expected: makeFileConfigMap("fileConfigMap"),
 		},
 		{
 			description: "construct config map from literal",
@@ -191,7 +207,7 @@ func TestConstructConfigMap(t *testing.T) {
 					LiteralSources: []string{"a=x", "b=y"},
 				},
 			},
-			expected: literalConfigMap,
+			expected: makeLiteralConfigMap("literalConfigMap"),
 		},
 	}
 
@@ -224,7 +240,7 @@ func TestConstructSecret(t *testing.T) {
 					KeyFile:  "examples/simple/instances/exampleinstance/secret/tls.key",
 				},
 			},
-			expected: tlsSecret,
+			expected: makeTLSSecret("tlsSecret"),
 		},
 		{
 			description: "construct secret from env",
@@ -235,7 +251,7 @@ func TestConstructSecret(t *testing.T) {
 					EnvSource: "examples/simple/instances/exampleinstance/configmap/app.env",
 				},
 			},
-			expected: envSecret,
+			expected: makeEnvSecret("envSecret"),
 		},
 		{
 			description: "construct secret from file",
@@ -246,7 +262,7 @@ func TestConstructSecret(t *testing.T) {
 					FileSources: []string{"examples/simple/instances/exampleinstance/configmap/app-init.ini"},
 				},
 			},
-			expected: fileSecret,
+			expected: makeFileSecret("fileSecret"),
 		},
 		{
 			description: "construct secret from literal",
@@ -257,7 +273,7 @@ func TestConstructSecret(t *testing.T) {
 					LiteralSources: []string{"a=x", "b=y"},
 				},
 			},
-			expected: literalSecret,
+			expected: makeLiteralSecret("literalSecret"),
 		},
 	}
 
@@ -273,36 +289,39 @@ func TestConstructSecret(t *testing.T) {
 }
 
 func TestPopulateMap(t *testing.T) {
-	anotherCm := literalConfigMap.DeepCopy()
-	expectedMap := map[groupVersionKindName]newNameObject{
-		{
-			gvk: schema.GroupVersionKind{
-				Version: "v1",
-				Kind:    "ConfigMap",
-			},
-			name: "literalConfigMap",
-		}: {
-			newName: "newconfigmap",
-			obj:     literalConfigMap,
-		},
-		{
-			gvk: schema.GroupVersionKind{
-				Version: "v1",
-				Kind:    "Secret",
-			},
-			name: "tlsSecret",
-		}: {
-			newName: "newsecret",
-			obj:     tlsSecret,
-		},
-	}
-	m := map[groupVersionKindName]newNameObject{}
-
-	err := populateMap(m, literalConfigMap, "newconfigmap")
+	cm, err := v1ConfigMapToUnstructured(makeLiteralConfigMap("literalConfigMap"))
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	err = populateMap(m, tlsSecret, "newsecret")
+	secret := v1SecretToUnstructured(makeLiteralSecret("literalSecret"))
+	expectedCM, err := v1ConfigMapToUnstructured(makeLiteralConfigMap("newNameConfigMap"))
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	expectedSecret := v1SecretToUnstructured(makeLiteralSecret("newNameSecret"))
+	expectedMap := map[kutil.GroupVersionKindName]*unstructured.Unstructured{
+		{
+			GVK: schema.GroupVersionKind{
+				Version: "v1",
+				Kind:    "ConfigMap",
+			},
+			Name: "literalConfigMap",
+		}: expectedCM,
+		{
+			GVK: schema.GroupVersionKind{
+				Version: "v1",
+				Kind:    "Secret",
+			},
+			Name: "literalSecret",
+		}: expectedSecret,
+	}
+
+	m := map[kutil.GroupVersionKindName]*unstructured.Unstructured{}
+	err = populateMap(m, cm, "newNameConfigMap")
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	err = populateMap(m, secret, "newNameSecret")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -311,16 +330,21 @@ func TestPopulateMap(t *testing.T) {
 		t.Fatalf("%#v\ndoesn't match expected\n%#v\n", m, expectedMap)
 	}
 
-	err = populateMap(m, anotherCm, "newconfigmap")
+	err = populateMap(m, v1SecretToUnstructured(makeLiteralSecret("literalSecret")), "newNameSecret")
 	if err == nil || !strings.Contains(err.Error(), "duplicate name") {
 		t.Fatalf("expected error to contain %q, but got: %v", "duplicate name", err)
 	}
 }
 
 func TestPopulateMapOfConfigMapAndSecret(t *testing.T) {
-	m := map[groupVersionKindName]newNameObject{}
-	r := &resource{
-		configmaps: []manifest.ConfigMap{
+	expectedCM, err := v1ConfigMapToUnstructured(makeLiteralConfigMap("literalConfigMap-c8tc8tb6b7"))
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	expectedSecret := v1SecretToUnstructured(makeTLSSecret("tlsSecret-h4m4f95g75"))
+	m := map[kutil.GroupVersionKindName]*unstructured.Unstructured{}
+	manifest := &manifest.Manifest{
+		Configmaps: []manifest.ConfigMap{
 			{
 				Type:       "literal",
 				NamePrefix: "literalConfigMap",
@@ -332,7 +356,7 @@ func TestPopulateMapOfConfigMapAndSecret(t *testing.T) {
 				},
 			},
 		},
-		secrets: []manifest.Secret{
+		Secrets: []manifest.Secret{
 			{
 				Type:       "tls",
 				NamePrefix: "tlsSecret",
@@ -343,33 +367,23 @@ func TestPopulateMapOfConfigMapAndSecret(t *testing.T) {
 			},
 		},
 	}
-	literalConfigMapWithNewName := literalConfigMap.DeepCopy()
-	literalConfigMapWithNewName.Name = "literalConfigMap-c8tc8tb6b7"
-	tlsSecretWithNewName := tlsSecret.DeepCopy()
-	tlsSecretWithNewName.Name = "tlsSecret-h4m4f95g75"
-	expectedMap := map[groupVersionKindName]newNameObject{
+	expectedMap := map[kutil.GroupVersionKindName]*unstructured.Unstructured{
 		{
-			gvk: schema.GroupVersionKind{
+			GVK: schema.GroupVersionKind{
 				Version: "v1",
 				Kind:    "ConfigMap",
 			},
-			name: "literalConfigMap",
-		}: {
-			newName: "literalConfigMap-c8tc8tb6b7",
-			obj:     literalConfigMapWithNewName,
-		},
+			Name: "literalConfigMap",
+		}: expectedCM,
 		{
-			gvk: schema.GroupVersionKind{
+			GVK: schema.GroupVersionKind{
 				Version: "v1",
 				Kind:    "Secret",
 			},
-			name: "tlsSecret",
-		}: {
-			newName: "tlsSecret-h4m4f95g75",
-			obj:     tlsSecretWithNewName,
-		},
+			Name: "tlsSecret",
+		}: expectedSecret,
 	}
-	err := populateMapOfConfigMapAndSecret(r, m)
+	err = populateConfigMapAndSecretMap(manifest, m)
 	if err != nil {
 		t.Fatalf("unexpected erorr: %v", err)
 	}

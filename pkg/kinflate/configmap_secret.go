@@ -18,72 +18,112 @@ package kinflate
 
 import (
 	"crypto/tls"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/meta"
-	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
+	"k8s.io/apimachinery/pkg/runtime/schema"
 	manifest "k8s.io/kubectl/pkg/apis/manifest/v1alpha1"
 	"k8s.io/kubectl/pkg/kinflate/configmapandsecret"
 	"k8s.io/kubectl/pkg/kinflate/hash"
+	kutil "k8s.io/kubectl/pkg/kinflate/util"
 )
 
-func populateMap(m map[groupVersionKindName]newNameObject, obj runtime.Object, newName string) error {
+func populateMap(m map[kutil.GroupVersionKindName]*unstructured.Unstructured, obj *unstructured.Unstructured, newName string) error {
 	accessor, err := meta.Accessor(obj)
 	if err != nil {
 		return err
 	}
 	oldName := accessor.GetName()
 	gvk := obj.GetObjectKind().GroupVersionKind()
-	gvkn := groupVersionKindName{
-		gvk:  gvk,
-		name: oldName,
-	}
+	gvkn := kutil.GroupVersionKindName{GVK: gvk, Name: oldName}
+
 	if _, found := m[gvkn]; found {
 		return fmt.Errorf("cannot use a duplicate name %q for %s", oldName, gvk)
 	}
 	accessor.SetName(newName)
-	m[gvkn] = newNameObject{
-		newName: newName,
-		obj:     obj,
+	m[gvkn] = obj
+	return nil
+}
+
+func populateConfigMapAndSecretMap(manifest *manifest.Manifest, m map[kutil.GroupVersionKindName]*unstructured.Unstructured) error {
+	for _, cm := range manifest.Configmaps {
+		unstructuredConfigMap, nameWithHash, err := constructConfigmapAndGenerateName(cm)
+		if err != nil {
+			return err
+		}
+		err = populateMap(m, unstructuredConfigMap, nameWithHash)
+		if err != nil {
+			return err
+		}
+	}
+
+	for _, secret := range manifest.Secrets {
+		unstructuredSecret, nameWithHash, err := constructSecretAndGenerateName(secret)
+		if err != nil {
+			return err
+		}
+		err = populateMap(m, unstructuredSecret, nameWithHash)
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }
 
-func populateMapOfConfigMapAndSecret(r *resource, m map[groupVersionKindName]newNameObject) error {
-	for _, cm := range r.configmaps {
-		corev1cm, err := constructConfigMap(cm)
-		if err != nil {
-			return err
-		}
-		h, err := hash.ConfigMapHash(corev1cm)
-		if err != nil {
-			return err
-		}
-		nameWithHash := fmt.Sprintf("%s-%s", corev1cm.Name, h)
-		err = populateMap(m, corev1cm, nameWithHash)
-		if err != nil {
-			return err
-		}
+func constructConfigmapAndGenerateName(cm manifest.ConfigMap) (*unstructured.Unstructured, string, error) {
+	corev1CM, err := constructConfigMap(cm)
+	if err != nil {
+		return nil, "", err
 	}
+	h, err := hash.ConfigMapHash(corev1CM)
+	if err != nil {
+		return nil, "", err
+	}
+	nameWithHash := fmt.Sprintf("%s-%s", corev1CM.GetName(), h)
+	unstructuredCM, err := v1ConfigMapToUnstructured(corev1CM)
+	return unstructuredCM, nameWithHash, err
+}
 
-	for _, secret := range r.secrets {
-		corev1secret, err := constructSecret(secret)
-		if err != nil {
-			return err
-		}
-		h, err := hash.SecretHash(corev1secret)
-		if err != nil {
-			return err
-		}
-		nameWithHash := fmt.Sprintf("%s-%s", corev1secret.Name, h)
-		err = populateMap(m, corev1secret, nameWithHash)
-		if err != nil {
-			return err
-		}
+func constructSecretAndGenerateName(secret manifest.Secret) (*unstructured.Unstructured, string, error) {
+	corev1Secret, err := constructSecret(secret)
+	if err != nil {
+		return nil, "", err
 	}
-	return nil
+	h, err := hash.SecretHash(corev1Secret)
+	if err != nil {
+		return nil, "", err
+	}
+	nameWithHash := fmt.Sprintf("%s-%s", corev1Secret.GetName(), h)
+	unstructuredCM := v1SecretToUnstructured(corev1Secret)
+	return unstructuredCM, nameWithHash, nil
+}
+
+func v1ConfigMapToUnstructured(in *corev1.ConfigMap) (*unstructured.Unstructured, error) {
+	marshaled, err := json.Marshal(in)
+	if err != nil {
+		return nil, err
+	}
+	var out unstructured.Unstructured
+	err = out.UnmarshalJSON(marshaled)
+	return &out, err
+}
+
+// We cannot marshal a corev1 Secret and then unmarshal it to a unstructured.
+// Because there are []byte fields (Data is map[string][]byte) in corev1 Secret.
+// In goland, unmarshal an marshaled byte array will become a base64 encoded string.
+// To avoid this, we do manual copy for Secret.
+func v1SecretToUnstructured(in *corev1.Secret) *unstructured.Unstructured {
+	m := map[string]interface{}{}
+	m["type"] = in.Type
+	m["data"] = in.Data
+	out := &unstructured.Unstructured{Object: m}
+	out.SetGroupVersionKind(schema.GroupVersionKind{Version: "v1", Kind: "Secret"})
+	out.SetName(in.GetName())
+	return out
 }
 
 func constructConfigMap(cm manifest.ConfigMap) (*corev1.ConfigMap, error) {
@@ -116,7 +156,7 @@ func constructSecret(secret manifest.Secret) (*corev1.Secret, error) {
 	var err error
 	switch secret.Type {
 	case "tls":
-		if err = validateTls(secret.TLS.CertFile, secret.TLS.KeyFile); err != nil {
+		if err = validateTLS(secret.TLS.CertFile, secret.TLS.KeyFile); err != nil {
 			return nil, err
 		}
 		tlsCrt, err := ioutil.ReadFile(secret.TLS.CertFile)
@@ -142,7 +182,7 @@ func constructSecret(secret manifest.Secret) (*corev1.Secret, error) {
 	return corev1secret, err
 }
 
-func validateTls(cert, key string) error {
+func validateTLS(cert, key string) error {
 	if len(key) == 0 {
 		return fmt.Errorf("key must be specified")
 	}
