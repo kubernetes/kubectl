@@ -26,12 +26,6 @@
   version = "v2.4.0"
 
 [[projects]]
-  name = "github.com/fsnotify/fsnotify"
-  packages = ["."]
-  revision = "629574ca2a5df945712d3079857300b5e4da0236"
-  version = "v1.4.2"
-
-[[projects]]
   name = "github.com/ghodss/yaml"
   packages = ["."]
   revision = "0ca9ea5df5451ffdf184b4428c902747c2c11cd7"
@@ -75,12 +69,6 @@
 
 [[projects]]
   branch = "master"
-  name = "github.com/golang/protobuf"
-  packages = ["proto","ptypes","ptypes/any","ptypes/duration","ptypes/timestamp"]
-  revision = "1e59b77b52bf8e4b449a57e6f79f21226d571845"
-
-[[projects]]
-  branch = "master"
   name = "github.com/google/btree"
   packages = ["."]
   revision = "316fb6d3f031ae8f4d457c6c5186b9e3ded70435"
@@ -92,22 +80,10 @@
   revision = "24818f796faf91cd76ec7bddd72458fbced7a6c1"
 
 [[projects]]
-  name = "github.com/googleapis/gnostic"
-  packages = ["OpenAPIv2","compiler","extensions"]
-  revision = "ee43cbb60db7bd22502942cccbc39059117352ab"
-  version = "v0.1.0"
-
-[[projects]]
   branch = "master"
   name = "github.com/gregjones/httpcache"
   packages = [".","diskcache"]
   revision = "2bcd89a1743fd4b373f7370ce8ddc14dfbd18229"
-
-[[projects]]
-  branch = "master"
-  name = "github.com/hashicorp/hcl"
-  packages = [".","hcl/ast","hcl/parser","hcl/scanner","hcl/strconv","hcl/token","json/parser","json/scanner","json/token"]
-  revision = "23c074d0eceb2b8a5bfdbb271ab780cde70f05a8"
 
 [[projects]]
   branch = "master"
@@ -140,28 +116,10 @@
   revision = "59fac5042749a5afb9af70e813da1dd5474f0167"
 
 [[projects]]
-  name = "github.com/magiconair/properties"
-  packages = ["."]
-  revision = "be5ece7dd465ab0765a9682137865547526d1dfb"
-  version = "v1.7.3"
-
-[[projects]]
   branch = "master"
   name = "github.com/mailru/easyjson"
   packages = ["buffer","jlexer","jwriter"]
   revision = "5f62e4f3afa2f576dc86531b7df4d966b19ef8f8"
-
-[[projects]]
-  branch = "master"
-  name = "github.com/mitchellh/go-homedir"
-  packages = ["."]
-  revision = "b8bc1bf767474819792c23f32d8286a45736f1c6"
-
-[[projects]]
-  branch = "master"
-  name = "github.com/mitchellh/mapstructure"
-  packages = ["."]
-  revision = "06020f85339e21b2478f756a78e295255ffa4d6a"
 
 [[projects]]
   name = "github.com/onsi/ginkgo"
@@ -171,15 +129,9 @@
 
 [[projects]]
   name = "github.com/onsi/gomega"
-  packages = [".","format","gbytes","gexec","internal/assertion","internal/asyncassertion","internal/oraclematcher","internal/testingtsupport","matchers","matchers/support/goraph/bipartitegraph","matchers/support/goraph/edge","matchers/support/goraph/node","matchers/support/goraph/util","types"]
+  packages = [".","format","internal/assertion","internal/asyncassertion","internal/oraclematcher","internal/testingtsupport","matchers","matchers/support/goraph/bipartitegraph","matchers/support/goraph/edge","matchers/support/goraph/node","matchers/support/goraph/util","types"]
   revision = "c893efa28eb45626cdaa76c9f653b62488858837"
   version = "v1.2.0"
-
-[[projects]]
-  name = "github.com/pelletier/go-toml"
-  packages = ["."]
-  revision = "16398bac157da96aa88f98a2df640c7f32af1da2"
-  version = "v1.0.1"
 
 [[projects]]
   branch = "master"
@@ -194,39 +146,15 @@
   version = "v2.0.1"
 
 [[projects]]
-  name = "github.com/spf13/afero"
-  packages = [".","mem"]
-  revision = "8d919cbe7e2627e417f3e45c3c0e489a5b7e2536"
-  version = "v1.0.0"
-
-[[projects]]
-  name = "github.com/spf13/cast"
-  packages = ["."]
-  revision = "acbeb36b902d72a7a4c18e8f3241075e7ab763e4"
-  version = "v1.1.0"
-
-[[projects]]
   name = "github.com/spf13/cobra"
   packages = ["."]
   revision = "7b2c5ac9fc04fc5efafb60700713d4fa609b777b"
   version = "v0.0.1"
 
 [[projects]]
-  branch = "master"
-  name = "github.com/spf13/jwalterweatherman"
-  packages = ["."]
-  revision = "12bd96e66386c1960ab0f74ced1362f66f552f7b"
-
-[[projects]]
   name = "github.com/spf13/pflag"
   packages = ["."]
   revision = "e57e3eeb33f795204c1ca35f56c44f83227c6e66"
-  version = "v1.0.0"
-
-[[projects]]
-  name = "github.com/spf13/viper"
-  packages = ["."]
-  revision = "25b30aa063fc18e48662b86996252eabdcf2f0c7"
   version = "v1.0.0"
 
 [[projects]]
@@ -280,7 +208,7 @@
 [[projects]]
   branch = "master"
   name = "k8s.io/client-go"
-  packages = ["discovery","kubernetes","kubernetes/scheme","kubernetes/typed/admissionregistration/v1alpha1","kubernetes/typed/admissionregistration/v1beta1","kubernetes/typed/apps/v1","kubernetes/typed/apps/v1beta1","kubernetes/typed/apps/v1beta2","kubernetes/typed/authentication/v1","kubernetes/typed/authentication/v1beta1","kubernetes/typed/authorization/v1","kubernetes/typed/authorization/v1beta1","kubernetes/typed/autoscaling/v1","kubernetes/typed/autoscaling/v2beta1","kubernetes/typed/batch/v1","kubernetes/typed/batch/v1beta1","kubernetes/typed/batch/v2alpha1","kubernetes/typed/certificates/v1beta1","kubernetes/typed/core/v1","kubernetes/typed/events/v1beta1","kubernetes/typed/extensions/v1beta1","kubernetes/typed/networking/v1","kubernetes/typed/policy/v1beta1","kubernetes/typed/rbac/v1","kubernetes/typed/rbac/v1alpha1","kubernetes/typed/rbac/v1beta1","kubernetes/typed/scheduling/v1alpha1","kubernetes/typed/settings/v1alpha1","kubernetes/typed/storage/v1","kubernetes/typed/storage/v1alpha1","kubernetes/typed/storage/v1beta1","pkg/version","rest","rest/watch","tools/auth","tools/clientcmd","tools/clientcmd/api","tools/clientcmd/api/latest","tools/clientcmd/api/v1","tools/metrics","tools/reference","transport","util/cert","util/flowcontrol","util/homedir","util/integer"]
+  packages = ["kubernetes/scheme","pkg/version","rest","rest/watch","tools/auth","tools/clientcmd","tools/clientcmd/api","tools/clientcmd/api/latest","tools/clientcmd/api/v1","tools/metrics","transport","util/cert","util/flowcontrol","util/homedir","util/integer"]
   revision = "87887458218a51f3944b2f4c553eb38173458e97"
 
 [[projects]]
@@ -292,6 +220,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "2db6fe1a78f16a0e5eeeed5df40eb4d6e7689d4c6ed0b573d29b1bd862cd609a"
+  inputs-digest = "2b20626f5c5afea676ac5585d24de154de000f6a9fb0a307eb264a8cf3bd0253"
   solver-name = "gps-cdcl"
   solver-version = 1
