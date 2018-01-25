@@ -20,25 +20,15 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"sort"
 
 	"github.com/spf13/cobra"
 
-	"k8s.io/apimachinery/pkg/runtime"
-	"k8s.io/apimachinery/pkg/runtime/schema"
-	"k8s.io/apimachinery/pkg/util/strategicpatch"
-	"k8s.io/kubectl/pkg/scheme"
+	kutil "k8s.io/kubectl/pkg/kinflate/util"
 )
 
 type kinflateOptions struct {
 	manifestDir string
 	namespace   string
-}
-
-type groupVersionKindName struct {
-	gvk schema.GroupVersionKind
-	// name of the resource.
-	name string
 }
 
 // NewCmdKinflate creates a new kinflate command.
@@ -89,94 +79,14 @@ func (o *kinflateOptions) Complete(cmd *cobra.Command, args []string) error {
 
 // RunKinflate runs kinflate command (do real work).
 func (o *kinflateOptions) RunKinflate(cmd *cobra.Command, out, errOut io.Writer) error {
-	baseResources, overlayResource, overlayPkg, err := loadBaseAndOverlayPkg(o.manifestDir)
+	m, err := DirToMap(o.manifestDir, nil)
 	if err != nil {
 		return err
 	}
-
-	gvknToNewNameObject := map[groupVersionKindName]newNameObject{}
-
-	// map from GroupVersionKind to marshaled json bytes
-	overlayResouceMap := map[groupVersionKindName][]byte{}
-	err = populateResourceMap(overlayResource.resources, overlayResouceMap, errOut)
+	res, err := kutil.Encode(m)
 	if err != nil {
 		return err
 	}
-
-	err = populateMapOfConfigMapAndSecret(overlayResource, gvknToNewNameObject)
-	if err != nil {
-		return err
-	}
-
-	// map from GroupVersionKind to marshaled json bytes
-	baseResouceMap := map[groupVersionKindName][]byte{}
-	for _, baseResource := range baseResources {
-		err = populateResourceMap(baseResource.resources, baseResouceMap, errOut)
-		if err != nil {
-			return err
-		}
-		err = populateMapOfConfigMapAndSecret(baseResource, gvknToNewNameObject)
-		if err != nil {
-			return err
-		}
-	}
-
-	// Strategic merge the resources exist in both base and overlay.
-	for gvkn, base := range baseResouceMap {
-		// Merge overlay with base resource.
-		if overlay, found := overlayResouceMap[gvkn]; found {
-			versionedObj, err := scheme.Scheme.New(gvkn.gvk)
-			if err != nil {
-				switch {
-				case runtime.IsNotRegisteredError(err):
-					return fmt.Errorf("CRD and TPR are not supported now: %v", err)
-				default:
-					return err
-				}
-			}
-			merged, err := strategicpatch.StrategicMergePatch(base, overlay, versionedObj)
-			if err != nil {
-				return err
-			}
-			baseResouceMap[gvkn] = merged
-			delete(overlayResouceMap, gvkn)
-		}
-	}
-
-	// If there are resources in overlay that are not defined in base, just add it to base.
-	if len(overlayResouceMap) > 0 {
-		for gvkn, jsonObj := range overlayResouceMap {
-			baseResouceMap[gvkn] = jsonObj
-		}
-	}
-
-	cmAndSecretGVKN := []groupVersionKindName{}
-	for gvkn := range gvknToNewNameObject {
-		cmAndSecretGVKN = append(cmAndSecretGVKN, gvkn)
-	}
-	sort.Sort(ByGVKN(cmAndSecretGVKN))
-	for _, gvkn := range cmAndSecretGVKN {
-		nameAndobj := gvknToNewNameObject[gvkn]
-		yamlObj, err := updateObjectMetadata(nameAndobj.obj, overlayPkg)
-		if err != nil {
-			return err
-		}
-		fmt.Fprintf(out, "---\n%s", yamlObj)
-	}
-
-	// Inject the labels, annotations and name prefix.
-	// Then print the object.
-	resourceGVKN := []groupVersionKindName{}
-	for gvkn := range baseResouceMap {
-		resourceGVKN = append(resourceGVKN, gvkn)
-	}
-	sort.Sort(ByGVKN(resourceGVKN))
-	for _, gvkn := range resourceGVKN {
-		yamlObj, err := updateMetadata(baseResouceMap[gvkn], overlayPkg, gvknToNewNameObject)
-		if err != nil {
-			return err
-		}
-		fmt.Fprintf(out, "---\n%s", yamlObj)
-	}
-	return nil
+	_, err = out.Write(res)
+	return err
 }

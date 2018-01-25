@@ -40,12 +40,15 @@ var defaultNamePrefixPathConfigs = []PathConfig{
 }
 
 // NewDefaultingNamePrefixTransformer construct a NamePrefixTransformer with defaultNamePrefixPathConfigs.
-func NewDefaultingNamePrefixTransformer(nameprefix string) (Transformer, error) {
+func NewDefaultingNamePrefixTransformer(nameprefix string) (*NamePrefixTransformer, error) {
 	return NewNamePrefixTransformer(defaultNamePrefixPathConfigs, nameprefix)
 }
 
 // NewNamePrefixTransformer construct a NamePrefixTransformer.
-func NewNamePrefixTransformer(pc []PathConfig, np string) (Transformer, error) {
+func NewNamePrefixTransformer(pc []PathConfig, np string) (*NamePrefixTransformer, error) {
+	if len(np) == 0 {
+		return nil, nil
+	}
 	if pc == nil {
 		return nil, errors.New("pathConfigs is not expected to be nil")
 	}

@@ -17,18 +17,17 @@ limitations under the License.
 package kinflate
 
 import (
-	"os"
 	"path"
-	"path/filepath"
 
 	manifest "k8s.io/kubectl/pkg/apis/manifest/v1alpha1"
 )
 
-func adjustPathsForConfigMapAndSecret(in *manifest.Manifest, pathToDir []string) *resource {
-	out := &resource{}
-	out.configmaps = adjustPathForConfigMaps(in.Configmaps, pathToDir)
-	out.secrets = adjustPathForSecrets(in.Secrets, pathToDir)
-	return out
+func adjustPathsForManifest(manifest *manifest.Manifest, pathToDir []string) {
+	manifest.Resources = adjustPaths(manifest.Resources, pathToDir)
+	manifest.Patches = adjustPaths(manifest.Patches, pathToDir)
+	manifest.Configmaps = adjustPathForConfigMaps(manifest.Configmaps, pathToDir)
+	manifest.Secrets = adjustPathForSecrets(manifest.Secrets, pathToDir)
+
 }
 
 func adjustPathForConfigMaps(cms []manifest.ConfigMap, prefix []string) []manifest.ConfigMap {
@@ -67,18 +66,9 @@ func adjustPath(original string, prefix []string) string {
 	return path.Join(append(prefix, original)...)
 }
 
-func adjustPaths(original []string, prefix []string) ([]string, error) {
-	adjusted := []string{}
-	var e error
-	for _, filename := range original {
-		filepath.Walk(adjustPath(filename, prefix), func(path string, _ os.FileInfo, err error) error {
-			if err != nil {
-				e = err
-				return err
-			}
-			adjusted = append(adjusted, path)
-			return nil
-		})
+func adjustPaths(original []string, prefix []string) []string {
+	for i, filename := range original {
+		original[i] = adjustPath(filename, prefix)
 	}
-	return adjusted, e
+	return original
 }
