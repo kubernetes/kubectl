@@ -46,6 +46,9 @@ func NewDefaultingNamePrefixTransformer(nameprefix string) (Transformer, error) 
 
 // NewNamePrefixTransformer construct a NamePrefixTransformer.
 func NewNamePrefixTransformer(pc []PathConfig, np string) (Transformer, error) {
+	if len(np) == 0 {
+		return nil, nil
+	}
 	if pc == nil {
 		return nil, errors.New("pathConfigs is not expected to be nil")
 	}

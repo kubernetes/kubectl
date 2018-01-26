@@ -45,7 +45,7 @@ func NewDefaultingAnnotationsMapTransformer(m map[string]string) (Transformer, e
 // NewMapTransformer construct a MapTransformer.
 func NewMapTransformer(pc []PathConfig, m map[string]string) (Transformer, error) {
 	if m == nil {
-		return nil, errors.New("map is not expected to be nil")
+		return nil, nil
 	}
 	if pc == nil {
 		return nil, errors.New("pathConfigs is not expected to be nil")

@@ -18,67 +18,55 @@ package kinflate
 
 import (
 	"crypto/tls"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/meta"
+	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime"
 	manifest "k8s.io/kubectl/pkg/apis/manifest/v1alpha1"
 	"k8s.io/kubectl/pkg/kinflate/configmapandsecret"
 	"k8s.io/kubectl/pkg/kinflate/hash"
+	kutil "k8s.io/kubectl/pkg/kinflate/util"
 )
 
-func populateMap(m map[groupVersionKindName]newNameObject, obj runtime.Object, newName string) error {
+func populateMap(m map[kutil.GroupVersionKindName]*unstructured.Unstructured, obj *unstructured.Unstructured, newName string) error {
 	accessor, err := meta.Accessor(obj)
 	if err != nil {
 		return err
 	}
 	oldName := accessor.GetName()
 	gvk := obj.GetObjectKind().GroupVersionKind()
-	gvkn := groupVersionKindName{
-		gvk:  gvk,
-		name: oldName,
-	}
+	gvkn := kutil.GroupVersionKindName{GVK: gvk, Name: oldName}
+
 	if _, found := m[gvkn]; found {
 		return fmt.Errorf("cannot use a duplicate name %q for %s", oldName, gvk)
 	}
 	accessor.SetName(newName)
-	m[gvkn] = newNameObject{
-		newName: newName,
-		obj:     obj,
-	}
+	m[gvkn] = obj
 	return nil
 }
 
-func populateMapOfConfigMapAndSecret(r *resource, m map[groupVersionKindName]newNameObject) error {
-	for _, cm := range r.configmaps {
-		corev1cm, err := constructConfigMap(cm)
+func populateConfigMapAndSecretMap(manifest *manifest.Manifest, m map[kutil.GroupVersionKindName]*unstructured.Unstructured) error {
+	for _, cm := range manifest.Configmaps {
+		unstructuredConfigMap, nameWithHash, err := makeConfigmapAndGenerateName(cm)
 		if err != nil {
 			return err
 		}
-		h, err := hash.ConfigMapHash(corev1cm)
-		if err != nil {
-			return err
-		}
-		nameWithHash := fmt.Sprintf("%s-%s", corev1cm.Name, h)
-		err = populateMap(m, corev1cm, nameWithHash)
+		err = populateMap(m, unstructuredConfigMap, nameWithHash)
 		if err != nil {
 			return err
 		}
 	}
 
-	for _, secret := range r.secrets {
-		corev1secret, err := constructSecret(secret)
+	for _, secret := range manifest.Secrets {
+		unstructuredSecret, nameWithHash, err := makeSecretAndGenerateName(secret)
 		if err != nil {
 			return err
 		}
-		h, err := hash.SecretHash(corev1secret)
-		if err != nil {
-			return err
-		}
-		nameWithHash := fmt.Sprintf("%s-%s", corev1secret.Name, h)
-		err = populateMap(m, corev1secret, nameWithHash)
+		err = populateMap(m, unstructuredSecret, nameWithHash)
 		if err != nil {
 			return err
 		}
@@ -86,7 +74,45 @@ func populateMapOfConfigMapAndSecret(r *resource, m map[groupVersionKindName]new
 	return nil
 }
 
-func constructConfigMap(cm manifest.ConfigMap) (*corev1.ConfigMap, error) {
+func makeConfigmapAndGenerateName(cm manifest.ConfigMap) (*unstructured.Unstructured, string, error) {
+	corev1CM, err := makeConfigMap(cm)
+	if err != nil {
+		return nil, "", err
+	}
+	h, err := hash.ConfigMapHash(corev1CM)
+	if err != nil {
+		return nil, "", err
+	}
+	nameWithHash := fmt.Sprintf("%s-%s", corev1CM.GetName(), h)
+	unstructuredCM, err := objectToUnstructured(corev1CM)
+	return unstructuredCM, nameWithHash, err
+}
+
+func makeSecretAndGenerateName(secret manifest.Secret) (*unstructured.Unstructured, string, error) {
+	corev1Secret, err := makeSecret(secret)
+	if err != nil {
+		return nil, "", err
+	}
+	h, err := hash.SecretHash(corev1Secret)
+	if err != nil {
+		return nil, "", err
+	}
+	nameWithHash := fmt.Sprintf("%s-%s", corev1Secret.GetName(), h)
+	unstructuredCM, err := objectToUnstructured(corev1Secret)
+	return unstructuredCM, nameWithHash, err
+}
+
+func objectToUnstructured(in runtime.Object) (*unstructured.Unstructured, error) {
+	marshaled, err := json.Marshal(in)
+	if err != nil {
+		return nil, err
+	}
+	var out unstructured.Unstructured
+	err = out.UnmarshalJSON(marshaled)
+	return &out, err
+}
+
+func makeConfigMap(cm manifest.ConfigMap) (*corev1.ConfigMap, error) {
 	corev1cm := &corev1.ConfigMap{}
 	corev1cm.APIVersion = "v1"
 	corev1cm.Kind = "ConfigMap"
@@ -106,7 +132,7 @@ func constructConfigMap(cm manifest.ConfigMap) (*corev1.ConfigMap, error) {
 	return corev1cm, err
 }
 
-func constructSecret(secret manifest.Secret) (*corev1.Secret, error) {
+func makeSecret(secret manifest.Secret) (*corev1.Secret, error) {
 	corev1secret := &corev1.Secret{}
 	corev1secret.APIVersion = "v1"
 	corev1secret.Kind = "Secret"
@@ -116,7 +142,7 @@ func constructSecret(secret manifest.Secret) (*corev1.Secret, error) {
 	var err error
 	switch secret.Type {
 	case "tls":
-		if err = validateTls(secret.TLS.CertFile, secret.TLS.KeyFile); err != nil {
+		if err = validateTLS(secret.TLS.CertFile, secret.TLS.KeyFile); err != nil {
 			return nil, err
 		}
 		tlsCrt, err := ioutil.ReadFile(secret.TLS.CertFile)
@@ -142,7 +168,7 @@ func constructSecret(secret manifest.Secret) (*corev1.Secret, error) {
 	return corev1secret, err
 }
 
-func validateTls(cert, key string) error {
+func validateTLS(cert, key string) error {
 	if len(key) == 0 {
 		return fmt.Errorf("key must be specified")
 	}

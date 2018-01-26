@@ -17,122 +17,270 @@ limitations under the License.
 package kinflate
 
 import (
-	"errors"
 	"fmt"
-	"io"
 	"io/ioutil"
+	"os"
 	"path"
+	"path/filepath"
 
 	"github.com/ghodss/yaml"
 
-	"k8s.io/apimachinery/pkg/api/meta"
+	"strings"
+
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/util/strategicpatch"
 	manifest "k8s.io/kubectl/pkg/apis/manifest/v1alpha1"
+	kutil "k8s.io/kubectl/pkg/kinflate/util"
+	"k8s.io/kubectl/pkg/scheme"
 )
 
 const kubeManifestFileName = "Kube-manifest.yaml"
 
-type resource struct {
-	resources  []string
-	configmaps []manifest.ConfigMap
-	secrets    []manifest.Secret
-}
-
-type newNameObject struct {
-	newName string
-	obj     runtime.Object
-}
-
-// loadBaseAndOverlayPkg returns:
-// - List of FilenameOptions, each FilenameOptions contains all the files and whether recursive for each base defined in overlay kube-manifest.yaml.
-// - Fileoptions for overlay.
-// - Package object for overlay.
-// - A potential error.
-func loadBaseAndOverlayPkg(f string) ([]*resource, *resource, *manifest.Manifest, error) {
-	overlay, err := loadManifestPkg(path.Join(f, kubeManifestFileName))
-	if err != nil {
-		return nil, nil, nil, err
-	}
-
-	// TODO: support `recursive` when we figure out what its behavior should be.
-	// Recursive: overlay.Recursive
-
-	overlayResource := adjustPathsForConfigMapAndSecret(overlay, []string{f})
-	overlayResource.resources, err = adjustPaths(overlay.Patches, []string{f})
-	if err != nil {
-		return nil, nil, nil, err
-	}
-
-	if len(overlay.Resources) == 0 {
-		return nil, nil, nil, errors.New("expect at least one base, but got 0")
-	}
-
-	var baseResources []*resource
-	for _, base := range overlay.Resources {
-		baseManifest, err := loadManifestPkg(path.Join(f, base, kubeManifestFileName))
-		if err != nil {
-			return nil, nil, nil, err
-		}
-
-		baseResource := adjustPathsForConfigMapAndSecret(baseManifest, []string{f, base})
-		baseResource.resources, err = adjustPaths(baseManifest.Resources, []string{f, base})
-		if err != nil {
-			return nil, nil, nil, err
-		}
-
-		baseResources = append(baseResources, baseResource)
-	}
-
-	return baseResources, overlayResource, overlay, nil
-}
-
-// loadManifestPkg loads a manifest file and parse it in to the Package object.
+// loadManifestPkg loads a manifest file and parse it in to the Manifest object.
 func loadManifestPkg(filename string) (*manifest.Manifest, error) {
 	bytes, err := ioutil.ReadFile(filename)
 	if err != nil {
 		return nil, err
 	}
-	var pkg manifest.Manifest
+	var m manifest.Manifest
 	// TODO: support json
-	err = yaml.Unmarshal(bytes, &pkg)
-	return &pkg, err
+	err = yaml.Unmarshal(bytes, &m)
+	if err != nil {
+		return nil, err
+	}
+	dir, _ := path.Split(filename)
+	adjustPathsForManifest(&m, []string{dir})
+	return &m, err
 }
 
-func populateResourceMap(files []string, m map[groupVersionKindName][]byte, errOut io.Writer) error {
-	decoder := unstructured.UnstructuredJSONScheme
-
+func populateResourceMap(files []string,
+	m map[kutil.GroupVersionKindName]*unstructured.Unstructured) error {
 	for _, file := range files {
-		content, err := ioutil.ReadFile(file)
+		err := pathToMap(file, m)
 		if err != nil {
 			return err
 		}
-
-		// try converting to json, if there is a error, probably because the content is already json.
-		jsoncontent, err := yaml.YAMLToJSON(content)
-		if err != nil {
-			fmt.Fprintf(errOut, "error when trying to convert yaml to json: %v\n", err)
-		} else {
-			content = jsoncontent
-		}
-
-		obj, gvk, err := decoder.Decode(content, nil, nil)
-		if err != nil {
-			return err
-		}
-		accessor, err := meta.Accessor(obj)
-		if err != nil {
-			return err
-		}
-		name := accessor.GetName()
-		gvkn := groupVersionKindName{gvk: *gvk, name: name}
-		if err != nil {
-			return err
-		}
-		if _, found := m[gvkn]; found {
-			return fmt.Errorf("unexpected same groupVersionKindName: %#v", gvkn)
-		}
-		m[gvkn] = content
 	}
 	return nil
+}
+
+// LoadFromManifestPath loads the manifest from the given path.
+// It returns a map of resources defined in the manifest file.
+func LoadFromManifestPath(mPath string,
+) (map[kutil.GroupVersionKindName]*unstructured.Unstructured, error) {
+	f, err := os.Stat(mPath)
+	if err != nil {
+		return nil, err
+	}
+	if f.IsDir() {
+		mPath = path.Join(mPath, kubeManifestFileName)
+	} else {
+		if !strings.HasSuffix(mPath, kubeManifestFileName) {
+			return nil, fmt.Errorf("expecting file: %q, but got: %q", kubeManifestFileName, mPath)
+		}
+	}
+	manifest, err := loadManifestPkg(mPath)
+	if err != nil {
+		return nil, err
+	}
+	return ManifestToMap(manifest)
+}
+
+func pathToMap(path string, into map[kutil.GroupVersionKindName]*unstructured.Unstructured) error {
+	f, err := os.Stat(path)
+	if err != nil {
+		return err
+	}
+	if into == nil {
+		into = map[kutil.GroupVersionKindName]*unstructured.Unstructured{}
+	}
+	switch mode := f.Mode(); {
+	case mode.IsDir():
+		err = dirToMap(path, into)
+	case mode.IsRegular():
+		err = fileToMap(path, into)
+	}
+	return err
+}
+
+func fileToMap(filename string, into map[kutil.GroupVersionKindName]*unstructured.Unstructured) error {
+	f, err := os.Stat(filename)
+	if f.IsDir() {
+		return fmt.Errorf("%q is NOT expected to be an dir", filename)
+	}
+	content, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return err
+	}
+
+	_, err = kutil.Decode(content, into)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// dirToMap tries to find Kube-manifest.yaml first in a dir.
+// If not found, traverse all the file in the dir.
+func dirToMap(dirname string, into map[kutil.GroupVersionKindName]*unstructured.Unstructured) error {
+	if into == nil {
+		into = map[kutil.GroupVersionKindName]*unstructured.Unstructured{}
+	}
+	f, err := os.Stat(dirname)
+	if !f.IsDir() {
+		return fmt.Errorf("%q is expected to be an dir", dirname)
+	}
+
+	kubeManifestFileAbsName := path.Join(dirname, kubeManifestFileName)
+	_, err = os.Stat(kubeManifestFileAbsName)
+	switch {
+	case err != nil && !os.IsNotExist(err):
+		return err
+	case err == nil:
+		manifest, err := loadManifestPkg(kubeManifestFileAbsName)
+		if err != nil {
+			return err
+		}
+		_, err = manifestToMap(manifest, into)
+		if err != nil {
+			return err
+		}
+	case err != nil && os.IsNotExist(err):
+		files, err := ioutil.ReadDir(dirname)
+		if err != nil {
+			return err
+		}
+
+		for _, file := range files {
+			err = pathToMap(path.Join(dirname, file.Name()), into)
+		}
+
+		var e error
+		filepath.Walk(dirname, func(path string, _ os.FileInfo, err error) error {
+			if err != nil {
+				e = err
+				return err
+			}
+			err = fileToMap(path, into)
+			return nil
+		})
+	}
+	return nil
+}
+
+// ManifestToMap takes a manifest and recursively finds all instances of Kube-manifest,
+// reads them and merges them all in a map of resources.
+func ManifestToMap(m *manifest.Manifest,
+) (map[kutil.GroupVersionKindName]*unstructured.Unstructured, error) {
+	return manifestToMap(m, nil)
+}
+
+// manifestToMap takes a manifest and recursively finds all instances of Kube-manifest,
+// reads them and merges them all into `into`.
+func manifestToMap(m *manifest.Manifest,
+	into map[kutil.GroupVersionKindName]*unstructured.Unstructured,
+) (map[kutil.GroupVersionKindName]*unstructured.Unstructured, error) {
+	baseResourceMap := map[kutil.GroupVersionKindName]*unstructured.Unstructured{}
+	if into != nil {
+		baseResourceMap = into
+	}
+	err := populateResourceMap(m.Resources, baseResourceMap)
+	if err != nil {
+		return nil, err
+	}
+
+	overlayResouceMap := map[kutil.GroupVersionKindName]*unstructured.Unstructured{}
+	err = populateResourceMap(m.Patches, overlayResouceMap)
+	if err != nil {
+		return nil, err
+	}
+
+	// Strategic merge the resources exist in both base and overlay.
+	for gvkn, base := range baseResourceMap {
+		// Merge overlay with base resource.
+		if overlay, found := overlayResouceMap[gvkn]; found {
+			versionedObj, err := scheme.Scheme.New(gvkn.GVK)
+			if err != nil {
+				switch {
+				case runtime.IsNotRegisteredError(err):
+					return nil, fmt.Errorf("CRD and TPR are not supported now: %v", err)
+				default:
+					return nil, err
+				}
+			}
+			merged, err := strategicpatch.StrategicMergeMapPatch(
+				base.UnstructuredContent(),
+				overlay.UnstructuredContent(),
+				versionedObj)
+			if err != nil {
+				return nil, err
+			}
+			baseResourceMap[gvkn].Object = merged
+			delete(overlayResouceMap, gvkn)
+		}
+	}
+
+	// If there are resources in overlay that are not defined in base, just add it to base.
+	if len(overlayResouceMap) > 0 {
+		for gvkn, jsonObj := range overlayResouceMap {
+			baseResourceMap[gvkn] = jsonObj
+		}
+	}
+
+	err = populateConfigMapAndSecretMap(m, baseResourceMap)
+	if err != nil {
+		return nil, err
+	}
+
+	transformers, err := defaultTransformers(m)
+	if err != nil {
+		return nil, err
+	}
+	for _, t := range transformers {
+		err = t.Transform(baseResourceMap)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return baseResourceMap, nil
+}
+
+// defaultTransformers generates 4 transformers:
+// 1) name prefix 2) apply labels 3) apply annotations 4) update name reference
+func defaultTransformers(m *manifest.Manifest) ([]kutil.Transformer, error) {
+	transformers := []kutil.Transformer{}
+
+	npt, err := kutil.NewDefaultingNamePrefixTransformer(m.NamePrefix)
+	if err != nil {
+		return nil, err
+	}
+	if npt != nil {
+		transformers = append(transformers, npt)
+	}
+
+	lt, err := kutil.NewDefaultingLabelsMapTransformer(m.ObjectLabels)
+	if err != nil {
+		return nil, err
+	}
+	if lt != nil {
+		transformers = append(transformers, lt)
+	}
+
+	at, err := kutil.NewDefaultingAnnotationsMapTransformer(m.ObjectAnnotations)
+	if err != nil {
+		return nil, err
+	}
+	if at != nil {
+		transformers = append(transformers, at)
+	}
+
+	nrt, err := kutil.NewDefaultingNameReferenceTransformer()
+	if err != nil {
+		return nil, err
+	}
+	if nrt != nil {
+		transformers = append(transformers, nrt)
+	}
+	return transformers, nil
 }
