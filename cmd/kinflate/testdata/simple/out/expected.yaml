@@ -37,6 +37,7 @@ kind: Secret
 metadata:
   annotations:
     note: This is a test annotation
+  creationTimestamp: null
   labels:
     app: mungebot
     org: kubernetes

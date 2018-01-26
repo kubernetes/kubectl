@@ -22,11 +22,11 @@ import (
 	manifest "k8s.io/kubectl/pkg/apis/manifest/v1alpha1"
 )
 
-func adjustPathsForManifest(manifest *manifest.Manifest, pathToDir []string) {
-	manifest.Resources = adjustPaths(manifest.Resources, pathToDir)
-	manifest.Patches = adjustPaths(manifest.Patches, pathToDir)
-	manifest.Configmaps = adjustPathForConfigMaps(manifest.Configmaps, pathToDir)
-	manifest.Secrets = adjustPathForSecrets(manifest.Secrets, pathToDir)
+func adjustPathsForManifest(m *manifest.Manifest, pathToDir []string) {
+	m.Resources = adjustPaths(m.Resources, pathToDir)
+	m.Patches = adjustPaths(m.Patches, pathToDir)
+	m.Configmaps = adjustPathForConfigMaps(m.Configmaps, pathToDir)
+	m.Secrets = adjustPathForSecrets(m.Secrets, pathToDir)
 
 }
 

@@ -33,12 +33,12 @@ var _ Transformer = &NameReferenceTransformer{}
 
 // NewDefaultingNameReferenceTransformer constructs a NameReferenceTransformer
 // with defaultNameReferencepathConfigs.
-func NewDefaultingNameReferenceTransformer() (*NameReferenceTransformer, error) {
+func NewDefaultingNameReferenceTransformer() (Transformer, error) {
 	return NewNameReferenceTransformer(defaultNameReferencePathConfigs)
 }
 
 // NewNameReferenceTransformer construct a NameReferenceTransformer.
-func NewNameReferenceTransformer(pc []referencePathConfig) (*NameReferenceTransformer, error) {
+func NewNameReferenceTransformer(pc []referencePathConfig) (Transformer, error) {
 	if pc == nil {
 		return nil, errors.New("pathConfigs is not expected to be nil")
 	}

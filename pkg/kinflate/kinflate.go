@@ -27,8 +27,8 @@ import (
 )
 
 type kinflateOptions struct {
-	manifestDir string
-	namespace   string
+	manifestPath string
+	namespace    string
 }
 
 // NewCmdKinflate creates a new kinflate command.
@@ -61,7 +61,7 @@ func NewCmdKinflate(out, errOut io.Writer) *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVarP(&o.manifestDir, "filename", "f", "", "Pass in directory that contains the Kube-manifest.yaml file.")
+	cmd.Flags().StringVarP(&o.manifestPath, "filename", "f", "", "Pass in a Kube-manifest.yaml file or a directory that contains the file.")
 	cmd.MarkFlagRequired("filename")
 	cmd.Flags().StringVarP(&o.namespace, "namespace", "o", "yaml", "Output mode. Support json or yaml.")
 	return cmd
@@ -79,7 +79,7 @@ func (o *kinflateOptions) Complete(cmd *cobra.Command, args []string) error {
 
 // RunKinflate runs kinflate command (do real work).
 func (o *kinflateOptions) RunKinflate(cmd *cobra.Command, out, errOut io.Writer) error {
-	m, err := DirToMap(o.manifestDir, nil)
+	m, err := LoadFromManifestPath(o.manifestPath)
 	if err != nil {
 		return err
 	}

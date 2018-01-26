@@ -17,6 +17,7 @@ limitations under the License.
 package kinflate
 
 import (
+	"encoding/base64"
 	"reflect"
 	"strings"
 	"testing"
@@ -41,6 +42,23 @@ func makeEnvConfigMap(name string) *corev1.ConfigMap {
 		Data: map[string]string{
 			"DB_USERNAME": "admin",
 			"DB_PASSWORD": "somepw",
+		},
+	}
+}
+
+func makeUnstructuredEnvConfigMap(name string) *unstructured.Unstructured {
+	return &unstructured.Unstructured{
+		Object: map[string]interface{}{
+			"apiVersion": "v1",
+			"kind":       "ConfigMap",
+			"metadata": map[string]interface{}{
+				"name":              name,
+				"creationTimestamp": nil,
+			},
+			"data": map[string]interface{}{
+				"DB_USERNAME": "admin",
+				"DB_PASSWORD": "somepw",
+			},
 		},
 	}
 }
@@ -133,6 +151,24 @@ func makeEnvSecret(name string) *corev1.Secret {
 	}
 }
 
+func makeUnstructuredEnvSecret(name string) *unstructured.Unstructured {
+	return &unstructured.Unstructured{
+		Object: map[string]interface{}{
+			"apiVersion": "v1",
+			"kind":       "Secret",
+			"metadata": map[string]interface{}{
+				"name":              name,
+				"creationTimestamp": nil,
+			},
+			"type": string(corev1.SecretTypeOpaque),
+			"data": map[string]interface{}{
+				"DB_USERNAME": base64.StdEncoding.EncodeToString([]byte("admin")),
+				"DB_PASSWORD": base64.StdEncoding.EncodeToString([]byte("somepw")),
+			},
+		},
+	}
+}
+
 func makeFileSecret(name string) *corev1.Secret {
 	return &corev1.Secret{
 		TypeMeta: metav1.TypeMeta{
@@ -212,7 +248,7 @@ func TestConstructConfigMap(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		cm, err := constructConfigMap(tc.input)
+		cm, err := makeConfigMap(tc.input)
 		if err != nil {
 			t.Fatalf("unepxected error: %v", err)
 		}
@@ -278,7 +314,7 @@ func TestConstructSecret(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		cm, err := constructSecret(tc.input)
+		cm, err := makeSecret(tc.input)
 		if err != nil {
 			t.Fatalf("unepxected error: %v", err)
 		}
@@ -288,40 +324,60 @@ func TestConstructSecret(t *testing.T) {
 	}
 }
 
+func TestObjectConvertToUnstructured(t *testing.T) {
+	type testCase struct {
+		description string
+		input       *corev1.ConfigMap
+		expected    *unstructured.Unstructured
+	}
+
+	testCases := []testCase{
+		{
+			description: "convert config map",
+			input:       makeEnvConfigMap("envConfigMap"),
+			expected:    makeUnstructuredEnvConfigMap("envConfigMap"),
+		},
+		{
+			description: "convert secret",
+			input:       makeEnvConfigMap("envSecret"),
+			expected:    makeUnstructuredEnvConfigMap("envSecret"),
+		},
+	}
+	for _, tc := range testCases {
+		actual, err := objectToUnstructured(tc.input)
+		if err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+		if !reflect.DeepEqual(actual, tc.expected) {
+			t.Fatalf("%#v\ndoesn't match expected\n%#v\n", actual, tc.expected)
+		}
+	}
+}
+
 func TestPopulateMap(t *testing.T) {
-	cm, err := v1ConfigMapToUnstructured(makeLiteralConfigMap("literalConfigMap"))
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-	secret := v1SecretToUnstructured(makeLiteralSecret("literalSecret"))
-	expectedCM, err := v1ConfigMapToUnstructured(makeLiteralConfigMap("newNameConfigMap"))
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-	expectedSecret := v1SecretToUnstructured(makeLiteralSecret("newNameSecret"))
 	expectedMap := map[kutil.GroupVersionKindName]*unstructured.Unstructured{
 		{
 			GVK: schema.GroupVersionKind{
 				Version: "v1",
 				Kind:    "ConfigMap",
 			},
-			Name: "literalConfigMap",
-		}: expectedCM,
+			Name: "envConfigMap",
+		}: makeUnstructuredEnvConfigMap("newNameConfigMap"),
 		{
 			GVK: schema.GroupVersionKind{
 				Version: "v1",
 				Kind:    "Secret",
 			},
-			Name: "literalSecret",
-		}: expectedSecret,
+			Name: "envSecret",
+		}: makeUnstructuredEnvSecret("newNameSecret"),
 	}
 
 	m := map[kutil.GroupVersionKindName]*unstructured.Unstructured{}
-	err = populateMap(m, cm, "newNameConfigMap")
+	err := populateMap(m, makeUnstructuredEnvConfigMap("envConfigMap"), "newNameConfigMap")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	err = populateMap(m, secret, "newNameSecret")
+	err = populateMap(m, makeUnstructuredEnvSecret("envSecret"), "newNameSecret")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -330,39 +386,30 @@ func TestPopulateMap(t *testing.T) {
 		t.Fatalf("%#v\ndoesn't match expected\n%#v\n", m, expectedMap)
 	}
 
-	err = populateMap(m, v1SecretToUnstructured(makeLiteralSecret("literalSecret")), "newNameSecret")
+	err = populateMap(m, makeUnstructuredEnvSecret("envSecret"), "newNameSecret")
 	if err == nil || !strings.Contains(err.Error(), "duplicate name") {
 		t.Fatalf("expected error to contain %q, but got: %v", "duplicate name", err)
 	}
 }
 
 func TestPopulateMapOfConfigMapAndSecret(t *testing.T) {
-	expectedCM, err := v1ConfigMapToUnstructured(makeLiteralConfigMap("literalConfigMap-c8tc8tb6b7"))
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-	expectedSecret := v1SecretToUnstructured(makeTLSSecret("tlsSecret-h4m4f95g75"))
 	m := map[kutil.GroupVersionKindName]*unstructured.Unstructured{}
 	manifest := &manifest.Manifest{
 		Configmaps: []manifest.ConfigMap{
 			{
-				Type:       "literal",
-				NamePrefix: "literalConfigMap",
+				Type:       "env",
+				NamePrefix: "envConfigMap",
 				Generic: manifest.Generic{
-					LiteralSources: []string{
-						"a=x",
-						"b=y",
-					},
+					EnvSource: "examples/simple/instances/exampleinstance/configmap/app.env",
 				},
 			},
 		},
 		Secrets: []manifest.Secret{
 			{
-				Type:       "tls",
-				NamePrefix: "tlsSecret",
-				TLS: &manifest.TLS{
-					CertFile: "examples/simple/instances/exampleinstance/secret/tls.cert",
-					KeyFile:  "examples/simple/instances/exampleinstance/secret/tls.key",
+				Type:       "env",
+				NamePrefix: "envSecret",
+				Generic: manifest.Generic{
+					EnvSource: "examples/simple/instances/exampleinstance/configmap/app.env",
 				},
 			},
 		},
@@ -373,17 +420,17 @@ func TestPopulateMapOfConfigMapAndSecret(t *testing.T) {
 				Version: "v1",
 				Kind:    "ConfigMap",
 			},
-			Name: "literalConfigMap",
-		}: expectedCM,
+			Name: "envConfigMap",
+		}: makeUnstructuredEnvConfigMap("envConfigMap-d2c89bt4kk"),
 		{
 			GVK: schema.GroupVersionKind{
 				Version: "v1",
 				Kind:    "Secret",
 			},
-			Name: "tlsSecret",
-		}: expectedSecret,
+			Name: "envSecret",
+		}: makeUnstructuredEnvSecret("envSecret-684h2mm268"),
 	}
-	err = populateConfigMapAndSecretMap(manifest, m)
+	err := populateConfigMapAndSecretMap(manifest, m)
 	if err != nil {
 		t.Fatalf("unexpected erorr: %v", err)
 	}

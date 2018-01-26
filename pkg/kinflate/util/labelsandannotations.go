@@ -33,17 +33,17 @@ type MapTransformer struct {
 var _ Transformer = &MapTransformer{}
 
 // NewDefaultingLabelsMapTransformer construct a MapTransformer with defaultLabelsPathConfigs.
-func NewDefaultingLabelsMapTransformer(m map[string]string) (*MapTransformer, error) {
+func NewDefaultingLabelsMapTransformer(m map[string]string) (Transformer, error) {
 	return NewMapTransformer(defaultLabelsPathConfigs, m)
 }
 
 // NewDefaultingAnnotationsMapTransformer construct a MapTransformer with defaultAnnotationsPathConfigs.
-func NewDefaultingAnnotationsMapTransformer(m map[string]string) (*MapTransformer, error) {
+func NewDefaultingAnnotationsMapTransformer(m map[string]string) (Transformer, error) {
 	return NewMapTransformer(defaultAnnotationsPathConfigs, m)
 }
 
 // NewMapTransformer construct a MapTransformer.
-func NewMapTransformer(pc []PathConfig, m map[string]string) (*MapTransformer, error) {
+func NewMapTransformer(pc []PathConfig, m map[string]string) (Transformer, error) {
 	if m == nil {
 		return nil, nil
 	}

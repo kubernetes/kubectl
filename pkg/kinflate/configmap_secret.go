@@ -25,7 +25,7 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/meta"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
-	"k8s.io/apimachinery/pkg/runtime/schema"
+	"k8s.io/apimachinery/pkg/runtime"
 	manifest "k8s.io/kubectl/pkg/apis/manifest/v1alpha1"
 	"k8s.io/kubectl/pkg/kinflate/configmapandsecret"
 	"k8s.io/kubectl/pkg/kinflate/hash"
@@ -51,7 +51,7 @@ func populateMap(m map[kutil.GroupVersionKindName]*unstructured.Unstructured, ob
 
 func populateConfigMapAndSecretMap(manifest *manifest.Manifest, m map[kutil.GroupVersionKindName]*unstructured.Unstructured) error {
 	for _, cm := range manifest.Configmaps {
-		unstructuredConfigMap, nameWithHash, err := constructConfigmapAndGenerateName(cm)
+		unstructuredConfigMap, nameWithHash, err := makeConfigmapAndGenerateName(cm)
 		if err != nil {
 			return err
 		}
@@ -62,7 +62,7 @@ func populateConfigMapAndSecretMap(manifest *manifest.Manifest, m map[kutil.Grou
 	}
 
 	for _, secret := range manifest.Secrets {
-		unstructuredSecret, nameWithHash, err := constructSecretAndGenerateName(secret)
+		unstructuredSecret, nameWithHash, err := makeSecretAndGenerateName(secret)
 		if err != nil {
 			return err
 		}
@@ -74,8 +74,8 @@ func populateConfigMapAndSecretMap(manifest *manifest.Manifest, m map[kutil.Grou
 	return nil
 }
 
-func constructConfigmapAndGenerateName(cm manifest.ConfigMap) (*unstructured.Unstructured, string, error) {
-	corev1CM, err := constructConfigMap(cm)
+func makeConfigmapAndGenerateName(cm manifest.ConfigMap) (*unstructured.Unstructured, string, error) {
+	corev1CM, err := makeConfigMap(cm)
 	if err != nil {
 		return nil, "", err
 	}
@@ -84,12 +84,12 @@ func constructConfigmapAndGenerateName(cm manifest.ConfigMap) (*unstructured.Uns
 		return nil, "", err
 	}
 	nameWithHash := fmt.Sprintf("%s-%s", corev1CM.GetName(), h)
-	unstructuredCM, err := v1ConfigMapToUnstructured(corev1CM)
+	unstructuredCM, err := objectToUnstructured(corev1CM)
 	return unstructuredCM, nameWithHash, err
 }
 
-func constructSecretAndGenerateName(secret manifest.Secret) (*unstructured.Unstructured, string, error) {
-	corev1Secret, err := constructSecret(secret)
+func makeSecretAndGenerateName(secret manifest.Secret) (*unstructured.Unstructured, string, error) {
+	corev1Secret, err := makeSecret(secret)
 	if err != nil {
 		return nil, "", err
 	}
@@ -98,11 +98,11 @@ func constructSecretAndGenerateName(secret manifest.Secret) (*unstructured.Unstr
 		return nil, "", err
 	}
 	nameWithHash := fmt.Sprintf("%s-%s", corev1Secret.GetName(), h)
-	unstructuredCM := v1SecretToUnstructured(corev1Secret)
-	return unstructuredCM, nameWithHash, nil
+	unstructuredCM, err := objectToUnstructured(corev1Secret)
+	return unstructuredCM, nameWithHash, err
 }
 
-func v1ConfigMapToUnstructured(in *corev1.ConfigMap) (*unstructured.Unstructured, error) {
+func objectToUnstructured(in runtime.Object) (*unstructured.Unstructured, error) {
 	marshaled, err := json.Marshal(in)
 	if err != nil {
 		return nil, err
@@ -112,21 +112,7 @@ func v1ConfigMapToUnstructured(in *corev1.ConfigMap) (*unstructured.Unstructured
 	return &out, err
 }
 
-// We cannot marshal a corev1 Secret and then unmarshal it to a unstructured.
-// Because there are []byte fields (Data is map[string][]byte) in corev1 Secret.
-// In goland, unmarshal an marshaled byte array will become a base64 encoded string.
-// To avoid this, we do manual copy for Secret.
-func v1SecretToUnstructured(in *corev1.Secret) *unstructured.Unstructured {
-	m := map[string]interface{}{}
-	m["type"] = in.Type
-	m["data"] = in.Data
-	out := &unstructured.Unstructured{Object: m}
-	out.SetGroupVersionKind(schema.GroupVersionKind{Version: "v1", Kind: "Secret"})
-	out.SetName(in.GetName())
-	return out
-}
-
-func constructConfigMap(cm manifest.ConfigMap) (*corev1.ConfigMap, error) {
+func makeConfigMap(cm manifest.ConfigMap) (*corev1.ConfigMap, error) {
 	corev1cm := &corev1.ConfigMap{}
 	corev1cm.APIVersion = "v1"
 	corev1cm.Kind = "ConfigMap"
@@ -146,7 +132,7 @@ func constructConfigMap(cm manifest.ConfigMap) (*corev1.ConfigMap, error) {
 	return corev1cm, err
 }
 
-func constructSecret(secret manifest.Secret) (*corev1.Secret, error) {
+func makeSecret(secret manifest.Secret) (*corev1.Secret, error) {
 	corev1secret := &corev1.Secret{}
 	corev1secret.APIVersion = "v1"
 	corev1secret.Kind = "Secret"
