@@ -38,9 +38,9 @@ func InitConfig() (*restclient.Config, error) {
 	// to ~/.kube/config as a last resort.
 	home := os.Getenv("HOME")
 	if runtime.GOOS == "windows" {
-		home := os.Getenv("HOMEDRIVE") + os.Getenv("HOMEPATH")
+		home := os.Getenv("USERPROFILE")
 		if home == "" {
-			home = os.Getenv("USERPROFILE")
+			home = os.Getenv("HOMEDRIVE") + os.Getenv("HOMEPATH")
 		}
 	}
 	kubeconfig := filepath.Join(home, ".kube", "config")
