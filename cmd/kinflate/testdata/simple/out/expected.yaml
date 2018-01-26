@@ -117,6 +117,8 @@ spec:
         - containerPort: 80
       - envFrom:
         - configMapRef:
+            name: someConfigMap
+        - configMapRef:
             name: test-infra-app-env-hf26mf2f2f
         - secretRef:
             name: test-infra-app-tls-4d47hbbh9m
