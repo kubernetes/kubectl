@@ -24,6 +24,8 @@ spec:
         image: busybox
         envFrom:
         - configMapRef:
+            name: someConfigMap
+        - configMapRef:
             name: app-env
         - secretRef:
             name: app-tls

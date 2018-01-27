@@ -61,12 +61,6 @@ func (o *NameReferenceTransformer) Transform(
 				}
 				err := mutateField(objMap, path.Path, path.CreateIfNotPresent,
 					o.updateNameReference(referencePathConfig.referencedGVK, m))
-				// Ignore the error when we can't find the GVKN that is being
-				// referenced, because the missing GVKN may be not included in
-				// this manifest and will be created later.
-				if IsNoMatchingGVKNError(err) {
-					continue
-				}
 				if err != nil {
 					return err
 				}
@@ -116,7 +110,6 @@ func (o *NameReferenceTransformer) updateNameReference(
 				return obj.GetName(), nil
 			}
 		}
-		return nil, NewNoMatchingGVKNError(
-			fmt.Sprintf("no matching for GroupVersionKind %v and Name %v", GVK, s))
+		return in, nil
 	}
 }
