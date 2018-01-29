@@ -14,23 +14,22 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package main
+package commands
 
 import (
+	"bytes"
 	"os"
-
-	"github.com/spf13/cobra"
-
-	"k8s.io/kubectl/pkg/kinflate/commands"
+	"testing"
 )
 
-func main() {
-	var cmd = &cobra.Command{}
-	cmd.AddCommand(commands.NewCmdInflate(os.Stdout, os.Stderr))
-	cmd.AddCommand(commands.NewCmdInit(os.Stdout, os.Stderr))
+func TestInit(t *testing.T) {
+	buf := bytes.NewBuffer([]byte{})
+	cmd := NewCmdInit(buf, os.Stderr)
 	err := cmd.Execute()
 	if err != nil {
-		os.Exit(1)
+		t.Errorf("unexpected error: %v", err)
 	}
-	os.Exit(0)
+	if buf.String() != "Hello I am init.\n" {
+		t.Errorf("unexpected output: %v", buf.String())
+	}
 }

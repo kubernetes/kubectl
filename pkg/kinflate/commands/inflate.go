@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package kinflate
+package commands
 
 import (
 	"fmt"
@@ -23,25 +23,26 @@ import (
 
 	"github.com/spf13/cobra"
 
+	outil "k8s.io/kubectl/pkg/kinflate"
 	kutil "k8s.io/kubectl/pkg/kinflate/util"
 )
 
-type kinflateOptions struct {
+type inflateOptions struct {
 	manifestPath string
 	namespace    string
 }
 
-// NewCmdKinflate creates a new kinflate command.
-func NewCmdKinflate(out, errOut io.Writer) *cobra.Command {
-	var o kinflateOptions
+// NewCmdInflate creates a new inflate command.
+func NewCmdInflate(out, errOut io.Writer) *cobra.Command {
+	var o inflateOptions
 
 	cmd := &cobra.Command{
-		Use:   "kinflate -f [path]",
+		Use:   "inflate -f [path]",
 		Short: "Use a Manifest file to generate a set of api resources",
 		Long:  "Use a Manifest file to generate a set of api resources",
 		Example: `
 		# Use the Kube-manifest.yaml file under somedir/ to generate a set of api resources.
-		kinflate -f somedir/`,
+		inflate -f somedir/`,
 		Run: func(cmd *cobra.Command, args []string) {
 			err := o.Validate(cmd, args)
 			if err != nil {
@@ -67,19 +68,19 @@ func NewCmdKinflate(out, errOut io.Writer) *cobra.Command {
 	return cmd
 }
 
-// Validate validates kinflate command.
-func (o *kinflateOptions) Validate(cmd *cobra.Command, args []string) error {
+// Validate validates inflate command.
+func (o *inflateOptions) Validate(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// Complete completes kinflate command.
-func (o *kinflateOptions) Complete(cmd *cobra.Command, args []string) error {
+// Complete completes inflate command.
+func (o *inflateOptions) Complete(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// RunKinflate runs kinflate command (do real work).
-func (o *kinflateOptions) RunKinflate(cmd *cobra.Command, out, errOut io.Writer) error {
-	m, err := LoadFromManifestPath(o.manifestPath)
+// RunKinflate runs inflate command (do real work).
+func (o *inflateOptions) RunKinflate(cmd *cobra.Command, out, errOut io.Writer) error {
+	m, err := outil.LoadFromManifestPath(o.manifestPath)
 	if err != nil {
 		return err
 	}
