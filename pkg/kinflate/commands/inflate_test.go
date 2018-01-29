@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package main
+package commands
 
 import (
 	"bytes"
@@ -22,22 +22,23 @@ import (
 	"os"
 	"reflect"
 	"testing"
-
-	"github.com/spf13/cobra"
 )
 
-func TestTrueMain(t *testing.T) {
+const (
+	input    = "../examples/simple/instances/exampleinstance/"
+	expected = "testdata/simple/out/expected.yaml"
+)
+
+func TestInflate(t *testing.T) {
 	const updateEnvVar = "UPDATE_KINFLATE_EXPECTED_DATA"
 	updateKinflateExpected := os.Getenv(updateEnvVar) == "true"
 
-	input := "testdata/simple/in/instances/exampleinstance/"
-	expected := "testdata/simple/out/expected.yaml"
-	cmdMungeFn := func(cmd *cobra.Command) {
-		cmd.Flags().Set("filename", input)
-	}
 	buf := bytes.NewBuffer([]byte{})
 
-	err := TestableMain(buf, os.Stderr, cmdMungeFn)
+	cmd := NewCmdInflate(buf, os.Stderr)
+	cmd.Flags().Set("filename", input)
+
+	err := cmd.Execute()
 	if err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
