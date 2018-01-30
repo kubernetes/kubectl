@@ -17,19 +17,34 @@ limitations under the License.
 package fs
 
 import (
-	"io"
-	"os"
+	"testing"
 )
 
-// FileSystem is the interface that groups the basic filesystem methods.
-type FileSystem interface {
-	Create(name string) (File, error)
-	Open(name string) (File, error)
-	Stat(name string) (os.FileInfo, error)
+func TestStat(t *testing.T) {
+	x := MakeFakeFS()
+	info, err := x.Stat("foo")
+	if info != nil {
+		t.Fatalf("expected nil info")
+	}
+	if err == nil {
+		t.Fatalf("expected error")
+	}
 }
 
-// File is the interface that groups the basic file methods.
-type File interface {
-	io.ReadWriteCloser
-	Stat() (os.FileInfo, error)
+func TestCreate(t *testing.T) {
+	x := MakeFakeFS()
+	f, err := x.Create("foo")
+	if f == nil {
+		t.Fatalf("expected file")
+	}
+	if err != nil {
+		t.Fatalf("unexpected error")
+	}
+	info, err := x.Stat("foo")
+	if info != nil {
+		t.Fatalf("expected nil info")
+	}
+	if err != nil {
+		t.Fatalf("expected no error")
+	}
 }

@@ -17,33 +17,38 @@ limitations under the License.
 package fs
 
 import (
+	"errors"
 	"os"
-
-	"k8s.io/kubectl/pkg/kinflate/util/fs"
 )
 
-var _ fs.FileSystem = &FakeFS{}
+var _ FileSystem = &FakeFS{}
 
 // FakeFS implements FileSystem using a fake in-memory filesystem.
-type FakeFS struct{ m map[string]*FakeFile }
+type FakeFS struct {
+	m map[string]*FakeFile
+}
 
-// Create creates a file given the filename.
-func (fs *FakeFS) Create(name string) (fs.File, error) {
-	if fs.m == nil {
-		fs.m = map[string]*FakeFile{}
-	}
+// MakeFakeFS returns an instance of FakeFS with no files in it.
+func MakeFakeFS() *FakeFS {
+	return &FakeFS{m: map[string]*FakeFile{}}
+}
+
+// Create assures a fake file appears in the in-memory file system.
+func (fs *FakeFS) Create(name string) (File, error) {
 	fs.m[name] = &FakeFile{}
 	return fs.m[name], nil
 }
 
-// Open opens a file given the filename.
-func (fs *FakeFS) Open(name string) (fs.File, error) {
-	if fs.m == nil {
-		fs.m = map[string]*FakeFile{}
-	}
+// Open returns a fake file in the open state.
+func (fs *FakeFS) Open(name string) (File, error) {
 	fs.m[name] = &FakeFile{open: true}
 	return fs.m[name], nil
 }
 
-// Stat return an interface which has all the information regarding the file.
-func (fs *FakeFS) Stat(name string) (os.FileInfo, error) { return os.Stat(name) }
+// Stat always returns nil FileInfo, and returns an error if file does not exist.
+func (fs *FakeFS) Stat(name string) (os.FileInfo, error) {
+	if _, found := fs.m[name]; found {
+		return nil, nil
+	}
+	return nil, errors.New("file does not exist")
+}

@@ -20,19 +20,16 @@ import (
 	"os"
 )
 
-var _ File = &OSFile{}
+var _ FileSystem = RealFS{}
 
-// OSFile implements File using the local filesystem.
-type OSFile struct{ file *os.File }
+// RealFS implements FileSystem using the local filesystem.
+type RealFS struct{}
 
-// Close closes a file.
-func (f *OSFile) Close() error { return f.file.Close() }
+// Create delegates to os.Create.
+func (RealFS) Create(name string) (File, error) { return os.Create(name) }
 
-// Read reads a file's content.
-func (f *OSFile) Read(p []byte) (n int, err error) { return f.file.Read(p) }
+// Open delegates to os.Open.
+func (RealFS) Open(name string) (File, error) { return os.Open(name) }
 
-// Write writes bytes to a file
-func (f *OSFile) Write(p []byte) (n int, err error) { return f.file.Write(p) }
-
-// Stat returns an interface which has all the information regarding the file.
-func (f *OSFile) Stat() (os.FileInfo, error) { return f.file.Stat() }
+// Stat delegates to os.Stat.
+func (RealFS) Stat(name string) (os.FileInfo, error) { return os.Stat(name) }

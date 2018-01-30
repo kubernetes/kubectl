@@ -17,37 +17,46 @@ limitations under the License.
 package fs
 
 import (
+	"bytes"
 	"os"
-
-	"k8s.io/kubectl/pkg/kinflate/util/fs"
 )
 
-var _ fs.File = &FakeFile{}
+var _ File = &FakeFile{}
 
-// FakeFile implements FileSystem using a fake in-memory filesystem.
+// FakeFile implements File in-memory for tests.
 type FakeFile struct {
 	content []byte
 	open    bool
 }
 
-// Close closes a file.
+// MakeFakeFile makes a fake file.
+func MakeFakeFile() *FakeFile {
+	return &FakeFile{}
+}
+
+// Close marks the fake file closed.
 func (f *FakeFile) Close() error {
 	f.open = false
 	return nil
 }
 
-// Read reads a file's content.
+// Read never fails, and doesn't mutate p.
 func (f *FakeFile) Read(p []byte) (n int, err error) {
 	return len(p), nil
 }
 
-// Write writes bytes to a file
+// Write saves the contents of the argument to memory.
 func (f *FakeFile) Write(p []byte) (n int, err error) {
 	f.content = p
 	return len(p), nil
 }
 
-// Stat returns an interface which has all the information regarding the file.
+// ContentMatches returns true if v matches fake file's content.
+func (f *FakeFile) ContentMatches(v []byte) bool {
+	return bytes.Equal(v, f.content)
+}
+
+// Stat returns nil.
 func (f *FakeFile) Stat() (os.FileInfo, error) {
 	return nil, nil
 }

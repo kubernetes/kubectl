@@ -17,19 +17,19 @@ limitations under the License.
 package fs
 
 import (
+	"io"
 	"os"
 )
 
-var _ FileSystem = OSFS{}
+// FileSystem groups basic os filesystem methods.
+type FileSystem interface {
+	Create(name string) (File, error)
+	Open(name string) (File, error)
+	Stat(name string) (os.FileInfo, error)
+}
 
-// OSFS implements FileSystem using the local filesystem.
-type OSFS struct{}
-
-// Create creates a file given the filename.
-func (OSFS) Create(name string) (File, error) { return os.Create(name) }
-
-// Open opens a file given the filename.
-func (OSFS) Open(name string) (File, error) { return os.Open(name) }
-
-// Stat return an interface which has all the information regarding the file.
-func (OSFS) Stat(name string) (os.FileInfo, error) { return os.Stat(name) }
+// File groups the basic os.File methods.
+type File interface {
+	io.ReadWriteCloser
+	Stat() (os.FileInfo, error)
+}
