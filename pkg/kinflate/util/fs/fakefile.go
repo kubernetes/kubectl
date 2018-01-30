@@ -26,12 +26,18 @@ var _ File = &FakeFile{}
 // FakeFile implements File in-memory for tests.
 type FakeFile struct {
 	content []byte
+	dir     bool
 	open    bool
 }
 
-// MakeFakeFile makes a fake file.
-func MakeFakeFile() *FakeFile {
+// makeFile makes a fake file.
+func makeFile() *FakeFile {
 	return &FakeFile{}
+}
+
+// makeDir makes a fake directory.
+func makeDir() *FakeFile {
+	return &FakeFile{dir: true}
 }
 
 // Close marks the fake file closed.
@@ -54,6 +60,11 @@ func (f *FakeFile) Write(p []byte) (n int, err error) {
 // ContentMatches returns true if v matches fake file's content.
 func (f *FakeFile) ContentMatches(v []byte) bool {
 	return bytes.Equal(v, f.content)
+}
+
+// GetContent the content of a fake file.
+func (f *FakeFile) GetContent() []byte {
+	return f.content
 }
 
 // Stat returns nil.

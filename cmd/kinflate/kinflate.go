@@ -22,12 +22,13 @@ import (
 	"github.com/spf13/cobra"
 
 	"k8s.io/kubectl/pkg/kinflate/commands"
+	"k8s.io/kubectl/pkg/kinflate/util/fs"
 )
 
 func main() {
 	var cmd = &cobra.Command{}
 	cmd.AddCommand(commands.NewCmdInflate(os.Stdout, os.Stderr))
-	cmd.AddCommand(commands.NewCmdInit(os.Stdout, os.Stderr))
+	cmd.AddCommand(commands.NewCmdInit(os.Stdout, os.Stderr, fs.MakeRealFS()))
 	err := cmd.Execute()
 	if err != nil {
 		os.Exit(1)

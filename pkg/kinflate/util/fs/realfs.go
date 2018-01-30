@@ -20,16 +20,24 @@ import (
 	"os"
 )
 
-var _ FileSystem = RealFS{}
+var _ FileSystem = realFS{}
 
-// RealFS implements FileSystem using the local filesystem.
-type RealFS struct{}
+// realFS implements FileSystem using the local filesystem.
+type realFS struct{}
+
+// MakeRealFS makes an instance of realFS.
+func MakeRealFS() FileSystem {
+	return realFS{}
+}
 
 // Create delegates to os.Create.
-func (RealFS) Create(name string) (File, error) { return os.Create(name) }
+func (realFS) Create(name string) (File, error) { return os.Create(name) }
+
+// Mkdir delegates to os.Mkdir.
+func (realFS) Mkdir(name string, perm os.FileMode) error { return os.Mkdir(name, perm) }
 
 // Open delegates to os.Open.
-func (RealFS) Open(name string) (File, error) { return os.Open(name) }
+func (realFS) Open(name string) (File, error) { return os.Open(name) }
 
 // Stat delegates to os.Stat.
-func (RealFS) Stat(name string) (os.FileInfo, error) { return os.Stat(name) }
+func (realFS) Stat(name string) (os.FileInfo, error) { return os.Stat(name) }

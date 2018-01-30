@@ -35,13 +35,23 @@ func MakeFakeFS() *FakeFS {
 
 // Create assures a fake file appears in the in-memory file system.
 func (fs *FakeFS) Create(name string) (File, error) {
-	fs.m[name] = &FakeFile{}
+	f := &FakeFile{}
+	f.open = true
+	fs.m[name] = f
 	return fs.m[name], nil
+}
+
+// Mkdir assures a fake directory appears in the in-memory file system.
+func (fs *FakeFS) Mkdir(name string, perm os.FileMode) error {
+	fs.m[name] = makeDir()
+	return nil
 }
 
 // Open returns a fake file in the open state.
 func (fs *FakeFS) Open(name string) (File, error) {
-	fs.m[name] = &FakeFile{open: true}
+	if _, found := fs.m[name]; !found {
+		return nil, errors.New("file does not exist")
+	}
 	return fs.m[name], nil
 }
 
