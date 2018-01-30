@@ -35,8 +35,6 @@ import (
 	"k8s.io/kubectl/pkg/scheme"
 )
 
-const kubeManifestFileName = "Kube-manifest.yaml"
-
 // loadManifestPkg loads a manifest file and parse it in to the Manifest object.
 func loadManifestPkg(filename string) (*manifest.Manifest, error) {
 	bytes, err := ioutil.ReadFile(filename)
@@ -74,10 +72,10 @@ func LoadFromManifestPath(mPath string,
 		return nil, err
 	}
 	if f.IsDir() {
-		mPath = path.Join(mPath, kubeManifestFileName)
+		mPath = path.Join(mPath, KubeManifestFileName)
 	} else {
-		if !strings.HasSuffix(mPath, kubeManifestFileName) {
-			return nil, fmt.Errorf("expecting file: %q, but got: %q", kubeManifestFileName, mPath)
+		if !strings.HasSuffix(mPath, KubeManifestFileName) {
+			return nil, fmt.Errorf("expecting file: %q, but got: %q", KubeManifestFileName, mPath)
 		}
 	}
 	manifest, err := loadManifestPkg(mPath)
@@ -132,7 +130,7 @@ func dirToMap(dirname string, into map[kutil.GroupVersionKindName]*unstructured.
 		return fmt.Errorf("%q is expected to be an dir", dirname)
 	}
 
-	kubeManifestFileAbsName := path.Join(dirname, kubeManifestFileName)
+	kubeManifestFileAbsName := path.Join(dirname, KubeManifestFileName)
 	_, err = os.Stat(kubeManifestFileAbsName)
 	switch {
 	case err != nil && !os.IsNotExist(err):

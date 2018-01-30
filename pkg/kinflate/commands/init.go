@@ -23,6 +23,7 @@ import (
 	"path"
 
 	"github.com/spf13/cobra"
+	"k8s.io/kubectl/pkg/kinflate"
 	"k8s.io/kubectl/pkg/kinflate/util/fs"
 )
 
@@ -124,7 +125,7 @@ func (o *initOptions) RunInit(cmd *cobra.Command, out, errOut io.Writer, fs fs.F
 		return err
 	}
 
-	err = writefile("Kube-manifest.yaml", []byte(manifestTemplate), fs)
+	err = writefile(kinflate.KubeManifestFileName, []byte(manifestTemplate), fs)
 	if err != nil {
 		return err
 	}
