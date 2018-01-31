@@ -17,6 +17,7 @@ limitations under the License.
 package fs
 
 import (
+	"io/ioutil"
 	"os"
 )
 
@@ -41,3 +42,11 @@ func (realFS) Open(name string) (File, error) { return os.Open(name) }
 
 // Stat delegates to os.Stat.
 func (realFS) Stat(name string) (os.FileInfo, error) { return os.Stat(name) }
+
+// ReadFile delegates to ioutil.ReadFile.
+func (realFS) ReadFile(name string) ([]byte, error) { return ioutil.ReadFile(name) }
+
+// WriteFile delegates to ioutil.WriteFile with read/write permissions.
+func (realFS) WriteFile(name string, c []byte) error {
+	return ioutil.WriteFile(name, c, 0666)
+}

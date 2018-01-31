@@ -27,6 +27,8 @@ type FileSystem interface {
 	Mkdir(name string, perm os.FileMode) error
 	Open(name string) (File, error)
 	Stat(name string) (os.FileInfo, error)
+	ReadFile(name string) ([]byte, error)
+	WriteFile(name string, data []byte) error
 }
 
 // File groups the basic os.File methods.
