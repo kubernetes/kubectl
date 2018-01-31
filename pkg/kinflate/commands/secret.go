@@ -40,9 +40,13 @@ func (a *addGenericSecret) Validate(args []string) error {
 		return fmt.Errorf("name must be specified once")
 	}
 	a.Name = args[0]
+	if len(a.EnvFileSource) == 0 && len(a.FileSources) == 0 && len(a.LiteralSources) == 0 {
+		return fmt.Errorf("at least from-env-file, or from-file or from-literal must be set")
+	}
 	if len(a.EnvFileSource) > 0 && (len(a.FileSources) > 0 || len(a.LiteralSources) > 0) {
 		return fmt.Errorf("from-env-file cannot be combined with from-file or from-literal")
 	}
+	// TODO: Should we check if the path exists? if it's valid, if it's within the same (sub-)directory?
 	return nil
 }
 
@@ -85,8 +89,8 @@ type addTLSSecret struct {
 
 // validate validates required fields are set to support structured generation.
 func (a *addTLSSecret) Validate(args []string) error {
-	if len(args) < 0 {
-		return fmt.Errorf("name must be specified")
+	if len(args) != 1 {
+		return fmt.Errorf("name must be specified once")
 	}
 	a.Name = args[0]
 	if len(a.Cert) == 0 {
@@ -95,6 +99,7 @@ func (a *addTLSSecret) Validate(args []string) error {
 	if len(a.Key) == 0 {
 		return fmt.Errorf("key is required")
 	}
+	// TODO: Should we check if the path exists? if it's valid, if it's within the same (sub-)directory?
 	return nil
 }
 

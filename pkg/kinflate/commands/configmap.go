@@ -40,9 +40,13 @@ func (a *addConfigMap) Validate(args []string) error {
 		return fmt.Errorf("name must be specified once")
 	}
 	a.Name = args[0]
+	if len(a.EnvFileSource) == 0 && len(a.FileSources) == 0 && len(a.LiteralSources) == 0 {
+		return fmt.Errorf("at least from-env-file, or from-file or from-literal must be set")
+	}
 	if len(a.EnvFileSource) > 0 && (len(a.FileSources) > 0 || len(a.LiteralSources) > 0) {
 		return fmt.Errorf("from-env-file cannot be combined with from-file or from-literal")
 	}
+	// TODO: Should we check if the path exists? if it's valid, if it's within the same (sub-)directory?
 	return nil
 }
 
