@@ -17,7 +17,7 @@ limitations under the License.
 package fs
 
 import (
-	"errors"
+	"fmt"
 	"os"
 )
 
@@ -50,7 +50,7 @@ func (fs *FakeFS) Mkdir(name string, perm os.FileMode) error {
 // Open returns a fake file in the open state.
 func (fs *FakeFS) Open(name string) (File, error) {
 	if _, found := fs.m[name]; !found {
-		return nil, errors.New("file does not exist")
+		return nil, fmt.Errorf("file %q cannot be opened", name)
 	}
 	return fs.m[name], nil
 }
@@ -60,5 +60,21 @@ func (fs *FakeFS) Stat(name string) (os.FileInfo, error) {
 	if _, found := fs.m[name]; found {
 		return nil, nil
 	}
-	return nil, errors.New("file does not exist")
+	return nil, fmt.Errorf("file %q does not stat", name)
+}
+
+// ReadFile always returns an empty bytes and error depending on content of m.
+func (fs *FakeFS) ReadFile(name string) ([]byte, error) {
+	if ff, found := fs.m[name]; found {
+		return ff.content, nil
+	}
+	return nil, fmt.Errorf("cannot read file %q", name)
+}
+
+// WriteFile always succeeds and does nothing.
+func (fs *FakeFS) WriteFile(name string, c []byte) error {
+	ff := &FakeFile{}
+	ff.Write(c)
+	fs.m[name] = ff
+	return nil
 }

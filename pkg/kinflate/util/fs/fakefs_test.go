@@ -17,6 +17,7 @@ limitations under the License.
 package fs
 
 import (
+	"bytes"
 	"testing"
 )
 
@@ -46,5 +47,39 @@ func TestCreate(t *testing.T) {
 	}
 	if err != nil {
 		t.Fatalf("expected no error")
+	}
+}
+
+func TestReadFile(t *testing.T) {
+	x := MakeFakeFS()
+	f, err := x.Create("foo")
+	if f == nil {
+		t.Fatalf("expected file")
+	}
+	if err != nil {
+		t.Fatalf("unexpected error")
+	}
+	content, err := x.ReadFile("foo")
+	if len(content) != 0 {
+		t.Fatalf("expected no content")
+	}
+	if err != nil {
+		t.Fatalf("expected no error")
+	}
+}
+
+func TestWriteFile(t *testing.T) {
+	x := MakeFakeFS()
+	c := []byte("heybuddy")
+	err := x.WriteFile("foo", c)
+	if err != nil {
+		t.Fatalf("expected no error")
+	}
+	content, err := x.ReadFile("foo")
+	if err != nil {
+		t.Fatalf("expected read to work: %v", err)
+	}
+	if bytes.Compare(c, content) != 0 {
+		t.Fatalf("incorrect content: %v", content)
 	}
 }
