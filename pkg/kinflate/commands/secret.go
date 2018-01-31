@@ -34,7 +34,7 @@ type addGenericSecret struct {
 	EnvFileSource string
 }
 
-// validate validates required fields are set to support structured generation.
+// Validate validates required fields are set to support structured generation.
 func (a *addGenericSecret) Validate(args []string) error {
 	if len(args) != 1 {
 		return fmt.Errorf("name must be specified once")
@@ -53,10 +53,19 @@ func (a *addGenericSecret) Validate(args []string) error {
 func newCmdAddSecretGeneric(errOut io.Writer) *cobra.Command {
 	var config addGenericSecret
 	cmd := &cobra.Command{
-		Use:     "generic NAME [--type=string] [--from-file=[key=]source] [--from-literal=key1=value1]",
-		Short:   "Adds a secret from a local file, directory or literal value.",
-		Long:    "",
-		Example: "",
+		Use:   "generic NAME [--type=string] [--from-file=[key=]source] [--from-literal=key1=value1]",
+		Short: "Adds a secret from a local file, directory or literal value.",
+		Long:  "",
+		Example: `
+	# Adds a generic secret to the Manifest (with a specified key)
+	kinflate secret generic my-secret --from-file=my-key=file/path --from-literal=my-literal=12345
+
+	# Adds a generic secret to the Manifest (key is the filename)
+	kinflate secret generic my-secret --from-file=file/path
+
+	# Adds a generic secret from env-file
+	kinflate secret generic my-secret --from-env-file=env/path.env
+`,
 		RunE: func(_ *cobra.Command, args []string) error {
 			err := config.Validate(args)
 			if err != nil {
@@ -82,9 +91,12 @@ func newCmdAddSecretGeneric(errOut io.Writer) *cobra.Command {
 }
 
 type addTLSSecret struct {
+	// Name of secret (required)
 	Name string
+	// Cert is the file path to the cerificate (required)
 	Cert string
-	Key  string
+	// Key is the file path to the key (required)
+	Key string
 }
 
 // validate validates required fields are set to support structured generation.
@@ -107,10 +119,13 @@ func (a *addTLSSecret) Validate(args []string) error {
 func newCmdAddSecretTLS(errOut io.Writer) *cobra.Command {
 	var config addTLSSecret
 	cmd := &cobra.Command{
-		Use:     "tls NAME --cert=path/to/cert/file --key=path/to/key/file",
-		Short:   "Adds a TLS secret.",
-		Long:    "",
-		Example: "",
+		Use:   "tls NAME --cert=path/to/cert/file --key=path/to/key/file",
+		Short: "Adds a TLS secret.",
+		Long:  "",
+		Example: `
+	# Adds a TLS secret to the Manifest (with a specified key)
+	kinflate secret tls my-tls-secret --cert=cert/path.cert --key=key/path.key
+`,
 		RunE: func(_ *cobra.Command, args []string) error {
 			err := config.Validate(args)
 			if err != nil {
@@ -128,10 +143,18 @@ func newCmdAddSecretTLS(errOut io.Writer) *cobra.Command {
 	return cmd
 }
 
+// NewCmdAddSecret returns a new Cobra command that wraps generic and tls secrets.
 func NewCmdAddSecret(errOut io.Writer) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "secret",
 		Short: "Adds a secret using specified subcommand",
+		Example: `
+	# Adds a generic secret to the Manifest (with a specified key)
+	kinflate secret generic my-secret --from-file=my-key=file/path --from-literal=my-literal=12345
+
+	# Adds a TLS secret to the Manifest (with a specified key)
+	kinflate secret tls my-tls-secret --cert=cert/path.cert --key=key/path.key
+`,
 	}
 	cmd.AddCommand(newCmdAddSecretGeneric(errOut))
 	cmd.AddCommand(newCmdAddSecretTLS(errOut))

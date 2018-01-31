@@ -53,10 +53,19 @@ func (a *addConfigMap) Validate(args []string) error {
 func NewCmdAddConfigMap(errOut io.Writer) *cobra.Command {
 	var config addConfigMap
 	cmd := &cobra.Command{
-		Use:     "configmap NAME [--from-file=[key=]source] [--from-literal=key1=value1]",
-		Short:   "Adds a configmap to your manifest file.",
-		Long:    "",
-		Example: "",
+		Use:   "configmap NAME [--from-file=[key=]source] [--from-literal=key1=value1]",
+		Short: "Adds a configmap to your manifest file.",
+		Long:  "",
+		Example: `
+	# Adds a configmap to the Manifest (with a specified key)
+	kinflate configmap my-configmap --from-file=my-key=file/path --from-literal=my-literal=12345
+
+	# Adds a configmap to the Manifest (key is the filename)
+	kinflate configmap my-configmap --from-file=file/path
+
+	# Adds a configmap from env-file
+	kinflate configmap my-configmap --from-env-file=env/path.env
+`,
 		RunE: func(_ *cobra.Command, args []string) error {
 			err := config.Validate(args)
 			if err != nil {
