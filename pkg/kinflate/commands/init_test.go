@@ -19,9 +19,9 @@ package commands
 import (
 	"bytes"
 	"os"
-	"path"
 	"testing"
 
+	"k8s.io/kubectl/pkg/kinflate"
 	"k8s.io/kubectl/pkg/kinflate/util/fs"
 )
 
@@ -34,7 +34,7 @@ func TestInitHappyPath(t *testing.T) {
 		t.Fatalf("unexpected error: %v", err)
 	}
 
-	f, err := fakeFS.Open(path.Join(appname, "Kube-manifest.yaml"))
+	f, err := fakeFS.Open(kinflate.KubeManifestFileName)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -43,37 +43,20 @@ func TestInitHappyPath(t *testing.T) {
 		t.Fatalf("actual: %v doesn't match expected: %v",
 			string(file.GetContent()), manifestTemplate)
 	}
-	f, err = fakeFS.Open(path.Join(appname, "deployment.yaml"))
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-	file = f.(*fs.FakeFile)
-	if !file.ContentMatches([]byte(deploymentTemplate)) {
-		t.Fatalf("actual: %v doesn't match expected: %v",
-			string(file.GetContent()), deploymentTemplate)
-	}
-	f, err = fakeFS.Open(path.Join(appname, "service.yaml"))
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-	file = f.(*fs.FakeFile)
-	if !file.ContentMatches([]byte(serviceTemplate)) {
-		t.Fatalf("actual: %v doesn't match expected: %v",
-			string(file.GetContent()), serviceTemplate)
-	}
 }
 
 func TestInitFileAlreadyExist(t *testing.T) {
-	buf := bytes.NewBuffer([]byte{})
+	content := "hey there"
 	fakeFS := fs.MakeFakeFS()
-	fakeFS.Mkdir(appname, 0766)
+	fakeFS.WriteFile(kinflate.KubeManifestFileName, []byte(content))
 
+	buf := bytes.NewBuffer([]byte{})
 	cmd := NewCmdInit(buf, os.Stderr, fakeFS)
 	err := cmd.Execute()
 	if err == nil {
 		t.Fatalf("expected error")
 	}
-	if err.Error() != `"helloworld" already exists` {
-		t.Fatalf("actual err: %v doesn't match expected error: %v", err, `"helloworld" already exists`)
+	if err.Error() != `"`+kinflate.KubeManifestFileName+`" already exists` {
+		t.Fatalf("unexpected error: %v", err)
 	}
 }
