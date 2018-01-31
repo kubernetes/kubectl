@@ -20,14 +20,12 @@ import (
 	"fmt"
 	"io"
 
-	"path"
+	"errors"
 
 	"github.com/spf13/cobra"
 	"k8s.io/kubectl/pkg/kinflate"
 	"k8s.io/kubectl/pkg/kinflate/util/fs"
 )
-
-const appname = "helloworld"
 
 const manifestTemplate = `apiVersion: manifest.k8s.io/v1alpha1
 kind: Manifest
@@ -52,44 +50,19 @@ secrets: []
 recursive: true
 `
 
-const deploymentTemplate = `apiVersion: extensions/v1beta1
-kind: Deployment
-metadata:
-  name: helloworld
-spec:
-  template:
-    spec:
-      containers:
-      - name: nginx
-        image: nginx
-`
-
-const serviceTemplate = `apiVersion: v1
-kind: Service
-metadata:
-  name: helloworld
-  labels:
-    app: helloworld
-spec:
-  ports:
-    - port: 8888
-  selector:
-    app: helloworld
-`
-
 type initOptions struct {
 }
 
-// NewCmdInit make the init command.
+// NewCmdInit makes the init command.
 func NewCmdInit(out, errOut io.Writer, fs fs.FileSystem) *cobra.Command {
 	var o initOptions
 
 	cmd := &cobra.Command{
 		Use:   "init",
-		Short: "TDB",
-		Long:  "TBD",
-		Example: `
-		TBD`,
+		Short: "Creates a file called \"" + kinflate.KubeManifestFileName + "\" in the current directory",
+		Long: "Creates a file called \"" +
+			kinflate.KubeManifestFileName + "\" in the current directory with example values.",
+		Example: `init`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			err := o.Validate(cmd, args)
 			if err != nil {
@@ -107,6 +80,9 @@ func NewCmdInit(out, errOut io.Writer, fs fs.FileSystem) *cobra.Command {
 
 // Validate validates init command.
 func (o *initOptions) Validate(cmd *cobra.Command, args []string) error {
+	if len(args) > 0 {
+		return errors.New("The init command takes no arguments.")
+	}
 	return nil
 }
 
@@ -115,34 +91,11 @@ func (o *initOptions) Complete(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// RunKinflate runs init command (do real work).
-func (o *initOptions) RunInit(cmd *cobra.Command, out, errOut io.Writer, fs fs.FileSystem) error {
-	if _, err := fs.Stat("helloworld"); err == nil {
-		return fmt.Errorf("%q already exists", appname)
+// RunInit writes a manifest file.
+func (o *initOptions) RunInit(
+	cmd *cobra.Command, out, errOut io.Writer, fs fs.FileSystem) error {
+	if _, err := fs.Stat(kinflate.KubeManifestFileName); err == nil {
+		return fmt.Errorf("%q already exists", kinflate.KubeManifestFileName)
 	}
-	err := fs.Mkdir(appname, 0744)
-	if err != nil {
-		return err
-	}
-
-	err = writefile(kinflate.KubeManifestFileName, []byte(manifestTemplate), fs)
-	if err != nil {
-		return err
-	}
-	err = writefile("deployment.yaml", []byte(deploymentTemplate), fs)
-	if err != nil {
-		return err
-	}
-	err = writefile("service.yaml", []byte(serviceTemplate), fs)
-	return err
-}
-
-func writefile(name string, content []byte, fs fs.FileSystem) error {
-	f, err := fs.Create(path.Join(appname, name))
-	if err != nil {
-		return err
-	}
-	defer f.Close()
-	_, err = f.Write(content)
-	return err
+	return fs.WriteFile(kinflate.KubeManifestFileName, []byte(manifestTemplate))
 }
