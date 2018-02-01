@@ -17,19 +17,14 @@ limitations under the License.
 package commands
 
 import (
+	"errors"
+	"fmt"
 	"io"
 
-	"github.com/ghodss/yaml"
-
-	"errors"
-
 	"github.com/spf13/cobra"
-	manifest "k8s.io/kubectl/pkg/apis/manifest/v1alpha1"
-	"k8s.io/kubectl/pkg/kinflate/util/fs"
-
-	"fmt"
-
 	"k8s.io/kubectl/pkg/kinflate"
+	kutil "k8s.io/kubectl/pkg/kinflate/util"
+	"k8s.io/kubectl/pkg/kinflate/util/fs"
 )
 
 type addResourceOptions struct {
@@ -91,15 +86,9 @@ func (o *addResourceOptions) RunAddResource(out, errOut io.Writer, fsys fs.FileS
 		return err
 	}
 
-	content, err := fsys.ReadFile(kinflate.KubeManifestFileName)
-	if err != nil {
-		return err
-	}
+	loader := kutil.ManifestLoader{FS: fsys}
 
-	// TODO: Refactor to a common location you guys!
-	// See pkg/kinflate/util.go:loadManifestPkg
-	var m manifest.Manifest
-	err = yaml.Unmarshal(content, &m)
+	m, err := loader.Read(kinflate.KubeManifestFileName)
 	if err != nil {
 		return err
 	}
@@ -110,14 +99,5 @@ func (o *addResourceOptions) RunAddResource(out, errOut io.Writer, fsys fs.FileS
 
 	m.Resources = append(m.Resources, o.resourceFilePath)
 
-	bytes, err := yaml.Marshal(m)
-	if err != nil {
-		return err
-	}
-
-	err = fsys.WriteFile(kinflate.KubeManifestFileName, bytes)
-	if err != nil {
-		return err
-	}
-	return nil
+	return loader.Write(kinflate.KubeManifestFileName, m)
 }

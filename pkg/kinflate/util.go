@@ -23,8 +23,6 @@ import (
 	"path"
 	"path/filepath"
 
-	"github.com/ghodss/yaml"
-
 	"strings"
 
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
@@ -34,23 +32,6 @@ import (
 	kutil "k8s.io/kubectl/pkg/kinflate/util"
 	"k8s.io/kubectl/pkg/scheme"
 )
-
-// loadManifestPkg loads a manifest file and parse it in to the Manifest object.
-func loadManifestPkg(filename string) (*manifest.Manifest, error) {
-	bytes, err := ioutil.ReadFile(filename)
-	if err != nil {
-		return nil, err
-	}
-	var m manifest.Manifest
-	// TODO: support json
-	err = yaml.Unmarshal(bytes, &m)
-	if err != nil {
-		return nil, err
-	}
-	dir, _ := path.Split(filename)
-	adjustPathsForManifest(&m, []string{dir})
-	return &m, err
-}
 
 func populateResourceMap(files []string,
 	m map[kutil.GroupVersionKindName]*unstructured.Unstructured) error {
@@ -78,7 +59,7 @@ func LoadFromManifestPath(mPath string,
 			return nil, fmt.Errorf("expecting file: %q, but got: %q", KubeManifestFileName, mPath)
 		}
 	}
-	manifest, err := loadManifestPkg(mPath)
+	manifest, err := (&kutil.ManifestLoader{}).Read(mPath)
 	if err != nil {
 		return nil, err
 	}
@@ -136,7 +117,7 @@ func dirToMap(dirname string, into map[kutil.GroupVersionKindName]*unstructured.
 	case err != nil && !os.IsNotExist(err):
 		return err
 	case err == nil:
-		manifest, err := loadManifestPkg(kubeManifestFileAbsName)
+		manifest, err := (&kutil.ManifestLoader{}).Read(kubeManifestFileAbsName)
 		if err != nil {
 			return err
 		}
