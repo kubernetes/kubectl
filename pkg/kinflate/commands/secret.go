@@ -1,5 +1,5 @@
 /*
-Copyright 2017 The Kubernetes Authors.
+Copyright 2018 The Kubernetes Authors.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -23,35 +23,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type addGenericSecret struct {
-	// Name of secret (required)
-	Name string
-	// FileSources to derive the secret from (optional)
-	FileSources []string
-	// LiteralSources to derive the secret from (optional)
-	LiteralSources []string
-	// EnvFileSource to derive the secret from (optional)
-	EnvFileSource string
-}
-
-// Validate validates required fields are set to support structured generation.
-func (a *addGenericSecret) Validate(args []string) error {
-	if len(args) != 1 {
-		return fmt.Errorf("name must be specified once")
-	}
-	a.Name = args[0]
-	if len(a.EnvFileSource) == 0 && len(a.FileSources) == 0 && len(a.LiteralSources) == 0 {
-		return fmt.Errorf("at least from-env-file, or from-file or from-literal must be set")
-	}
-	if len(a.EnvFileSource) > 0 && (len(a.FileSources) > 0 || len(a.LiteralSources) > 0) {
-		return fmt.Errorf("from-env-file cannot be combined with from-file or from-literal")
-	}
-	// TODO: Should we check if the path exists? if it's valid, if it's within the same (sub-)directory?
-	return nil
-}
-
 func newCmdAddSecretGeneric(errOut io.Writer) *cobra.Command {
-	var config addGenericSecret
+	var config dataConfig
 	cmd := &cobra.Command{
 		Use:   "generic NAME [--type=string] [--from-file=[key=]source] [--from-literal=key1=value1]",
 		Short: "Adds a secret from a local file, directory or literal value.",
