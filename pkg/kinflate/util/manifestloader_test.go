@@ -32,12 +32,12 @@ func TestManifestLoader(t *testing.T) {
 	loader := kutil.ManifestLoader{FS: fs.MakeFakeFS()}
 
 	if err := loader.Write("my-manifest.yaml", manifest); err != nil {
-		t.Fatal("Couldn't write manifest file: ", err)
+		t.Fatalf("Couldn't write manifest file: ", err)
 	}
 
 	readManifest, err := loader.Read("my-manifest.yaml")
 	if err != nil {
-		t.Fatal("Couldn't read manifest file: ", err)
+		t.Fatalf("Couldn't read manifest file: ", err)
 	}
 	if !reflect.DeepEqual(manifest, readManifest) {
 		t.Fatal("Read manifest is different from written manifest")
@@ -49,5 +49,7 @@ func TestManifestLoaderEmptyFile(t *testing.T) {
 		NamePrefix: "prefix",
 	}
 	loader := kutil.ManifestLoader{}
-	t.Fatal(loader.Write("", manifest))
+	if loader.Write("", manifest) == nil {
+		t.Fatalf("Write to empty filename should fail")
+	}
 }
