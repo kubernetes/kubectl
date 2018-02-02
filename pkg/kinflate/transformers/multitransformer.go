@@ -23,14 +23,22 @@ import (
 
 // MultiTransformer contains a list of transformers.
 type MultiTransformer struct {
-	Transformers []Transformer
+	transformers []Transformer
 }
 
 var _ Transformer = &MultiTransformer{}
 
+// NewMultiTransformer constructs a MultiTransformer.
+func NewMultiTransformer(t []Transformer) Transformer {
+	r := &MultiTransformer{
+		transformers: make([]Transformer, len(t))}
+	copy(r.transformers, t)
+	return r
+}
+
 // Transform prepends the name prefix.
 func (o *MultiTransformer) Transform(m map[gvkn.GroupVersionKindName]*unstructured.Unstructured) error {
-	for _, t := range o.Transformers {
+	for _, t := range o.transformers {
 		err := t.Transform(m)
 		if err != nil {
 			return err
