@@ -29,6 +29,7 @@ type dataConfig struct {
 	// LiteralSources to derive the configMap/Secret from (optional)
 	LiteralSources []string
 	// EnvFileSource to derive the configMap/Secret from (optional)
+	// TODO: Rationalize this name with Generic.EnvSource
 	EnvFileSource string
 }
 

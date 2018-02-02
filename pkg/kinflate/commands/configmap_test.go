@@ -19,11 +19,45 @@ package commands
 import (
 	"testing"
 
+	manifest "k8s.io/kubectl/pkg/apis/manifest/v1alpha1"
 	"k8s.io/kubectl/pkg/kinflate/util/fs"
 )
 
 func TestNewAddConfigMapIsNotNil(t *testing.T) {
 	if NewCmdAddConfigMap(nil, fs.MakeFakeFS()) == nil {
 		t.Fatal("NewCmdAddConfigMap shouldn't be nil")
+	}
+}
+
+func TestNewAddConfigMap_addConfigMap(t *testing.T) {
+
+	testCases := []struct {
+		testName              string
+		config                dataConfig
+		numExpectedConfigmaps int
+		shouldFail            bool
+	}{
+		{
+			testName: "first-time",
+			config: dataConfig{
+				Name: "test-config-name",
+			},
+			numExpectedConfigmaps: 1,
+			shouldFail:            false,
+		},
+	}
+
+	for _, test := range testCases {
+		testManifest := manifest.Manifest{
+			NamePrefix: "test-name-prefix",
+		}
+		// First time adding configmap to manifest
+		err := addConfigMap(&testManifest, test.config)
+		if err != nil && test.shouldFail {
+			t.Fatal("Add configmap should not return error")
+		}
+		if test.numExpectedConfigmaps != len(testManifest.Configmaps) {
+			t.Fatal("Manifest.Configmaps should have one entry after addConfigMap()")
+		}
 	}
 }
