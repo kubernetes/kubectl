@@ -18,10 +18,12 @@ package commands
 
 import (
 	"testing"
+
+	"k8s.io/kubectl/pkg/kinflate/util/fs"
 )
 
 func TestNewAddConfigMapIsNotNil(t *testing.T) {
-	if NewCmdAddConfigMap(nil) == nil {
+	if NewCmdAddConfigMap(nil, fs.MakeFakeFS()) == nil {
 		t.Fatal("NewCmdAddConfigMap shouldn't be nil")
 	}
 }
