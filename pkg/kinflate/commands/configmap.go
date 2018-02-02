@@ -19,10 +19,12 @@ package commands
 import (
 	"io"
 
+	"k8s.io/kubectl/pkg/kinflate/util/fs"
+
 	"github.com/spf13/cobra"
 )
 
-func NewCmdAddConfigMap(errOut io.Writer) *cobra.Command {
+func NewCmdAddConfigMap(errOut io.Writer, fsys fs.FileSystem) *cobra.Command {
 	var config dataConfig
 	cmd := &cobra.Command{
 		Use:   "configmap NAME [--from-file=[key=]source] [--from-literal=key1=value1]",
