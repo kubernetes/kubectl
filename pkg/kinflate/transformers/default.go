@@ -56,5 +56,5 @@ func DefaultTransformer(m *manifest.Manifest) (Transformer, error) {
 	if nrt != nil {
 		transformers = append(transformers, nrt)
 	}
-	return &MultiTransformer{transformers}, nil
+	return NewMultiTransformer(transformers), nil
 }
