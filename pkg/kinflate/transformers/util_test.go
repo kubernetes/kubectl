@@ -14,28 +14,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package util
+package transformers
 
 import (
 	"fmt"
 	"reflect"
-	"testing"
 
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/kubectl/pkg/kinflate/gvkn"
 )
-
-var encoded = []byte(`apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: cm1
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: cm2
-`)
 
 func makeConfigMap(name string) *unstructured.Unstructured {
 	return &unstructured.Unstructured{
@@ -61,27 +49,6 @@ func makeConfigMaps(name1InGVKN, name2InGVKN, name1InObj, name2InObj string) map
 			GVK:  schema.GroupVersionKind{Version: "v1", Kind: "ConfigMap"},
 			Name: name2InGVKN,
 		}: cm2,
-	}
-}
-
-func TestDecode(t *testing.T) {
-	expected := makeConfigMaps("cm1", "cm2", "cm1", "cm2")
-	m, err := Decode(encoded, nil)
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-	if !reflect.DeepEqual(m, expected) {
-		t.Fatalf("%#v doesn't match expected %#v", m, expected)
-	}
-}
-
-func TestEncode(t *testing.T) {
-	out, err := Encode(makeConfigMaps("cm1", "cm2", "cm1", "cm2"))
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-	if !reflect.DeepEqual(out, encoded) {
-		t.Fatalf("%s doesn't match expected %s", out, encoded)
 	}
 }
 

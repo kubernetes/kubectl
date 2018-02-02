@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package util
+package transformers
 
 import (
 	"errors"
@@ -22,6 +22,7 @@ import (
 
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
+	"k8s.io/kubectl/pkg/kinflate/gvkn"
 )
 
 // NameReferenceTransformer contains the referencing info between 2 GroupVersionKinds
@@ -50,13 +51,13 @@ func NewNameReferenceTransformer(pc []referencePathConfig) (Transformer, error) 
 // associated with the key. e.g. if <k, v> is one of the key-value pair in the map,
 // then the old name is k.Name and the new name is v.GetName()
 func (o *NameReferenceTransformer) Transform(
-	m map[GroupVersionKindName]*unstructured.Unstructured) error {
+	m map[gvkn.GroupVersionKindName]*unstructured.Unstructured) error {
 	for GVKn := range m {
 		obj := m[GVKn]
 		objMap := obj.UnstructuredContent()
 		for _, referencePathConfig := range o.pathConfigs {
 			for _, path := range referencePathConfig.pathConfigs {
-				if !SelectByGVK(GVKn.GVK, path.GroupVersionKind) {
+				if !gvkn.SelectByGVK(GVKn.GVK, path.GroupVersionKind) {
 					continue
 				}
 				err := mutateField(objMap, path.Path, path.CreateIfNotPresent,
@@ -70,7 +71,7 @@ func (o *NameReferenceTransformer) Transform(
 	return nil
 }
 
-// NoMatchingGVKNError indicates failing to find a GroupVersionKindName.
+// NoMatchingGVKNError indicates failing to find a gvkn.GroupVersionKindName.
 type NoMatchingGVKNError struct {
 	message string
 }
@@ -94,7 +95,7 @@ func (err NoMatchingGVKNError) Error() string {
 
 func (o *NameReferenceTransformer) updateNameReference(
 	GVK schema.GroupVersionKind,
-	m map[GroupVersionKindName]*unstructured.Unstructured,
+	m map[gvkn.GroupVersionKindName]*unstructured.Unstructured,
 ) func(in interface{}) (interface{}, error) {
 	return func(in interface{}) (interface{}, error) {
 		s, ok := in.(string)
@@ -103,7 +104,7 @@ func (o *NameReferenceTransformer) updateNameReference(
 		}
 
 		for GVKn, obj := range m {
-			if !SelectByGVK(GVKn.GVK, &GVK) {
+			if !gvkn.SelectByGVK(GVKn.GVK, &GVK) {
 				continue
 			}
 			if GVKn.Name == s {

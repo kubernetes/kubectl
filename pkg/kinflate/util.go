@@ -27,10 +27,15 @@ import (
 
 	"strings"
 
+	"k8s.io/apimachinery/pkg/api/meta"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/util/strategicpatch"
 	manifest "k8s.io/kubectl/pkg/apis/manifest/v1alpha1"
+	cutil "k8s.io/kubectl/pkg/kinflate/configmapandsecret"
+	"k8s.io/kubectl/pkg/kinflate/constants"
+	"k8s.io/kubectl/pkg/kinflate/gvkn"
+	"k8s.io/kubectl/pkg/kinflate/transformers"
 	kutil "k8s.io/kubectl/pkg/kinflate/util"
 	"k8s.io/kubectl/pkg/scheme"
 )
@@ -52,8 +57,50 @@ func loadManifestPkg(filename string) (*manifest.Manifest, error) {
 	return &m, err
 }
 
+func populateMap(m map[gvkn.GroupVersionKindName]*unstructured.Unstructured, obj *unstructured.Unstructured, newName string) error {
+	accessor, err := meta.Accessor(obj)
+	if err != nil {
+		return err
+	}
+	oldName := accessor.GetName()
+	gvk := obj.GetObjectKind().GroupVersionKind()
+	gvkn := gvkn.GroupVersionKindName{GVK: gvk, Name: oldName}
+
+	if _, found := m[gvkn]; found {
+		return fmt.Errorf("cannot use a duplicate name %q for %s", oldName, gvk)
+	}
+	accessor.SetName(newName)
+	m[gvkn] = obj
+	return nil
+}
+
+func populateConfigMapAndSecretMap(manifest *manifest.Manifest, m map[gvkn.GroupVersionKindName]*unstructured.Unstructured) error {
+	for _, cm := range manifest.Configmaps {
+		unstructuredConfigMap, nameWithHash, err := cutil.MakeConfigmapAndGenerateName(cm)
+		if err != nil {
+			return err
+		}
+		err = populateMap(m, unstructuredConfigMap, nameWithHash)
+		if err != nil {
+			return err
+		}
+	}
+
+	for _, secret := range manifest.Secrets {
+		unstructuredSecret, nameWithHash, err := cutil.MakeSecretAndGenerateName(secret)
+		if err != nil {
+			return err
+		}
+		err = populateMap(m, unstructuredSecret, nameWithHash)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func populateResourceMap(files []string,
-	m map[kutil.GroupVersionKindName]*unstructured.Unstructured) error {
+	m map[gvkn.GroupVersionKindName]*unstructured.Unstructured) error {
 	for _, file := range files {
 		err := pathToMap(file, m)
 		if err != nil {
@@ -66,16 +113,16 @@ func populateResourceMap(files []string,
 // LoadFromManifestPath loads the manifest from the given path.
 // It returns a map of resources defined in the manifest file.
 func LoadFromManifestPath(mPath string,
-) (map[kutil.GroupVersionKindName]*unstructured.Unstructured, error) {
+) (map[gvkn.GroupVersionKindName]*unstructured.Unstructured, error) {
 	f, err := os.Stat(mPath)
 	if err != nil {
 		return nil, err
 	}
 	if f.IsDir() {
-		mPath = path.Join(mPath, KubeManifestFileName)
+		mPath = path.Join(mPath, constants.KubeManifestFileName)
 	} else {
-		if !strings.HasSuffix(mPath, KubeManifestFileName) {
-			return nil, fmt.Errorf("expecting file: %q, but got: %q", KubeManifestFileName, mPath)
+		if !strings.HasSuffix(mPath, constants.KubeManifestFileName) {
+			return nil, fmt.Errorf("expecting file: %q, but got: %q", constants.KubeManifestFileName, mPath)
 		}
 	}
 	manifest, err := loadManifestPkg(mPath)
@@ -85,13 +132,13 @@ func LoadFromManifestPath(mPath string,
 	return ManifestToMap(manifest)
 }
 
-func pathToMap(path string, into map[kutil.GroupVersionKindName]*unstructured.Unstructured) error {
+func pathToMap(path string, into map[gvkn.GroupVersionKindName]*unstructured.Unstructured) error {
 	f, err := os.Stat(path)
 	if err != nil {
 		return err
 	}
 	if into == nil {
-		into = map[kutil.GroupVersionKindName]*unstructured.Unstructured{}
+		into = map[gvkn.GroupVersionKindName]*unstructured.Unstructured{}
 	}
 	switch mode := f.Mode(); {
 	case mode.IsDir():
@@ -102,7 +149,7 @@ func pathToMap(path string, into map[kutil.GroupVersionKindName]*unstructured.Un
 	return err
 }
 
-func fileToMap(filename string, into map[kutil.GroupVersionKindName]*unstructured.Unstructured) error {
+func fileToMap(filename string, into map[gvkn.GroupVersionKindName]*unstructured.Unstructured) error {
 	f, err := os.Stat(filename)
 	if f.IsDir() {
 		return fmt.Errorf("%q is NOT expected to be an dir", filename)
@@ -121,16 +168,16 @@ func fileToMap(filename string, into map[kutil.GroupVersionKindName]*unstructure
 
 // dirToMap tries to find Kube-manifest.yaml first in a dir.
 // If not found, traverse all the file in the dir.
-func dirToMap(dirname string, into map[kutil.GroupVersionKindName]*unstructured.Unstructured) error {
+func dirToMap(dirname string, into map[gvkn.GroupVersionKindName]*unstructured.Unstructured) error {
 	if into == nil {
-		into = map[kutil.GroupVersionKindName]*unstructured.Unstructured{}
+		into = map[gvkn.GroupVersionKindName]*unstructured.Unstructured{}
 	}
 	f, err := os.Stat(dirname)
 	if !f.IsDir() {
 		return fmt.Errorf("%q is expected to be an dir", dirname)
 	}
 
-	kubeManifestFileAbsName := path.Join(dirname, KubeManifestFileName)
+	kubeManifestFileAbsName := path.Join(dirname, constants.KubeManifestFileName)
 	_, err = os.Stat(kubeManifestFileAbsName)
 	switch {
 	case err != nil && !os.IsNotExist(err):
@@ -170,16 +217,16 @@ func dirToMap(dirname string, into map[kutil.GroupVersionKindName]*unstructured.
 // ManifestToMap takes a manifest and recursively finds all instances of Kube-manifest,
 // reads them and merges them all in a map of resources.
 func ManifestToMap(m *manifest.Manifest,
-) (map[kutil.GroupVersionKindName]*unstructured.Unstructured, error) {
+) (map[gvkn.GroupVersionKindName]*unstructured.Unstructured, error) {
 	return manifestToMap(m, nil)
 }
 
 // manifestToMap takes a manifest and recursively finds all instances of Kube-manifest,
 // reads them and merges them all into `into`.
 func manifestToMap(m *manifest.Manifest,
-	into map[kutil.GroupVersionKindName]*unstructured.Unstructured,
-) (map[kutil.GroupVersionKindName]*unstructured.Unstructured, error) {
-	baseResourceMap := map[kutil.GroupVersionKindName]*unstructured.Unstructured{}
+	into map[gvkn.GroupVersionKindName]*unstructured.Unstructured,
+) (map[gvkn.GroupVersionKindName]*unstructured.Unstructured, error) {
+	baseResourceMap := map[gvkn.GroupVersionKindName]*unstructured.Unstructured{}
 	if into != nil {
 		baseResourceMap = into
 	}
@@ -188,7 +235,7 @@ func manifestToMap(m *manifest.Manifest,
 		return nil, err
 	}
 
-	overlayResouceMap := map[kutil.GroupVersionKindName]*unstructured.Unstructured{}
+	overlayResouceMap := map[gvkn.GroupVersionKindName]*unstructured.Unstructured{}
 	err = populateResourceMap(m.Patches, overlayResouceMap)
 	if err != nil {
 		return nil, err
@@ -231,54 +278,13 @@ func manifestToMap(m *manifest.Manifest,
 		return nil, err
 	}
 
-	transformers, err := defaultTransformers(m)
+	t, err := transformers.DefaultTransformer(m)
 	if err != nil {
 		return nil, err
 	}
-	for _, t := range transformers {
-		err = t.Transform(baseResourceMap)
-		if err != nil {
-			return nil, err
-		}
+	err = t.Transform(baseResourceMap)
+	if err != nil {
+		return nil, err
 	}
 	return baseResourceMap, nil
-}
-
-// defaultTransformers generates 4 transformers:
-// 1) name prefix 2) apply labels 3) apply annotations 4) update name reference
-func defaultTransformers(m *manifest.Manifest) ([]kutil.Transformer, error) {
-	transformers := []kutil.Transformer{}
-
-	npt, err := kutil.NewDefaultingNamePrefixTransformer(m.NamePrefix)
-	if err != nil {
-		return nil, err
-	}
-	if npt != nil {
-		transformers = append(transformers, npt)
-	}
-
-	lt, err := kutil.NewDefaultingLabelsMapTransformer(m.ObjectLabels)
-	if err != nil {
-		return nil, err
-	}
-	if lt != nil {
-		transformers = append(transformers, lt)
-	}
-
-	at, err := kutil.NewDefaultingAnnotationsMapTransformer(m.ObjectAnnotations)
-	if err != nil {
-		return nil, err
-	}
-	if at != nil {
-		transformers = append(transformers, at)
-	}
-
-	nrt, err := kutil.NewDefaultingNameReferenceTransformer()
-	if err != nil {
-		return nil, err
-	}
-	if nrt != nil {
-		transformers = append(transformers, nrt)
-	}
-	return transformers, nil
 }

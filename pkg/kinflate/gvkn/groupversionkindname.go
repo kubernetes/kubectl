@@ -14,24 +14,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package util
+package gvkn
 
 import (
-	"sort"
-
-	"k8s.io/kubectl/pkg/kinflate/gvkn"
+	"k8s.io/apimachinery/pkg/runtime/schema"
 )
 
-// ByGVKN implements the sort interface.
-type ByGVKN []gvkn.GroupVersionKindName
-
-var _ sort.Interface = ByGVKN{}
-
-func (a ByGVKN) Len() int      { return len(a) }
-func (a ByGVKN) Swap(i, j int) { a[i], a[j] = a[j], a[i] }
-func (a ByGVKN) Less(i, j int) bool {
-	if a[i].GVK.String() != a[j].GVK.String() {
-		return a[i].GVK.String() < a[j].GVK.String()
-	}
-	return a[i].Name < a[j].Name
+// GroupVersionKindName contains GroupVersionKind and original name of the resource.
+type GroupVersionKindName struct {
+	// GroupVersionKind of the resource.
+	GVK schema.GroupVersionKind
+	// original name of the resource before transformation.
+	Name string
 }

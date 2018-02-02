@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package util
+package transformers
 
 import (
 	"reflect"
@@ -22,6 +22,7 @@ import (
 
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
+	"k8s.io/kubectl/pkg/kinflate/gvkn"
 )
 
 func makeReferencedConfigMap() *unstructured.Unstructured {
@@ -115,8 +116,8 @@ func makeNameRefDeployment(cmName, secretName string) *unstructured.Unstructured
 	}
 }
 
-func makeNameReferenceTestMap() map[GroupVersionKindName]*unstructured.Unstructured {
-	return map[GroupVersionKindName]*unstructured.Unstructured{
+func makeNameReferenceTestMap() map[gvkn.GroupVersionKindName]*unstructured.Unstructured {
+	return map[gvkn.GroupVersionKindName]*unstructured.Unstructured{
 		{
 			GVK:  schema.GroupVersionKind{Version: "v1", Kind: "ConfigMap"},
 			Name: "cm1",
@@ -132,8 +133,8 @@ func makeNameReferenceTestMap() map[GroupVersionKindName]*unstructured.Unstructu
 	}
 }
 
-func makeNameReferenceUpdatedTestMap() map[GroupVersionKindName]*unstructured.Unstructured {
-	return map[GroupVersionKindName]*unstructured.Unstructured{
+func makeNameReferenceUpdatedTestMap() map[gvkn.GroupVersionKindName]*unstructured.Unstructured {
+	return map[gvkn.GroupVersionKindName]*unstructured.Unstructured{
 		{
 			GVK:  schema.GroupVersionKind{Version: "v1", Kind: "ConfigMap"},
 			Name: "cm1",

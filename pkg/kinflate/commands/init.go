@@ -23,7 +23,7 @@ import (
 	"errors"
 
 	"github.com/spf13/cobra"
-	"k8s.io/kubectl/pkg/kinflate"
+	"k8s.io/kubectl/pkg/kinflate/constants"
 	"k8s.io/kubectl/pkg/kinflate/util/fs"
 )
 
@@ -59,9 +59,9 @@ func NewCmdInit(out, errOut io.Writer, fs fs.FileSystem) *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "init",
-		Short: "Creates a file called \"" + kinflate.KubeManifestFileName + "\" in the current directory",
+		Short: "Creates a file called \"" + constants.KubeManifestFileName + "\" in the current directory",
 		Long: "Creates a file called \"" +
-			kinflate.KubeManifestFileName + "\" in the current directory with example values.",
+			constants.KubeManifestFileName + "\" in the current directory with example values.",
 		Example: `init`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			err := o.Validate(cmd, args)
@@ -94,8 +94,8 @@ func (o *initOptions) Complete(cmd *cobra.Command, args []string) error {
 // RunInit writes a manifest file.
 func (o *initOptions) RunInit(
 	cmd *cobra.Command, out, errOut io.Writer, fs fs.FileSystem) error {
-	if _, err := fs.Stat(kinflate.KubeManifestFileName); err == nil {
-		return fmt.Errorf("%q already exists", kinflate.KubeManifestFileName)
+	if _, err := fs.Stat(constants.KubeManifestFileName); err == nil {
+		return fmt.Errorf("%q already exists", constants.KubeManifestFileName)
 	}
-	return fs.WriteFile(kinflate.KubeManifestFileName, []byte(manifestTemplate))
+	return fs.WriteFile(constants.KubeManifestFileName, []byte(manifestTemplate))
 }

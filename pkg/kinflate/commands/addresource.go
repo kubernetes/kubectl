@@ -25,11 +25,10 @@ import (
 
 	"github.com/spf13/cobra"
 	manifest "k8s.io/kubectl/pkg/apis/manifest/v1alpha1"
+	"k8s.io/kubectl/pkg/kinflate/constants"
 	"k8s.io/kubectl/pkg/kinflate/util/fs"
 
 	"fmt"
-
-	"k8s.io/kubectl/pkg/kinflate"
 )
 
 type addResourceOptions struct {
@@ -91,7 +90,7 @@ func (o *addResourceOptions) RunAddResource(out, errOut io.Writer, fsys fs.FileS
 		return err
 	}
 
-	content, err := fsys.ReadFile(kinflate.KubeManifestFileName)
+	content, err := fsys.ReadFile(constants.KubeManifestFileName)
 	if err != nil {
 		return err
 	}
@@ -115,7 +114,7 @@ func (o *addResourceOptions) RunAddResource(out, errOut io.Writer, fsys fs.FileS
 		return err
 	}
 
-	err = fsys.WriteFile(kinflate.KubeManifestFileName, bytes)
+	err = fsys.WriteFile(constants.KubeManifestFileName, bytes)
 	if err != nil {
 		return err
 	}
