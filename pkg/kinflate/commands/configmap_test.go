@@ -19,11 +19,111 @@ package commands
 import (
 	"testing"
 
+	manifest "k8s.io/kubectl/pkg/apis/manifest/v1alpha1"
 	"k8s.io/kubectl/pkg/kinflate/util/fs"
 )
 
 func TestNewAddConfigMapIsNotNil(t *testing.T) {
 	if NewCmdAddConfigMap(nil, fs.MakeFakeFS()) == nil {
 		t.Fatal("NewCmdAddConfigMap shouldn't be nil")
+	}
+}
+
+func TestGetOrCreateConfigMap(t *testing.T) {
+	cmName := "test-config-name"
+
+	manifest := &manifest.Manifest{
+		NamePrefix: "test-name-prefix",
+	}
+
+	if len(manifest.Configmaps) != 0 {
+		t.Fatal("Initial manifest should not have any configmaps")
+	}
+	cm := getOrCreateConfigMap(manifest, cmName)
+
+	if cm == nil {
+		t.Fatalf("ConfigMap should always be non-nil")
+	}
+
+	if len(manifest.Configmaps) != 1 {
+		t.Fatalf("Manifest should have newly created configmap")
+	}
+
+	if &manifest.Configmaps[len(manifest.Configmaps)-1] != cm {
+		t.Fatalf("Pointer address for newly inserted configmap should be same")
+	}
+
+	existingCM := getOrCreateConfigMap(manifest, cmName)
+
+	if existingCM != cm {
+		t.Fatalf("should have returned an existing cm with name: %v", cmName)
+	}
+
+	if len(manifest.Configmaps) != 1 {
+		t.Fatalf("Should not insert configmap for an existing name: %v", cmName)
+	}
+}
+
+func TestMergeData_LiteralSources(t *testing.T) {
+	ds := &manifest.DataSources{}
+
+	err := mergeData(ds, dataConfig{LiteralSources: []string{"k1=v1"}})
+	if err != nil {
+		t.Fatalf("Merge initial literal source should not return error")
+	}
+
+	if len(ds.LiteralSources) != 1 {
+		t.Fatalf("Initial literal source should have been added")
+	}
+
+	err = mergeData(ds, dataConfig{LiteralSources: []string{"k2=v2"}})
+	if err != nil {
+		t.Fatalf("Merge second literal source should not return error")
+	}
+
+	if len(ds.LiteralSources) != 2 {
+		t.Fatalf("Second literal source should have been added")
+	}
+}
+
+func TestMergeData_FileSources(t *testing.T) {
+	ds := &manifest.DataSources{}
+
+	err := mergeData(ds, dataConfig{FileSources: []string{"file1"}})
+	if err != nil {
+		t.Fatalf("Merge initial file source should not return error")
+	}
+
+	if len(ds.FileSources) != 1 {
+		t.Fatalf("Initial file source should have been added")
+	}
+
+	err = mergeData(ds, dataConfig{FileSources: []string{"file2"}})
+	if err != nil {
+		t.Fatalf("Merge second file source should not return error")
+	}
+
+	if len(ds.FileSources) != 2 {
+		t.Fatalf("Second file source should have been added")
+	}
+}
+
+func TestMergeData_EnvSource(t *testing.T) {
+	envFileName := "env1"
+	envFileName2 := "env2"
+	ds := &manifest.DataSources{}
+
+	err := mergeData(ds, dataConfig{EnvFileSource: envFileName})
+	if err != nil {
+		t.Fatalf("Merge initial env source should not return error")
+	}
+
+	if ds.EnvSource != envFileName {
+		t.Fatalf("Initial env source filename should have been added")
+	}
+
+	err = mergeData(ds, dataConfig{EnvFileSource: envFileName2})
+	if err == nil {
+		t.Fatalf("Updating env source should return an error")
 	}
 }

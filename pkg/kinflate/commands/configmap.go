@@ -17,8 +17,13 @@ limitations under the License.
 package commands
 
 import (
+	"fmt"
 	"io"
 
+	manifest "k8s.io/kubectl/pkg/apis/manifest/v1alpha1"
+	"k8s.io/kubectl/pkg/kinflate/configmapandsecret"
+	"k8s.io/kubectl/pkg/kinflate/constants"
+	kutil "k8s.io/kubectl/pkg/kinflate/util"
 	"k8s.io/kubectl/pkg/kinflate/util/fs"
 
 	"github.com/spf13/cobra"
@@ -46,9 +51,21 @@ func NewCmdAddConfigMap(errOut io.Writer, fsys fs.FileSystem) *cobra.Command {
 				return err
 			}
 
-			// TODO(apelisse,droot): Do something with that config.
+			// Load in the manifest file.
+			loader := kutil.ManifestLoader{FS: fsys}
+			m, err := loader.Read(constants.KubeManifestFileName)
+			if err != nil {
+				return err
+			}
 
-			return nil
+			// Add the config map to the manifest.
+			err = addConfigMap(m, config)
+			if err != nil {
+				return err
+			}
+
+			// Write out the manifest with added configmap.
+			return loader.Write(constants.KubeManifestFileName, m)
 		},
 	}
 
@@ -57,4 +74,47 @@ func NewCmdAddConfigMap(errOut io.Writer, fsys fs.FileSystem) *cobra.Command {
 	cmd.Flags().StringVar(&config.EnvFileSource, "from-env-file", "", "Specify the path to a file to read lines of key=val pairs to create a configmap (i.e. a Docker .env file).")
 
 	return cmd
+}
+
+// addConfigMap updates a configmap within a manifest, using the data in config.
+// Note: error may leave manifest in an undefined state. Suggest passing a copy
+// of manifest.
+func addConfigMap(m *manifest.Manifest, config dataConfig) error {
+	cm := getOrCreateConfigMap(m, config.Name)
+
+	err := mergeData(&cm.DataSources, config)
+	if err != nil {
+		return err
+	}
+
+	// Validate manifest's configmap by trying to create corev1.configmap.
+	_, _, err = configmapandsecret.MakeConfigmapAndGenerateName(*cm)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func getOrCreateConfigMap(m *manifest.Manifest, name string) *manifest.ConfigMap {
+	for i, v := range m.Configmaps {
+		if name == v.Name {
+			return &m.Configmaps[i]
+		}
+	}
+	// config map not found, create new one and add it to the manifest.
+	cm := &manifest.ConfigMap{Name: name}
+	m.Configmaps = append(m.Configmaps, *cm)
+	return &m.Configmaps[len(m.Configmaps)-1]
+}
+
+func mergeData(src *manifest.DataSources, config dataConfig) error {
+	src.LiteralSources = append(src.LiteralSources, config.LiteralSources...)
+	src.FileSources = append(src.FileSources, config.FileSources...)
+	if src.EnvSource != "" && src.EnvSource != config.EnvFileSource {
+		return fmt.Errorf("updating existing env source '%s' not allowed.", src.EnvSource)
+	}
+	src.EnvSource = config.EnvFileSource
+
+	return nil
 }
