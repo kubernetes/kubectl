@@ -45,18 +45,31 @@ func MakeConfigmapAndGenerateName(cm manifest.ConfigMap) (*unstructured.Unstruct
 	return unstructuredCM, nameWithHash, err
 }
 
-// MakeSecretAndGenerateName makes a secret and returns the secret and the name appended with a hash.
-func MakeSecretAndGenerateName(secret manifest.Secret) (*unstructured.Unstructured, string, error) {
-	corev1Secret, err := makeSecret(secret)
+// MakeGenericSecretAndGenerateName makes a generic secret and returns the secret and the name appended with a hash.
+func MakeGenericSecretAndGenerateName(secret manifest.GenericSecret) (*unstructured.Unstructured, string, error) {
+	corev1Secret, err := makeGenericSecret(secret)
 	if err != nil {
 		return nil, "", err
 	}
-	h, err := hash.SecretHash(corev1Secret)
+	return makeSecretAndGenerateName(corev1Secret, secret.Name)
+}
+
+// MakeTLSSecretAndGenerateName makes a generic secret and returns the secret and the name appended with a hash.
+func MakeTLSSecretAndGenerateName(secret manifest.TLSSecret) (*unstructured.Unstructured, string, error) {
+	corev1Secret, err := makeTlsSecret(secret)
 	if err != nil {
 		return nil, "", err
 	}
-	nameWithHash := fmt.Sprintf("%s-%s", corev1Secret.GetName(), h)
-	unstructuredCM, err := objectToUnstructured(corev1Secret)
+	return makeSecretAndGenerateName(corev1Secret, secret.Name)
+}
+
+func makeSecretAndGenerateName(secret *corev1.Secret, name string) (*unstructured.Unstructured, string, error) {
+	h, err := hash.SecretHash(secret)
+	if err != nil {
+		return nil, "", err
+	}
+	nameWithHash := fmt.Sprintf("%s-%s", name, h)
+	unstructuredCM, err := objectToUnstructured(secret)
 	return unstructuredCM, nameWithHash, err
 }
 
@@ -74,55 +87,76 @@ func makeConfigMap(cm manifest.ConfigMap) (*corev1.ConfigMap, error) {
 	corev1cm := &corev1.ConfigMap{}
 	corev1cm.APIVersion = "v1"
 	corev1cm.Kind = "ConfigMap"
-	corev1cm.Name = cm.NamePrefix
+	corev1cm.Name = cm.Name
 	corev1cm.Data = map[string]string{}
-	var err error
-	switch cm.Type {
-	case "env":
-		err = cutil.HandleConfigMapFromEnvFileSource(corev1cm, cm.EnvSource)
-	case "file":
-		err = cutil.HandleConfigMapFromFileSources(corev1cm, cm.FileSources)
-	case "literal":
-		err = cutil.HandleConfigMapFromLiteralSources(corev1cm, cm.LiteralSources)
-	default:
-		err = fmt.Errorf("unknown type of configmap: %v", cm.Type)
+
+	if cm.EnvSource != "" {
+		if err := cutil.HandleConfigMapFromEnvFileSource(corev1cm, cm.EnvSource); err != nil {
+			return nil, err
+		}
 	}
-	return corev1cm, err
+	if cm.FileSources != nil {
+		if err := cutil.HandleConfigMapFromFileSources(corev1cm, cm.FileSources); err != nil {
+			return nil, err
+		}
+	}
+	if cm.LiteralSources != nil {
+		if err := cutil.HandleConfigMapFromLiteralSources(corev1cm, cm.LiteralSources); err != nil {
+			return nil, err
+		}
+	}
+
+	return corev1cm, nil
 }
 
-func makeSecret(secret manifest.Secret) (*corev1.Secret, error) {
+func makeGenericSecret(secret manifest.GenericSecret) (*corev1.Secret, error) {
 	corev1secret := &corev1.Secret{}
 	corev1secret.APIVersion = "v1"
 	corev1secret.Kind = "Secret"
-	corev1secret.Name = secret.NamePrefix
+	corev1secret.Name = secret.Name
 	corev1secret.Type = corev1.SecretTypeOpaque
 	corev1secret.Data = map[string][]byte{}
-	var err error
-	switch secret.Type {
-	case "tls":
-		if err = validateTLS(secret.TLS.CertFile, secret.TLS.KeyFile); err != nil {
+
+	if secret.EnvSource != "" {
+		if err := cutil.HandleFromEnvFileSource(corev1secret, secret.EnvSource); err != nil {
 			return nil, err
 		}
-		tlsCrt, err := ioutil.ReadFile(secret.TLS.CertFile)
-		if err != nil {
-			return nil, err
-		}
-		tlsKey, err := ioutil.ReadFile(secret.TLS.KeyFile)
-		if err != nil {
-			return nil, err
-		}
-		corev1secret.Type = corev1.SecretTypeTLS
-		corev1secret.Data[corev1.TLSCertKey] = []byte(tlsCrt)
-		corev1secret.Data[corev1.TLSPrivateKeyKey] = []byte(tlsKey)
-	case "env":
-		err = cutil.HandleFromEnvFileSource(corev1secret, secret.EnvSource)
-	case "file":
-		err = cutil.HandleFromFileSources(corev1secret, secret.FileSources)
-	case "literal":
-		err = cutil.HandleFromLiteralSources(corev1secret, secret.LiteralSources)
-	default:
-		err = fmt.Errorf("unknown type of secret: %v", secret.Type)
 	}
+	if secret.FileSources != nil {
+		if err := cutil.HandleFromFileSources(corev1secret, secret.FileSources); err != nil {
+			return nil, err
+		}
+	}
+	if secret.LiteralSources != nil {
+		if err := cutil.HandleFromLiteralSources(corev1secret, secret.LiteralSources); err != nil {
+			return nil, err
+		}
+	}
+	return corev1secret, nil
+}
+
+func makeTlsSecret(secret manifest.TLSSecret) (*corev1.Secret, error) {
+	corev1secret := &corev1.Secret{}
+	corev1secret.APIVersion = "v1"
+	corev1secret.Kind = "Secret"
+	corev1secret.Name = secret.Name
+	corev1secret.Type = corev1.SecretTypeTLS
+	corev1secret.Data = map[string][]byte{}
+
+	if err := validateTLS(secret.CertFile, secret.KeyFile); err != nil {
+		return nil, err
+	}
+	tlsCrt, err := ioutil.ReadFile(secret.CertFile)
+	if err != nil {
+		return nil, err
+	}
+	tlsKey, err := ioutil.ReadFile(secret.KeyFile)
+	if err != nil {
+		return nil, err
+	}
+	corev1secret.Data[corev1.TLSCertKey] = []byte(tlsCrt)
+	corev1secret.Data[corev1.TLSPrivateKeyKey] = []byte(tlsKey)
+
 	return corev1secret, err
 }
 

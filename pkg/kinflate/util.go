@@ -86,8 +86,8 @@ func populateConfigMapAndSecretMap(manifest *manifest.Manifest, m map[gvkn.Group
 		}
 	}
 
-	for _, secret := range manifest.Secrets {
-		unstructuredSecret, nameWithHash, err := cutil.MakeSecretAndGenerateName(secret)
+	for _, secret := range manifest.GenericSecrets {
+		unstructuredSecret, nameWithHash, err := cutil.MakeGenericSecretAndGenerateName(secret)
 		if err != nil {
 			return err
 		}
@@ -96,6 +96,18 @@ func populateConfigMapAndSecretMap(manifest *manifest.Manifest, m map[gvkn.Group
 			return err
 		}
 	}
+
+	for _, secret := range manifest.TLSSecrets {
+		unstructuredSecret, nameWithHash, err := cutil.MakeTLSSecretAndGenerateName(secret)
+		if err != nil {
+			return err
+		}
+		err = populateMap(m, unstructuredSecret, nameWithHash)
+		if err != nil {
+			return err
+		}
+	}
+
 	return nil
 }
 

@@ -212,9 +212,8 @@ func TestConstructConfigMap(t *testing.T) {
 		{
 			description: "construct config map from env",
 			input: manifest.ConfigMap{
-				Type:       "env",
-				NamePrefix: "envConfigMap",
-				Generic: manifest.Generic{
+				Name: "envConfigMap",
+				DataSources: manifest.DataSources{
 					EnvSource: "../examples/simple/instances/exampleinstance/configmap/app.env",
 				},
 			},
@@ -223,9 +222,8 @@ func TestConstructConfigMap(t *testing.T) {
 		{
 			description: "construct config map from file",
 			input: manifest.ConfigMap{
-				Type:       "file",
-				NamePrefix: "fileConfigMap",
-				Generic: manifest.Generic{
+				Name: "fileConfigMap",
+				DataSources: manifest.DataSources{
 					FileSources: []string{"../examples/simple/instances/exampleinstance/configmap/app-init.ini"},
 				},
 			},
@@ -234,9 +232,8 @@ func TestConstructConfigMap(t *testing.T) {
 		{
 			description: "construct config map from literal",
 			input: manifest.ConfigMap{
-				Type:       "literal",
-				NamePrefix: "literalConfigMap",
-				Generic: manifest.Generic{
+				Name: "literalConfigMap",
+				DataSources: manifest.DataSources{
 					LiteralSources: []string{"a=x", "b=y"},
 				},
 			},
@@ -247,6 +244,36 @@ func TestConstructConfigMap(t *testing.T) {
 	for _, tc := range testCases {
 		cm, err := makeConfigMap(tc.input)
 		if err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+		if !reflect.DeepEqual(*cm, *tc.expected) {
+			t.Fatalf("in testcase: %q updated:\n%#v\ndoesn't match expected:\n%#v\n", tc.description, *cm, tc.expected)
+		}
+	}
+}
+
+func TestConstructTLSSecret(t *testing.T) {
+	type testCase struct {
+		description string
+		input       manifest.TLSSecret
+		expected    *corev1.Secret
+	}
+
+	testCases := []testCase{
+		{
+			description: "construct secret from tls",
+			input: manifest.TLSSecret{
+				Name:     "tlsSecret",
+				CertFile: "../examples/simple/instances/exampleinstance/secret/tls.cert",
+				KeyFile:  "../examples/simple/instances/exampleinstance/secret/tls.key",
+			},
+			expected: makeTLSSecret("tlsSecret"),
+		},
+	}
+
+	for _, tc := range testCases {
+		cm, err := makeTlsSecret(tc.input)
+		if err != nil {
 			t.Fatalf("unepxected error: %v", err)
 		}
 		if !reflect.DeepEqual(*cm, *tc.expected) {
@@ -255,32 +282,19 @@ func TestConstructConfigMap(t *testing.T) {
 	}
 }
 
-func TestConstructSecret(t *testing.T) {
+func TestConstructGenericSecret(t *testing.T) {
 	type testCase struct {
 		description string
-		input       manifest.Secret
+		input       manifest.GenericSecret
 		expected    *corev1.Secret
 	}
 
 	testCases := []testCase{
 		{
-			description: "construct secret from tls",
-			input: manifest.Secret{
-				Type:       "tls",
-				NamePrefix: "tlsSecret",
-				TLS: &manifest.TLS{
-					CertFile: "../examples/simple/instances/exampleinstance/secret/tls.cert",
-					KeyFile:  "../examples/simple/instances/exampleinstance/secret/tls.key",
-				},
-			},
-			expected: makeTLSSecret("tlsSecret"),
-		},
-		{
 			description: "construct secret from env",
-			input: manifest.Secret{
-				Type:       "env",
-				NamePrefix: "envSecret",
-				Generic: manifest.Generic{
+			input: manifest.GenericSecret{
+				Name: "envSecret",
+				DataSources: manifest.DataSources{
 					EnvSource: "../examples/simple/instances/exampleinstance/configmap/app.env",
 				},
 			},
@@ -288,10 +302,9 @@ func TestConstructSecret(t *testing.T) {
 		},
 		{
 			description: "construct secret from file",
-			input: manifest.Secret{
-				Type:       "file",
-				NamePrefix: "fileSecret",
-				Generic: manifest.Generic{
+			input: manifest.GenericSecret{
+				Name: "fileSecret",
+				DataSources: manifest.DataSources{
 					FileSources: []string{"../examples/simple/instances/exampleinstance/configmap/app-init.ini"},
 				},
 			},
@@ -299,10 +312,9 @@ func TestConstructSecret(t *testing.T) {
 		},
 		{
 			description: "construct secret from literal",
-			input: manifest.Secret{
-				Type:       "literal",
-				NamePrefix: "literalSecret",
-				Generic: manifest.Generic{
+			input: manifest.GenericSecret{
+				Name: "literalSecret",
+				DataSources: manifest.DataSources{
 					LiteralSources: []string{"a=x", "b=y"},
 				},
 			},
@@ -311,9 +323,9 @@ func TestConstructSecret(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		cm, err := makeSecret(tc.input)
+		cm, err := makeGenericSecret(tc.input)
 		if err != nil {
-			t.Fatalf("unepxected error: %v", err)
+			t.Fatalf("unexpected error: %v", err)
 		}
 		if !reflect.DeepEqual(*cm, *tc.expected) {
 			t.Fatalf("in testcase: %q updated:\n%#v\ndoesn't match expected:\n%#v\n", tc.description, *cm, tc.expected)
