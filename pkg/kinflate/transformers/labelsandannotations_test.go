@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package util
+package transformers
 
 import (
 	"reflect"
@@ -22,6 +22,7 @@ import (
 
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
+	"k8s.io/kubectl/pkg/kinflate/gvkn"
 )
 
 func makeConfigmap() *unstructured.Unstructured {
@@ -86,8 +87,8 @@ func makeService() *unstructured.Unstructured {
 	}
 }
 
-func makeTestMap() map[GroupVersionKindName]*unstructured.Unstructured {
-	return map[GroupVersionKindName]*unstructured.Unstructured{
+func makeTestMap() map[gvkn.GroupVersionKindName]*unstructured.Unstructured {
+	return map[gvkn.GroupVersionKindName]*unstructured.Unstructured{
 		{
 			GVK:  schema.GroupVersionKind{Version: "v1", Kind: "ConfigMap"},
 			Name: "cm1",
@@ -189,8 +190,8 @@ func makeLabeledService() *unstructured.Unstructured {
 	}
 }
 
-func makeLabeledMap() map[GroupVersionKindName]*unstructured.Unstructured {
-	return map[GroupVersionKindName]*unstructured.Unstructured{
+func makeLabeledMap() map[gvkn.GroupVersionKindName]*unstructured.Unstructured {
+	return map[gvkn.GroupVersionKindName]*unstructured.Unstructured{
 		{
 			GVK:  schema.GroupVersionKind{Version: "v1", Kind: "ConfigMap"},
 			Name: "cm1",
@@ -301,8 +302,8 @@ func makeAnnotatededService() *unstructured.Unstructured {
 	}
 }
 
-func makeAnnotatedMap() map[GroupVersionKindName]*unstructured.Unstructured {
-	return map[GroupVersionKindName]*unstructured.Unstructured{
+func makeAnnotatedMap() map[gvkn.GroupVersionKindName]*unstructured.Unstructured {
+	return map[gvkn.GroupVersionKindName]*unstructured.Unstructured{
 		{
 			GVK:  schema.GroupVersionKind{Version: "v1", Kind: "ConfigMap"},
 			Name: "cm1",

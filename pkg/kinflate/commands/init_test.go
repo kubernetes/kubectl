@@ -21,7 +21,7 @@ import (
 	"os"
 	"testing"
 
-	"k8s.io/kubectl/pkg/kinflate"
+	"k8s.io/kubectl/pkg/kinflate/constants"
 	"k8s.io/kubectl/pkg/kinflate/util/fs"
 )
 
@@ -34,7 +34,7 @@ func TestInitHappyPath(t *testing.T) {
 		t.Fatalf("unexpected error: %v", err)
 	}
 
-	f, err := fakeFS.Open(kinflate.KubeManifestFileName)
+	f, err := fakeFS.Open(constants.KubeManifestFileName)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -48,7 +48,7 @@ func TestInitHappyPath(t *testing.T) {
 func TestInitFileAlreadyExist(t *testing.T) {
 	content := "hey there"
 	fakeFS := fs.MakeFakeFS()
-	fakeFS.WriteFile(kinflate.KubeManifestFileName, []byte(content))
+	fakeFS.WriteFile(constants.KubeManifestFileName, []byte(content))
 
 	buf := bytes.NewBuffer([]byte{})
 	cmd := NewCmdInit(buf, os.Stderr, fakeFS)
@@ -56,7 +56,7 @@ func TestInitFileAlreadyExist(t *testing.T) {
 	if err == nil {
 		t.Fatalf("expected error")
 	}
-	if err.Error() != `"`+kinflate.KubeManifestFileName+`" already exists` {
+	if err.Error() != `"`+constants.KubeManifestFileName+`" already exists` {
 		t.Fatalf("unexpected error: %v", err)
 	}
 }

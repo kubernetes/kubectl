@@ -14,13 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package util
+package transformers
 
 import (
 	"errors"
 	"fmt"
 
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
+	kgvkn "k8s.io/kubectl/pkg/kinflate/gvkn"
 )
 
 // MapTransformer contains a map string->string and path configs
@@ -55,12 +56,12 @@ func NewMapTransformer(pc []PathConfig, m map[string]string) (Transformer, error
 
 // Transform apply each <key, value> pair in the MapTransformer to the
 // fields specified in MapTransformer.
-func (o *MapTransformer) Transform(m map[GroupVersionKindName]*unstructured.Unstructured) error {
+func (o *MapTransformer) Transform(m map[kgvkn.GroupVersionKindName]*unstructured.Unstructured) error {
 	for gvkn := range m {
 		obj := m[gvkn]
 		objMap := obj.UnstructuredContent()
 		for _, path := range o.pathConfigs {
-			if !SelectByGVK(gvkn.GVK, path.GroupVersionKind) {
+			if !kgvkn.SelectByGVK(gvkn.GVK, path.GroupVersionKind) {
 				continue
 			}
 			err := mutateField(objMap, path.Path, path.CreateIfNotPresent, o.addMap)

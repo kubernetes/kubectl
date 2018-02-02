@@ -14,13 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package util
+package transformers
 
 import (
 	"errors"
 	"fmt"
 
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
+	kgvkn "k8s.io/kubectl/pkg/kinflate/gvkn"
 )
 
 // NamePrefixTransformer contains the prefix and the path config for each field that
@@ -56,12 +57,12 @@ func NewNamePrefixTransformer(pc []PathConfig, np string) (Transformer, error) {
 }
 
 // Transform prepends the name prefix.
-func (o *NamePrefixTransformer) Transform(m map[GroupVersionKindName]*unstructured.Unstructured) error {
+func (o *NamePrefixTransformer) Transform(m map[kgvkn.GroupVersionKindName]*unstructured.Unstructured) error {
 	for gvkn := range m {
 		obj := m[gvkn]
 		objMap := obj.UnstructuredContent()
 		for _, path := range o.pathConfigs {
-			if !SelectByGVK(gvkn.GVK, path.GroupVersionKind) {
+			if !kgvkn.SelectByGVK(gvkn.GVK, path.GroupVersionKind) {
 				continue
 			}
 			err := mutateField(objMap, path.Path, path.CreateIfNotPresent, o.addPrefix)

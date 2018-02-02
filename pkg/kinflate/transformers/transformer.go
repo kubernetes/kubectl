@@ -14,24 +14,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package util
+package transformers
 
 import (
-	"sort"
-
+	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/kubectl/pkg/kinflate/gvkn"
 )
 
-// ByGVKN implements the sort interface.
-type ByGVKN []gvkn.GroupVersionKindName
-
-var _ sort.Interface = ByGVKN{}
-
-func (a ByGVKN) Len() int      { return len(a) }
-func (a ByGVKN) Swap(i, j int) { a[i], a[j] = a[j], a[i] }
-func (a ByGVKN) Less(i, j int) bool {
-	if a[i].GVK.String() != a[j].GVK.String() {
-		return a[i].GVK.String() < a[j].GVK.String()
-	}
-	return a[i].Name < a[j].Name
+// Transformer can transform objects.
+type Transformer interface {
+	// Transform modifies objects in a map, e.g. add prefixes or additional labels.
+	Transform(m map[gvkn.GroupVersionKindName]*unstructured.Unstructured) error
 }

@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package configmapandsecret
+package util
 
 import (
 	"fmt"
@@ -25,13 +25,12 @@ import (
 
 	"k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/util/validation"
-	"k8s.io/kubectl/pkg/kinflate/configmapandsecret/util"
 )
 
 // HandleFromLiteralSources adds the specified literal source information into the provided secret
 func HandleFromLiteralSources(secret *v1.Secret, literalSources []string) error {
 	for _, literalSource := range literalSources {
-		keyName, value, err := util.ParseLiteralSource(literalSource)
+		keyName, value, err := ParseLiteralSource(literalSource)
 		if err != nil {
 			return err
 		}
@@ -45,7 +44,7 @@ func HandleFromLiteralSources(secret *v1.Secret, literalSources []string) error 
 // HandleFromFileSources adds the specified file source information into the provided secret
 func HandleFromFileSources(secret *v1.Secret, fileSources []string) error {
 	for _, fileSource := range fileSources {
-		keyName, filePath, err := util.ParseFileSource(fileSource)
+		keyName, filePath, err := ParseFileSource(fileSource)
 		if err != nil {
 			return err
 		}

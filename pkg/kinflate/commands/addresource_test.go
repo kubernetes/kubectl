@@ -23,7 +23,7 @@ import (
 
 	"strings"
 
-	"k8s.io/kubectl/pkg/kinflate"
+	"k8s.io/kubectl/pkg/kinflate/constants"
 	"k8s.io/kubectl/pkg/kinflate/util/fs"
 )
 
@@ -41,7 +41,7 @@ func TestAddResourceHappyPath(t *testing.T) {
 	buf := bytes.NewBuffer([]byte{})
 	fakeFS := fs.MakeFakeFS()
 	fakeFS.WriteFile(resourceFileName, []byte(resourceFileContent))
-	fakeFS.WriteFile(kinflate.KubeManifestFileName, []byte(manifestTemplate))
+	fakeFS.WriteFile(constants.KubeManifestFileName, []byte(manifestTemplate))
 
 	cmd := NewCmdAddResource(buf, os.Stderr, fakeFS)
 	args := []string{resourceFileName}
@@ -49,7 +49,7 @@ func TestAddResourceHappyPath(t *testing.T) {
 	if err != nil {
 		t.Errorf("unexpected cmd error: %v", err)
 	}
-	content, err := fakeFS.ReadFile(kinflate.KubeManifestFileName)
+	content, err := fakeFS.ReadFile(constants.KubeManifestFileName)
 	if err != nil {
 		t.Errorf("unexpected read error: %v", err)
 	}
@@ -62,7 +62,7 @@ func TestAddResourceAlreadyThere(t *testing.T) {
 	buf := bytes.NewBuffer([]byte{})
 	fakeFS := fs.MakeFakeFS()
 	fakeFS.WriteFile(resourceKnownToBeInManifest, []byte(resourceFileContent))
-	fakeFS.WriteFile(kinflate.KubeManifestFileName, []byte(manifestTemplate))
+	fakeFS.WriteFile(constants.KubeManifestFileName, []byte(manifestTemplate))
 	cmd := NewCmdAddResource(buf, os.Stderr, fakeFS)
 	args := []string{resourceKnownToBeInManifest}
 	err := cmd.RunE(cmd, args)

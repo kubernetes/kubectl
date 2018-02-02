@@ -18,7 +18,6 @@ package util
 
 import (
 	"bytes"
-	"fmt"
 	"io"
 	"sort"
 
@@ -28,20 +27,13 @@ import (
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	k8syaml "k8s.io/apimachinery/pkg/util/yaml"
+	"k8s.io/kubectl/pkg/kinflate/gvkn"
 )
-
-// GroupVersionKindName contains GroupVersionKind and original name of the resource.
-type GroupVersionKindName struct {
-	// GroupVersionKind of the resource.
-	GVK schema.GroupVersionKind
-	// original name of the resource before transformation.
-	Name string
-}
 
 // Decode decodes a list of objects in byte array format.
 // Decoded object will be inserted in `into` if it's not nil. Otherwise, it will
 // construct a new map and return it.
-func Decode(in []byte, into map[GroupVersionKindName]*unstructured.Unstructured) (map[GroupVersionKindName]*unstructured.Unstructured, error) {
+func Decode(in []byte, into map[gvkn.GroupVersionKindName]*unstructured.Unstructured) (map[gvkn.GroupVersionKindName]*unstructured.Unstructured, error) {
 	decoder := k8syaml.NewYAMLOrJSONDecoder(bytes.NewReader(in), 1024)
 	objs := []*unstructured.Unstructured{}
 
@@ -59,7 +51,7 @@ func Decode(in []byte, into map[GroupVersionKindName]*unstructured.Unstructured)
 	}
 
 	if into == nil {
-		into = map[GroupVersionKindName]*unstructured.Unstructured{}
+		into = map[gvkn.GroupVersionKindName]*unstructured.Unstructured{}
 	}
 	for i := range objs {
 		metaAccessor, err := meta.Accessor(objs[i])
@@ -78,7 +70,7 @@ func Decode(in []byte, into map[GroupVersionKindName]*unstructured.Unstructured)
 			return nil, err
 		}
 		gvk := gv.WithKind(kind)
-		gvkn := GroupVersionKindName{
+		gvkn := gvkn.GroupVersionKindName{
 			GVK:  gvk,
 			Name: name,
 		}
@@ -88,8 +80,8 @@ func Decode(in []byte, into map[GroupVersionKindName]*unstructured.Unstructured)
 }
 
 // Encode encodes the map `in` and output the encoded objects separated by `---`.
-func Encode(in map[GroupVersionKindName]*unstructured.Unstructured) ([]byte, error) {
-	gvknList := []GroupVersionKindName{}
+func Encode(in map[gvkn.GroupVersionKindName]*unstructured.Unstructured) ([]byte, error) {
+	gvknList := []gvkn.GroupVersionKindName{}
 	for gvkn := range in {
 		gvknList = append(gvknList, gvkn)
 	}
@@ -117,82 +109,4 @@ func Encode(in map[GroupVersionKindName]*unstructured.Unstructured) ([]byte, err
 		firstObj = false
 	}
 	return buf.Bytes(), nil
-}
-
-// SelectByGVK returns true if `selector` selects `in`; otherwise, false.
-// If `selector` and `in` are the same, return true.
-// If `selector` is nil, it is considered as a wildcard and always return true.
-// e.g. selector <Group: "", Version: "", Kind: "Deployemt"> CAN select
-// <Group: "extensions", Version: "v1beta1", Kind: "Deployemt">.
-// selector <Group: "apps", Version: "", Kind: "Deployemt"> CANNOT select
-// <Group: "extensions", Version: "v1beta1", Kind: "Deployemt">.
-func SelectByGVK(in schema.GroupVersionKind, selector *schema.GroupVersionKind) bool {
-	if selector == nil {
-		return true
-	}
-	if len(selector.Group) > 0 {
-		if in.Group != selector.Group {
-			return false
-		}
-	}
-	if len(selector.Version) > 0 {
-		if in.Version != selector.Version {
-			return false
-		}
-	}
-	if len(selector.Kind) > 0 {
-		if in.Kind != selector.Kind {
-			return false
-		}
-	}
-	return true
-}
-
-type mutateFunc func(interface{}) (interface{}, error)
-
-func mutateField(m map[string]interface{}, pathToField []string, createIfNotPresent bool, fns ...mutateFunc) error {
-	if len(pathToField) == 0 {
-		return nil
-	}
-
-	_, found := m[pathToField[0]]
-	if !found {
-		if !createIfNotPresent {
-			return nil
-		}
-		m[pathToField[0]] = map[string]interface{}{}
-	}
-
-	if len(pathToField) == 1 {
-		var err error
-		for _, fn := range fns {
-			m[pathToField[0]], err = fn(m[pathToField[0]])
-			if err != nil {
-				return err
-			}
-		}
-		return nil
-	}
-
-	v := m[pathToField[0]]
-	newPathToField := pathToField[1:]
-	switch typedV := v.(type) {
-	case map[string]interface{}:
-		return mutateField(typedV, newPathToField, createIfNotPresent, fns...)
-	case []interface{}:
-		for i := range typedV {
-			item := typedV[i]
-			typedItem, ok := item.(map[string]interface{})
-			if !ok {
-				return fmt.Errorf("%#v is expectd to be %T", item, typedItem)
-			}
-			err := mutateField(typedItem, newPathToField, createIfNotPresent, fns...)
-			if err != nil {
-				return err
-			}
-		}
-		return nil
-	default:
-		return fmt.Errorf("%#v is not expected to be a primitive type", typedV)
-	}
 }

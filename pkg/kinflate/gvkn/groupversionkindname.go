@@ -14,26 +14,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package util
+package gvkn
 
 import (
-	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
+	"k8s.io/apimachinery/pkg/runtime/schema"
 )
 
-// MultiTransformer contains a list of transformers.
-type MultiTransformer struct {
-	Transformers []Transformer
-}
-
-var _ Transformer = &MultiTransformer{}
-
-// Transform prepends the name prefix.
-func (o *MultiTransformer) Transform(m map[GroupVersionKindName]*unstructured.Unstructured) error {
-	for _, t := range o.Transformers {
-		err := t.Transform(m)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
+// GroupVersionKindName contains GroupVersionKind and original name of the resource.
+type GroupVersionKindName struct {
+	// GroupVersionKind of the resource.
+	GVK schema.GroupVersionKind
+	// original name of the resource before transformation.
+	Name string
 }

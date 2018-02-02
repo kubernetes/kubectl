@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package kinflate
+package configmapandsecret
 
 import (
 	"crypto/tls"
@@ -23,58 +23,15 @@ import (
 	"io/ioutil"
 
 	corev1 "k8s.io/api/core/v1"
-	"k8s.io/apimachinery/pkg/api/meta"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime"
 	manifest "k8s.io/kubectl/pkg/apis/manifest/v1alpha1"
-	"k8s.io/kubectl/pkg/kinflate/configmapandsecret"
+	cutil "k8s.io/kubectl/pkg/kinflate/configmapandsecret/util"
 	"k8s.io/kubectl/pkg/kinflate/hash"
-	kutil "k8s.io/kubectl/pkg/kinflate/util"
 )
 
-func populateMap(m map[kutil.GroupVersionKindName]*unstructured.Unstructured, obj *unstructured.Unstructured, newName string) error {
-	accessor, err := meta.Accessor(obj)
-	if err != nil {
-		return err
-	}
-	oldName := accessor.GetName()
-	gvk := obj.GetObjectKind().GroupVersionKind()
-	gvkn := kutil.GroupVersionKindName{GVK: gvk, Name: oldName}
-
-	if _, found := m[gvkn]; found {
-		return fmt.Errorf("cannot use a duplicate name %q for %s", oldName, gvk)
-	}
-	accessor.SetName(newName)
-	m[gvkn] = obj
-	return nil
-}
-
-func populateConfigMapAndSecretMap(manifest *manifest.Manifest, m map[kutil.GroupVersionKindName]*unstructured.Unstructured) error {
-	for _, cm := range manifest.Configmaps {
-		unstructuredConfigMap, nameWithHash, err := makeConfigmapAndGenerateName(cm)
-		if err != nil {
-			return err
-		}
-		err = populateMap(m, unstructuredConfigMap, nameWithHash)
-		if err != nil {
-			return err
-		}
-	}
-
-	for _, secret := range manifest.Secrets {
-		unstructuredSecret, nameWithHash, err := makeSecretAndGenerateName(secret)
-		if err != nil {
-			return err
-		}
-		err = populateMap(m, unstructuredSecret, nameWithHash)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-func makeConfigmapAndGenerateName(cm manifest.ConfigMap) (*unstructured.Unstructured, string, error) {
+// MakeConfigmapAndGenerateName makes a configmap and returns the configmap and the name appended with a hash.
+func MakeConfigmapAndGenerateName(cm manifest.ConfigMap) (*unstructured.Unstructured, string, error) {
 	corev1CM, err := makeConfigMap(cm)
 	if err != nil {
 		return nil, "", err
@@ -88,7 +45,8 @@ func makeConfigmapAndGenerateName(cm manifest.ConfigMap) (*unstructured.Unstruct
 	return unstructuredCM, nameWithHash, err
 }
 
-func makeSecretAndGenerateName(secret manifest.Secret) (*unstructured.Unstructured, string, error) {
+// MakeSecretAndGenerateName makes a secret and returns the secret and the name appended with a hash.
+func MakeSecretAndGenerateName(secret manifest.Secret) (*unstructured.Unstructured, string, error) {
 	corev1Secret, err := makeSecret(secret)
 	if err != nil {
 		return nil, "", err
@@ -121,11 +79,11 @@ func makeConfigMap(cm manifest.ConfigMap) (*corev1.ConfigMap, error) {
 	var err error
 	switch cm.Type {
 	case "env":
-		err = configmapandsecret.HandleConfigMapFromEnvFileSource(corev1cm, cm.EnvSource)
+		err = cutil.HandleConfigMapFromEnvFileSource(corev1cm, cm.EnvSource)
 	case "file":
-		err = configmapandsecret.HandleConfigMapFromFileSources(corev1cm, cm.FileSources)
+		err = cutil.HandleConfigMapFromFileSources(corev1cm, cm.FileSources)
 	case "literal":
-		err = configmapandsecret.HandleConfigMapFromLiteralSources(corev1cm, cm.LiteralSources)
+		err = cutil.HandleConfigMapFromLiteralSources(corev1cm, cm.LiteralSources)
 	default:
 		err = fmt.Errorf("unknown type of configmap: %v", cm.Type)
 	}
@@ -157,11 +115,11 @@ func makeSecret(secret manifest.Secret) (*corev1.Secret, error) {
 		corev1secret.Data[corev1.TLSCertKey] = []byte(tlsCrt)
 		corev1secret.Data[corev1.TLSPrivateKeyKey] = []byte(tlsKey)
 	case "env":
-		err = configmapandsecret.HandleFromEnvFileSource(corev1secret, secret.EnvSource)
+		err = cutil.HandleFromEnvFileSource(corev1secret, secret.EnvSource)
 	case "file":
-		err = configmapandsecret.HandleFromFileSources(corev1secret, secret.FileSources)
+		err = cutil.HandleFromFileSources(corev1secret, secret.FileSources)
 	case "literal":
-		err = configmapandsecret.HandleFromLiteralSources(corev1secret, secret.LiteralSources)
+		err = cutil.HandleFromLiteralSources(corev1secret, secret.LiteralSources)
 	default:
 		err = fmt.Errorf("unknown type of secret: %v", secret.Type)
 	}

@@ -14,14 +14,27 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package util
+package transformers
 
 import (
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
+	"k8s.io/kubectl/pkg/kinflate/gvkn"
 )
 
-// Transformer can transform objects.
-type Transformer interface {
-	// Transform modifies objects in a map, e.g. add prefixes or additional labels.
-	Transform(m map[GroupVersionKindName]*unstructured.Unstructured) error
+// MultiTransformer contains a list of transformers.
+type MultiTransformer struct {
+	Transformers []Transformer
+}
+
+var _ Transformer = &MultiTransformer{}
+
+// Transform prepends the name prefix.
+func (o *MultiTransformer) Transform(m map[gvkn.GroupVersionKindName]*unstructured.Unstructured) error {
+	for _, t := range o.Transformers {
+		err := t.Transform(m)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
