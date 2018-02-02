@@ -17,8 +17,13 @@ limitations under the License.
 package commands
 
 import (
+	"fmt"
 	"io"
 
+	"k8s.io/kubectl/pkg/apis/manifest/v1alpha1"
+	manifest "k8s.io/kubectl/pkg/apis/manifest/v1alpha1"
+	"k8s.io/kubectl/pkg/kinflate"
+	kutil "k8s.io/kubectl/pkg/kinflate/util"
 	"k8s.io/kubectl/pkg/kinflate/util/fs"
 
 	"github.com/spf13/cobra"
@@ -48,7 +53,20 @@ func NewCmdAddConfigMap(errOut io.Writer, fsys fs.FileSystem) *cobra.Command {
 
 			// TODO(apelisse,droot): Do something with that config.
 
-			return nil
+			loader := kutil.ManifestLoader{FS: fsys}
+
+			m, err := loader.Read(kinflate.KubeManifestFileName)
+			if err != nil {
+				return err
+			}
+
+			err = addConfigMap(m, config)
+			if err != nil {
+				return err
+			}
+
+			return loader.Write(kinflate.KubeManifestFileName, m)
+
 		},
 	}
 
@@ -57,4 +75,35 @@ func NewCmdAddConfigMap(errOut io.Writer, fsys fs.FileSystem) *cobra.Command {
 	cmd.Flags().StringVar(&config.EnvFileSource, "from-env-file", "", "Specify the path to a file to read lines of key=val pairs to create a configmap (i.e. a Docker .env file).")
 
 	return cmd
+}
+
+func addConfigMap(m *manifest.Manifest, config dataConfig) error {
+	cm := locateConfigMap(m, config.Name)
+	if cm == nil {
+		cm = &v1alpha1.ConfigMap{}
+	}
+
+	// deep copy the configmap
+
+	mergedContent, err := mergeData(&cm.Generic, config)
+	if err != nil {
+		return fmt.Errorf("unable to add configmap: %v", err)
+	}
+
+	cm.Generic = *mergedContent
+
+	return nil
+}
+
+func locateConfigMap(m *manifest.Manifest, namePrefix string) *manifest.ConfigMap {
+	for i, v := range m.Configmaps {
+		if namePrefix == v.NamePrefix {
+			return &m.Configmaps[i]
+		}
+	}
+	return nil
+}
+
+func mergeData(src *manifest.Generic, config dataConfig) (*manifest.Generic, error) {
+	return nil, nil
 }
