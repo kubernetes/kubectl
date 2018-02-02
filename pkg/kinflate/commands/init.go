@@ -72,7 +72,7 @@ func NewCmdInit(out, errOut io.Writer, fs fs.FileSystem) *cobra.Command {
 			if err != nil {
 				return err
 			}
-			return o.RunInit(cmd, out, errOut, fs)
+			return o.RunInit(out, errOut, fs)
 		},
 	}
 	return cmd
@@ -92,8 +92,7 @@ func (o *initOptions) Complete(cmd *cobra.Command, args []string) error {
 }
 
 // RunInit writes a manifest file.
-func (o *initOptions) RunInit(
-	cmd *cobra.Command, out, errOut io.Writer, fs fs.FileSystem) error {
+func (o *initOptions) RunInit(out, errOut io.Writer, fs fs.FileSystem) error {
 	if _, err := fs.Stat(constants.KubeManifestFileName); err == nil {
 		return fmt.Errorf("%q already exists", constants.KubeManifestFileName)
 	}
