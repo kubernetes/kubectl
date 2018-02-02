@@ -122,6 +122,7 @@ type Manifest struct {
 
 // ConfigMap contains the metadata of how to generate a configmap.
 type ConfigMap struct {
+	// TODO: remove this field because this is no longer a union
 	// The type of the configmap. e.g. `env`, `file`, `literal`.
 	Type string `json:"type,omitempty" yaml:"type,omitempty"`
 
@@ -140,6 +141,7 @@ type Secret struct {
 	// The type of the secret. e.g. `generic` and `tls`.
 	Type string `json:"type,omitempty" yaml:"type,omitempty"`
 
+	// TODO: rename this to Name
 	// Name prefix of the secret.
 	// The full name should be Manifest.NamePrefix + Secret.NamePrefix +
 	// hash(content of secret).

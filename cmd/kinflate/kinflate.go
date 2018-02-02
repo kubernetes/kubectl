@@ -29,7 +29,7 @@ func main() {
 	var cmd = &cobra.Command{}
 	cmd.AddCommand(commands.NewCmdInflate(os.Stdout, os.Stderr))
 	cmd.AddCommand(commands.NewCmdInit(os.Stdout, os.Stderr, fs.MakeRealFS()))
-	cmd.AddCommand(commands.NewCmdAddConfigMap(os.Stderr))
+	cmd.AddCommand(commands.NewCmdAddConfigMap(os.Stderr, fs.MakeRealFS()))
 	cmd.AddCommand(commands.NewCmdAddSecret(os.Stderr))
 
 	err := cmd.Execute()

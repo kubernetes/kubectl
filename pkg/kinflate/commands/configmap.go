@@ -20,38 +20,17 @@ import (
 	"fmt"
 	"io"
 
+	"k8s.io/kubectl/pkg/apis/manifest/v1alpha1"
+	manifest "k8s.io/kubectl/pkg/apis/manifest/v1alpha1"
+	"k8s.io/kubectl/pkg/kinflate"
+	kutil "k8s.io/kubectl/pkg/kinflate/util"
+	"k8s.io/kubectl/pkg/kinflate/util/fs"
+
 	"github.com/spf13/cobra"
 )
 
-type addConfigMap struct {
-	// Name of configMap (required)
-	Name string
-	// FileSources to derive the configMap from (optional)
-	FileSources []string
-	// LiteralSources to derive the configMap from (optional)
-	LiteralSources []string
-	// EnvFileSource to derive the configMap from (optional)
-	EnvFileSource string
-}
-
-// validate validates required fields are set to support structured generation.
-func (a *addConfigMap) Validate(args []string) error {
-	if len(args) != 1 {
-		return fmt.Errorf("name must be specified once")
-	}
-	a.Name = args[0]
-	if len(a.EnvFileSource) == 0 && len(a.FileSources) == 0 && len(a.LiteralSources) == 0 {
-		return fmt.Errorf("at least from-env-file, or from-file or from-literal must be set")
-	}
-	if len(a.EnvFileSource) > 0 && (len(a.FileSources) > 0 || len(a.LiteralSources) > 0) {
-		return fmt.Errorf("from-env-file cannot be combined with from-file or from-literal")
-	}
-	// TODO: Should we check if the path exists? if it's valid, if it's within the same (sub-)directory?
-	return nil
-}
-
-func NewCmdAddConfigMap(errOut io.Writer) *cobra.Command {
-	var config addConfigMap
+func NewCmdAddConfigMap(errOut io.Writer, fsys fs.FileSystem) *cobra.Command {
+	var config dataConfig
 	cmd := &cobra.Command{
 		Use:   "configmap NAME [--from-file=[key=]source] [--from-literal=key1=value1]",
 		Short: "Adds a configmap to your manifest file.",
@@ -74,7 +53,20 @@ func NewCmdAddConfigMap(errOut io.Writer) *cobra.Command {
 
 			// TODO(apelisse,droot): Do something with that config.
 
-			return nil
+			loader := kutil.ManifestLoader{FS: fsys}
+
+			m, err := loader.Read(kinflate.KubeManifestFileName)
+			if err != nil {
+				return err
+			}
+
+			err = addConfigMap(m, config)
+			if err != nil {
+				return err
+			}
+
+			return loader.Write(kinflate.KubeManifestFileName, m)
+
 		},
 	}
 
@@ -83,4 +75,35 @@ func NewCmdAddConfigMap(errOut io.Writer) *cobra.Command {
 	cmd.Flags().StringVar(&config.EnvFileSource, "from-env-file", "", "Specify the path to a file to read lines of key=val pairs to create a configmap (i.e. a Docker .env file).")
 
 	return cmd
+}
+
+func addConfigMap(m *manifest.Manifest, config dataConfig) error {
+	cm := locateConfigMap(m, config.Name)
+	if cm == nil {
+		cm = &v1alpha1.ConfigMap{}
+	}
+
+	// deep copy the configmap
+
+	mergedContent, err := mergeData(&cm.Generic, config)
+	if err != nil {
+		return fmt.Errorf("unable to add configmap: %v", err)
+	}
+
+	cm.Generic = *mergedContent
+
+	return nil
+}
+
+func locateConfigMap(m *manifest.Manifest, namePrefix string) *manifest.ConfigMap {
+	for i, v := range m.Configmaps {
+		if namePrefix == v.NamePrefix {
+			return &m.Configmaps[i]
+		}
+	}
+	return nil
+}
+
+func mergeData(src *manifest.Generic, config dataConfig) (*manifest.Generic, error) {
+	return nil, nil
 }
