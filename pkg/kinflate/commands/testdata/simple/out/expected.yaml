@@ -77,7 +77,7 @@ metadata:
     foo: bar
     org: kubernetes
     repo: test-infra
-  name: test-infra-mungebot
+  name: test-infra-baseprefix-mungebot
 spec:
   replicas: 2
   selector:
