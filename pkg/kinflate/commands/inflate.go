@@ -54,7 +54,7 @@ func NewCmdInflate(out, errOut io.Writer) *cobra.Command {
 				fmt.Fprintf(errOut, "error: %v\n", err)
 				os.Exit(1)
 			}
-			err = o.RunKinflate(cmd, out, errOut)
+			err = o.RunKinflate(out, errOut)
 			if err != nil {
 				fmt.Fprintf(errOut, "error: %v\n", err)
 				os.Exit(1)
@@ -79,7 +79,7 @@ func (o *inflateOptions) Complete(cmd *cobra.Command, args []string) error {
 }
 
 // RunKinflate runs inflate command (do real work).
-func (o *inflateOptions) RunKinflate(cmd *cobra.Command, out, errOut io.Writer) error {
+func (o *inflateOptions) RunKinflate(out, errOut io.Writer) error {
 	m, err := outil.LoadFromManifestPath(o.manifestPath)
 	if err != nil {
 		return err
