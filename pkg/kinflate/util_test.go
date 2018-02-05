@@ -64,6 +64,44 @@ func makeUnstructuredEnvSecret(name string) *unstructured.Unstructured {
 	}
 }
 
+func makeUnstructuredTLSSecret(name string) *unstructured.Unstructured {
+	return &unstructured.Unstructured{
+		Object: map[string]interface{}{
+			"apiVersion": "v1",
+			"kind":       "Secret",
+			"metadata": map[string]interface{}{
+				"name":              name,
+				"creationTimestamp": nil,
+			},
+			"type": string(corev1.SecretTypeTLS),
+			"data": map[string]interface{}{
+				"tls.key": base64.StdEncoding.EncodeToString([]byte(`-----BEGIN RSA PRIVATE KEY-----
+MIIBOwIBAAJBANLJhPHhITqQbPklG3ibCVxwGMRfp/v4XqhfdQHdcVfHap6NQ5Wo
+k/4xIA+ui35/MmNartNuC+BdZ1tMuVCPFZcCAwEAAQJAEJ2N+zsR0Xn8/Q6twa4G
+6OB1M1WO+k+ztnX/1SvNeWu8D6GImtupLTYgjZcHufykj09jiHmjHx8u8ZZB/o1N
+MQIhAPW+eyZo7ay3lMz1V01WVjNKK9QSn1MJlb06h/LuYv9FAiEA25WPedKgVyCW
+SmUwbPw8fnTcpqDWE3yTO3vKcebqMSsCIBF3UmVue8YU3jybC3NxuXq3wNm34R8T
+xVLHwDXh/6NJAiEAl2oHGGLz64BuAfjKrqwz7qMYr9HCLIe/YsoWq/olzScCIQDi
+D2lWusoe2/nEqfDVVWGWlyJ7yOmqaVm/iNUN9B2N2g==
+-----END RSA PRIVATE KEY-----
+`)),
+				"tls.crt": base64.StdEncoding.EncodeToString([]byte(`-----BEGIN CERTIFICATE-----
+MIIB0zCCAX2gAwIBAgIJAI/M7BYjwB+uMA0GCSqGSIb3DQEBBQUAMEUxCzAJBgNV
+BAYTAkFVMRMwEQYDVQQIDApTb21lLVN0YXRlMSEwHwYDVQQKDBhJbnRlcm5ldCBX
+aWRnaXRzIFB0eSBMdGQwHhcNMTIwOTEyMjE1MjAyWhcNMTUwOTEyMjE1MjAyWjBF
+MQswCQYDVQQGEwJBVTETMBEGA1UECAwKU29tZS1TdGF0ZTEhMB8GA1UECgwYSW50
+ZXJuZXQgV2lkZ2l0cyBQdHkgTHRkMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBANLJ
+hPHhITqQbPklG3ibCVxwGMRfp/v4XqhfdQHdcVfHap6NQ5Wok/4xIA+ui35/MmNa
+rtNuC+BdZ1tMuVCPFZcCAwEAAaNQME4wHQYDVR0OBBYEFJvKs8RfJaXTH08W+SGv
+zQyKn0H8MB8GA1UdIwQYMBaAFJvKs8RfJaXTH08W+SGvzQyKn0H8MAwGA1UdEwQF
+MAMBAf8wDQYJKoZIhvcNAQEFBQADQQBJlffJHybjDGxRMqaRmDhX0+6v02TUKZsW
+r5QuVbpQhH6u+0UgcW0jp9QwpxoPTLTWGXEWBBBurxFwiCBhkQ+V
+-----END CERTIFICATE-----
+`)),
+			},
+		},
+	}
+}
 func TestPopulateMap(t *testing.T) {
 	expectedMap := map[gvkn.GroupVersionKindName]*unstructured.Unstructured{
 		{
@@ -80,6 +118,13 @@ func TestPopulateMap(t *testing.T) {
 			},
 			Name: "envSecret",
 		}: makeUnstructuredEnvSecret("newNameSecret"),
+		{
+			GVK: schema.GroupVersionKind{
+				Version: "v1",
+				Kind:    "Secret",
+			},
+			Name: "tlsSecret",
+		}: makeUnstructuredTLSSecret("newNameTLSSecret"),
 	}
 
 	m := map[gvkn.GroupVersionKindName]*unstructured.Unstructured{}
@@ -88,6 +133,10 @@ func TestPopulateMap(t *testing.T) {
 		t.Fatalf("unexpected error: %v", err)
 	}
 	err = populateMap(m, makeUnstructuredEnvSecret("envSecret"), "newNameSecret")
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	err = populateMap(m, makeUnstructuredTLSSecret("tlsSecret"), "newNameTLSSecret")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -107,18 +156,16 @@ func TestPopulateMapOfConfigMapAndSecret(t *testing.T) {
 	manifest := &manifest.Manifest{
 		Configmaps: []manifest.ConfigMap{
 			{
-				Type:       "env",
-				NamePrefix: "envConfigMap",
-				Generic: manifest.Generic{
+				Name: "envConfigMap",
+				DataSources: manifest.DataSources{
 					EnvSource: "examples/simple/instances/exampleinstance/configmap/app.env",
 				},
 			},
 		},
-		Secrets: []manifest.Secret{
+		GenericSecrets: []manifest.GenericSecret{
 			{
-				Type:       "env",
-				NamePrefix: "envSecret",
-				Generic: manifest.Generic{
+				Name: "envSecret",
+				DataSources: manifest.DataSources{
 					EnvSource: "examples/simple/instances/exampleinstance/configmap/app.env",
 				},
 			},

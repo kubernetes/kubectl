@@ -22,19 +22,15 @@ patches:
 - deployment/deployment.yaml
 #There could also be configmaps in Base, which would make these overlays
 configmaps:
-- type: env
-  namePrefix: app-env
+- name: app-env
   env: configmap/app.env
-- type: file
-  namePrefix: app-config
+- name: app-config
   files:
   - configmap/app-init.ini
 #There could be secrets in Base, if just using a fork/rebase workflow
-secrets:
-- type: tls
-  namePrefix: app-tls
-  tls:
-    certFile: secret/tls.cert
-    keyFile: secret/tls.key
+tlsSecrets:
+- name: app-tls
+  certFile: secret/tls.cert
+  keyFile: secret/tls.key
 recursive: false
 prune: true # I’d make this the default

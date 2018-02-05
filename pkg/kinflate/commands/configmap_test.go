@@ -18,72 +18,12 @@ package commands
 
 import (
 	"testing"
+
+	"k8s.io/kubectl/pkg/kinflate/util/fs"
 )
 
 func TestNewAddConfigMapIsNotNil(t *testing.T) {
-	if NewCmdAddConfigMap(nil) == nil {
+	if NewCmdAddConfigMap(nil, fs.MakeFakeFS()) == nil {
 		t.Fatal("NewCmdAddConfigMap shouldn't be nil")
-	}
-}
-
-func TestAddConfigValidation_NoName(t *testing.T) {
-	config := addConfigMap{}
-
-	if config.Validate([]string{}) == nil {
-		t.Fatal("Validation should fail if no name is specified")
-	}
-}
-
-func TestAddConfigValidation_MoreThanOneName(t *testing.T) {
-	config := addConfigMap{}
-
-	if config.Validate([]string{"name", "othername"}) == nil {
-		t.Fatal("Validation should fail if more than one name is specified")
-	}
-}
-
-func TestAddConfigValidation_Flags(t *testing.T) {
-	tests := []struct {
-		name       string
-		config     addConfigMap
-		shouldFail bool
-	}{
-		{
-			name: "env-file-source and literal are both set",
-			config: addConfigMap{
-				LiteralSources: []string{"one", "two"},
-				EnvFileSource:  "three",
-			},
-			shouldFail: true,
-		},
-		{
-			name: "env-file-source and from-file are both set",
-			config: addConfigMap{
-				FileSources:   []string{"one", "two"},
-				EnvFileSource: "three",
-			},
-			shouldFail: true,
-		},
-		{
-			name:       "we don't have any option set",
-			config:     addConfigMap{},
-			shouldFail: true,
-		},
-		{
-			name: "we have from-file and literal ",
-			config: addConfigMap{
-				LiteralSources: []string{"one", "two"},
-				FileSources:    []string{"three", "four"},
-			},
-			shouldFail: false,
-		},
-	}
-
-	for _, test := range tests {
-		if test.config.Validate([]string{"name"}) == nil && test.shouldFail {
-			t.Fatalf("Validation should fail if %s", test.name)
-		} else if test.config.Validate([]string{"name"}) != nil && !test.shouldFail {
-			t.Fatalf("Validation should succeed if %s", test.name)
-		}
 	}
 }

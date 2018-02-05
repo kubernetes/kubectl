@@ -100,11 +100,17 @@ type Manifest struct {
 	// and Overlays fields.
 	Configmaps []ConfigMap `json:"configmaps,omitempty" yaml:"configmaps,omitempty"`
 
-	// List of secrets to generate from secret sources.
+	// List of generic secrets to generate from secret sources.
 	// Base/overlay concept doesn't apply to this field.
 	// If a secret want to have a base and an overlay, it should go to Bases and
 	// Overlays fields.
-	Secrets []Secret `json:"secrets,omitempty" yaml:"secrets,omitempty"`
+	GenericSecrets []GenericSecret `json:"genericSecrets,omitempty" yaml:"genericSecrets,omitempty"`
+
+	// List of TLS secrets to generate from secret sources.
+	// Base/overlay concept doesn't apply to this field.
+	// If a secret want to have a base and an overlay, it should go to Bases and
+	// Overlays fields.
+	TLSSecrets []TLSSecret `json:"tlsSecrets,omitempty" yaml:"tlsSecrets,omitempty"`
 
 	// Whether prune resources not defined in Kube-manifest.yaml, similar to
 	// `kubectl apply --prune` behavior.
@@ -122,41 +128,43 @@ type Manifest struct {
 
 // ConfigMap contains the metadata of how to generate a configmap.
 type ConfigMap struct {
-	// The type of the configmap. e.g. `env`, `file`, `literal`.
-	Type string `json:"type,omitempty" yaml:"type,omitempty"`
-
-	// Name prefix of the configmap.
-	// The full name should be Manifest.NamePrefix + Configmap.NamePrefix +
+	// Name of the configmap.
+	// The full name should be Manifest.NamePrefix + Configmap.Name +
 	// hash(content of configmap).
-	NamePrefix string `json:"namePrefix,omitempty" yaml:"namePrefix,omitempty"`
+	Name string `json:"name,omitempty" yaml:"name,omitempty"`
 
-	// Generic source for configmap, it could of one of `env`, `file`, `literal`
-	Generic `json:",inline,omitempty" yaml:",inline,omitempty"`
+	// DataSources for configmap.
+	DataSources `json:",inline,omitempty" yaml:",inline,omitempty"`
 }
 
-// Secret contains the metadata of how to generate a secret.
-// Only one of source or tls can be set.
-type Secret struct {
-	// The type of the secret. e.g. `generic` and `tls`.
-	Type string `json:"type,omitempty" yaml:"type,omitempty"`
-
-	// Name prefix of the secret.
-	// The full name should be Manifest.NamePrefix + Secret.NamePrefix +
+// GenericSecret contains the metadata of how to generate a generic secret.
+type GenericSecret struct {
+	// Name of the secret.
+	// The full name should be Manifest.NamePrefix + GenericSecret.Name +
 	// hash(content of secret).
-	NamePrefix string `json:"namePrefix,omitempty" yaml:"namePrefix,omitempty"`
+	Name string `json:"name,omitempty" yaml:"name,omitempty"`
 
-	// Generic source for secret, it could of one of `env`, `file`, `literal`
-	Generic `json:",inline,omitempty" yaml:",inline,omitempty"`
-
-	// TLS secret.
-	TLS *TLS `json:"tls,omitempty" yaml:"tls,omitempty"`
-
-	// TODO: support more secret types, e.g. DockerRegistry
+	// DataSources for secret.
+	DataSources `json:",inline,omitempty" yaml:",inline,omitempty"`
 }
 
-// Generic contains some generic sources for configmap or secret.
+// TLSSecret contains the metadata of how to generate a TLS secret.
+type TLSSecret struct {
+	// Name of the secret
+	// The full name should be Manifest.NamePrefix + TLSSecret.Name +
+	// hash(content of secret).
+	Name string `json:"name,omitempty" yaml:"name,omitempty"`
+
+	// Path to PEM encoded public key certificate.
+	CertFile string `json:"certFile,omitempty" yaml:"certFile,omitempty"`
+
+	// Path to private key associated with given certificate.
+	KeyFile string `json:"keyFile,omitempty" yaml:"keyFile,omitempty"`
+}
+
+// DataSources contains some generic sources for configmap or secret.
 // Only one field can be set.
-type Generic struct {
+type DataSources struct {
 	// LiteralSources is a list of literal sources.
 	// Each literal source should be a key and literal value,
 	// e.g. `somekey=somevalue`
@@ -176,13 +184,4 @@ type Generic struct {
 	// pairs to create a configmap.
 	// i.e. a Docker .env file or a .ini file.
 	EnvSource string `json:"env,omitempty" yaml:"env,omitempty"`
-}
-
-// TLS contains cert and key paths.
-type TLS struct {
-	// Path to PEM encoded public key certificate.
-	CertFile string `json:"certFile,omitempty" yaml:"certFile,omitempty"`
-
-	// Path to private key associated with given certificate.
-	KeyFile string `json:"keyFile,omitempty" yaml:"keyFile,omitempty"`
 }

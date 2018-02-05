@@ -26,8 +26,8 @@ func adjustPathsForManifest(m *manifest.Manifest, pathToDir []string) {
 	m.Resources = adjustPaths(m.Resources, pathToDir)
 	m.Patches = adjustPaths(m.Patches, pathToDir)
 	m.Configmaps = adjustPathForConfigMaps(m.Configmaps, pathToDir)
-	m.Secrets = adjustPathForSecrets(m.Secrets, pathToDir)
-
+	m.GenericSecrets = adjustPathForGenericSecrets(m.GenericSecrets, pathToDir)
+	m.TLSSecrets = adjustPathForTLSSecrets(m.TLSSecrets, pathToDir)
 }
 
 func adjustPathForConfigMaps(cms []manifest.ConfigMap, prefix []string) []manifest.ConfigMap {
@@ -44,7 +44,7 @@ func adjustPathForConfigMaps(cms []manifest.ConfigMap, prefix []string) []manife
 	return cms
 }
 
-func adjustPathForSecrets(secrets []manifest.Secret, prefix []string) []manifest.Secret {
+func adjustPathForGenericSecrets(secrets []manifest.GenericSecret, prefix []string) []manifest.GenericSecret {
 	for i, secret := range secrets {
 		if len(secret.FileSources) > 0 {
 			for j, fileSource := range secret.FileSources {
@@ -54,10 +54,14 @@ func adjustPathForSecrets(secrets []manifest.Secret, prefix []string) []manifest
 		if len(secret.EnvSource) > 0 {
 			secrets[i].EnvSource = adjustPath(secret.EnvSource, prefix)
 		}
-		if secret.TLS != nil {
-			secrets[i].TLS.CertFile = adjustPath(secret.TLS.CertFile, prefix)
-			secrets[i].TLS.KeyFile = adjustPath(secret.TLS.KeyFile, prefix)
-		}
+	}
+	return secrets
+}
+
+func adjustPathForTLSSecrets(secrets []manifest.TLSSecret, prefix []string) []manifest.TLSSecret {
+	for i, secret := range secrets {
+		secrets[i].CertFile = adjustPath(secret.CertFile, prefix)
+		secrets[i].KeyFile = adjustPath(secret.KeyFile, prefix)
 	}
 	return secrets
 }
