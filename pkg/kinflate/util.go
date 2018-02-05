@@ -254,6 +254,9 @@ func manifestToMap(m *manifest.Manifest,
 					return nil, err
 				}
 			}
+			// Store the name of the base object, because this name may have been munged.
+			// Apply this name to the StrategicMergePatched object.
+			baseName := base.GetName()
 			merged, err := strategicpatch.StrategicMergeMapPatch(
 				base.UnstructuredContent(),
 				overlay.UnstructuredContent(),
@@ -261,6 +264,7 @@ func manifestToMap(m *manifest.Manifest,
 			if err != nil {
 				return nil, err
 			}
+			base.SetName(baseName)
 			baseResourceMap[gvkn].Object = merged
 			delete(overlayResouceMap, gvkn)
 		}
