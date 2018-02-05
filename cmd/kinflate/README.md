@@ -1,42 +1,52 @@
 # kinflate
 
-_TODO: flesh out this placeholder documentation_
- 
 `kinflate` is a kubernetes cluster configuration utility,
-a prototype of ideas discussed in [this doc][DAM].
+a prototype of ideas discussed in this [proposal for
+Declarative Application Management](https://goo.gl/T66ZcD).
 
-It accepts one or more file system path arguments,
-reads the content thereof, and emits kubernetes
-[resource] yaml to stdout, suitable for piping 
-into [kubectl] for [declarative] application to a
-kubernetes cluster.
+## Declarative Application Management (DAM)
 
-For example, if your current working directory contained
-> ```
-> mycluster/
->   Kube-Manifest.yaml
->   deployment.yaml
->   service.yaml
->   instances/
->     testing/
->       Kube-Manifest.yaml
->       deployment.yaml
->     prod/
->       Kube-Manifest.yaml
->       deployment.yaml
->  ...
-> ```
+[declarations]: https://kubernetes.io/docs/tutorials/object-management-kubectl/declarative-object-management-configuration/
 
-then the command 
+DAM allows one to customize native kubernetes resources
+using new modification declarations rather than using
+templates or new configuration languages.
+
+It facilitates coupling cluster state changes to version
+control commits.  It encourages forking a configuration,
+customizing it, and occasionally rebasing to capture
+upgrades from the original configuration.
+
+## Installation
+
+This assumes you have [Go](https://golang.org/) installed.
+
+<!-- @installKinflate @test -->
 ```
-kinflate ./mycluster/instances | kubectl apply -f -
+tmp=$(mktemp -d)
+GOBIN=$tmp go get k8s.io/kubectl/cmd/kinflate
 ```
-would modify your cluster per the resources
-generated from the manifests and associated
-resource files found in `mycluster`.
 
-[resource]: https://kubernetes.io/docs/api-reference/v1.7/
-[DAM]: https://goo.gl/T66ZcD
-[yaml]: http://www.yaml.org/start.html
+## Example
+
 [kubectl]: https://kubernetes.io/docs/user-guide/kubectl-overview/
-[declarative]: https://kubernetes.io/docs/tutorials/object-management-kubectl/declarative-object-management-configuration/
+[YAML]: http://www.yaml.org/start.html
+
+The following commands checkout a _kinflate app_,
+customize all the resources in the app with a name prefix,
+then pipe the resulting [YAML] directly to a cluster via [kubectl].
+
+```
+# Download a demo app
+git clone https://github.com/monopole/kapps/demo $tmp
+
+# Use kinflate to customize it
+cd $tmp
+$GOBIN/kinflate setprefixname acme-
+
+# See the change:
+grep prefixName Kube-manifest.yaml
+
+# Send the app to your cluster:
+$GOBIN/kinflate inflate -f . | kubectl apply -f -
+```
