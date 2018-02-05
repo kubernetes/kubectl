@@ -22,7 +22,7 @@ import (
 	"reflect"
 
 	manifest "k8s.io/kubectl/pkg/apis/manifest/v1alpha1"
-	"k8s.io/kubectl/pkg/kinflate"
+	"k8s.io/kubectl/pkg/kinflate/constants"
 	kutil "k8s.io/kubectl/pkg/kinflate/util"
 	"k8s.io/kubectl/pkg/kinflate/util/fs"
 
@@ -53,7 +53,7 @@ func NewCmdAddConfigMap(errOut io.Writer, fsys fs.FileSystem) *cobra.Command {
 
 			// Load in the manifest file.
 			loader := kutil.ManifestLoader{FS: fsys}
-			m, err := loader.Read(kinflate.KubeManifestFileName)
+			m, err := loader.Read(constants.KubeManifestFileName)
 			if err != nil {
 				return err
 			}
@@ -65,7 +65,7 @@ func NewCmdAddConfigMap(errOut io.Writer, fsys fs.FileSystem) *cobra.Command {
 			}
 
 			// Write out the manifest with added configmap.
-			return loader.Write(kinflate.KubeManifestFileName, m)
+			return loader.Write(constants.KubeManifestFileName, m)
 		},
 	}
 
@@ -83,15 +83,15 @@ func addConfigMap(m *manifest.Manifest, config dataConfig) error {
 	firstConfigMap := false
 	if cm == nil {
 		firstConfigMap = true
-		cm = &manifest.ConfigMap{NamePrefix: config.Name}
+		cm = &manifest.ConfigMap{Name: config.Name}
 	}
 
-	mergedContent, err := mergeData(&cm.Generic, config)
+	mergedContent, err := mergeData(&cm.DataSources, config)
 	if err != nil {
 		return fmt.Errorf("Missing merged content unable to add configmap: %v", err)
 	}
 
-	cm.Generic = *mergedContent
+	cm.DataSources = *mergedContent
 
 	if firstConfigMap {
 		m.Configmaps = append(m.Configmaps, *cm)
@@ -100,7 +100,7 @@ func addConfigMap(m *manifest.Manifest, config dataConfig) error {
 	return nil
 }
 
-func cloneGeneric(src manifest.Generic) manifest.Generic {
+func cloneGeneric(src manifest.DataSources) manifest.DataSources {
 	c := src
 	reflect.Copy(reflect.ValueOf(c.LiteralSources), reflect.ValueOf(src.LiteralSources))
 	reflect.Copy(reflect.ValueOf(c.FileSources), reflect.ValueOf(src.FileSources))
@@ -108,16 +108,16 @@ func cloneGeneric(src manifest.Generic) manifest.Generic {
 	return c
 }
 
-func locateConfigMap(m *manifest.Manifest, namePrefix string) *manifest.ConfigMap {
+func locateConfigMap(m *manifest.Manifest, name string) *manifest.ConfigMap {
 	for i, v := range m.Configmaps {
-		if namePrefix == v.NamePrefix {
+		if name == v.Name {
 			return &m.Configmaps[i]
 		}
 	}
 	return nil
 }
 
-func mergeData(src *manifest.Generic, config dataConfig) (*manifest.Generic, error) {
+func mergeData(src *manifest.DataSources, config dataConfig) (*manifest.DataSources, error) {
 
 	srcCopy := cloneGeneric(*src)
 
