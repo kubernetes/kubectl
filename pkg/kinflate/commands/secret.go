@@ -20,10 +20,16 @@ import (
 	"fmt"
 	"io"
 
+	manifest "k8s.io/kubectl/pkg/apis/manifest/v1alpha1"
+	"k8s.io/kubectl/pkg/kinflate/configmapandsecret"
+	"k8s.io/kubectl/pkg/kinflate/constants"
+	kutil "k8s.io/kubectl/pkg/kinflate/util"
+	"k8s.io/kubectl/pkg/kinflate/util/fs"
+
 	"github.com/spf13/cobra"
 )
 
-func newCmdAddSecretGeneric(errOut io.Writer) *cobra.Command {
+func newCmdAddSecretGeneric(errOut io.Writer, fsys fs.FileSystem) *cobra.Command {
 	var config dataConfig
 	cmd := &cobra.Command{
 		Use:   "generic NAME [--type=string] [--from-file=[key=]source] [--from-literal=key1=value1]",
@@ -45,14 +51,20 @@ func newCmdAddSecretGeneric(errOut io.Writer) *cobra.Command {
 				return err
 			}
 
-			if len(args) != 1 {
-				return fmt.Errorf("error: exactly one NAME is required, got %d", len(args))
+			loader := kutil.ManifestLoader{FS: fsys}
+			m, err := loader.Read(constants.KubeManifestFileName)
+			if err != nil {
+				return err
 			}
-			config.Name = args[0]
 
-			// TODO(apelisse,droot): Do something with that config.
+			// Add the generic secret to the manifest.
+			err = addGenericSecret(m, config)
+			if err != nil {
+				return err
+			}
 
-			return nil
+			// Write out the manifest with added secret.
+			return loader.Write(constants.KubeManifestFileName, m)
 		},
 	}
 
@@ -61,6 +73,35 @@ func newCmdAddSecretGeneric(errOut io.Writer) *cobra.Command {
 	cmd.Flags().StringVar(&config.EnvFileSource, "from-env-file", "", "Specify the path to a file to read lines of key=val pairs to create a secret (i.e. a Docker .env file).")
 
 	return cmd
+}
+
+func addGenericSecret(m *manifest.Manifest, config dataConfig) error {
+	gs := getOrCreateGenericSecret(m, config.Name)
+
+	err := mergeData(&gs.DataSources, config)
+	if err != nil {
+		return err
+	}
+
+	// Validate manifest's generic secret by creating a generic secret.
+	_, _, err = configmapandsecret.MakeGenericSecretAndGenerateName(*gs)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func getOrCreateGenericSecret(m *manifest.Manifest, name string) *manifest.GenericSecret {
+	for i, s := range m.GenericSecrets {
+		if name == s.Name {
+			return &m.GenericSecrets[i]
+		}
+	}
+	// generic secret not found, create new one and add it to the manifest.
+	gs := manifest.GenericSecret{Name: name}
+	m.GenericSecrets = append(m.GenericSecrets, gs)
+	return &m.GenericSecrets[len(m.GenericSecrets)-1]
 }
 
 type addTLSSecret struct {
@@ -129,7 +170,7 @@ func NewCmdAddSecret(errOut io.Writer) *cobra.Command {
 	kinflate secret tls my-tls-secret --cert=cert/path.cert --key=key/path.key
 `,
 	}
-	cmd.AddCommand(newCmdAddSecretGeneric(errOut))
+	cmd.AddCommand(newCmdAddSecretGeneric(errOut, fs.MakeRealFS()))
 	cmd.AddCommand(newCmdAddSecretTLS(errOut))
 
 	return cmd
