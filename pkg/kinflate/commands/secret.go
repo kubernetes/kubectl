@@ -75,6 +75,26 @@ func newCmdAddSecretGeneric(errOut io.Writer, fsys fs.FileSystem) *cobra.Command
 	return cmd
 }
 
+// NewCmdAddSecret returns a new Cobra command that wraps generic and tls secrets.
+func NewCmdAddSecret(errOut io.Writer) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "secret",
+		Short: "Adds a secret using specified subcommand",
+		Example: `
+	# Adds a generic secret to the Manifest (with a specified key)
+	kinflate secret generic my-secret --from-file=my-key=file/path --from-literal=my-literal=12345
+
+	# Adds a TLS secret to the Manifest (with a specified key)
+	kinflate secret tls my-tls-secret --cert=cert/path.cert --key=key/path.key
+`,
+	}
+	fsys := fs.MakeRealFS()
+	cmd.AddCommand(newCmdAddSecretGeneric(errOut, fsys))
+	cmd.AddCommand(newCmdAddSecretTLS(errOut, fsys))
+
+	return cmd
+}
+
 func addGenericSecret(m *manifest.Manifest, config dataConfig) error {
 	gs := getOrCreateGenericSecret(m, config.Name)
 
@@ -130,7 +150,7 @@ func (a *addTLSSecret) Validate(args []string) error {
 }
 
 // newCmdCreateSecretTLS is a macro command for creating secrets to work with Docker registries
-func newCmdAddSecretTLS(errOut io.Writer) *cobra.Command {
+func newCmdAddSecretTLS(errOut io.Writer, fsys fs.FileSystem) *cobra.Command {
 	var config addTLSSecret
 	cmd := &cobra.Command{
 		Use:   "tls NAME --cert=path/to/cert/file --key=path/to/key/file",
@@ -146,8 +166,18 @@ func newCmdAddSecretTLS(errOut io.Writer) *cobra.Command {
 				return err
 			}
 
-			// TODO(apelisse,droot): Do something with that config.
-			return nil
+			loader := kutil.ManifestLoader{FS: fsys}
+			m, err := loader.Read(constants.KubeManifestFileName)
+			if err != nil {
+				return err
+			}
+
+			err = addTLSSecretToManifest(m, config)
+			if err != nil {
+				return err
+			}
+
+			return loader.Write(constants.KubeManifestFileName, m)
 		},
 	}
 
@@ -157,21 +187,35 @@ func newCmdAddSecretTLS(errOut io.Writer) *cobra.Command {
 	return cmd
 }
 
-// NewCmdAddSecret returns a new Cobra command that wraps generic and tls secrets.
-func NewCmdAddSecret(errOut io.Writer) *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "secret",
-		Short: "Adds a secret using specified subcommand",
-		Example: `
-	# Adds a generic secret to the Manifest (with a specified key)
-	kinflate secret generic my-secret --from-file=my-key=file/path --from-literal=my-literal=12345
+// addTLSSecretToManifest appends the TLS secret to the manifest, or returns
+// an error if the secret already exists.
+func addTLSSecretToManifest(m *manifest.Manifest, a addTLSSecret) error {
 
-	# Adds a TLS secret to the Manifest (with a specified key)
-	kinflate secret tls my-tls-secret --cert=cert/path.cert --key=key/path.key
-`,
+	if tlsSecretExists(m, a.Name) {
+		return fmt.Errorf("TLS Secret already exists")
 	}
-	cmd.AddCommand(newCmdAddSecretGeneric(errOut, fs.MakeRealFS()))
-	cmd.AddCommand(newCmdAddSecretTLS(errOut))
 
-	return cmd
+	tls := manifest.TLSSecret{
+		Name:     a.Name,
+		CertFile: a.Cert,
+		KeyFile:  a.Key,
+	}
+	m.TLSSecrets = append(m.TLSSecrets, tls)
+
+	// Validate manifest's TLS secret by creating a TLS secret.
+	_, _, err := configmapandsecret.MakeTLSSecretAndGenerateName(tls)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func tlsSecretExists(m *manifest.Manifest, name string) bool {
+	for _, s := range m.TLSSecrets {
+		if name == s.Name {
+			return true
+		}
+	}
+	return false
 }
