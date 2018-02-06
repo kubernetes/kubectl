@@ -17,8 +17,13 @@ limitations under the License.
 package commands
 
 import (
+	"fmt"
 	"io"
+	"reflect"
 
+	manifest "k8s.io/kubectl/pkg/apis/manifest/v1alpha1"
+	"k8s.io/kubectl/pkg/kinflate/constants"
+	kutil "k8s.io/kubectl/pkg/kinflate/util"
 	"k8s.io/kubectl/pkg/kinflate/util/fs"
 
 	"github.com/spf13/cobra"
@@ -46,9 +51,21 @@ func NewCmdAddConfigMap(errOut io.Writer, fsys fs.FileSystem) *cobra.Command {
 				return err
 			}
 
-			// TODO(apelisse,droot): Do something with that config.
+			// Load in the manifest file.
+			loader := kutil.ManifestLoader{FS: fsys}
+			m, err := loader.Read(constants.KubeManifestFileName)
+			if err != nil {
+				return err
+			}
 
-			return nil
+			// Add the config map to the manifest.
+			err = addConfigMap(m, config)
+			if err != nil {
+				return err
+			}
+
+			// Write out the manifest with added configmap.
+			return loader.Write(constants.KubeManifestFileName, m)
 		},
 	}
 
@@ -57,4 +74,56 @@ func NewCmdAddConfigMap(errOut io.Writer, fsys fs.FileSystem) *cobra.Command {
 	cmd.Flags().StringVar(&config.EnvFileSource, "from-env-file", "", "Specify the path to a file to read lines of key=val pairs to create a configmap (i.e. a Docker .env file).")
 
 	return cmd
+}
+
+// addConfigMap updates a configmap within a manifest, using the data in config.
+func addConfigMap(m *manifest.Manifest, config dataConfig) error {
+
+	cm := locateConfigMap(m, config.Name)
+	firstConfigMap := false
+	if cm == nil {
+		firstConfigMap = true
+		cm = &manifest.ConfigMap{Name: config.Name}
+	}
+
+	mergedContent, err := mergeData(&cm.DataSources, config)
+	if err != nil {
+		return fmt.Errorf("Missing merged content unable to add configmap: %v", err)
+	}
+
+	cm.DataSources = *mergedContent
+
+	if firstConfigMap {
+		m.Configmaps = append(m.Configmaps, *cm)
+	}
+
+	return nil
+}
+
+func cloneGeneric(src manifest.DataSources) manifest.DataSources {
+	c := src
+	reflect.Copy(reflect.ValueOf(c.LiteralSources), reflect.ValueOf(src.LiteralSources))
+	reflect.Copy(reflect.ValueOf(c.FileSources), reflect.ValueOf(src.FileSources))
+
+	return c
+}
+
+func locateConfigMap(m *manifest.Manifest, name string) *manifest.ConfigMap {
+	for i, v := range m.Configmaps {
+		if name == v.Name {
+			return &m.Configmaps[i]
+		}
+	}
+	return nil
+}
+
+func mergeData(src *manifest.DataSources, config dataConfig) (*manifest.DataSources, error) {
+
+	srcCopy := cloneGeneric(*src)
+
+	srcCopy.LiteralSources = append(srcCopy.LiteralSources, config.LiteralSources...)
+	srcCopy.FileSources = append(srcCopy.FileSources, config.FileSources...)
+	srcCopy.EnvSource = config.EnvFileSource
+
+	return &srcCopy, nil
 }
