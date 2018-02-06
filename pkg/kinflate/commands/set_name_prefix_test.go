@@ -31,12 +31,12 @@ const (
 	goodPrefixValue = "acme-"
 )
 
-func TestSetPrefixNameHappyPath(t *testing.T) {
+func TestSetNamePrefixHappyPath(t *testing.T) {
 	buf := bytes.NewBuffer([]byte{})
 	fakeFS := fs.MakeFakeFS()
 	fakeFS.WriteFile(constants.KubeManifestFileName, []byte(manifestTemplate))
 
-	cmd := NewCmdSetPrefixName(buf, os.Stderr, fakeFS)
+	cmd := NewCmdSetNamePrefix(buf, os.Stderr, fakeFS)
 	args := []string{goodPrefixValue}
 	err := cmd.RunE(cmd, args)
 	if err != nil {
@@ -51,11 +51,11 @@ func TestSetPrefixNameHappyPath(t *testing.T) {
 	}
 }
 
-func TestSetPrefixNameNoArgs(t *testing.T) {
+func TestSetNamePrefixNoArgs(t *testing.T) {
 	buf := bytes.NewBuffer([]byte{})
 	fakeFS := fs.MakeFakeFS()
 
-	cmd := NewCmdSetPrefixName(buf, os.Stderr, fakeFS)
+	cmd := NewCmdSetNamePrefix(buf, os.Stderr, fakeFS)
 	err := cmd.Execute()
 	if err == nil {
 		t.Errorf("expected error: %v", err)

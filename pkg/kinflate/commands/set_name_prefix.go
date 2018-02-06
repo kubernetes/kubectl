@@ -29,22 +29,22 @@ import (
 	"k8s.io/kubectl/pkg/kinflate/util/fs"
 )
 
-type setPrefixNameOptions struct {
+type setNamePrefixOptions struct {
 	prefix string
 }
 
-// NewCmdSetPrefixName sets the value of the namePrefix field in the manifest.
-func NewCmdSetPrefixName(out, errOut io.Writer, fsys fs.FileSystem) *cobra.Command {
-	var o setPrefixNameOptions
+// NewCmdSetNamePrefix sets the value of the namePrefix field in the manifest.
+func NewCmdSetNamePrefix(out, errOut io.Writer, fsys fs.FileSystem) *cobra.Command {
+	var o setNamePrefixOptions
 
 	cmd := &cobra.Command{
-		Use:   "setprefixname",
+		Use:   "setnameprefix",
 		Short: "Sets the value of the namePrefix field in the manifest.",
 		Long:  "Sets the value of the namePrefix field in the manifest.",
 		//
 		Example: `
 The command
-  setprefixname acme-
+  setnameprefix acme-
 will add the field "namePrefix: acme-" to the manifest file if it doesn't exist,
 and overwrite the value with "acme-" if the field does exist.
 `,
@@ -57,14 +57,14 @@ and overwrite the value with "acme-" if the field does exist.
 			if err != nil {
 				return err
 			}
-			return o.RunSetPrefixName(out, errOut, fsys)
+			return o.RunSetNamePrefix(out, errOut, fsys)
 		},
 	}
 	return cmd
 }
 
-// Validate validates setPrefixName command.
-func (o *setPrefixNameOptions) Validate(args []string) error {
+// Validate validates setNamePrefix command.
+func (o *setNamePrefixOptions) Validate(args []string) error {
 	if len(args) != 1 {
 		return errors.New("must specify exactly one prefix value")
 	}
@@ -73,13 +73,13 @@ func (o *setPrefixNameOptions) Validate(args []string) error {
 	return nil
 }
 
-// Complete completes setPrefixName command.
-func (o *setPrefixNameOptions) Complete(cmd *cobra.Command, args []string) error {
+// Complete completes setNamePrefix command.
+func (o *setNamePrefixOptions) Complete(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// RunSetPrefixName runs setPrefixName command (does real work).
-func (o *setPrefixNameOptions) RunSetPrefixName(out, errOut io.Writer, fsys fs.FileSystem) error {
+// RunSetNamePrefix runs setNamePrefix command (does real work).
+func (o *setNamePrefixOptions) RunSetNamePrefix(out, errOut io.Writer, fsys fs.FileSystem) error {
 	content, err := fsys.ReadFile(constants.KubeManifestFileName)
 	if err != nil {
 		return err
