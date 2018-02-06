@@ -31,34 +31,57 @@ func TestNewAddSecretIsNotNil(t *testing.T) {
 func TestGetOrCreateGenericSecret(t *testing.T) {
 	gsName := "test-generic-secret"
 
-	manifest := &manifest.Manifest{
+	m := &manifest.Manifest{
 		NamePrefix: "test-name-prefix",
 	}
 
-	if len(manifest.GenericSecrets) != 0 {
+	if len(m.GenericSecrets) != 0 {
 		t.Fatal("Initial manifest should not have any genericsecrets")
 	}
-	gs := getOrCreateGenericSecret(manifest, gsName)
 
+	gs := getOrCreateGenericSecret(m, gsName)
 	if gs == nil {
 		t.Fatalf("GenericSecret should always be non-nil")
 	}
 
-	if len(manifest.GenericSecrets) != 1 {
+	if len(m.GenericSecrets) != 1 {
 		t.Fatalf("Manifest should have newly created generic secret")
 	}
 
-	if &manifest.GenericSecrets[len(manifest.GenericSecrets)-1] != gs {
+	if &m.GenericSecrets[len(m.GenericSecrets)-1] != gs {
 		t.Fatalf("Pointer address for newly inserted generic secret should be same")
 	}
 
-	existingGS := getOrCreateGenericSecret(manifest, gsName)
-
+	existingGS := getOrCreateGenericSecret(m, gsName)
 	if existingGS != gs {
 		t.Fatalf("should have returned an existing generic secret with name: %v", gsName)
 	}
 
-	if len(manifest.GenericSecrets) != 1 {
+	if len(m.GenericSecrets) != 1 {
 		t.Fatalf("Should not insert generic secret for an existing name: %v", gsName)
+	}
+}
+
+func TestTLSecretExists(t *testing.T) {
+	tlsName := "test-tls-secret"
+
+	m := &manifest.Manifest{
+		NamePrefix: "test-name-prefix",
+	}
+
+	if len(m.TLSSecrets) != 0 {
+		t.Fatal("Initial manifest should not have any TLS secrets")
+	}
+	if tlsSecretExists(m, tlsName) {
+		t.Fatalf("TLS Secret should not exist in manifest")
+	}
+
+	m.TLSSecrets = append(m.TLSSecrets, manifest.TLSSecret{Name: tlsName})
+
+	if len(m.TLSSecrets) != 1 {
+		t.Fatal("Manifest should have one TLS secrets")
+	}
+	if !tlsSecretExists(m, tlsName) {
+		t.Fatalf("One TLS Secret should exist in manifest")
 	}
 }
