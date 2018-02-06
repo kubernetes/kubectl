@@ -27,7 +27,7 @@ import (
 
 func main() {
 	var c = &cobra.Command{}
-	c.AddCommand(commands.NewCmdSetPrefixName(os.Stdout, os.Stderr, fs.MakeRealFS()))
+	c.AddCommand(commands.NewCmdSetNamePrefix(os.Stdout, os.Stderr, fs.MakeRealFS()))
 	c.AddCommand(commands.NewCmdInflate(os.Stdout, os.Stderr))
 	c.AddCommand(commands.NewCmdAddResource(os.Stdout, os.Stderr, fs.MakeRealFS()))
 	c.AddCommand(commands.NewCmdInit(os.Stdout, os.Stderr, fs.MakeRealFS()))
