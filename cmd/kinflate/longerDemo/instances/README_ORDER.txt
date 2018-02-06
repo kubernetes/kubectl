@@ -1,0 +1,3 @@
+staging
+production
+compare
