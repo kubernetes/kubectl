@@ -24,8 +24,8 @@ import (
 )
 
 func TestNewAddConfigMapIsNotNil(t *testing.T) {
-	if NewCmdAddConfigMap(nil, fs.MakeFakeFS()) == nil {
-		t.Fatal("NewCmdAddConfigMap shouldn't be nil")
+	if newCmdAddConfigMap(nil, fs.MakeFakeFS()) == nil {
+		t.Fatal("newCmdAddConfigMap shouldn't be nil")
 	}
 }
 

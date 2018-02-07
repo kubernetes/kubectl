@@ -28,7 +28,7 @@ import (
 func TestInitHappyPath(t *testing.T) {
 	buf := bytes.NewBuffer([]byte{})
 	fakeFS := fs.MakeFakeFS()
-	cmd := NewCmdInit(buf, os.Stderr, fakeFS)
+	cmd := newCmdInit(buf, os.Stderr, fakeFS)
 	err := cmd.Execute()
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -51,7 +51,7 @@ func TestInitFileAlreadyExist(t *testing.T) {
 	fakeFS.WriteFile(constants.KubeManifestFileName, []byte(content))
 
 	buf := bytes.NewBuffer([]byte{})
-	cmd := NewCmdInit(buf, os.Stderr, fakeFS)
+	cmd := newCmdInit(buf, os.Stderr, fakeFS)
 	err := cmd.Execute()
 	if err == nil {
 		t.Fatalf("expected error")

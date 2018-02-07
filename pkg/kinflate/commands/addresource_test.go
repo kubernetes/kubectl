@@ -43,7 +43,7 @@ func TestAddResourceHappyPath(t *testing.T) {
 	fakeFS.WriteFile(resourceFileName, []byte(resourceFileContent))
 	fakeFS.WriteFile(constants.KubeManifestFileName, []byte(manifestTemplate))
 
-	cmd := NewCmdAddResource(buf, os.Stderr, fakeFS)
+	cmd := newCmdAddResource(buf, os.Stderr, fakeFS)
 	args := []string{resourceFileName}
 	err := cmd.RunE(cmd, args)
 	if err != nil {
@@ -63,7 +63,7 @@ func TestAddResourceAlreadyThere(t *testing.T) {
 	fakeFS := fs.MakeFakeFS()
 	fakeFS.WriteFile(resourceKnownToBeInManifest, []byte(resourceFileContent))
 	fakeFS.WriteFile(constants.KubeManifestFileName, []byte(manifestTemplate))
-	cmd := NewCmdAddResource(buf, os.Stderr, fakeFS)
+	cmd := newCmdAddResource(buf, os.Stderr, fakeFS)
 	args := []string{resourceKnownToBeInManifest}
 	err := cmd.RunE(cmd, args)
 	if err == nil {
@@ -78,7 +78,7 @@ func TestAddResourceNoArgs(t *testing.T) {
 	buf := bytes.NewBuffer([]byte{})
 	fakeFS := fs.MakeFakeFS()
 
-	cmd := NewCmdAddResource(buf, os.Stderr, fakeFS)
+	cmd := newCmdAddResource(buf, os.Stderr, fakeFS)
 	err := cmd.Execute()
 	if err == nil {
 		t.Errorf("expected error: %v", err)

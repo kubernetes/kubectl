@@ -20,11 +20,12 @@ import (
 	"testing"
 
 	manifest "k8s.io/kubectl/pkg/apis/manifest/v1alpha1"
+	"k8s.io/kubectl/pkg/kinflate/util/fs"
 )
 
 func TestNewAddSecretIsNotNil(t *testing.T) {
-	if NewCmdAddSecret(nil) == nil {
-		t.Fatal("NewCmdAddSecret shouldn't be nil")
+	if newCmdAddSecret(nil, fs.MakeFakeFS()) == nil {
+		t.Fatal("newCmdAddSecret shouldn't be nil")
 	}
 }
 

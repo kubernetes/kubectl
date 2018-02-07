@@ -29,21 +29,21 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func NewCmdAddConfigMap(errOut io.Writer, fsys fs.FileSystem) *cobra.Command {
+func newCmdAddConfigMap(errOut io.Writer, fsys fs.FileSystem) *cobra.Command {
 	var config dataConfig
 	cmd := &cobra.Command{
 		Use:   "configmap NAME [--from-file=[key=]source] [--from-literal=key1=value1]",
-		Short: "Adds a configmap to your manifest file.",
+		Short: "Adds a configmap to the manifest.",
 		Long:  "",
 		Example: `
 	# Adds a configmap to the Manifest (with a specified key)
-	kinflate configmap my-configmap --from-file=my-key=file/path --from-literal=my-literal=12345
+	kinflate add configmap my-configmap --from-file=my-key=file/path --from-literal=my-literal=12345
 
 	# Adds a configmap to the Manifest (key is the filename)
-	kinflate configmap my-configmap --from-file=file/path
+	kinflate add configmap my-configmap --from-file=file/path
 
 	# Adds a configmap from env-file
-	kinflate configmap my-configmap --from-env-file=env/path.env
+	kinflate add configmap my-configmap --from-env-file=env/path.env
 `,
 		RunE: func(_ *cobra.Command, args []string) error {
 			err := config.Validate(args)
