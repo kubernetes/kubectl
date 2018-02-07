@@ -40,7 +40,7 @@ type Etcd struct {
 }
 
 // Start starts the etcd, waits for it to come up, and returns an error, if one
-// occoured.
+// occurred.
 func (e *Etcd) Start() error {
 	var err error
 

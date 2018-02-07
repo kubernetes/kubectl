@@ -189,7 +189,7 @@ func TestPopulateMapOfConfigMapAndSecret(t *testing.T) {
 	}
 	err := populateConfigMapAndSecretMap(manifest, m)
 	if err != nil {
-		t.Fatalf("unexpected erorr: %v", err)
+		t.Fatalf("unexpected error: %v", err)
 	}
 	if !reflect.DeepEqual(m, expectedMap) {
 		t.Fatalf("%#v\ndoesn't match expected\n%#v\n", m, expectedMap)
