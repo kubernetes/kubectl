@@ -38,13 +38,13 @@ func newCmdSetNamePrefix(out, errOut io.Writer, fsys fs.FileSystem) *cobra.Comma
 	var o setNamePrefixOptions
 
 	cmd := &cobra.Command{
-		Use:   "setnameprefix",
+		Use:   "nameprefix",
 		Short: "Sets the value of the namePrefix field in the manifest.",
 		Long:  "Sets the value of the namePrefix field in the manifest.",
 		//
 		Example: `
 The command
-  setnameprefix acme-
+  set nameprefix acme-
 will add the field "namePrefix: acme-" to the manifest file if it doesn't exist,
 and overwrite the value with "acme-" if the field does exist.
 `,
