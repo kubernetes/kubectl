@@ -32,16 +32,16 @@ type addResourceOptions struct {
 	resourceFilePath string
 }
 
-// NewCmdAddResource adds the name of a file containing a resource to the manifest.
-func NewCmdAddResource(out, errOut io.Writer, fsys fs.FileSystem) *cobra.Command {
+// newCmdAddResource adds the name of a file containing a resource to the manifest.
+func newCmdAddResource(out, errOut io.Writer, fsys fs.FileSystem) *cobra.Command {
 	var o addResourceOptions
 
 	cmd := &cobra.Command{
-		Use:   "addresource",
+		Use:   "resource",
 		Short: "Add the name of a file containing a resource to the manifest.",
 		Long:  "Add the name of a file containing a resource to the manifest.",
 		Example: `
-		addresource {filepath}`,
+		add resource {filepath}`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			err := o.Validate(args)
 			if err != nil {

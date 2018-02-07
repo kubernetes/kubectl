@@ -19,22 +19,11 @@ package main
 import (
 	"os"
 
-	"github.com/spf13/cobra"
-
 	"k8s.io/kubectl/pkg/kinflate/commands"
-	"k8s.io/kubectl/pkg/kinflate/util/fs"
 )
 
 func main() {
-	var c = &cobra.Command{}
-	c.AddCommand(commands.NewCmdSetNamePrefix(os.Stdout, os.Stderr, fs.MakeRealFS()))
-	c.AddCommand(commands.NewCmdInflate(os.Stdout, os.Stderr))
-	c.AddCommand(commands.NewCmdAddResource(os.Stdout, os.Stderr, fs.MakeRealFS()))
-	c.AddCommand(commands.NewCmdInit(os.Stdout, os.Stderr, fs.MakeRealFS()))
-	c.AddCommand(commands.NewCmdAddConfigMap(os.Stderr, fs.MakeRealFS()))
-	c.AddCommand(commands.NewCmdAddSecret(os.Stderr))
-	err := c.Execute()
-	if err != nil {
+	if err := commands.NewDefaultCommand().Execute(); err != nil {
 		os.Exit(1)
 	}
 	os.Exit(0)

@@ -29,6 +29,27 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// newCmdAddSecret returns a new Cobra command that wraps generic and tls secrets.
+func newCmdAddSecret(errOut io.Writer, fsys fs.FileSystem) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "secret",
+		Short: "Adds a secret using specified subcommand",
+		Example: `
+	# Adds a generic secret to the Manifest (with a specified key)
+	kinflate add secret generic my-secret --from-file=my-key=file/path --from-literal=my-literal=12345
+
+	# Adds a TLS secret to the Manifest (with a specified key)
+	kinflate add secret tls my-tls-secret --cert=cert/path.cert --key=key/path.key
+`,
+	}
+	cmd.AddCommand(
+		newCmdAddSecretGeneric(errOut, fsys),
+		newCmdAddSecretTLS(errOut, fsys),
+	)
+
+	return cmd
+}
+
 func newCmdAddSecretGeneric(errOut io.Writer, fsys fs.FileSystem) *cobra.Command {
 	var config dataConfig
 	cmd := &cobra.Command{
@@ -37,13 +58,13 @@ func newCmdAddSecretGeneric(errOut io.Writer, fsys fs.FileSystem) *cobra.Command
 		Long:  "",
 		Example: `
 	# Adds a generic secret to the Manifest (with a specified key)
-	kinflate secret generic my-secret --from-file=my-key=file/path --from-literal=my-literal=12345
+	kinflate add secret generic my-secret --from-file=my-key=file/path --from-literal=my-literal=12345
 
 	# Adds a generic secret to the Manifest (key is the filename)
-	kinflate secret generic my-secret --from-file=file/path
+	kinflate add secret generic my-secret --from-file=file/path
 
 	# Adds a generic secret from env-file
-	kinflate secret generic my-secret --from-env-file=env/path.env
+	kinflate add secret generic my-secret --from-env-file=env/path.env
 `,
 		RunE: func(_ *cobra.Command, args []string) error {
 			err := config.Validate(args)
@@ -71,26 +92,6 @@ func newCmdAddSecretGeneric(errOut io.Writer, fsys fs.FileSystem) *cobra.Command
 	cmd.Flags().StringSliceVar(&config.FileSources, "from-file", []string{}, "Key files can be specified using their file path, in which case a default name will be given to them, or optionally with a name and file path, in which case the given name will be used.  Specifying a directory will iterate each named file in the directory that is a valid secret key.")
 	cmd.Flags().StringArrayVar(&config.LiteralSources, "from-literal", []string{}, "Specify a key and literal value to insert in secret (i.e. mykey=somevalue)")
 	cmd.Flags().StringVar(&config.EnvFileSource, "from-env-file", "", "Specify the path to a file to read lines of key=val pairs to create a secret (i.e. a Docker .env file).")
-
-	return cmd
-}
-
-// NewCmdAddSecret returns a new Cobra command that wraps generic and tls secrets.
-func NewCmdAddSecret(errOut io.Writer) *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "secret",
-		Short: "Adds a secret using specified subcommand",
-		Example: `
-	# Adds a generic secret to the Manifest (with a specified key)
-	kinflate secret generic my-secret --from-file=my-key=file/path --from-literal=my-literal=12345
-
-	# Adds a TLS secret to the Manifest (with a specified key)
-	kinflate secret tls my-tls-secret --cert=cert/path.cert --key=key/path.key
-`,
-	}
-	fsys := fs.MakeRealFS()
-	cmd.AddCommand(newCmdAddSecretGeneric(errOut, fsys))
-	cmd.AddCommand(newCmdAddSecretTLS(errOut, fsys))
 
 	return cmd
 }

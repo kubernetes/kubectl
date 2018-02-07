@@ -54,7 +54,7 @@ type initOptions struct {
 }
 
 // NewCmdInit makes the init command.
-func NewCmdInit(out, errOut io.Writer, fs fs.FileSystem) *cobra.Command {
+func newCmdInit(out, errOut io.Writer, fs fs.FileSystem) *cobra.Command {
 	var o initOptions
 
 	cmd := &cobra.Command{

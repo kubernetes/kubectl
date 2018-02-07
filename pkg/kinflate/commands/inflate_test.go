@@ -35,7 +35,7 @@ func TestInflate(t *testing.T) {
 
 	buf := bytes.NewBuffer([]byte{})
 
-	cmd := NewCmdInflate(buf, os.Stderr)
+	cmd := newCmdInflate(buf, os.Stderr)
 	cmd.Flags().Set("filename", input)
 
 	err := cmd.Execute()

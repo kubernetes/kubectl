@@ -33,8 +33,8 @@ type setNamePrefixOptions struct {
 	prefix string
 }
 
-// NewCmdSetNamePrefix sets the value of the namePrefix field in the manifest.
-func NewCmdSetNamePrefix(out, errOut io.Writer, fsys fs.FileSystem) *cobra.Command {
+// newCmdSetNamePrefix sets the value of the namePrefix field in the manifest.
+func newCmdSetNamePrefix(out, errOut io.Writer, fsys fs.FileSystem) *cobra.Command {
 	var o setNamePrefixOptions
 
 	cmd := &cobra.Command{

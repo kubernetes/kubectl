@@ -32,8 +32,8 @@ type inflateOptions struct {
 	namespace    string
 }
 
-// NewCmdInflate creates a new inflate command.
-func NewCmdInflate(out, errOut io.Writer) *cobra.Command {
+// newCmdInflate creates a new inflate command.
+func newCmdInflate(out, errOut io.Writer) *cobra.Command {
 	var o inflateOptions
 
 	cmd := &cobra.Command{
