@@ -106,7 +106,7 @@ func makeNameRefDeployment(cmName, secretName string) *unstructured.Unstructured
 								"name": cmName,
 							},
 							"secret": map[string]interface{}{
-								"name": secretName,
+								"secretName": secretName,
 							},
 						},
 					},

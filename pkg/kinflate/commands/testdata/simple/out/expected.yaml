@@ -135,4 +135,4 @@ spec:
         name: app-env
       - name: app-tls
         secret:
-          name: test-infra-app-tls-4d47hbbh9m
+          secretName: test-infra-app-tls-4d47hbbh9m

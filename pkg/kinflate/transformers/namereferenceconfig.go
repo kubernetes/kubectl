@@ -192,7 +192,7 @@ var defaultNameReferencePathConfigs = []referencePathConfig{
 					Version: "v1",
 					Kind:    "Pod",
 				},
-				Path:               []string{"spec", "volumes", "secret", "name"},
+				Path:               []string{"spec", "volumes", "secret", "secretName"},
 				CreateIfNotPresent: false,
 			},
 			{
@@ -215,7 +215,7 @@ var defaultNameReferencePathConfigs = []referencePathConfig{
 				GroupVersionKind: &schema.GroupVersionKind{
 					Kind: "Deployment",
 				},
-				Path:               []string{"spec", "template", "spec", "volumes", "secret", "name"},
+				Path:               []string{"spec", "template", "spec", "volumes", "secret", "secretName"},
 				CreateIfNotPresent: false,
 			},
 			{
@@ -236,7 +236,7 @@ var defaultNameReferencePathConfigs = []referencePathConfig{
 				GroupVersionKind: &schema.GroupVersionKind{
 					Kind: "ReplicaSet",
 				},
-				Path:               []string{"spec", "template", "spec", "volumes", "secret", "name"},
+				Path:               []string{"spec", "template", "spec", "volumes", "secret", "secretName"},
 				CreateIfNotPresent: false,
 			},
 			{
@@ -257,7 +257,7 @@ var defaultNameReferencePathConfigs = []referencePathConfig{
 				GroupVersionKind: &schema.GroupVersionKind{
 					Kind: "DaemonSet",
 				},
-				Path:               []string{"spec", "template", "spec", "volumes", "secret", "name"},
+				Path:               []string{"spec", "template", "spec", "volumes", "secret", "secretName"},
 				CreateIfNotPresent: false,
 			},
 			{
@@ -278,7 +278,7 @@ var defaultNameReferencePathConfigs = []referencePathConfig{
 				GroupVersionKind: &schema.GroupVersionKind{
 					Kind: "StatefulSet",
 				},
-				Path:               []string{"spec", "template", "spec", "volumes", "secret", "name"},
+				Path:               []string{"spec", "template", "spec", "volumes", "secret", "secretName"},
 				CreateIfNotPresent: false,
 			},
 			{
@@ -299,7 +299,7 @@ var defaultNameReferencePathConfigs = []referencePathConfig{
 				GroupVersionKind: &schema.GroupVersionKind{
 					Kind: "Job",
 				},
-				Path:               []string{"spec", "template", "spec", "volumes", "secret", "name"},
+				Path:               []string{"spec", "template", "spec", "volumes", "secret", "secretName"},
 				CreateIfNotPresent: false,
 			},
 			{
@@ -320,7 +320,7 @@ var defaultNameReferencePathConfigs = []referencePathConfig{
 				GroupVersionKind: &schema.GroupVersionKind{
 					Kind: "CronJob",
 				},
-				Path:               []string{"spec", "jobTemplate", "spec", "template", "spec", "volumes", "secret", "name"},
+				Path:               []string{"spec", "jobTemplate", "spec", "template", "spec", "volumes", "secret", "secretName"},
 				CreateIfNotPresent: false,
 			},
 			{
