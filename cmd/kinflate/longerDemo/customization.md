@@ -36,12 +36,12 @@ Compare to see result:
 
 <!-- @checkDiffs @test -->
 ```
-diff -u $TUT_TMP/original_out $TUT_TMP/customized_out
+diff $TUT_TMP/original_out $TUT_TMP/customized_out
 ```
 
 ## Labels and annotations
 
-Without further ado:
+Just add some new fields directly to the manifest:
 
 <!-- @addLabelsAndAnnotations @test -->
 ```
@@ -61,7 +61,7 @@ kinflate inflate -f $TUT_APP >$TUT_TMP/customized_out
 
 <!-- @checkDiffsAgain @test -->
 ```
-diff -u $TUT_TMP/original_out $TUT_TMP/customized_out
+diff $TUT_TMP/original_out $TUT_TMP/customized_out | more
 ```
 
 At this point, an end user could check the manifest and

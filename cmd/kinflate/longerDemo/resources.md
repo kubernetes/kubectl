@@ -1,17 +1,18 @@
 # Resources
 
-Make three resource files.  The resources
-have name field with the values:
+Make three resource files.  The resources have name
+fields with these values:
 
 * tut-deployment
+* tut-map
 * tut-service
-* tut-configmap
 
 _tut-_ just stands for _tutorial_.
 
+
 <!-- @mkAppDir @test -->
 ```
-TUT_APP=$TUT_DIR/hello
+TUT_APP=$TUT_DIR/tuthello
 /bin/rm -rf $TUT_APP
 mkdir -p $TUT_APP
 ```

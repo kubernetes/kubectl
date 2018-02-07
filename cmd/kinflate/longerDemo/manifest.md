@@ -25,10 +25,10 @@ description: Tuthello offers greetings as a service.
 keywords: [hospitality, kubernetes]
 appVersion: 0.1.0
 
-home: https://github.com/TODO_MakeAHomeForThis
+home: https://github.com/kinflate/tuthello
 
 sources:
-- https://github.com/TODO_MakeAHomeForThis
+- https://github.com/kinflate/tuthello
 
 icon: https://www.pexels.com/photo/some-icon.png
 
