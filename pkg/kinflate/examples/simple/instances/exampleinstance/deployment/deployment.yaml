@@ -39,5 +39,5 @@ spec:
           name: app-env
         name: app-env
       - secret:
-          name: app-tls
+          secretName: app-tls
         name: app-tls
