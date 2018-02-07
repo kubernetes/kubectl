@@ -39,5 +39,5 @@ All done.  Clear the cluster for the next example.
 ```
 kubectl delete deployment tut-deployment
 kubectl delete service tut-service
-kubectl delete configmap tut-configmap
+kubectl delete configmap tut-map
 ```

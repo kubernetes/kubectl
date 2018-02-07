@@ -2,7 +2,7 @@
 
 <!-- @listFiles @test -->
 ```
-find $TUT_DAM
+find $TUT_APP
 ```
 
 TODO: Show edits required to roll staging out to

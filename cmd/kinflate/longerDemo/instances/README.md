@@ -4,7 +4,7 @@ _Instances_ of a cluster app represent a common configuration problem.
 
 Their configuration is mostly the same.
 
-We only want to manage _differences_.
+We'd like to focus on managing _differences_.
 
 The DAM approach is to create _overlays_.
 
@@ -15,10 +15,8 @@ and optionally more (or fewer) resources.
 
 Create a _staging_ and _production_ instance.
 
-The differences:
-
+ * The greetings from the web server will differ.
  * In staging we'll enable a risky feature.
- * The greetings will differ.
  * Production will have a higher replica count because
    it takes public traffic.
 
