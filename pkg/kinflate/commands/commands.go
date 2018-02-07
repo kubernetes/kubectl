@@ -41,11 +41,12 @@ Find more information at:
 	}
 
 	c.AddCommand(
-		newCmdSetNamePrefix(stdOut, stdErr, fsys),
 		newCmdInflate(stdOut, stdErr),
 		newCmdInit(stdOut, stdErr, fsys),
 		// 'add' sub command
 		newCmdAdd(stdOut, stdErr, fsys),
+		// 'set' sub command
+		newCmdSet(stdOut, stdErr, fsys),
 	)
 
 	return c
@@ -73,6 +74,25 @@ func newCmdAdd(stdOut, stdErr io.Writer, fsys fs.FileSystem) *cobra.Command {
 		newCmdAddResource(stdOut, stdErr, fsys),
 		newCmdAddConfigMap(stdErr, fsys),
 		newCmdAddSecret(stdErr, fsys),
+	)
+	return c
+}
+
+// newSetCommand returns an instance of 'set' subcommand.
+func newCmdSet(stdOut, stdErr io.Writer, fsys fs.FileSystem) *cobra.Command {
+	c := &cobra.Command{
+		Use:   "set",
+		Short: "Sets the value of different fields in manifest.",
+		Long:  "",
+		Example: `
+	# Sets the nameprefix field
+	kinflate set nameprefix <prefix-value>
+`,
+		Args: cobra.MinimumNArgs(1),
+	}
+
+	c.AddCommand(
+		newCmdSetNamePrefix(stdOut, stdErr, fsys),
 	)
 	return c
 }
