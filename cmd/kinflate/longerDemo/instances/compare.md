@@ -1,8 +1,15 @@
 # Compare them
 
-Review the instance differences:
+Before running kinflate on the two different instance
+directories, review the directory
+structure:
 
-<!-- @reviewDiffs @test -->
+<!-- @listFiles @test -->
+```
+find $TUT_APP
+```
+
+<!-- @compareKinflateOutput @test -->
 ```
 diff \
   <(kinflate inflate -f $TUT_APP/staging) \
@@ -36,13 +43,22 @@ kinflate inflate -f $TUT_APP/production |\
     kubectl apply -f -
 ```
 
-Query them:
+<!-- @getAll @demo -->
+```
+kubectl get all
+```
 
-<!-- @queryStaging @demo -->
+Delete the resources:
+
+<!-- @deleteStaging @demo -->
 ```
-tut_query staging-acme-tut-service pear
+kubectl delete configmap staging-acme-tut-map
+kubectl delete service staging-acme-tut-service
+kubectl delete deployment staging-acme-tut-deployment
 ```
-<!-- @queryProduction @demo -->
+
+<!-- @deleteProduction @demo -->
 ```
-tut_query production-acme-tut-service apple
+kinflate inflate -f $TUT_APP/production |\
+    kubectl delete -f -
 ```

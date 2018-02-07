@@ -44,6 +44,11 @@ data:
 EOF
 ```
 
+<!-- @ls @test -->
+```
+ls
+```
+
 Add it to the manifest:
 
 <!-- @addResource @test -->
