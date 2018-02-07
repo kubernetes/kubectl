@@ -8,21 +8,16 @@ of `Kube-manifest.yaml`.
 ## Names
 
 The simplest form of customization is to change
-resource names.  In DAM, this is done by adding a
-prefix.
+resource names.
 
-Be sure the manifest is in original form:
-<!-- @resetManifest @test -->
-```
-cp $TUT_ORG_MANIFEST $TUT_APP_MANIFEST
-```
+In DAM, this is done by adding a
+prefix.
 
 Add a _namePrefix_ specification to the manifest:
 <!-- @addNamePrefix @test -->
 ```
 cd $TUT_APP
 kinflate setnameprefix acme-
-# echo "namePrefix: acme-" >> $TUT_APP_MANIFEST
 ```
 
 Run it:
@@ -69,5 +64,5 @@ its resources into her version control repository.
 
 It becomes her own version of the _app_.
 
-She can capture upgrades (manifest and resource
+She can capture upgrades (i.e. manifest and resource
 changes) by rebasing from the original.

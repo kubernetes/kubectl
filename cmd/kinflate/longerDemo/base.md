@@ -8,6 +8,11 @@ apply it to your cluster.
 kubectl apply -f $TUT_APP
 ```
 
+<!-- @showResources @demo -->
+```
+kubectl get deployments
+```
+
 Define some functions to query the server directly:
 
 <!-- @funcGetAddress @env @test -->

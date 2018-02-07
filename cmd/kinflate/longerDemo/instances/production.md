@@ -20,7 +20,7 @@ objectLabels:
   org: acmeCorporation
 
 objectAnnotations:
-  note: Hello there I am production!
+  note: Hello, I am production!
 
 resources:
 - ..

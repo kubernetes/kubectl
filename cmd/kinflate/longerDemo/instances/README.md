@@ -15,10 +15,9 @@ and optionally more (or fewer) resources.
 
 Create a _staging_ and _production_ instance.
 
- * The greetings from the web server will differ.
- * In staging we'll enable a risky feature.
- * Production will have a higher replica count because
-   it takes public traffic.
+ * The greetings from the _hello world_ web servers will differ.
+ * _Staging_ enables a risky feature (for testing).
+ * _Production_ has a higher replica count.
 
 <!-- @makePatchDirectories @test -->
 ```
