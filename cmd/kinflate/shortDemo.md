@@ -40,4 +40,4 @@ kinflate inflate -f . | kubectl apply -f -
 ```
 
 This fork of the app repository could be
-commited to a private repo.  Rebase as desired.
+committed to a private repo.  Rebase as desired.
