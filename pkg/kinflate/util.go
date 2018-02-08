@@ -22,7 +22,6 @@ import (
 	"os"
 	"path"
 	"path/filepath"
-
 	"strings"
 
 	"k8s.io/apimachinery/pkg/api/meta"
@@ -33,6 +32,7 @@ import (
 	cutil "k8s.io/kubectl/pkg/kinflate/configmapandsecret"
 	"k8s.io/kubectl/pkg/kinflate/constants"
 	"k8s.io/kubectl/pkg/kinflate/gvkn"
+	"k8s.io/kubectl/pkg/kinflate/mergemap"
 	"k8s.io/kubectl/pkg/kinflate/transformers"
 	kutil "k8s.io/kubectl/pkg/kinflate/util"
 	"k8s.io/kubectl/pkg/scheme"
@@ -56,40 +56,29 @@ func populateMap(m map[gvkn.GroupVersionKindName]*unstructured.Unstructured, obj
 }
 
 func populateConfigMapAndSecretMap(manifest *manifest.Manifest, m map[gvkn.GroupVersionKindName]*unstructured.Unstructured) error {
-	for _, cm := range manifest.Configmaps {
-		unstructuredConfigMap, nameWithHash, err := cutil.MakeConfigmapAndGenerateName(cm)
-		if err != nil {
-			return err
-		}
-		err = populateMap(m, unstructuredConfigMap, nameWithHash)
-		if err != nil {
-			return err
-		}
+	configmaps, err := cutil.MakeMapOfConfigMap(manifest)
+	if err != nil {
+		return err
+	}
+	err = mergemap.Merge(m, configmaps)
+	if err != nil {
+		return err
 	}
 
-	for _, secret := range manifest.GenericSecrets {
-		unstructuredSecret, nameWithHash, err := cutil.MakeGenericSecretAndGenerateName(secret)
-		if err != nil {
-			return err
-		}
-		err = populateMap(m, unstructuredSecret, nameWithHash)
-		if err != nil {
-			return err
-		}
+	genericSecrets, err := cutil.MakeMapOfGenericSecret(manifest)
+	if err != nil {
+		return err
+	}
+	err = mergemap.Merge(m, genericSecrets)
+	if err != nil {
+		return err
 	}
 
-	for _, secret := range manifest.TLSSecrets {
-		unstructuredSecret, nameWithHash, err := cutil.MakeTLSSecretAndGenerateName(secret)
-		if err != nil {
-			return err
-		}
-		err = populateMap(m, unstructuredSecret, nameWithHash)
-		if err != nil {
-			return err
-		}
+	TLSSecrets, err := cutil.MakeMapOfTLSSecret(manifest)
+	if err != nil {
+		return err
 	}
-
-	return nil
+	return mergemap.Merge(m, TLSSecrets)
 }
 
 func populateResourceMap(files []string,
