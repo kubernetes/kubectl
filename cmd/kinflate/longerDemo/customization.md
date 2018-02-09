@@ -17,7 +17,7 @@ Add a _namePrefix_ specification to the manifest:
 <!-- @addNamePrefix @test -->
 ```
 cd $TUT_APP
-kinflate setnameprefix acme-
+kinflate set nameprefix acme-
 ```
 
 Run it:

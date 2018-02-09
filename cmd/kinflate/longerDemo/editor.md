@@ -53,7 +53,7 @@ Add it to the manifest:
 
 <!-- @addResource @test -->
 ```
-kinflate addresource configMap.yaml
+kinflate add resource configMap.yaml
 ```
 
 <!-- @showItAgain @test -->
@@ -65,7 +65,7 @@ Add one that isn't there:
 
 <!-- @addNoResource @test -->
 ```
-kinflate addresource does_not_exist.yaml
+kinflate add resource does_not_exist.yaml
 ```
 
 Try to reinit
