@@ -17,40 +17,42 @@ limitations under the License.
 package tree
 
 import (
-	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
-	"k8s.io/kubectl/pkg/kinflate/gvkn"
+	"k8s.io/kubectl/pkg/kinflate/types"
 )
 
-type NamePrefixType string
+type namePrefixType string
 
-type ObjectLabelsType map[string]string
+type objectLabelsType map[string]string
 
-type ObjectAnnotationsType map[string]string
+type objectAnnotationsType map[string]string
 
-type ResourcesType map[gvkn.GroupVersionKindName]*unstructured.Unstructured
+type resourcesType types.KObject
 
-type PatchesType map[gvkn.GroupVersionKindName]*unstructured.Unstructured
+type patchesType types.KObject
 
-type ConfigmapsType map[gvkn.GroupVersionKindName]*unstructured.Unstructured
+type configmapsType types.KObject
 
-type SecretsType map[gvkn.GroupVersionKindName]*unstructured.Unstructured
+type secretsType types.KObject
 
-// ManifestNode is the node for building the manifest tree.
-// Children points to the packages defined on this node's Manifest.
+// ManifestNode groups (possibly empty) manifest data with a (possibly empty)
+// set of manifest nodes.
+// data in one node may refer to data in other nodes.
+// The node is invalid if it requires data it cannot find.
+// A node is either a base app, or a patch to the base, or a patch to a patch to the base, etc.
 type ManifestNode struct {
-	Data     *ManifestData
-	Children []*ManifestNode
+	data     *manifestData
+	children []*ManifestNode
 }
 
-// ManifestData contains all the objects loaded from the filesystem according to
+// manifestData contains all the objects loaded from the filesystem according to
 // the Manifest Object.
-type ManifestData struct {
-	Name              string
-	NamePrefix        NamePrefixType
-	ObjectLabels      ObjectLabelsType
-	ObjectAnnotations ObjectAnnotationsType
-	Resources         ResourcesType
-	Patches           PatchesType
-	Configmaps        ConfigmapsType
-	Secrets           SecretsType
+type manifestData struct {
+	name              string
+	namePrefix        namePrefixType
+	objectLabels      objectLabelsType
+	objectAnnotations objectAnnotationsType
+	resources         resourcesType
+	patches           patchesType
+	configmaps        configmapsType
+	secrets           secretsType
 }

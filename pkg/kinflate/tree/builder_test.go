@@ -22,15 +22,14 @@ import (
 	"testing"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	manifest "k8s.io/kubectl/pkg/apis/manifest/v1alpha1"
-	"k8s.io/kubectl/pkg/kinflate/gvkn"
 	"k8s.io/kubectl/pkg/kinflate/mergemap"
+	"k8s.io/kubectl/pkg/kinflate/types"
 )
 
-func makeMapOfConfigMap() map[gvkn.GroupVersionKindName]*unstructured.Unstructured {
-	return map[gvkn.GroupVersionKindName]*unstructured.Unstructured{
+func makeMapOfConfigMap() types.KObject {
+	return types.KObject{
 		{
 			GVK:  schema.GroupVersionKind{Version: "v1", Kind: "ConfigMap"},
 			Name: "cm1",
@@ -49,12 +48,12 @@ func makeMapOfConfigMap() map[gvkn.GroupVersionKindName]*unstructured.Unstructur
 	}
 }
 
-func makeMapOfPod() map[gvkn.GroupVersionKindName]*unstructured.Unstructured {
+func makeMapOfPod() types.KObject {
 	return makeMapOfPodWithImageName("nginx")
 }
 
-func makeMapOfPodWithImageName(imageName string) map[gvkn.GroupVersionKindName]*unstructured.Unstructured {
-	return map[gvkn.GroupVersionKindName]*unstructured.Unstructured{
+func makeMapOfPodWithImageName(imageName string) types.KObject {
+	return types.KObject{
 		{
 			GVK:  schema.GroupVersionKind{Version: "v1", Kind: "Pod"},
 			Name: "pod1",
@@ -78,66 +77,20 @@ func makeMapOfPodWithImageName(imageName string) map[gvkn.GroupVersionKindName]*
 	}
 }
 
-func makeManifestData(name string) *ManifestData {
-	return &ManifestData{
-		Name:       name,
-		Resources:  map[gvkn.GroupVersionKindName]*unstructured.Unstructured{},
-		Patches:    map[gvkn.GroupVersionKindName]*unstructured.Unstructured{},
-		Configmaps: map[gvkn.GroupVersionKindName]*unstructured.Unstructured{},
-		Secrets:    map[gvkn.GroupVersionKindName]*unstructured.Unstructured{},
-	}
-}
-
-func TestValidateManifestPath(t *testing.T) {
-	type testcase struct {
-		filename  string
-		expectErr bool
-		errorStr  string
-	}
-
-	testcases := []testcase{
-		{
-			filename:  "testdata/valid/",
-			expectErr: false,
-		},
-		{
-			filename:  "testdata/valid/Kube-manifest.yaml",
-			expectErr: false,
-		},
-		{
-			filename:  "does-not-exist",
-			expectErr: true,
-			errorStr:  "no such file or directory",
-		},
-		{
-			filename:  "testdata/invalid/",
-			expectErr: true,
-			errorStr:  "no such file or directory",
-		},
-	}
-
-	for _, tc := range testcases {
-		_, err := validateManifestPath(tc.filename)
-		if err == nil {
-			if tc.expectErr {
-				t.Errorf("filename: %q, expect an error containing %q, but didn't get an error", tc.filename, tc.errorStr)
-			}
-		} else {
-			if tc.expectErr {
-				if !strings.Contains(err.Error(), tc.errorStr) {
-					t.Errorf("filename: %q, expect an error containing %q, but got %v", tc.filename, tc.errorStr, err)
-				}
-			} else {
-				t.Errorf("unexpected error: %v", err)
-			}
-		}
+func makeManifestData(name string) *manifestData {
+	return &manifestData{
+		name:       name,
+		resources:  resourcesType(types.KObject{}),
+		patches:    patchesType(types.KObject{}),
+		configmaps: configmapsType(types.KObject{}),
+		secrets:    secretsType(types.KObject{}),
 	}
 }
 
 func TestFileToMap(t *testing.T) {
 	type testcase struct {
 		filename  string
-		expected  map[gvkn.GroupVersionKindName]*unstructured.Unstructured
+		expected  types.KObject
 		expectErr bool
 		errorStr  string
 	}
@@ -145,7 +98,7 @@ func TestFileToMap(t *testing.T) {
 	testcases := []testcase{
 		{
 			filename: "testdata/valid/cm/configmap.yaml",
-			expected: map[gvkn.GroupVersionKindName]*unstructured.Unstructured{
+			expected: types.KObject{
 				{
 					GVK:  schema.GroupVersionKind{Version: "v1", Kind: "ConfigMap"},
 					Name: "cm1",
@@ -177,8 +130,8 @@ func TestFileToMap(t *testing.T) {
 	}
 
 	for _, tc := range testcases {
-		actual := map[gvkn.GroupVersionKindName]*unstructured.Unstructured{}
-		err := fileToMap(tc.filename, actual)
+		actual := types.KObject{}
+		err := loadKObjectFromFile(tc.filename, actual)
 		if err == nil {
 			if tc.expectErr {
 				t.Errorf("filename: %q, expect an error containing %q, but didn't get an error", tc.filename, tc.errorStr)
@@ -201,7 +154,7 @@ func TestFileToMap(t *testing.T) {
 func TestPathToMap(t *testing.T) {
 	type testcase struct {
 		filename  string
-		expected  map[gvkn.GroupVersionKindName]*unstructured.Unstructured
+		expected  types.KObject
 		expectErr bool
 		errorStr  string
 	}
@@ -227,8 +180,8 @@ func TestPathToMap(t *testing.T) {
 	}
 
 	for _, tc := range testcases {
-		actual := map[gvkn.GroupVersionKindName]*unstructured.Unstructured{}
-		err := pathToMap(tc.filename, actual)
+		actual := types.KObject{}
+		err := loadKObjectFromPath(tc.filename, actual)
 		if err == nil {
 			if tc.expectErr {
 				t.Errorf("filename: %q, expect an error containing %q, but didn't get an error", tc.filename, tc.errorStr)
@@ -251,7 +204,7 @@ func TestPathToMap(t *testing.T) {
 func TestPathsToMap(t *testing.T) {
 	type testcase struct {
 		filenames []string
-		expected  map[gvkn.GroupVersionKindName]*unstructured.Unstructured
+		expected  types.KObject
 		expectErr bool
 		errorStr  string
 	}
@@ -288,7 +241,7 @@ func TestPathsToMap(t *testing.T) {
 	}
 
 	for _, tc := range testcases {
-		actual, err := pathsToMap(tc.filenames)
+		actual, err := loadKObjectFromPaths(tc.filenames)
 		if err == nil {
 			if tc.expectErr {
 				t.Errorf("filenames: %q, expect an error containing %q, but didn't get an error", tc.filenames, tc.errorStr)
@@ -337,18 +290,18 @@ func TestManifestToManifestData(t *testing.T) {
 		},
 	}
 
-	expectedMd := &ManifestData{
-		Name:              "test-manifest",
-		NamePrefix:        "someprefix-",
-		ObjectLabels:      map[string]string{"foo": "bar"},
-		ObjectAnnotations: map[string]string{"note": "This is an annotation."},
-		Resources:         mergedMap,
-		Patches:           makeMapOfPodWithImageName("nginx:latest"),
-		Configmaps:        map[gvkn.GroupVersionKindName]*unstructured.Unstructured{},
-		Secrets:           map[gvkn.GroupVersionKindName]*unstructured.Unstructured{},
+	expectedMd := &manifestData{
+		name:              "test-manifest",
+		namePrefix:        "someprefix-",
+		objectLabels:      map[string]string{"foo": "bar"},
+		objectAnnotations: map[string]string{"note": "This is an annotation."},
+		resources:         resourcesType(mergedMap),
+		patches:           patchesType(makeMapOfPodWithImageName("nginx:latest")),
+		configmaps:        configmapsType(types.KObject{}),
+		secrets:           secretsType(types.KObject{}),
 	}
 
-	actual, err := manifestToManifestData(m)
+	actual, err := loadManifestDataFromManifestFileAndResources(m)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -358,32 +311,32 @@ func TestManifestToManifestData(t *testing.T) {
 	}
 }
 
-func TestManifestPathToManifestNode(t *testing.T) {
+func TestMakeManifestNode(t *testing.T) {
 	expected := &ManifestNode{
-		Data: makeManifestData("grandparent"),
-		Children: []*ManifestNode{
+		data: makeManifestData("grandparent"),
+		children: []*ManifestNode{
 			{
-				Data: makeManifestData("parent1"),
-				Children: []*ManifestNode{
+				data: makeManifestData("parent1"),
+				children: []*ManifestNode{
 					{
-						Data:     makeManifestData("child1"),
-						Children: []*ManifestNode{},
+						data:     makeManifestData("child1"),
+						children: []*ManifestNode{},
 					},
 				},
 			},
 			{
-				Data: makeManifestData("parent2"),
-				Children: []*ManifestNode{
+				data: makeManifestData("parent2"),
+				children: []*ManifestNode{
 					{
-						Data:     makeManifestData("child2"),
-						Children: []*ManifestNode{},
+						data:     makeManifestData("child2"),
+						children: []*ManifestNode{},
 					},
 				},
 			},
 		},
 	}
 
-	actual, err := manifestPathToManifestNode("testdata/hierarchy")
+	actual, err := loadManifestNodeFromPath("testdata/hierarchy")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}

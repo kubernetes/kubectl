@@ -20,8 +20,7 @@ import (
 	"errors"
 	"fmt"
 
-	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
-	kgvkn "k8s.io/kubectl/pkg/kinflate/gvkn"
+	"k8s.io/kubectl/pkg/kinflate/types"
 )
 
 // NamePrefixTransformer contains the prefix and the path config for each field that
@@ -57,12 +56,12 @@ func NewNamePrefixTransformer(pc []PathConfig, np string) (Transformer, error) {
 }
 
 // Transform prepends the name prefix.
-func (o *NamePrefixTransformer) Transform(m map[kgvkn.GroupVersionKindName]*unstructured.Unstructured) error {
+func (o *NamePrefixTransformer) Transform(m types.KObject) error {
 	for gvkn := range m {
 		obj := m[gvkn]
 		objMap := obj.UnstructuredContent()
 		for _, path := range o.pathConfigs {
-			if !kgvkn.SelectByGVK(gvkn.GVK, path.GroupVersionKind) {
+			if !types.SelectByGVK(gvkn.GVK, path.GroupVersionKind) {
 				continue
 			}
 			err := mutateField(objMap, path.Path, path.CreateIfNotPresent, o.addPrefix)

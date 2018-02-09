@@ -141,7 +141,7 @@ func TestTypeStability(t *testing.T) {
 	errfmt := `case %q, expected %d fields but got %d
 Depending on the field(s) you added, you may need to modify the hash function for this type.
 To guide you: the hash function targets fields that comprise the contents of objects,
-not their metadata (e.g. the Data of a ConfigMap, but nothing in ObjectMeta).
+not their metadata (e.g. the data of a ConfigMap, but nothing in ObjectMeta).
 `
 	cases := []struct {
 		typeName string

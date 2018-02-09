@@ -18,11 +18,14 @@ package util
 
 import (
 	"errors"
+	"fmt"
 	"path"
+	"strings"
 
 	"github.com/ghodss/yaml"
 
 	manifest "k8s.io/kubectl/pkg/apis/manifest/v1alpha1"
+	"k8s.io/kubectl/pkg/kinflate/constants"
 	"k8s.io/kubectl/pkg/kinflate/util/fs"
 )
 
@@ -37,8 +40,34 @@ func (m *ManifestLoader) fs() fs.FileSystem {
 	return m.FS
 }
 
+// makeValidManifestPath returns a path to a KubeManifest file known to exist.
+// The argument is either the full path to the file itself, or a path to a directory
+// that immediately contains the file. Anything else is an error.
+func (m *ManifestLoader) makeValidManifestPath(mPath string) (string, error) {
+	f, err := m.fs().Stat(mPath)
+	if err != nil {
+		return "", err
+	}
+	if f.IsDir() {
+		mPath = path.Join(mPath, constants.KubeManifestFileName)
+		_, err = m.fs().Stat(mPath)
+		if err != nil {
+			return "", err
+		}
+	} else {
+		if !strings.HasSuffix(mPath, constants.KubeManifestFileName) {
+			return "", fmt.Errorf("expecting file: %q, but got: %q", constants.KubeManifestFileName, mPath)
+		}
+	}
+	return mPath, nil
+}
+
 // Read loads a manifest file and parse it in to the Manifest object.
-func (m *ManifestLoader) Read(filename string) (*manifest.Manifest, error) {
+func (m *ManifestLoader) Read(mPath string) (*manifest.Manifest, error) {
+	filename, err := m.makeValidManifestPath(mPath)
+	if err != nil {
+		return nil, err
+	}
 	bytes, err := m.fs().ReadFile(filename)
 	if err != nil {
 		return nil, err

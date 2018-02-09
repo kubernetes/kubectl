@@ -26,7 +26,7 @@ import (
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	manifest "k8s.io/kubectl/pkg/apis/manifest/v1alpha1"
-	"k8s.io/kubectl/pkg/kinflate/gvkn"
+	"k8s.io/kubectl/pkg/kinflate/types"
 )
 
 func makeUnstructuredEnvConfigMap(name string) *unstructured.Unstructured {
@@ -103,7 +103,7 @@ r5QuVbpQhH6u+0UgcW0jp9QwpxoPTLTWGXEWBBBurxFwiCBhkQ+V
 	}
 }
 func TestPopulateMap(t *testing.T) {
-	expectedMap := map[gvkn.GroupVersionKindName]*unstructured.Unstructured{
+	expectedMap := types.KObject{
 		{
 			GVK: schema.GroupVersionKind{
 				Version: "v1",
@@ -127,7 +127,7 @@ func TestPopulateMap(t *testing.T) {
 		}: makeUnstructuredTLSSecret("newNameTLSSecret"),
 	}
 
-	m := map[gvkn.GroupVersionKindName]*unstructured.Unstructured{}
+	m := types.KObject{}
 	err := populateMap(m, makeUnstructuredEnvConfigMap("envConfigMap"), "newNameConfigMap")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -152,7 +152,7 @@ func TestPopulateMap(t *testing.T) {
 }
 
 func TestPopulateMapOfConfigMapAndSecret(t *testing.T) {
-	m := map[gvkn.GroupVersionKindName]*unstructured.Unstructured{}
+	m := types.KObject{}
 	manifest := &manifest.Manifest{
 		Configmaps: []manifest.ConfigMap{
 			{
@@ -171,7 +171,7 @@ func TestPopulateMapOfConfigMapAndSecret(t *testing.T) {
 			},
 		},
 	}
-	expectedMap := map[gvkn.GroupVersionKindName]*unstructured.Unstructured{
+	expectedMap := types.KObject{
 		{
 			GVK: schema.GroupVersionKind{
 				Version: "v1",

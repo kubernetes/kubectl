@@ -28,8 +28,8 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	manifest "k8s.io/kubectl/pkg/apis/manifest/v1alpha1"
 	cutil "k8s.io/kubectl/pkg/kinflate/configmapandsecret/util"
-	"k8s.io/kubectl/pkg/kinflate/gvkn"
 	"k8s.io/kubectl/pkg/kinflate/hash"
+	"k8s.io/kubectl/pkg/kinflate/types"
 )
 
 // MakeConfigmapAndGenerateName makes a configmap and returns the configmap and the name appended with a hash.
@@ -175,27 +175,27 @@ func validateTLS(cert, key string) error {
 	return nil
 }
 
-func populateMap(m map[gvkn.GroupVersionKindName]*unstructured.Unstructured, obj *unstructured.Unstructured, newName string) error {
+func populateMap(m types.KObject, obj *unstructured.Unstructured, newName string) error {
 	accessor, err := meta.Accessor(obj)
 	if err != nil {
 		return err
 	}
 	oldName := accessor.GetName()
 	gvk := obj.GetObjectKind().GroupVersionKind()
-	gvkn := gvkn.GroupVersionKindName{GVK: gvk, Name: oldName}
+	gvkn := types.GroupVersionKindName{GVK: gvk, Name: oldName}
 
 	if _, found := m[gvkn]; found {
-		return fmt.Errorf("cannot use a duplicate name %q for %s", oldName, gvk)
+		return fmt.Errorf("The <name: %q, GroupVersionKind: %v> already exists in the map", oldName, gvk)
 	}
 	accessor.SetName(newName)
 	m[gvkn] = obj
 	return nil
 }
 
-// MakeMapOfConfigMap returns a map of <GVK, oldName> -> unstructured object.
-func MakeMapOfConfigMap(manifest *manifest.Manifest) (map[gvkn.GroupVersionKindName]*unstructured.Unstructured, error) {
-	m := map[gvkn.GroupVersionKindName]*unstructured.Unstructured{}
-	for _, cm := range manifest.Configmaps {
+// MakeConfigMapsKObject returns a map of <GVK, oldName> -> unstructured object.
+func MakeConfigMapsKObject(maps []manifest.ConfigMap) (types.KObject, error) {
+	m := types.KObject{}
+	for _, cm := range maps {
 		unstructuredConfigMap, nameWithHash, err := MakeConfigmapAndGenerateName(cm)
 		if err != nil {
 			return nil, err
@@ -208,10 +208,10 @@ func MakeMapOfConfigMap(manifest *manifest.Manifest) (map[gvkn.GroupVersionKindN
 	return m, nil
 }
 
-// MakeMapOfGenericSecret returns a map of <GVK, oldName> -> unstructured object.
-func MakeMapOfGenericSecret(manifest *manifest.Manifest) (map[gvkn.GroupVersionKindName]*unstructured.Unstructured, error) {
-	m := map[gvkn.GroupVersionKindName]*unstructured.Unstructured{}
-	for _, secret := range manifest.GenericSecrets {
+// MakeGenericSecretsKObject returns a map of <GVK, oldName> -> unstructured object.
+func MakeGenericSecretsKObject(secrets []manifest.GenericSecret) (types.KObject, error) {
+	m := types.KObject{}
+	for _, secret := range secrets {
 		unstructuredSecret, nameWithHash, err := MakeGenericSecretAndGenerateName(secret)
 		if err != nil {
 			return nil, err
@@ -224,10 +224,10 @@ func MakeMapOfGenericSecret(manifest *manifest.Manifest) (map[gvkn.GroupVersionK
 	return m, nil
 }
 
-// MakeMapOfTLSSecret returns a map of <GVK, oldName> -> unstructured object.
-func MakeMapOfTLSSecret(manifest *manifest.Manifest) (map[gvkn.GroupVersionKindName]*unstructured.Unstructured, error) {
-	m := map[gvkn.GroupVersionKindName]*unstructured.Unstructured{}
-	for _, secret := range manifest.TLSSecrets {
+// MakeTLSSecretsKObject returns a map of <GVK, oldName> -> unstructured object.
+func MakeTLSSecretsKObject(secrets []manifest.TLSSecret) (types.KObject, error) {
+	m := types.KObject{}
+	for _, secret := range secrets {
 		unstructuredSecret, nameWithHash, err := MakeTLSSecretAndGenerateName(secret)
 		if err != nil {
 			return nil, err

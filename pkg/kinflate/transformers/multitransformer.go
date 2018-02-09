@@ -16,10 +16,7 @@ limitations under the License.
 
 package transformers
 
-import (
-	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
-	"k8s.io/kubectl/pkg/kinflate/gvkn"
-)
+import "k8s.io/kubectl/pkg/kinflate/types"
 
 // MultiTransformer contains a list of transformers.
 type MultiTransformer struct {
@@ -37,7 +34,7 @@ func NewMultiTransformer(t []Transformer) Transformer {
 }
 
 // Transform prepends the name prefix.
-func (o *MultiTransformer) Transform(m map[gvkn.GroupVersionKindName]*unstructured.Unstructured) error {
+func (o *MultiTransformer) Transform(m types.KObject) error {
 	for _, t := range o.transformers {
 		err := t.Transform(m)
 		if err != nil {

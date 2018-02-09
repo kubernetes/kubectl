@@ -20,132 +20,105 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
-	"path"
 	"path/filepath"
-	"strings"
 
-	"github.com/ghodss/yaml"
-
-	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	manifest "k8s.io/kubectl/pkg/apis/manifest/v1alpha1"
-	"k8s.io/kubectl/pkg/kinflate/adjustpath"
 	cutil "k8s.io/kubectl/pkg/kinflate/configmapandsecret"
-	"k8s.io/kubectl/pkg/kinflate/constants"
-	"k8s.io/kubectl/pkg/kinflate/gvkn"
 	"k8s.io/kubectl/pkg/kinflate/mergemap"
+	"k8s.io/kubectl/pkg/kinflate/types"
 	kutil "k8s.io/kubectl/pkg/kinflate/util"
+	"k8s.io/kubectl/pkg/kinflate/util/fs"
 )
 
-// BuildManifestTree takes a path to a Kube-manifest.yaml or a dir that has a Kube-manifest.yaml.
+// LoadManifestNodeFromPath takes a path to a Kube-manifest.yaml or a dir that has a Kube-manifest.yaml.
 // It returns a tree of ManifestNode.
-func BuildManifestTree(path string) (*ManifestNode, error) {
-	return manifestPathToManifestNode(path)
+func LoadManifestNodeFromPath(path string) (*ManifestNode, error) {
+	return loadManifestNodeFromPath(path)
 }
 
-func manifestPathToManifestNode(path string) (*ManifestNode, error) {
-	path, err := validateManifestPath(path)
-	if err != nil {
-		return nil, err
-	}
-	m, err := manifestPathToManifest(path)
+// loadManifestNodeFromPath make a ManifestNode from path
+func loadManifestNodeFromPath(path string) (*ManifestNode, error) {
+	m, err := loadManifestFileFromPath(path)
 	if err != nil {
 		return nil, err
 	}
 	return manifestToManifestNode(m)
 }
 
+// manifestToManifestNode make a ManifestNode given an Manifest object
 func manifestToManifestNode(m *manifest.Manifest) (*ManifestNode, error) {
 	mnode := &ManifestNode{}
 	var err error
-	mnode.Data, err = manifestToManifestData(m)
+	mnode.data, err = loadManifestDataFromManifestFileAndResources(m)
 	if err != nil {
 		return nil, err
 	}
 
-	mnode.Children = []*ManifestNode{}
+	mnode.children = []*ManifestNode{}
 	for _, pkg := range m.Packages {
-		child, err := manifestPathToManifestNode(pkg)
+		child, err := loadManifestNodeFromPath(pkg)
 		if err != nil {
 			return nil, err
 		}
-		mnode.Children = append(mnode.Children, child)
+		mnode.children = append(mnode.children, child)
 	}
 	return mnode, nil
 }
 
-// manifestPathToManifest loads a manifest file and parse it in to the Manifest object.
-func manifestPathToManifest(filename string) (*manifest.Manifest, error) {
-	bytes, err := ioutil.ReadFile(filename)
+// loadManifestFileFromPath loads a manifest object from file.
+func loadManifestFileFromPath(filename string) (*manifest.Manifest, error) {
+	loader := kutil.ManifestLoader{fs.MakeRealFS()}
+	m, err := loader.Read(filename)
 	if err != nil {
 		return nil, err
 	}
-	var m manifest.Manifest
-	// TODO: support json
-	err = yaml.Unmarshal(bytes, &m)
-	if err != nil {
-		return nil, err
-	}
-	dir, _ := path.Split(filename)
-	adjustpath.AdjustPathsForManifest(&m, []string{dir})
-	return &m, err
+	return m, err
 }
 
-// validateManifestPath loads the manifest from the given path.
-// It returns ManifestData and an potential error.
-func validateManifestPath(mPath string) (string, error) {
-	f, err := os.Stat(mPath)
-	if err != nil {
-		return "", err
-	}
-	if f.IsDir() {
-		mPath = path.Join(mPath, constants.KubeManifestFileName)
-		_, err = os.Stat(mPath)
-		if err != nil {
-			return "", err
-		}
-	} else {
-		if !strings.HasSuffix(mPath, constants.KubeManifestFileName) {
-			return "", fmt.Errorf("expecting file: %q, but got: %q", constants.KubeManifestFileName, mPath)
-		}
-	}
-	return mPath, nil
-}
-
-func manifestToManifestData(m *manifest.Manifest) (*ManifestData, error) {
-	mdata := &ManifestData{}
+func loadManifestDataFromManifestFileAndResources(m *manifest.Manifest) (*manifestData, error) {
+	mdata := &manifestData{}
 	var err error
-	mdata.Name = m.Name
-	mdata.NamePrefix = NamePrefixType(m.NamePrefix)
-	mdata.ObjectLabels = m.ObjectLabels
-	mdata.ObjectAnnotations = m.ObjectAnnotations
-	mdata.Resources, err = pathsToMap(m.Resources)
+	mdata.name = m.Name
+	mdata.namePrefix = namePrefixType(m.NamePrefix)
+	mdata.objectLabels = m.ObjectLabels
+	mdata.objectAnnotations = m.ObjectAnnotations
+
+	res, err := loadKObjectFromPaths(m.Resources)
 	if err != nil {
 		return nil, err
 	}
-	mdata.Patches, err = pathsToMap(m.Patches)
+	mdata.resources = resourcesType(res)
+
+	pat, err := loadKObjectFromPaths(m.Patches)
 	if err != nil {
 		return nil, err
 	}
-	mdata.Configmaps, err = cutil.MakeMapOfConfigMap(m)
+	mdata.patches = patchesType(pat)
+
+	cms, err := cutil.MakeConfigMapsKObject(m.Configmaps)
 	if err != nil {
 		return nil, err
 	}
-	mdata.Secrets, err = cutil.MakeMapOfGenericSecret(m)
+	mdata.configmaps = configmapsType(cms)
+
+	sec, err := cutil.MakeGenericSecretsKObject(m.GenericSecrets)
 	if err != nil {
 		return nil, err
 	}
-	TLSSecrets, err := cutil.MakeMapOfTLSSecret(m)
-	err = mergemap.Merge(mdata.Secrets, TLSSecrets)
+	mdata.secrets = secretsType(sec)
+
+	TLS, err := cutil.MakeTLSSecretsKObject(m.TLSSecrets)
+	err = mergemap.Merge(mdata.secrets, TLS)
 	if err != nil {
 		return nil, err
 	}
 	return mdata, nil
 }
 
-func pathsToMap(paths []string) (map[gvkn.GroupVersionKindName]*unstructured.Unstructured, error) {
-	res := map[gvkn.GroupVersionKindName]*unstructured.Unstructured{}
+func loadKObjectFromPaths(paths []string) (types.KObject, error) {
+	res := types.KObject{}
 	for _, path := range paths {
-		err := pathToMap(path, res)
+		err := loadKObjectFromPath(path, res)
 		if err != nil {
 			return nil, err
 		}
@@ -153,13 +126,13 @@ func pathsToMap(paths []string) (map[gvkn.GroupVersionKindName]*unstructured.Uns
 	return res, nil
 }
 
-func pathToMap(path string, into map[gvkn.GroupVersionKindName]*unstructured.Unstructured) error {
+func loadKObjectFromPath(path string, into types.KObject) error {
 	_, err := os.Stat(path)
 	if err != nil {
 		return err
 	}
 	if into == nil {
-		into = map[gvkn.GroupVersionKindName]*unstructured.Unstructured{}
+		return fmt.Errorf("cannot load object to an empty KObject")
 	}
 
 	var e error
@@ -173,13 +146,13 @@ func pathToMap(path string, into map[gvkn.GroupVersionKindName]*unstructured.Uns
 			return nil
 		}
 
-		err = fileToMap(filepath, into)
+		err = loadKObjectFromFile(filepath, into)
 		return nil
 	})
 	return e
 }
 
-func fileToMap(filename string, into map[gvkn.GroupVersionKindName]*unstructured.Unstructured) error {
+func loadKObjectFromFile(filename string, into types.KObject) error {
 	f, err := os.Stat(filename)
 	if err != nil {
 		return err

@@ -16,13 +16,10 @@ limitations under the License.
 
 package transformers
 
-import (
-	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
-	"k8s.io/kubectl/pkg/kinflate/gvkn"
-)
+import "k8s.io/kubectl/pkg/kinflate/types"
 
 // Transformer can transform objects.
 type Transformer interface {
 	// Transform modifies objects in a map, e.g. add prefixes or additional labels.
-	Transform(m map[gvkn.GroupVersionKindName]*unstructured.Unstructured) error
+	Transform(m types.KObject) error
 }

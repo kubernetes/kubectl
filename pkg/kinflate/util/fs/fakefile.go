@@ -25,6 +25,7 @@ var _ File = &FakeFile{}
 
 // FakeFile implements File in-memory for tests.
 type FakeFile struct {
+	name    string
 	content []byte
 	dir     bool
 	open    bool
@@ -36,8 +37,8 @@ func makeFile() *FakeFile {
 }
 
 // makeDir makes a fake directory.
-func makeDir() *FakeFile {
-	return &FakeFile{dir: true}
+func makeDir(name string) *FakeFile {
+	return &FakeFile{name: name, dir: true}
 }
 
 // Close marks the fake file closed.

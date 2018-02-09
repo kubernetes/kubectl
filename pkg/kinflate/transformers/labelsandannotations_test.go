@@ -22,7 +22,7 @@ import (
 
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
-	"k8s.io/kubectl/pkg/kinflate/gvkn"
+	"k8s.io/kubectl/pkg/kinflate/types"
 )
 
 func makeConfigmap() *unstructured.Unstructured {
@@ -87,8 +87,8 @@ func makeService() *unstructured.Unstructured {
 	}
 }
 
-func makeTestMap() map[gvkn.GroupVersionKindName]*unstructured.Unstructured {
-	return map[gvkn.GroupVersionKindName]*unstructured.Unstructured{
+func makeTestMap() types.KObject {
+	return types.KObject{
 		{
 			GVK:  schema.GroupVersionKind{Version: "v1", Kind: "ConfigMap"},
 			Name: "cm1",
@@ -190,8 +190,8 @@ func makeLabeledService() *unstructured.Unstructured {
 	}
 }
 
-func makeLabeledMap() map[gvkn.GroupVersionKindName]*unstructured.Unstructured {
-	return map[gvkn.GroupVersionKindName]*unstructured.Unstructured{
+func makeLabeledMap() types.KObject {
+	return types.KObject{
 		{
 			GVK:  schema.GroupVersionKind{Version: "v1", Kind: "ConfigMap"},
 			Name: "cm1",
@@ -302,8 +302,8 @@ func makeAnnotatededService() *unstructured.Unstructured {
 	}
 }
 
-func makeAnnotatedMap() map[gvkn.GroupVersionKindName]*unstructured.Unstructured {
-	return map[gvkn.GroupVersionKindName]*unstructured.Unstructured{
+func makeAnnotatedMap() types.KObject {
+	return types.KObject{
 		{
 			GVK:  schema.GroupVersionKind{Version: "v1", Kind: "ConfigMap"},
 			Name: "cm1",

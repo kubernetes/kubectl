@@ -23,7 +23,7 @@ import (
 
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
-	"k8s.io/kubectl/pkg/kinflate/gvkn"
+	"k8s.io/kubectl/pkg/kinflate/types"
 )
 
 var encoded = []byte(`apiVersion: v1
@@ -49,10 +49,10 @@ func makeConfigMap(name string) *unstructured.Unstructured {
 	}
 }
 
-func makeConfigMaps(name1InGVKN, name2InGVKN, name1InObj, name2InObj string) map[gvkn.GroupVersionKindName]*unstructured.Unstructured {
+func makeConfigMaps(name1InGVKN, name2InGVKN, name1InObj, name2InObj string) types.KObject {
 	cm1 := makeConfigMap(name1InObj)
 	cm2 := makeConfigMap(name2InObj)
-	return map[gvkn.GroupVersionKindName]*unstructured.Unstructured{
+	return types.KObject{
 		{
 			GVK:  schema.GroupVersionKind{Version: "v1", Kind: "ConfigMap"},
 			Name: name1InGVKN,
@@ -85,10 +85,10 @@ func TestEncode(t *testing.T) {
 	}
 }
 
-func compareMap(m1, m2 map[gvkn.GroupVersionKindName]*unstructured.Unstructured) error {
+func compareMap(m1, m2 types.KObject) error {
 	if len(m1) != len(m2) {
-		keySet1 := []gvkn.GroupVersionKindName{}
-		keySet2 := []gvkn.GroupVersionKindName{}
+		keySet1 := []types.GroupVersionKindName{}
+		keySet2 := []types.GroupVersionKindName{}
 		for GVKn := range m1 {
 			keySet1 = append(keySet1, GVKn)
 		}

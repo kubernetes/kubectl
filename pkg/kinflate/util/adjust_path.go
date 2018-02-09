@@ -23,6 +23,7 @@ import (
 )
 
 func adjustPathsForManifest(m *manifest.Manifest, pathToDir []string) {
+	m.Packages = adjustPaths(m.Packages, pathToDir)
 	m.Resources = adjustPaths(m.Resources, pathToDir)
 	m.Patches = adjustPaths(m.Patches, pathToDir)
 	m.Configmaps = adjustPathForConfigMaps(m.Configmaps, pathToDir)

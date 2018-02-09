@@ -20,6 +20,8 @@ import (
 	"reflect"
 	"testing"
 
+	"strings"
+
 	manifest "k8s.io/kubectl/pkg/apis/manifest/v1alpha1"
 	kutil "k8s.io/kubectl/pkg/kinflate/util"
 	"k8s.io/kubectl/pkg/kinflate/util/fs"
@@ -31,11 +33,11 @@ func TestManifestLoader(t *testing.T) {
 	}
 	loader := kutil.ManifestLoader{FS: fs.MakeFakeFS()}
 
-	if err := loader.Write("my-manifest.yaml", manifest); err != nil {
+	if err := loader.Write("Kube-manifest.yaml", manifest); err != nil {
 		t.Fatalf("Couldn't write manifest file: %v\n", err)
 	}
 
-	readManifest, err := loader.Read("my-manifest.yaml")
+	readManifest, err := loader.Read("Kube-manifest.yaml")
 	if err != nil {
 		t.Fatalf("Couldn't read manifest file: %v\n", err)
 	}
@@ -51,5 +53,16 @@ func TestManifestLoaderEmptyFile(t *testing.T) {
 	loader := kutil.ManifestLoader{}
 	if loader.Write("", manifest) == nil {
 		t.Fatalf("Write to empty filename should fail")
+	}
+}
+
+func TestLoadNotExist(t *testing.T) {
+	loader := kutil.ManifestLoader{FS: fs.MakeFakeFS()}
+	_, err := loader.Read("Kube-manifest.yaml")
+	if err == nil {
+		t.Fatalf("expect an error")
+	}
+	if !strings.Contains(err.Error(), "does not exist") {
+		t.Fatalf("expect an error contains %q, but got %v", "does not exist", err)
 	}
 }

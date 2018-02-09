@@ -20,11 +20,11 @@ import (
 	"fmt"
 
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
-	kgvkn "k8s.io/kubectl/pkg/kinflate/gvkn"
+	"k8s.io/kubectl/pkg/kinflate/types"
 )
 
 // Merge will merge all the entries in m2 to m1.
-func Merge(m1, m2 map[kgvkn.GroupVersionKindName]*unstructured.Unstructured,
+func Merge(m1, m2 map[types.GroupVersionKindName]*unstructured.Unstructured,
 ) error {
 	for gvkn, obj := range m2 {
 		if _, found := m1[gvkn]; found {
