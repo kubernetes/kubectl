@@ -22,7 +22,7 @@ import (
 
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
-	"k8s.io/kubectl/pkg/kinflate/gvkn"
+	"k8s.io/kubectl/pkg/kinflate/types"
 )
 
 func makeReferencedConfigMap() *unstructured.Unstructured {
@@ -116,8 +116,8 @@ func makeNameRefDeployment(cmName, secretName string) *unstructured.Unstructured
 	}
 }
 
-func makeNameReferenceTestMap() map[gvkn.GroupVersionKindName]*unstructured.Unstructured {
-	return map[gvkn.GroupVersionKindName]*unstructured.Unstructured{
+func makeNameReferenceTestMap() types.KObject {
+	return types.KObject{
 		{
 			GVK:  schema.GroupVersionKind{Version: "v1", Kind: "ConfigMap"},
 			Name: "cm1",
@@ -133,8 +133,8 @@ func makeNameReferenceTestMap() map[gvkn.GroupVersionKindName]*unstructured.Unst
 	}
 }
 
-func makeNameReferenceUpdatedTestMap() map[gvkn.GroupVersionKindName]*unstructured.Unstructured {
-	return map[gvkn.GroupVersionKindName]*unstructured.Unstructured{
+func makeNameReferenceUpdatedTestMap() types.KObject {
+	return types.KObject{
 		{
 			GVK:  schema.GroupVersionKind{Version: "v1", Kind: "ConfigMap"},
 			Name: "cm1",

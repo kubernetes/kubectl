@@ -21,7 +21,7 @@ import (
 	"testing"
 )
 
-func TestStat(t *testing.T) {
+func TestStatNotExist(t *testing.T) {
 	x := MakeFakeFS()
 	info, err := x.Stat("foo")
 	if info != nil {
@@ -29,6 +29,26 @@ func TestStat(t *testing.T) {
 	}
 	if err == nil {
 		t.Fatalf("expected error")
+	}
+}
+
+func TestStat(t *testing.T) {
+	x := MakeFakeFS()
+	expectedName := "my-dir"
+	err := x.Mkdir(expectedName, 0666)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	info, err := x.Stat(expectedName)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	name := info.Name()
+	if name != expectedName {
+		t.Fatalf("expected %v but got %v", expectedName, name)
+	}
+	if !info.IsDir() {
+		t.Fatalf("expected IsDir() return true")
 	}
 }
 
@@ -42,8 +62,8 @@ func TestCreate(t *testing.T) {
 		t.Fatalf("unexpected error")
 	}
 	info, err := x.Stat("foo")
-	if info != nil {
-		t.Fatalf("expected nil info")
+	if info == nil {
+		t.Fatalf("expected non-nil info")
 	}
 	if err != nil {
 		t.Fatalf("expected no error")

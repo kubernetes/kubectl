@@ -82,6 +82,11 @@ type Manifest struct {
 	// Annotations to add to all objects.
 	ObjectAnnotations map[string]string `json:"objectAnnotations,omitempty" yaml:"objectAnnotations,omitempty"`
 
+	// Packages contain the paths to other packages that this manifest depends on.
+	// Each path should be either a path to a Kube-manifest.yaml or a path of
+	// a directory that contains a Kube-manifest.yaml file.
+	Packages []string `json:"packages,omitempty" yaml:"packages,omitempty"`
+
 	// Resources specifies the relative paths within the package.
 	// It could be any format that kubectl -f allows, i.e. files, directories,
 	// URLs and globs.

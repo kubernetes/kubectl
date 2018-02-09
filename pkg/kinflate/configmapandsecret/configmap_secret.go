@@ -23,11 +23,13 @@ import (
 	"io/ioutil"
 
 	corev1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/api/meta"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime"
 	manifest "k8s.io/kubectl/pkg/apis/manifest/v1alpha1"
 	cutil "k8s.io/kubectl/pkg/kinflate/configmapandsecret/util"
 	"k8s.io/kubectl/pkg/kinflate/hash"
+	"k8s.io/kubectl/pkg/kinflate/types"
 )
 
 // MakeConfigmapAndGenerateName makes a configmap and returns the configmap and the name appended with a hash.
@@ -171,4 +173,69 @@ func validateTLS(cert, key string) error {
 		return fmt.Errorf("failed to load key pair %v", err)
 	}
 	return nil
+}
+
+func populateMap(m types.KObject, obj *unstructured.Unstructured, newName string) error {
+	accessor, err := meta.Accessor(obj)
+	if err != nil {
+		return err
+	}
+	oldName := accessor.GetName()
+	gvk := obj.GetObjectKind().GroupVersionKind()
+	gvkn := types.GroupVersionKindName{GVK: gvk, Name: oldName}
+
+	if _, found := m[gvkn]; found {
+		return fmt.Errorf("The <name: %q, GroupVersionKind: %v> already exists in the map", oldName, gvk)
+	}
+	accessor.SetName(newName)
+	m[gvkn] = obj
+	return nil
+}
+
+// MakeConfigMapsKObject returns a map of <GVK, oldName> -> unstructured object.
+func MakeConfigMapsKObject(maps []manifest.ConfigMap) (types.KObject, error) {
+	m := types.KObject{}
+	for _, cm := range maps {
+		unstructuredConfigMap, nameWithHash, err := MakeConfigmapAndGenerateName(cm)
+		if err != nil {
+			return nil, err
+		}
+		err = populateMap(m, unstructuredConfigMap, nameWithHash)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return m, nil
+}
+
+// MakeGenericSecretsKObject returns a map of <GVK, oldName> -> unstructured object.
+func MakeGenericSecretsKObject(secrets []manifest.GenericSecret) (types.KObject, error) {
+	m := types.KObject{}
+	for _, secret := range secrets {
+		unstructuredSecret, nameWithHash, err := MakeGenericSecretAndGenerateName(secret)
+		if err != nil {
+			return nil, err
+		}
+		err = populateMap(m, unstructuredSecret, nameWithHash)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return m, nil
+}
+
+// MakeTLSSecretsKObject returns a map of <GVK, oldName> -> unstructured object.
+func MakeTLSSecretsKObject(secrets []manifest.TLSSecret) (types.KObject, error) {
+	m := types.KObject{}
+	for _, secret := range secrets {
+		unstructuredSecret, nameWithHash, err := MakeTLSSecretAndGenerateName(secret)
+		if err != nil {
+			return nil, err
+		}
+		err = populateMap(m, unstructuredSecret, nameWithHash)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return m, nil
 }

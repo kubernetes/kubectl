@@ -14,12 +14,20 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package transformers
+package types
 
-import "k8s.io/kubectl/pkg/kinflate/types"
+import (
+	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
+	"k8s.io/apimachinery/pkg/runtime/schema"
+)
 
-// Transformer can transform objects.
-type Transformer interface {
-	// Transform modifies objects in a map, e.g. add prefixes or additional labels.
-	Transform(m types.KObject) error
+// GroupVersionKindName contains GroupVersionKind and original name of the resource.
+type GroupVersionKindName struct {
+	// GroupVersionKind of the resource.
+	GVK schema.GroupVersionKind
+	// original name of the resource before transformation.
+	Name string
 }
+
+// KObject is a map from GroupVersionKindName to unstructured objects
+type KObject map[GroupVersionKindName]*unstructured.Unstructured

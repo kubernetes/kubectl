@@ -43,7 +43,7 @@ func (fs *FakeFS) Create(name string) (File, error) {
 
 // Mkdir assures a fake directory appears in the in-memory file system.
 func (fs *FakeFS) Mkdir(name string, perm os.FileMode) error {
-	fs.m[name] = makeDir()
+	fs.m[name] = makeDir(name)
 	return nil
 }
 
@@ -57,10 +57,10 @@ func (fs *FakeFS) Open(name string) (File, error) {
 
 // Stat always returns nil FileInfo, and returns an error if file does not exist.
 func (fs *FakeFS) Stat(name string) (os.FileInfo, error) {
-	if _, found := fs.m[name]; found {
-		return nil, nil
+	if f, found := fs.m[name]; found {
+		return &Fakefileinfo{f}, nil
 	}
-	return nil, fmt.Errorf("file %q does not stat", name)
+	return nil, fmt.Errorf("file %q does not exist", name)
 }
 
 // ReadFile always returns an empty bytes and error depending on content of m.

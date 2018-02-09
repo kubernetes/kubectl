@@ -22,7 +22,6 @@ import (
 	"os"
 	"path"
 	"path/filepath"
-
 	"strings"
 
 	"k8s.io/apimachinery/pkg/api/meta"
@@ -32,20 +31,21 @@ import (
 	manifest "k8s.io/kubectl/pkg/apis/manifest/v1alpha1"
 	cutil "k8s.io/kubectl/pkg/kinflate/configmapandsecret"
 	"k8s.io/kubectl/pkg/kinflate/constants"
-	"k8s.io/kubectl/pkg/kinflate/gvkn"
+	"k8s.io/kubectl/pkg/kinflate/mergemap"
 	"k8s.io/kubectl/pkg/kinflate/transformers"
+	"k8s.io/kubectl/pkg/kinflate/types"
 	kutil "k8s.io/kubectl/pkg/kinflate/util"
 	"k8s.io/kubectl/pkg/scheme"
 )
 
-func populateMap(m map[gvkn.GroupVersionKindName]*unstructured.Unstructured, obj *unstructured.Unstructured, newName string) error {
+func populateMap(m types.KObject, obj *unstructured.Unstructured, newName string) error {
 	accessor, err := meta.Accessor(obj)
 	if err != nil {
 		return err
 	}
 	oldName := accessor.GetName()
 	gvk := obj.GetObjectKind().GroupVersionKind()
-	gvkn := gvkn.GroupVersionKindName{GVK: gvk, Name: oldName}
+	gvkn := types.GroupVersionKindName{GVK: gvk, Name: oldName}
 
 	if _, found := m[gvkn]; found {
 		return fmt.Errorf("cannot use a duplicate name %q for %s", oldName, gvk)
@@ -55,45 +55,34 @@ func populateMap(m map[gvkn.GroupVersionKindName]*unstructured.Unstructured, obj
 	return nil
 }
 
-func populateConfigMapAndSecretMap(manifest *manifest.Manifest, m map[gvkn.GroupVersionKindName]*unstructured.Unstructured) error {
-	for _, cm := range manifest.Configmaps {
-		unstructuredConfigMap, nameWithHash, err := cutil.MakeConfigmapAndGenerateName(cm)
-		if err != nil {
-			return err
-		}
-		err = populateMap(m, unstructuredConfigMap, nameWithHash)
-		if err != nil {
-			return err
-		}
+func populateConfigMapAndSecretMap(manifest *manifest.Manifest, m types.KObject) error {
+	configmaps, err := cutil.MakeConfigMapsKObject(manifest.Configmaps)
+	if err != nil {
+		return err
+	}
+	err = mergemap.Merge(m, configmaps)
+	if err != nil {
+		return err
 	}
 
-	for _, secret := range manifest.GenericSecrets {
-		unstructuredSecret, nameWithHash, err := cutil.MakeGenericSecretAndGenerateName(secret)
-		if err != nil {
-			return err
-		}
-		err = populateMap(m, unstructuredSecret, nameWithHash)
-		if err != nil {
-			return err
-		}
+	genericSecrets, err := cutil.MakeGenericSecretsKObject(manifest.GenericSecrets)
+	if err != nil {
+		return err
+	}
+	err = mergemap.Merge(m, genericSecrets)
+	if err != nil {
+		return err
 	}
 
-	for _, secret := range manifest.TLSSecrets {
-		unstructuredSecret, nameWithHash, err := cutil.MakeTLSSecretAndGenerateName(secret)
-		if err != nil {
-			return err
-		}
-		err = populateMap(m, unstructuredSecret, nameWithHash)
-		if err != nil {
-			return err
-		}
+	TLSSecrets, err := cutil.MakeTLSSecretsKObject(manifest.TLSSecrets)
+	if err != nil {
+		return err
 	}
-
-	return nil
+	return mergemap.Merge(m, TLSSecrets)
 }
 
 func populateResourceMap(files []string,
-	m map[gvkn.GroupVersionKindName]*unstructured.Unstructured) error {
+	m types.KObject) error {
 	for _, file := range files {
 		err := pathToMap(file, m)
 		if err != nil {
@@ -106,7 +95,7 @@ func populateResourceMap(files []string,
 // LoadFromManifestPath loads the manifest from the given path.
 // It returns a map of resources defined in the manifest file.
 func LoadFromManifestPath(mPath string,
-) (map[gvkn.GroupVersionKindName]*unstructured.Unstructured, error) {
+) (types.KObject, error) {
 	f, err := os.Stat(mPath)
 	if err != nil {
 		return nil, err
@@ -125,13 +114,13 @@ func LoadFromManifestPath(mPath string,
 	return ManifestToMap(manifest)
 }
 
-func pathToMap(path string, into map[gvkn.GroupVersionKindName]*unstructured.Unstructured) error {
+func pathToMap(path string, into types.KObject) error {
 	f, err := os.Stat(path)
 	if err != nil {
 		return err
 	}
 	if into == nil {
-		into = map[gvkn.GroupVersionKindName]*unstructured.Unstructured{}
+		into = types.KObject{}
 	}
 	switch mode := f.Mode(); {
 	case mode.IsDir():
@@ -142,7 +131,7 @@ func pathToMap(path string, into map[gvkn.GroupVersionKindName]*unstructured.Uns
 	return err
 }
 
-func fileToMap(filename string, into map[gvkn.GroupVersionKindName]*unstructured.Unstructured) error {
+func fileToMap(filename string, into types.KObject) error {
 	f, err := os.Stat(filename)
 	if f.IsDir() {
 		return fmt.Errorf("%q is NOT expected to be an dir", filename)
@@ -161,9 +150,9 @@ func fileToMap(filename string, into map[gvkn.GroupVersionKindName]*unstructured
 
 // dirToMap tries to find Kube-manifest.yaml first in a dir.
 // If not found, traverse all the file in the dir.
-func dirToMap(dirname string, into map[gvkn.GroupVersionKindName]*unstructured.Unstructured) error {
+func dirToMap(dirname string, into types.KObject) error {
 	if into == nil {
-		into = map[gvkn.GroupVersionKindName]*unstructured.Unstructured{}
+		into = types.KObject{}
 	}
 	f, err := os.Stat(dirname)
 	if !f.IsDir() {
@@ -210,16 +199,16 @@ func dirToMap(dirname string, into map[gvkn.GroupVersionKindName]*unstructured.U
 // ManifestToMap takes a manifest and recursively finds all instances of Kube-manifest,
 // reads them and merges them all in a map of resources.
 func ManifestToMap(m *manifest.Manifest,
-) (map[gvkn.GroupVersionKindName]*unstructured.Unstructured, error) {
+) (types.KObject, error) {
 	return manifestToMap(m, nil)
 }
 
 // manifestToMap takes a manifest and recursively finds all instances of Kube-manifest,
 // reads them and merges them all into `into`.
 func manifestToMap(m *manifest.Manifest,
-	into map[gvkn.GroupVersionKindName]*unstructured.Unstructured,
-) (map[gvkn.GroupVersionKindName]*unstructured.Unstructured, error) {
-	baseResourceMap := map[gvkn.GroupVersionKindName]*unstructured.Unstructured{}
+	into types.KObject,
+) (types.KObject, error) {
+	baseResourceMap := types.KObject{}
 	if into != nil {
 		baseResourceMap = into
 	}
@@ -228,7 +217,7 @@ func manifestToMap(m *manifest.Manifest,
 		return nil, err
 	}
 
-	overlayResouceMap := map[gvkn.GroupVersionKindName]*unstructured.Unstructured{}
+	overlayResouceMap := types.KObject{}
 	err = populateResourceMap(m.Patches, overlayResouceMap)
 	if err != nil {
 		return nil, err

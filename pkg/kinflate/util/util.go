@@ -18,6 +18,7 @@ package util
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 	"sort"
 
@@ -27,13 +28,13 @@ import (
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	k8syaml "k8s.io/apimachinery/pkg/util/yaml"
-	"k8s.io/kubectl/pkg/kinflate/gvkn"
+	"k8s.io/kubectl/pkg/kinflate/types"
 )
 
 // Decode decodes a list of objects in byte array format.
 // Decoded object will be inserted in `into` if it's not nil. Otherwise, it will
 // construct a new map and return it.
-func Decode(in []byte, into map[gvkn.GroupVersionKindName]*unstructured.Unstructured) (map[gvkn.GroupVersionKindName]*unstructured.Unstructured, error) {
+func Decode(in []byte, into types.KObject) (types.KObject, error) {
 	decoder := k8syaml.NewYAMLOrJSONDecoder(bytes.NewReader(in), 1024)
 	objs := []*unstructured.Unstructured{}
 
@@ -51,7 +52,7 @@ func Decode(in []byte, into map[gvkn.GroupVersionKindName]*unstructured.Unstruct
 	}
 
 	if into == nil {
-		into = map[gvkn.GroupVersionKindName]*unstructured.Unstructured{}
+		into = types.KObject{}
 	}
 	for i := range objs {
 		metaAccessor, err := meta.Accessor(objs[i])
@@ -70,9 +71,12 @@ func Decode(in []byte, into map[gvkn.GroupVersionKindName]*unstructured.Unstruct
 			return nil, err
 		}
 		gvk := gv.WithKind(kind)
-		gvkn := gvkn.GroupVersionKindName{
+		gvkn := types.GroupVersionKindName{
 			GVK:  gvk,
 			Name: name,
+		}
+		if _, found := into[gvkn]; found {
+			return into, fmt.Errorf("GroupVersionKindName: %#v already exists in the map", gvkn)
 		}
 		into[gvkn] = objs[i]
 	}
@@ -80,12 +84,12 @@ func Decode(in []byte, into map[gvkn.GroupVersionKindName]*unstructured.Unstruct
 }
 
 // Encode encodes the map `in` and output the encoded objects separated by `---`.
-func Encode(in map[gvkn.GroupVersionKindName]*unstructured.Unstructured) ([]byte, error) {
-	gvknList := []gvkn.GroupVersionKindName{}
+func Encode(in types.KObject) ([]byte, error) {
+	gvknList := []types.GroupVersionKindName{}
 	for gvkn := range in {
 		gvknList = append(gvknList, gvkn)
 	}
-	sort.Sort(ByGVKN(gvknList))
+	sort.Sort(types.ByGVKN(gvknList))
 
 	firstObj := true
 	var b []byte

@@ -14,16 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package util
+package types
 
 import (
 	"sort"
-
-	"k8s.io/kubectl/pkg/kinflate/gvkn"
 )
 
 // ByGVKN implements the sort interface.
-type ByGVKN []gvkn.GroupVersionKindName
+type ByGVKN []GroupVersionKindName
 
 var _ sort.Interface = ByGVKN{}
 

@@ -14,16 +14,23 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package gvkn
+package mergemap
 
 import (
-	"k8s.io/apimachinery/pkg/runtime/schema"
+	"fmt"
+
+	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
+	"k8s.io/kubectl/pkg/kinflate/types"
 )
 
-// GroupVersionKindName contains GroupVersionKind and original name of the resource.
-type GroupVersionKindName struct {
-	// GroupVersionKind of the resource.
-	GVK schema.GroupVersionKind
-	// original name of the resource before transformation.
-	Name string
+// Merge will merge all the entries in m2 to m1.
+func Merge(m1, m2 map[types.GroupVersionKindName]*unstructured.Unstructured,
+) error {
+	for gvkn, obj := range m2 {
+		if _, found := m1[gvkn]; found {
+			return fmt.Errorf("there is already an entry: %q", gvkn)
+		}
+		m1[gvkn] = obj
+	}
+	return nil
 }
