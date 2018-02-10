@@ -12,7 +12,7 @@ kinflate expects to find `Kube-manifest.yaml` in `$TUT_APP`.
 The above command discovers the resources, processes them,
 and emits the result to `stdout`.
 
-<!-- @showOutput @test -->
+<!-- @showOutput -->
 ```
 more $TUT_TMP/original_out
 ```

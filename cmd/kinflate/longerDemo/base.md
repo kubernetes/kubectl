@@ -3,19 +3,19 @@
 These resources work as is. To optionally confirm this,
 apply it to your cluster.
 
-<!-- @runKinflate @demo -->
+<!-- @runKinflate -->
 ```
 kubectl apply -f $TUT_APP
 ```
 
-<!-- @showResources @demo -->
+<!-- @showResources -->
 ```
 kubectl get deployments
 ```
 
 Define some functions to query the server directly:
 
-<!-- @funcGetAddress @env @test -->
+<!-- @funcGetAddress -->
 ```
 function tut_getServiceAddress {
   local name=$1
@@ -33,14 +33,14 @@ function tut_query {
 
 Query it:
 
-<!-- @query @demo -->
+<!-- @query -->
 ```
 tut_query tut-service peach
 ```
 
 All done.  Clear the cluster for the next example.
 
-<!-- @query @demo -->
+<!-- @query -->
 ```
 kubectl delete deployment tut-deployment
 kubectl delete service tut-service
