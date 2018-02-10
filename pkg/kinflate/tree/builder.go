@@ -24,45 +24,43 @@ import (
 
 	manifest "k8s.io/kubectl/pkg/apis/manifest/v1alpha1"
 	cutil "k8s.io/kubectl/pkg/kinflate/configmapandsecret"
-	"k8s.io/kubectl/pkg/kinflate/mergemap"
 	"k8s.io/kubectl/pkg/kinflate/types"
 	kutil "k8s.io/kubectl/pkg/kinflate/util"
 	"k8s.io/kubectl/pkg/kinflate/util/fs"
 )
 
-// LoadManifestNodeFromPath takes a path to a Kube-manifest.yaml or a dir that has a Kube-manifest.yaml.
-// It returns a tree of ManifestNode.
-func LoadManifestNodeFromPath(path string) (*ManifestNode, error) {
-	return loadManifestNodeFromPath(path)
+// LoadManifestDataFromPath takes a path to a Kube-manifest.yaml or a dir that has a Kube-manifest.yaml.
+// It returns a tree of ManifestData.
+func LoadManifestDataFromPath(path string) (*ManifestData, error) {
+	return loadManifestDataFromPath(path)
 }
 
-// loadManifestNodeFromPath make a ManifestNode from path
-func loadManifestNodeFromPath(path string) (*ManifestNode, error) {
+// loadManifestDataFromPath make a ManifestData from path
+func loadManifestDataFromPath(path string) (*ManifestData, error) {
 	m, err := loadManifestFileFromPath(path)
 	if err != nil {
 		return nil, err
 	}
-	return manifestToManifestNode(m)
+	return manifestToManifestData(m)
 }
 
-// manifestToManifestNode make a ManifestNode given an Manifest object
-func manifestToManifestNode(m *manifest.Manifest) (*ManifestNode, error) {
-	mnode := &ManifestNode{}
-	var err error
-	mnode.data, err = loadManifestDataFromManifestFileAndResources(m)
+// manifestToManifestData make a ManifestData given an Manifest object
+func manifestToManifestData(m *manifest.Manifest) (*ManifestData, error) {
+	mdata, err := loadManifestDataFromManifestFileAndResources(m)
 	if err != nil {
 		return nil, err
 	}
 
-	mnode.children = []*ManifestNode{}
+	pkgs := []*ManifestData{}
 	for _, pkg := range m.Packages {
-		child, err := loadManifestNodeFromPath(pkg)
+		pkgNode, err := loadManifestDataFromPath(pkg)
 		if err != nil {
 			return nil, err
 		}
-		mnode.children = append(mnode.children, child)
+		pkgs = append(pkgs, pkgNode)
 	}
-	return mnode, nil
+	mdata.Packages = pkgs
+	return mdata, nil
 }
 
 // loadManifestFileFromPath loads a manifest object from file.
@@ -75,40 +73,40 @@ func loadManifestFileFromPath(filename string) (*manifest.Manifest, error) {
 	return m, err
 }
 
-func loadManifestDataFromManifestFileAndResources(m *manifest.Manifest) (*manifestData, error) {
-	mdata := &manifestData{}
+func loadManifestDataFromManifestFileAndResources(m *manifest.Manifest) (*ManifestData, error) {
+	mdata := &ManifestData{}
 	var err error
-	mdata.name = m.Name
-	mdata.namePrefix = namePrefixType(m.NamePrefix)
-	mdata.objectLabels = m.ObjectLabels
-	mdata.objectAnnotations = m.ObjectAnnotations
+	mdata.Name = m.Name
+	mdata.NamePrefix = NamePrefixType(m.NamePrefix)
+	mdata.ObjectLabels = m.ObjectLabels
+	mdata.ObjectAnnotations = m.ObjectAnnotations
 
 	res, err := loadKObjectFromPaths(m.Resources)
 	if err != nil {
 		return nil, err
 	}
-	mdata.resources = resourcesType(res)
+	mdata.Resources = ResourcesType(res)
 
 	pat, err := loadKObjectFromPaths(m.Patches)
 	if err != nil {
 		return nil, err
 	}
-	mdata.patches = patchesType(pat)
+	mdata.Patches = PatchesType(pat)
 
 	cms, err := cutil.MakeConfigMapsKObject(m.Configmaps)
 	if err != nil {
 		return nil, err
 	}
-	mdata.configmaps = configmapsType(cms)
+	mdata.Configmaps = ConfigmapsType(cms)
 
 	sec, err := cutil.MakeGenericSecretsKObject(m.GenericSecrets)
 	if err != nil {
 		return nil, err
 	}
-	mdata.secrets = secretsType(sec)
+	mdata.Secrets = SecretsType(sec)
 
 	TLS, err := cutil.MakeTLSSecretsKObject(m.TLSSecrets)
-	err = mergemap.Merge(mdata.secrets, TLS)
+	err = types.Merge(mdata.Secrets, TLS)
 	if err != nil {
 		return nil, err
 	}

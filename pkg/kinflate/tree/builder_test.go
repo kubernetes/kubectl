@@ -24,7 +24,6 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	manifest "k8s.io/kubectl/pkg/apis/manifest/v1alpha1"
-	"k8s.io/kubectl/pkg/kinflate/mergemap"
 	"k8s.io/kubectl/pkg/kinflate/types"
 )
 
@@ -77,13 +76,14 @@ func makeMapOfPodWithImageName(imageName string) types.KObject {
 	}
 }
 
-func makeManifestData(name string) *manifestData {
-	return &manifestData{
-		name:       name,
-		resources:  resourcesType(types.KObject{}),
-		patches:    patchesType(types.KObject{}),
-		configmaps: configmapsType(types.KObject{}),
-		secrets:    secretsType(types.KObject{}),
+func makeManifestData(name string) *ManifestData {
+	return &ManifestData{
+		Name:       name,
+		Resources:  ResourcesType(types.KObject{}),
+		Patches:    PatchesType(types.KObject{}),
+		Configmaps: ConfigmapsType(types.KObject{}),
+		Secrets:    SecretsType(types.KObject{}),
+		Packages:   []*ManifestData{},
 	}
 }
 
@@ -211,7 +211,7 @@ func TestPathsToMap(t *testing.T) {
 
 	mapOfConfigMap := makeMapOfConfigMap()
 	mapOfPod := makeMapOfPod()
-	err := mergemap.Merge(mapOfPod, mapOfConfigMap)
+	err := types.Merge(mapOfPod, mapOfConfigMap)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -264,7 +264,7 @@ func TestPathsToMap(t *testing.T) {
 func TestManifestToManifestData(t *testing.T) {
 	mapOfConfigMap := makeMapOfConfigMap()
 	mapOfPod := makeMapOfPod()
-	err := mergemap.Merge(mapOfPod, mapOfConfigMap)
+	err := types.Merge(mapOfPod, mapOfConfigMap)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -290,15 +290,15 @@ func TestManifestToManifestData(t *testing.T) {
 		},
 	}
 
-	expectedMd := &manifestData{
-		name:              "test-manifest",
-		namePrefix:        "someprefix-",
-		objectLabels:      map[string]string{"foo": "bar"},
-		objectAnnotations: map[string]string{"note": "This is an annotation."},
-		resources:         resourcesType(mergedMap),
-		patches:           patchesType(makeMapOfPodWithImageName("nginx:latest")),
-		configmaps:        configmapsType(types.KObject{}),
-		secrets:           secretsType(types.KObject{}),
+	expectedMd := &ManifestData{
+		Name:              "test-manifest",
+		NamePrefix:        "someprefix-",
+		ObjectLabels:      map[string]string{"foo": "bar"},
+		ObjectAnnotations: map[string]string{"note": "This is an annotation."},
+		Resources:         ResourcesType(mergedMap),
+		Patches:           PatchesType(makeMapOfPodWithImageName("nginx:latest")),
+		Configmaps:        ConfigmapsType(types.KObject{}),
+		Secrets:           SecretsType(types.KObject{}),
 	}
 
 	actual, err := loadManifestDataFromManifestFileAndResources(m)
@@ -311,32 +311,18 @@ func TestManifestToManifestData(t *testing.T) {
 	}
 }
 
-func TestMakeManifestNode(t *testing.T) {
-	expected := &ManifestNode{
-		data: makeManifestData("grandparent"),
-		children: []*ManifestNode{
-			{
-				data: makeManifestData("parent1"),
-				children: []*ManifestNode{
-					{
-						data:     makeManifestData("child1"),
-						children: []*ManifestNode{},
-					},
-				},
-			},
-			{
-				data: makeManifestData("parent2"),
-				children: []*ManifestNode{
-					{
-						data:     makeManifestData("child2"),
-						children: []*ManifestNode{},
-					},
-				},
-			},
-		},
-	}
+func TestLoadManifestDataFromPath(t *testing.T) {
+	grandparent := makeManifestData("grandparent")
+	parent1 := makeManifestData("parent1")
+	parent2 := makeManifestData("parent2")
+	child1 := makeManifestData("child1")
+	child2 := makeManifestData("child2")
+	grandparent.Packages = []*ManifestData{parent1, parent2}
+	parent1.Packages = []*ManifestData{child1}
+	parent2.Packages = []*ManifestData{child2}
 
-	actual, err := loadManifestNodeFromPath("testdata/hierarchy")
+	expected := grandparent
+	actual, err := loadManifestDataFromPath("testdata/hierarchy")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
