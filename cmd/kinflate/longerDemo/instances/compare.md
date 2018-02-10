@@ -9,7 +9,7 @@ structure:
 find $TUT_APP
 ```
 
-<!-- @compareKinflateOutput @test -->
+<!-- @compareKinflateOutput -->
 ```
 diff \
   <(kinflate inflate -f $TUT_APP/staging) \
@@ -31,33 +31,33 @@ kinflate inflate -f $TUT_APP/production
 
 Deploy them:
 
-<!-- @deployStaging @test -->
+<!-- @deployStaging -->
 ```
 kinflate inflate -f $TUT_APP/staging |\
     kubectl apply -f -
 ```
 
-<!-- @deployProduction @test -->
+<!-- @deployProduction -->
 ```
 kinflate inflate -f $TUT_APP/production |\
     kubectl apply -f -
 ```
 
-<!-- @getAll @demo -->
+<!-- @getAll -->
 ```
 kubectl get all
 ```
 
 Delete the resources:
 
-<!-- @deleteStaging @demo -->
+<!-- @deleteStaging -->
 ```
 kubectl delete configmap staging-acme-tut-map
 kubectl delete service staging-acme-tut-service
 kubectl delete deployment staging-acme-tut-deployment
 ```
 
-<!-- @deleteProduction @demo -->
+<!-- @deleteProduction -->
 ```
 kinflate inflate -f $TUT_APP/production |\
     kubectl delete -f -

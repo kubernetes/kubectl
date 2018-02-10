@@ -7,12 +7,12 @@ A manifest is always called
 
 > `Kube-manifest.yaml`
 
-<!-- @defineManifest @demo -->
+<!-- @defineManifest @test -->
 ```
 export TUT_APP_MANIFEST=$TUT_APP/Kube-manifest.yaml
 ```
 
-<!-- @makeManifest @demo -->
+<!-- @makeManifest @test -->
 ```
 cat <<'EOF' >$TUT_APP_MANIFEST
 

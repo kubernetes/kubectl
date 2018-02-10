@@ -31,7 +31,7 @@ Compare to see result:
 
 <!-- @checkDiffs @test -->
 ```
-diff $TUT_TMP/original_out $TUT_TMP/customized_out
+diff $TUT_TMP/original_out $TUT_TMP/customized_out || true
 ```
 
 ## Labels and annotations
@@ -54,7 +54,7 @@ EOF
 kinflate inflate -f $TUT_APP >$TUT_TMP/customized_out
 ```
 
-<!-- @checkDiffsAgain @test -->
+<!-- @checkDiffsAgain -->
 ```
 diff $TUT_TMP/original_out $TUT_TMP/customized_out | more
 ```

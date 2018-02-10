@@ -26,7 +26,7 @@ kinflate init
 <!-- @showIt @test -->
 ```
 clear
-more Kube-manifest.yaml
+cat Kube-manifest.yaml
 ```
 
 Write a resource file:
@@ -56,20 +56,20 @@ Add it to the manifest:
 kinflate add resource configMap.yaml
 ```
 
-<!-- @showItAgain @test -->
+<!-- @confirmIt @test -->
 ```
-more Kube-manifest.yaml
+grep configMap.yaml Kube-manifest.yaml
 ```
 
-Add one that isn't there:
+Attempt to add a missing resource; kinflate should complain.
 
-<!-- @addNoResource @test -->
+<!-- @addNoResource -->
 ```
 kinflate add resource does_not_exist.yaml
 ```
 
-Try to reinit
-<!-- @initAgain @test -->
+Try to reinit; kinflate should complain.
+<!-- @initAgain -->
 ```
 kinflate init
 ```
