@@ -39,7 +39,7 @@ namePrefix: some-prefix
 objectLabels:
   app: helloworld
 objectAnnotations:
-  note: This is a example annotation
+  note: This is an example annotation
 resources:
 - deployment.yaml
 - service.yaml
