@@ -32,7 +32,7 @@ type OverlayTransformer struct {
 
 var _ Transformer = &OverlayTransformer{}
 
-// NewNamePrefixTransformer construct a NamePrefixTransformer.
+// NewOverlayTransformer constructs a OverlayTransformer.
 func NewOverlayTransformer(overlay types.KObject) (Transformer, error) {
 	if len(overlay) == 0 {
 		return nil, nil
@@ -40,7 +40,7 @@ func NewOverlayTransformer(overlay types.KObject) (Transformer, error) {
 	return &OverlayTransformer{overlay}, nil
 }
 
-// Transform prepends the name prefix.
+// Transform apply the overlay on top of the base resources.
 func (o *OverlayTransformer) Transform(baseResourceMap types.KObject) error {
 	// Strategic merge the resources exist in both base and overlay.
 	for gvkn, base := range baseResourceMap {
@@ -50,7 +50,7 @@ func (o *OverlayTransformer) Transform(baseResourceMap types.KObject) error {
 			if err != nil {
 				switch {
 				case runtime.IsNotRegisteredError(err):
-					return fmt.Errorf("CRD and TPR are not supported now: %v", err)
+					return fmt.Errorf("failed to find schema for %#v (which may be a CRD type): %v", gvkn.GVK, err)
 				default:
 					return err
 				}

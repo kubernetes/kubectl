@@ -56,7 +56,7 @@ type ManifestData struct {
 	Packages PackagesType
 }
 
-func (md *ManifestData) AllResources() error {
+func (md *ManifestData) allResources() error {
 	err := types.Merge(md.Resources, md.Configmaps)
 	if err != nil {
 		return err
@@ -64,19 +64,23 @@ func (md *ManifestData) AllResources() error {
 	return types.Merge(md.Resources, md.Secrets)
 }
 
+// Inflate will recursively do the transformation on all the nodes below.
 func (md *ManifestData) Inflate() error {
 	for _, pkg := range md.Packages {
 		err := pkg.Inflate()
 		if err != nil {
 			return err
 		}
-		err = types.Merge(md.Resources, pkg.Resources)
+	}
+
+	for _, pkg := range md.Packages {
+		err := types.Merge(md.Resources, pkg.Resources)
 		if err != nil {
 			return err
 		}
 	}
 
-	err := md.AllResources()
+	err := md.allResources()
 	if err != nil {
 		return err
 	}
