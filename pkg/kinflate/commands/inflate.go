@@ -23,7 +23,8 @@ import (
 
 	"github.com/spf13/cobra"
 
-	outil "k8s.io/kubectl/pkg/kinflate"
+	"k8s.io/kubectl/pkg/kinflate/tree"
+	"k8s.io/kubectl/pkg/kinflate/types"
 	kutil "k8s.io/kubectl/pkg/kinflate/util"
 )
 
@@ -80,11 +81,20 @@ func (o *inflateOptions) Complete(cmd *cobra.Command, args []string) error {
 
 // RunKinflate runs inflate command (do real work).
 func (o *inflateOptions) RunKinflate(out, errOut io.Writer) error {
-	m, err := outil.LoadFromManifestPath(o.manifestPath)
+	// Build a tree of ManifestData.
+	root, err := tree.LoadManifestDataFromPath(o.manifestPath)
 	if err != nil {
 		return err
 	}
-	res, err := kutil.Encode(m)
+
+	// Do the transformation for the tree.
+	err = root.Inflate()
+	if err != nil {
+		return err
+	}
+
+	// Output the objects.
+	res, err := kutil.Encode(types.KObject(root.Resources))
 	if err != nil {
 		return err
 	}

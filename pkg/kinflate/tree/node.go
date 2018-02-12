@@ -20,39 +20,70 @@ import (
 	"k8s.io/kubectl/pkg/kinflate/types"
 )
 
-type namePrefixType string
+type NamePrefixType string
 
-type objectLabelsType map[string]string
+type ObjectLabelsType map[string]string
 
-type objectAnnotationsType map[string]string
+type ObjectAnnotationsType map[string]string
 
-type resourcesType types.KObject
+type ResourcesType types.KObject
 
-type patchesType types.KObject
+type PatchesType types.KObject
 
-type configmapsType types.KObject
+type ConfigmapsType types.KObject
 
-type secretsType types.KObject
+type SecretsType types.KObject
 
-// ManifestNode groups (possibly empty) manifest data with a (possibly empty)
-// set of manifest nodes.
-// data in one node may refer to data in other nodes.
+type PackagesType []*ManifestData
+
+// ManifestData contains all the objects loaded from the filesystem according to
+// the Manifest Object.
+// Data in one node may refer to data in other nodes.
 // The node is invalid if it requires data it cannot find.
 // A node is either a base app, or a patch to the base, or a patch to a patch to the base, etc.
-type ManifestNode struct {
-	data     *manifestData
-	children []*ManifestNode
+type ManifestData struct {
+	// Name of the manifest
+	Name string
+
+	NamePrefix        NamePrefixType
+	ObjectLabels      ObjectLabelsType
+	ObjectAnnotations ObjectAnnotationsType
+	Resources         ResourcesType
+	Patches           PatchesType
+	Configmaps        ConfigmapsType
+	Secrets           SecretsType
+
+	Packages PackagesType
 }
 
-// manifestData contains all the objects loaded from the filesystem according to
-// the Manifest Object.
-type manifestData struct {
-	name              string
-	namePrefix        namePrefixType
-	objectLabels      objectLabelsType
-	objectAnnotations objectAnnotationsType
-	resources         resourcesType
-	patches           patchesType
-	configmaps        configmapsType
-	secrets           secretsType
+func (md *ManifestData) allResources() error {
+	err := types.Merge(md.Resources, md.Configmaps)
+	if err != nil {
+		return err
+	}
+	return types.Merge(md.Resources, md.Secrets)
+}
+
+// Inflate will recursively do the transformation on all the nodes below.
+func (md *ManifestData) Inflate() error {
+	for _, pkg := range md.Packages {
+		err := pkg.Inflate()
+		if err != nil {
+			return err
+		}
+	}
+
+	for _, pkg := range md.Packages {
+		err := types.Merge(md.Resources, pkg.Resources)
+		if err != nil {
+			return err
+		}
+	}
+
+	err := md.allResources()
+	if err != nil {
+		return err
+	}
+	t, err := DefaultTransformer(md)
+	return t.Transform(types.KObject(md.Resources))
 }
