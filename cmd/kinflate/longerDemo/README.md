@@ -23,3 +23,5 @@ mkdir -p $TUT_DIR
 TUT_TMP=$TUT_DIR/tmp
 mkdir -p $TUT_TMP
 ```
+
+__Next:__ [Make some resources](resources.md)

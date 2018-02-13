@@ -11,3 +11,5 @@ operations and re-applications of _kinflate | kubectl_.
 
 TODO: Demo fork/rebase flow of getting an upgrade,
 e.g. new container images in the manifest.
+
+__Next:__ [Editor](editor.md)

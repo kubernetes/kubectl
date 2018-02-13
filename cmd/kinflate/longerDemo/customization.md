@@ -66,3 +66,5 @@ It becomes her own version of the _app_.
 
 She can capture upgrades (i.e. manifest and resource
 changes) by rebasing from the original.
+
+__Next:__ [Instances](instances/README.md)

@@ -42,3 +42,5 @@ spec:
   replicas: 6
 EOF
 ```
+
+__Next:__ [Compare](compare.md)
