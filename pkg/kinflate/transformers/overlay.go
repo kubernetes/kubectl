@@ -35,7 +35,7 @@ var _ Transformer = &OverlayTransformer{}
 // NewOverlayTransformer constructs a OverlayTransformer.
 func NewOverlayTransformer(overlay types.KObject) (Transformer, error) {
 	if len(overlay) == 0 {
-		return nil, nil
+		return NewNoOpTransformer(), nil
 	}
 	return &OverlayTransformer{overlay}, nil
 }

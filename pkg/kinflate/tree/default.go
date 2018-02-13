@@ -34,40 +34,30 @@ func DefaultTransformer(m *ManifestData) (transformers.Transformer, error) {
 	if err != nil {
 		return nil, err
 	}
-	if ot != nil {
-		ts = append(ts, ot)
-	}
+	ts = append(ts, ot)
 
 	npt, err := transformers.NewDefaultingNamePrefixTransformer(string(m.NamePrefix))
 	if err != nil {
 		return nil, err
 	}
-	if npt != nil {
-		ts = append(ts, npt)
-	}
+	ts = append(ts, npt)
 
 	lt, err := transformers.NewDefaultingLabelsMapTransformer(m.ObjectLabels)
 	if err != nil {
 		return nil, err
 	}
-	if lt != nil {
-		ts = append(ts, lt)
-	}
+	ts = append(ts, lt)
 
 	at, err := transformers.NewDefaultingAnnotationsMapTransformer(m.ObjectAnnotations)
 	if err != nil {
 		return nil, err
 	}
-	if at != nil {
-		ts = append(ts, at)
-	}
+	ts = append(ts, at)
 
 	nrt, err := transformers.NewDefaultingNameReferenceTransformer()
 	if err != nil {
 		return nil, err
 	}
-	if nrt != nil {
-		ts = append(ts, nrt)
-	}
+	ts = append(ts, nrt)
 	return transformers.NewMultiTransformer(ts), nil
 }
