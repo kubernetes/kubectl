@@ -31,3 +31,8 @@ upgrades from the original configuration.
 ```
 go get k8s.io/kubectl/cmd/kinflate
 ```
+
+## Demos and tutorial
+
+ * [Short demo](shortDemo.md)
+ * [Longer demo / tutorial](longerDemo/README.md)

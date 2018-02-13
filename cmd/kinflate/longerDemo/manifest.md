@@ -76,3 +76,5 @@ Before going any further, save a copy of the manifest:
 export TUT_ORG_MANIFEST=$TUT_TMP/original-manifest.yaml
 cp $TUT_APP_MANIFEST $TUT_ORG_MANIFEST
 ```
+
+__Next:__ [Identity transformation](identity.md)

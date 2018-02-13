@@ -24,3 +24,5 @@ Create a _staging_ and _production_ instance.
 mkdir -p $TUT_APP/staging
 mkdir -p $TUT_APP/production
 ```
+
+__Next:__ [Staging](staging.md)

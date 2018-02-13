@@ -46,3 +46,5 @@ kubectl delete deployment tut-deployment
 kubectl delete service tut-service
 kubectl delete configmap tut-map
 ```
+
+__Next:__ [Describe the app with a Manifest](manifest.md)

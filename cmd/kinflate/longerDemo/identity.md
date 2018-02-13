@@ -32,3 +32,5 @@ different than using kubectl directly:
 > ```
 > kubectl apply -f $TUT_APP
 > ```
+
+__Next:__ [Customization](customization.md)

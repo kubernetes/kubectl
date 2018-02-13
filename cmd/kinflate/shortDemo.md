@@ -57,3 +57,7 @@ kinflate inflate -f . | kubectl apply -f -
 
 This fork of the app repository could be committed to a private repo.  Rebase as
 desired.
+
+## Longer demo / tutorial
+
+See [longerDemo](longerDemo/README.md).
