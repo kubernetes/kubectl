@@ -17,4 +17,5 @@ limitations under the License.
 package constants
 
 // KubeManifestFileName is the Well-Known File Name for a kubernetes app manifest.
-const KubeManifestFileName = "Kube-manifest.yaml"
+const KubeManifestSuffix = ".yaml"
+const KubeManifestFileName = "Kube-manifest" + KubeManifestSuffix

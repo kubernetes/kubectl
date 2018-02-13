@@ -46,17 +46,19 @@ func (m *ManifestLoader) fs() fs.FileSystem {
 func (m *ManifestLoader) makeValidManifestPath(mPath string) (string, error) {
 	f, err := m.fs().Stat(mPath)
 	if err != nil {
-		return "", err
+		errorMsg := fmt.Sprintf("Manifest (%s) missing\nRun `kinflate init` first", mPath)
+		return "", errors.New(errorMsg)
 	}
 	if f.IsDir() {
 		mPath = path.Join(mPath, constants.KubeManifestFileName)
 		_, err = m.fs().Stat(mPath)
 		if err != nil {
-			return "", err
+			errorMsg := fmt.Sprintf("Manifest (%s) missing\nRun `kinflate init` first", mPath)
+			return "", errors.New(errorMsg)
 		}
 	} else {
 		if !strings.HasSuffix(mPath, constants.KubeManifestFileName) {
-			return "", fmt.Errorf("expecting file: %q, but got: %q", constants.KubeManifestFileName, mPath)
+			return "", fmt.Errorf("Manifest file (%s) should have %s suffix\n", mPath, constants.KubeManifestSuffix)
 		}
 	}
 	return mPath, nil
