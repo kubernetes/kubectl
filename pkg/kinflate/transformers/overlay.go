@@ -43,39 +43,32 @@ func NewOverlayTransformer(overlay types.KObject) (Transformer, error) {
 // Transform apply the overlay on top of the base resources.
 func (o *OverlayTransformer) Transform(baseResourceMap types.KObject) error {
 	// Strategic merge the resources exist in both base and overlay.
-	for gvkn, base := range baseResourceMap {
+	for gvkn, overlay := range o.overlay {
 		// Merge overlay with base resource.
-		if overlay, found := o.overlay[gvkn]; found {
-			versionedObj, err := scheme.Scheme.New(gvkn.GVK)
-			if err != nil {
-				switch {
-				case runtime.IsNotRegisteredError(err):
-					return fmt.Errorf("failed to find schema for %#v (which may be a CRD type): %v", gvkn.GVK, err)
-				default:
-					return err
-				}
-			}
-			// TODO: Change this to use the new Merge package.
-			// Store the name of the base object, because this name may have been munged.
-			// Apply this name to the StrategicMergePatched object.
-			baseName := base.GetName()
-			merged, err := strategicpatch.StrategicMergeMapPatch(
-				base.UnstructuredContent(),
-				overlay.UnstructuredContent(),
-				versionedObj)
-			if err != nil {
-				return err
-			}
-			base.SetName(baseName)
-			baseResourceMap[gvkn].Object = merged
-			delete(o.overlay, gvkn)
+		base, found := baseResourceMap[gvkn]
+		if !found {
+			return fmt.Errorf("failed to find an object with %#v to apply the patch", gvkn.GVK)
 		}
-	}
-	// If there are resources in overlay that are not defined in base, just add it to base.
-	if len(o.overlay) > 0 {
-		for gvkn, jsonObj := range o.overlay {
-			baseResourceMap[gvkn] = jsonObj
+		versionedObj, err := scheme.Scheme.New(gvkn.GVK)
+		if err != nil {
+			if runtime.IsNotRegisteredError(err) {
+				return fmt.Errorf("failed to find schema for %#v (which may be a CRD type): %v", gvkn.GVK, err)
+			}
+			return err
 		}
+		// TODO: Change this to use the new Merge package.
+		// Store the name of the base object, because this name may have been munged.
+		// Apply this name to the StrategicMergePatched object.
+		baseName := base.GetName()
+		merged, err := strategicpatch.StrategicMergeMapPatch(
+			base.UnstructuredContent(),
+			overlay.UnstructuredContent(),
+			versionedObj)
+		if err != nil {
+			return err
+		}
+		base.SetName(baseName)
+		baseResourceMap[gvkn].Object = merged
 	}
 	return nil
 }
