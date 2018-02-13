@@ -57,12 +57,30 @@ func TestManifestLoaderEmptyFile(t *testing.T) {
 }
 
 func TestLoadNotExist(t *testing.T) {
-	loader := kutil.ManifestLoader{FS: fs.MakeFakeFS()}
+	badSuffix := "foo.bar"
+	fakeFS := fs.MakeFakeFS()
+	fakeFS.Mkdir(".", 0644)
+	fakeFS.Create(badSuffix)
+	loader := kutil.ManifestLoader{FS: fakeFS}
 	_, err := loader.Read("Kube-manifest.yaml")
 	if err == nil {
 		t.Fatalf("expect an error")
 	}
-	if !strings.Contains(err.Error(), "does not exist") {
+	if !strings.Contains(err.Error(), "Run `kinflate init` first") {
+		t.Fatalf("expect an error contains %q, but got %v", "does not exist", err)
+	}
+	_, err = loader.Read(".")
+	if err == nil {
+		t.Fatalf("expect an error")
+	}
+	if !strings.Contains(err.Error(), "Run `kinflate init` first") {
+		t.Fatalf("expect an error contains %q, but got %v", "does not exist", err)
+	}
+	_, err = loader.Read(badSuffix)
+	if err == nil {
+		t.Fatalf("expect an error")
+	}
+	if !strings.Contains(err.Error(), "should have .yaml suffix") {
 		t.Fatalf("expect an error contains %q, but got %v", "does not exist", err)
 	}
 }
