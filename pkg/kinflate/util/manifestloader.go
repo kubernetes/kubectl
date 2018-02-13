@@ -33,6 +33,10 @@ type ManifestLoader struct {
 	FS fs.FileSystem
 }
 
+//This is a placeholder for the ManifestErrors type
+//TODO: Think about this struct and make is better
+type ManifestErrors []string
+
 func (m *ManifestLoader) fs() fs.FileSystem {
 	if m.FS == nil {
 		m.FS = fs.MakeRealFS()
@@ -43,7 +47,7 @@ func (m *ManifestLoader) fs() fs.FileSystem {
 // makeValidManifestPath returns a path to a KubeManifest file known to exist.
 // The argument is either the full path to the file itself, or a path to a directory
 // that immediately contains the file. Anything else is an error.
-func (m *ManifestLoader) makeValidManifestPath(mPath string) (string, error) {
+func (m *ManifestLoader) MakeValidManifestPath(mPath string) (string, error) {
 	f, err := m.fs().Stat(mPath)
 	if err != nil {
 		errorMsg := fmt.Sprintf("Manifest (%s) missing\nRun `kinflate init` first", mPath)
@@ -65,11 +69,7 @@ func (m *ManifestLoader) makeValidManifestPath(mPath string) (string, error) {
 }
 
 // Read loads a manifest file and parse it in to the Manifest object.
-func (m *ManifestLoader) Read(mPath string) (*manifest.Manifest, error) {
-	filename, err := m.makeValidManifestPath(mPath)
-	if err != nil {
-		return nil, err
-	}
+func (m *ManifestLoader) Read(filename string) (*manifest.Manifest, error) {
 	bytes, err := m.fs().ReadFile(filename)
 	if err != nil {
 		return nil, err
@@ -96,4 +96,26 @@ func (m *ManifestLoader) Write(filename string, manifest *manifest.Manifest) err
 	}
 
 	return m.fs().WriteFile(filename, bytes)
+}
+
+// Read must have already been called and we have a loaded manifest
+func (m *ManifestLoader) Validate(manifest *manifest.Manifest) ManifestErrors {
+	//TODO: implement this function
+	//// validate Packages
+	//merrors := m.validatePackages(manifest.Packages)
+	//// validate Resources
+	//merrors = merrors + m.validateResources(manifest.Resources)
+	//
+	//// validate Patches
+	//merrors = append(merrors, m.validatePatches(manifest.Patches))
+	//
+	//// validate Configmaps
+	//merrors = append(merrors, m.validateConfigmaps(manifest.Configmaps))
+	//
+	//// validate GenericSecrets
+	//merrors = append(merrors, m.validateGenericSecrets(manifest.GenericSecrets))
+	//
+	//// validate TLSSecrets
+	//merrors = append(merrors, m.validateTLSSecrets(manifest.TLSSecrets))
+	return nil
 }
