@@ -25,6 +25,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	manifest "k8s.io/kubectl/pkg/apis/manifest/v1alpha1"
 	"k8s.io/kubectl/pkg/kinflate/types"
+	"k8s.io/kubectl/pkg/kinflate/util/fs"
 )
 
 func makeMapOfConfigMap() types.KObject {
@@ -129,9 +130,12 @@ func TestFileToMap(t *testing.T) {
 		},
 	}
 
+	// TODO: Convert to a fake filesystem instead of using test files.
+	loader := Loader{FS: fs.MakeRealFS()}
+
 	for _, tc := range testcases {
 		actual := types.KObject{}
-		err := loadKObjectFromFile(tc.filename, actual)
+		err := loader.loadKObjectFromFile(tc.filename, actual)
 		if err == nil {
 			if tc.expectErr {
 				t.Errorf("filename: %q, expect an error containing %q, but didn't get an error", tc.filename, tc.errorStr)
@@ -179,9 +183,12 @@ func TestPathToMap(t *testing.T) {
 		},
 	}
 
+	// TODO: Convert to a fake filesystem instead of using test files.
+	loader := Loader{FS: fs.MakeRealFS()}
+
 	for _, tc := range testcases {
 		actual := types.KObject{}
-		err := loadKObjectFromPath(tc.filename, actual)
+		err := loader.loadKObjectFromPath(tc.filename, actual)
 		if err == nil {
 			if tc.expectErr {
 				t.Errorf("filename: %q, expect an error containing %q, but didn't get an error", tc.filename, tc.errorStr)
@@ -240,8 +247,11 @@ func TestPathsToMap(t *testing.T) {
 		},
 	}
 
+	// TODO: Convert to a fake filesystem instead of using test files.
+	loader := Loader{FS: fs.MakeRealFS()}
+
 	for _, tc := range testcases {
-		actual, err := loadKObjectFromPaths(tc.filenames)
+		actual, err := loader.loadKObjectFromPaths(tc.filenames)
 		if err == nil {
 			if tc.expectErr {
 				t.Errorf("filenames: %q, expect an error containing %q, but didn't get an error", tc.filenames, tc.errorStr)
@@ -301,7 +311,9 @@ func TestManifestToManifestData(t *testing.T) {
 		Secrets:           SecretsType(types.KObject{}),
 	}
 
-	actual, err := loadManifestDataFromManifestFileAndResources(m)
+	// TODO: Convert to a fake filesystem instead of using test files.
+	loader := Loader{FS: fs.MakeRealFS()}
+	actual, err := loader.loadManifestDataFromManifestFileAndResources(m)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -321,8 +333,9 @@ func TestLoadManifestDataFromPath(t *testing.T) {
 	parent1.Packages = []*ManifestData{child1}
 	parent2.Packages = []*ManifestData{child2}
 
+	loader := Loader{FS: fs.MakeRealFS(), InitialPath: "testdata/hierarchy"}
 	expected := grandparent
-	actual, err := loadManifestDataFromPath("testdata/hierarchy")
+	actual, err := loader.LoadManifestDataFromPath()
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}

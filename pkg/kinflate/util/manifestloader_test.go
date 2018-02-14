@@ -62,21 +62,21 @@ func TestLoadNotExist(t *testing.T) {
 	fakeFS.Mkdir(".", 0644)
 	fakeFS.Create(badSuffix)
 	loader := kutil.ManifestLoader{FS: fakeFS}
-	_, err := loader.Read("Kube-manifest.yaml")
+	_, err := loader.MakeValidManifestPath("Kube-manifest.yaml")
 	if err == nil {
 		t.Fatalf("expect an error")
 	}
 	if !strings.Contains(err.Error(), "Run `kinflate init` first") {
 		t.Fatalf("expect an error contains %q, but got %v", "does not exist", err)
 	}
-	_, err = loader.Read(".")
+	_, err = loader.MakeValidManifestPath(".")
 	if err == nil {
 		t.Fatalf("expect an error")
 	}
 	if !strings.Contains(err.Error(), "Run `kinflate init` first") {
 		t.Fatalf("expect an error contains %q, but got %v", "does not exist", err)
 	}
-	_, err = loader.Read(badSuffix)
+	_, err = loader.MakeValidManifestPath(badSuffix)
 	if err == nil {
 		t.Fatalf("expect an error")
 	}
