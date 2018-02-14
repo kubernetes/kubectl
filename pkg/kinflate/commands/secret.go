@@ -35,94 +35,15 @@ func newCmdAddSecret(errOut io.Writer, fsys fs.FileSystem) *cobra.Command {
 		Use:   "secret",
 		Short: "Adds a secret using specified subcommand",
 		Example: `
-	# Adds a generic secret to the Manifest (with a specified key)
-	kinflate add secret generic my-secret --from-file=my-key=file/path --from-literal=my-literal=12345
-
 	# Adds a TLS secret to the Manifest (with a specified key)
 	kinflate add secret tls my-tls-secret --cert=cert/path.cert --key=key/path.key
 `,
 	}
 	cmd.AddCommand(
-		newCmdAddSecretGeneric(errOut, fsys),
 		newCmdAddSecretTLS(errOut, fsys),
 	)
 
 	return cmd
-}
-
-func newCmdAddSecretGeneric(errOut io.Writer, fsys fs.FileSystem) *cobra.Command {
-	var config dataConfig
-	cmd := &cobra.Command{
-		Use:   "generic NAME [--type=string] [--from-file=[key=]source] [--from-literal=key1=value1]",
-		Short: "Adds a secret from a local file, directory or literal value.",
-		Long:  "",
-		Example: `
-	# Adds a generic secret to the Manifest (with a specified key)
-	kinflate add secret generic my-secret --from-file=my-key=file/path --from-literal=my-literal=12345
-
-	# Adds a generic secret to the Manifest (key is the filename)
-	kinflate add secret generic my-secret --from-file=file/path
-
-	# Adds a generic secret from env-file
-	kinflate add secret generic my-secret --from-env-file=env/path.env
-`,
-		RunE: func(_ *cobra.Command, args []string) error {
-			err := config.Validate(args)
-			if err != nil {
-				return err
-			}
-
-			loader := kutil.ManifestLoader{FS: fsys}
-			m, err := loader.Read(constants.KubeManifestFileName)
-			if err != nil {
-				return err
-			}
-
-			// Add the generic secret to the manifest.
-			err = addGenericSecret(m, config)
-			if err != nil {
-				return err
-			}
-
-			// Write out the manifest with added secret.
-			return loader.Write(constants.KubeManifestFileName, m)
-		},
-	}
-
-	cmd.Flags().StringSliceVar(&config.FileSources, "from-file", []string{}, "Key files can be specified using their file path, in which case a default name will be given to them, or optionally with a name and file path, in which case the given name will be used.  Specifying a directory will iterate each named file in the directory that is a valid secret key.")
-	cmd.Flags().StringArrayVar(&config.LiteralSources, "from-literal", []string{}, "Specify a key and literal value to insert in secret (i.e. mykey=somevalue)")
-	cmd.Flags().StringVar(&config.EnvFileSource, "from-env-file", "", "Specify the path to a file to read lines of key=val pairs to create a secret (i.e. a Docker .env file).")
-
-	return cmd
-}
-
-func addGenericSecret(m *manifest.Manifest, config dataConfig) error {
-	gs := getOrCreateGenericSecret(m, config.Name)
-
-	err := mergeData(&gs.DataSources, config)
-	if err != nil {
-		return err
-	}
-
-	// Validate manifest's generic secret by creating a generic secret.
-	_, _, err = configmapandsecret.MakeGenericSecretAndGenerateName(*gs)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func getOrCreateGenericSecret(m *manifest.Manifest, name string) *manifest.GenericSecret {
-	for i, s := range m.GenericSecrets {
-		if name == s.Name {
-			return &m.GenericSecrets[i]
-		}
-	}
-	// generic secret not found, create new one and add it to the manifest.
-	gs := manifest.GenericSecret{Name: name}
-	m.GenericSecrets = append(m.GenericSecrets, gs)
-	return &m.GenericSecrets[len(m.GenericSecrets)-1]
 }
 
 type addTLSSecret struct {

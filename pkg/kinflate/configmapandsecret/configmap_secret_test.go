@@ -131,7 +131,7 @@ D2lWusoe2/nEqfDVVWGWlyJ7yOmqaVm/iNUN9B2N2g==
 	}
 }
 
-func makeEnvSecret(name string) *corev1.Secret {
+func makeSecret(name string) *corev1.Secret {
 	return &corev1.Secret{
 		TypeMeta: metav1.TypeMeta{
 			APIVersion: "v1",
@@ -148,7 +148,7 @@ func makeEnvSecret(name string) *corev1.Secret {
 	}
 }
 
-func makeUnstructuredEnvSecret(name string) *unstructured.Unstructured {
+func makeUnstructuredSecret(name string) *unstructured.Unstructured {
 	return &unstructured.Unstructured{
 		Object: map[string]interface{}{
 			"apiVersion": "v1",
@@ -163,41 +163,6 @@ func makeUnstructuredEnvSecret(name string) *unstructured.Unstructured {
 				"DB_PASSWORD": base64.StdEncoding.EncodeToString([]byte("somepw")),
 			},
 		},
-	}
-}
-
-func makeFileSecret(name string) *corev1.Secret {
-	return &corev1.Secret{
-		TypeMeta: metav1.TypeMeta{
-			APIVersion: "v1",
-			Kind:       "Secret",
-		},
-		ObjectMeta: metav1.ObjectMeta{
-			Name: name,
-		},
-		Data: map[string][]byte{
-			"app-init.ini": []byte(`FOO=bar
-BAR=baz
-`),
-		},
-		Type: corev1.SecretTypeOpaque,
-	}
-}
-
-func makeLiteralSecret(name string) *corev1.Secret {
-	return &corev1.Secret{
-		TypeMeta: metav1.TypeMeta{
-			APIVersion: "v1",
-			Kind:       "Secret",
-		},
-		ObjectMeta: metav1.ObjectMeta{
-			Name: name,
-		},
-		Data: map[string][]byte{
-			"a": []byte("x"),
-			"b": []byte("y"),
-		},
-		Type: corev1.SecretTypeOpaque,
 	}
 }
 
@@ -283,53 +248,20 @@ func TestConstructTLSSecret(t *testing.T) {
 }
 
 func TestConstructGenericSecret(t *testing.T) {
-	type testCase struct {
-		description string
-		input       manifest.GenericSecret
-		expected    *corev1.Secret
-	}
-
-	testCases := []testCase{
-		{
-			description: "construct secret from env",
-			input: manifest.GenericSecret{
-				Name: "envSecret",
-				DataSources: manifest.DataSources{
-					EnvSource: "../examples/simple/instances/exampleinstance/configmap/app.env",
-				},
-			},
-			expected: makeEnvSecret("envSecret"),
-		},
-		{
-			description: "construct secret from file",
-			input: manifest.GenericSecret{
-				Name: "fileSecret",
-				DataSources: manifest.DataSources{
-					FileSources: []string{"../examples/simple/instances/exampleinstance/configmap/app-init.ini"},
-				},
-			},
-			expected: makeFileSecret("fileSecret"),
-		},
-		{
-			description: "construct secret from literal",
-			input: manifest.GenericSecret{
-				Name: "literalSecret",
-				DataSources: manifest.DataSources{
-					LiteralSources: []string{"a=x", "b=y"},
-				},
-			},
-			expected: makeLiteralSecret("literalSecret"),
+	secret := manifest.GenericSecret{
+		Name: "secret",
+		Commands: map[string]string{
+			"DB_USERNAME": "printf admin",
+			"DB_PASSWORD": "printf somepw",
 		},
 	}
-
-	for _, tc := range testCases {
-		cm, err := makeGenericSecret(tc.input)
-		if err != nil {
-			t.Fatalf("unexpected error: %v", err)
-		}
-		if !reflect.DeepEqual(*cm, *tc.expected) {
-			t.Fatalf("in testcase: %q updated:\n%#v\ndoesn't match expected:\n%#v\n", tc.description, *cm, tc.expected)
-		}
+	cm, err := makeGenericSecret(secret, ".")
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	expected := makeSecret("secret")
+	if !reflect.DeepEqual(*cm, *expected) {
+		t.Fatalf("%#v\ndoesn't match expected:\n%#v", *cm, *expected)
 	}
 }
 

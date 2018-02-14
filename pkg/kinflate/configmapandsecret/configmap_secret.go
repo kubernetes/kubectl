@@ -21,6 +21,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"os"
+	"os/exec"
+	"path/filepath"
 
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/meta"
@@ -48,8 +51,8 @@ func MakeConfigmapAndGenerateName(cm manifest.ConfigMap) (*unstructured.Unstruct
 }
 
 // MakeGenericSecretAndGenerateName makes a generic secret and returns the secret and the name appended with a hash.
-func MakeGenericSecretAndGenerateName(secret manifest.GenericSecret) (*unstructured.Unstructured, string, error) {
-	corev1Secret, err := makeGenericSecret(secret)
+func MakeGenericSecretAndGenerateName(secret manifest.GenericSecret, path string) (*unstructured.Unstructured, string, error) {
+	corev1Secret, err := makeGenericSecret(secret, path)
 	if err != nil {
 		return nil, "", err
 	}
@@ -111,7 +114,7 @@ func makeConfigMap(cm manifest.ConfigMap) (*corev1.ConfigMap, error) {
 	return corev1cm, nil
 }
 
-func makeGenericSecret(secret manifest.GenericSecret) (*corev1.Secret, error) {
+func makeGenericSecret(secret manifest.GenericSecret, path string) (*corev1.Secret, error) {
 	corev1secret := &corev1.Secret{}
 	corev1secret.APIVersion = "v1"
 	corev1secret.Kind = "Secret"
@@ -119,21 +122,14 @@ func makeGenericSecret(secret manifest.GenericSecret) (*corev1.Secret, error) {
 	corev1secret.Type = corev1.SecretTypeOpaque
 	corev1secret.Data = map[string][]byte{}
 
-	if secret.EnvSource != "" {
-		if err := cutil.HandleFromEnvFileSource(corev1secret, secret.EnvSource); err != nil {
+	for k, v := range secret.Commands {
+		out, err := createSecretKey(path, v)
+		if err != nil {
 			return nil, err
 		}
+		corev1secret.Data[k] = out
 	}
-	if secret.FileSources != nil {
-		if err := cutil.HandleFromFileSources(corev1secret, secret.FileSources); err != nil {
-			return nil, err
-		}
-	}
-	if secret.LiteralSources != nil {
-		if err := cutil.HandleFromLiteralSources(corev1secret, secret.LiteralSources); err != nil {
-			return nil, err
-		}
-	}
+
 	return corev1secret, nil
 }
 
@@ -209,10 +205,10 @@ func MakeConfigMapsKObject(maps []manifest.ConfigMap) (types.KObject, error) {
 }
 
 // MakeGenericSecretsKObject returns a map of <GVK, oldName> -> unstructured object.
-func MakeGenericSecretsKObject(secrets []manifest.GenericSecret) (types.KObject, error) {
+func MakeGenericSecretsKObject(secrets []manifest.GenericSecret, path string) (types.KObject, error) {
 	m := types.KObject{}
 	for _, secret := range secrets {
-		unstructuredSecret, nameWithHash, err := MakeGenericSecretAndGenerateName(secret)
+		unstructuredSecret, nameWithHash, err := MakeGenericSecretAndGenerateName(secret, path)
 		if err != nil {
 			return nil, err
 		}
@@ -238,4 +234,15 @@ func MakeTLSSecretsKObject(secrets []manifest.TLSSecret) (types.KObject, error) 
 		}
 	}
 	return m, nil
+}
+
+func createSecretKey(wd string, command string) ([]byte, error) {
+	fi, err := os.Stat(wd)
+	if err != nil || !fi.IsDir() {
+		wd = filepath.Dir(wd)
+	}
+	cmd := exec.Command("sh", "-c", command)
+	cmd.Dir = wd
+
+	return cmd.Output()
 }

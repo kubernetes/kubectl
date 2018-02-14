@@ -27,7 +27,6 @@ func adjustPathsForManifest(m *manifest.Manifest, pathToDir []string) {
 	m.Resources = adjustPaths(m.Resources, pathToDir)
 	m.Patches = adjustPaths(m.Patches, pathToDir)
 	m.Configmaps = adjustPathForConfigMaps(m.Configmaps, pathToDir)
-	m.GenericSecrets = adjustPathForGenericSecrets(m.GenericSecrets, pathToDir)
 	m.TLSSecrets = adjustPathForTLSSecrets(m.TLSSecrets, pathToDir)
 }
 
@@ -43,20 +42,6 @@ func adjustPathForConfigMaps(cms []manifest.ConfigMap, prefix []string) []manife
 		}
 	}
 	return cms
-}
-
-func adjustPathForGenericSecrets(secrets []manifest.GenericSecret, prefix []string) []manifest.GenericSecret {
-	for i, secret := range secrets {
-		if len(secret.FileSources) > 0 {
-			for j, fileSource := range secret.FileSources {
-				secrets[i].FileSources[j] = adjustPath(fileSource, prefix)
-			}
-		}
-		if len(secret.EnvSource) > 0 {
-			secrets[i].EnvSource = adjustPath(secret.EnvSource, prefix)
-		}
-	}
-	return secrets
 }
 
 func adjustPathForTLSSecrets(secrets []manifest.TLSSecret, prefix []string) []manifest.TLSSecret {

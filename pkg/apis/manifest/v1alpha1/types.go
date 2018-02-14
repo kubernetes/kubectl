@@ -149,8 +149,8 @@ type GenericSecret struct {
 	// hash(content of secret).
 	Name string `json:"name,omitempty" yaml:"name,omitempty"`
 
-	// DataSources for secret.
-	DataSources `json:",inline,omitempty" yaml:",inline,omitempty"`
+	// Map of keys to commands to generate the values
+	Commands map[string]string `json:",commands,omitempty" yaml:",inline,omitempty"`
 }
 
 // TLSSecret contains the metadata of how to generate a TLS secret.
