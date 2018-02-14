@@ -93,45 +93,7 @@ func makeLiteralConfigMap(name string) *corev1.ConfigMap {
 	}
 }
 
-func makeTLSSecret(name string) *corev1.Secret {
-	return &corev1.Secret{
-		TypeMeta: metav1.TypeMeta{
-			APIVersion: "v1",
-			Kind:       "Secret",
-		},
-		ObjectMeta: metav1.ObjectMeta{
-			Name: name,
-		},
-		Data: map[string][]byte{
-			corev1.TLSCertKey: []byte(`-----BEGIN CERTIFICATE-----
-MIIB0zCCAX2gAwIBAgIJAI/M7BYjwB+uMA0GCSqGSIb3DQEBBQUAMEUxCzAJBgNV
-BAYTAkFVMRMwEQYDVQQIDApTb21lLVN0YXRlMSEwHwYDVQQKDBhJbnRlcm5ldCBX
-aWRnaXRzIFB0eSBMdGQwHhcNMTIwOTEyMjE1MjAyWhcNMTUwOTEyMjE1MjAyWjBF
-MQswCQYDVQQGEwJBVTETMBEGA1UECAwKU29tZS1TdGF0ZTEhMB8GA1UECgwYSW50
-ZXJuZXQgV2lkZ2l0cyBQdHkgTHRkMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBANLJ
-hPHhITqQbPklG3ibCVxwGMRfp/v4XqhfdQHdcVfHap6NQ5Wok/4xIA+ui35/MmNa
-rtNuC+BdZ1tMuVCPFZcCAwEAAaNQME4wHQYDVR0OBBYEFJvKs8RfJaXTH08W+SGv
-zQyKn0H8MB8GA1UdIwQYMBaAFJvKs8RfJaXTH08W+SGvzQyKn0H8MAwGA1UdEwQF
-MAMBAf8wDQYJKoZIhvcNAQEFBQADQQBJlffJHybjDGxRMqaRmDhX0+6v02TUKZsW
-r5QuVbpQhH6u+0UgcW0jp9QwpxoPTLTWGXEWBBBurxFwiCBhkQ+V
------END CERTIFICATE-----
-`),
-			corev1.TLSPrivateKeyKey: []byte(`-----BEGIN RSA PRIVATE KEY-----
-MIIBOwIBAAJBANLJhPHhITqQbPklG3ibCVxwGMRfp/v4XqhfdQHdcVfHap6NQ5Wo
-k/4xIA+ui35/MmNartNuC+BdZ1tMuVCPFZcCAwEAAQJAEJ2N+zsR0Xn8/Q6twa4G
-6OB1M1WO+k+ztnX/1SvNeWu8D6GImtupLTYgjZcHufykj09jiHmjHx8u8ZZB/o1N
-MQIhAPW+eyZo7ay3lMz1V01WVjNKK9QSn1MJlb06h/LuYv9FAiEA25WPedKgVyCW
-SmUwbPw8fnTcpqDWE3yTO3vKcebqMSsCIBF3UmVue8YU3jybC3NxuXq3wNm34R8T
-xVLHwDXh/6NJAiEAl2oHGGLz64BuAfjKrqwz7qMYr9HCLIe/YsoWq/olzScCIQDi
-D2lWusoe2/nEqfDVVWGWlyJ7yOmqaVm/iNUN9B2N2g==
------END RSA PRIVATE KEY-----
-`),
-		},
-		Type: corev1.SecretTypeTLS,
-	}
-}
-
-func makeSecret(name string) *corev1.Secret {
+func makeTestSecret(name string) *corev1.Secret {
 	return &corev1.Secret{
 		TypeMeta: metav1.TypeMeta{
 			APIVersion: "v1",
@@ -217,49 +179,20 @@ func TestConstructConfigMap(t *testing.T) {
 	}
 }
 
-func TestConstructTLSSecret(t *testing.T) {
-	type testCase struct {
-		description string
-		input       manifest.TLSSecret
-		expected    *corev1.Secret
-	}
-
-	testCases := []testCase{
-		{
-			description: "construct secret from tls",
-			input: manifest.TLSSecret{
-				Name:     "tlsSecret",
-				CertFile: "../examples/simple/instances/exampleinstance/secret/tls.cert",
-				KeyFile:  "../examples/simple/instances/exampleinstance/secret/tls.key",
-			},
-			expected: makeTLSSecret("tlsSecret"),
-		},
-	}
-
-	for _, tc := range testCases {
-		cm, err := makeTlsSecret(tc.input)
-		if err != nil {
-			t.Fatalf("unepxected error: %v", err)
-		}
-		if !reflect.DeepEqual(*cm, *tc.expected) {
-			t.Fatalf("in testcase: %q updated:\n%#v\ndoesn't match expected:\n%#v\n", tc.description, *cm, tc.expected)
-		}
-	}
-}
-
-func TestConstructGenericSecret(t *testing.T) {
-	secret := manifest.GenericSecret{
+func TestConstructSecret(t *testing.T) {
+	secret := manifest.Secret{
 		Name: "secret",
 		Commands: map[string]string{
 			"DB_USERNAME": "printf admin",
 			"DB_PASSWORD": "printf somepw",
 		},
+		Type: "Opaque",
 	}
-	cm, err := makeGenericSecret(secret, ".")
+	cm, err := makeSecret(secret, ".")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	expected := makeSecret("secret")
+	expected := makeTestSecret("secret")
 	if !reflect.DeepEqual(*cm, *expected) {
 		t.Fatalf("%#v\ndoesn't match expected:\n%#v", *cm, *expected)
 	}

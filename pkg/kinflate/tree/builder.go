@@ -114,17 +114,11 @@ func (l *Loader) loadManifestDataFromManifestFileAndResources(m *manifest.Manife
 	}
 	mdata.Configmaps = ConfigmapsType(cms)
 
-	sec, err := cutil.MakeGenericSecretsKObject(m.GenericSecrets, l.FullFilePath)
+	sec, err := cutil.MakeSecretsKObject(m.Secrets, l.FullFilePath)
 	if err != nil {
 		return nil, err
 	}
 	mdata.Secrets = SecretsType(sec)
-
-	TLS, err := cutil.MakeTLSSecretsKObject(m.TLSSecrets)
-	err = types.Merge(mdata.Secrets, TLS)
-	if err != nil {
-		return nil, err
-	}
 	return mdata, nil
 }
 

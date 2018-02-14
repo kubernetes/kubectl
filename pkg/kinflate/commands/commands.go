@@ -73,7 +73,6 @@ func newCmdAdd(stdOut, stdErr io.Writer, fsys fs.FileSystem) *cobra.Command {
 	c.AddCommand(
 		newCmdAddResource(stdOut, stdErr, fsys),
 		newCmdAddConfigMap(stdErr, fsys),
-		newCmdAddSecret(stdErr, fsys),
 	)
 	return c
 }
