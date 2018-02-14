@@ -83,8 +83,8 @@ func (o *inflateOptions) Complete(cmd *cobra.Command, args []string) error {
 // RunKinflate runs inflate command (do real work).
 func (o *inflateOptions) RunKinflate(out, errOut io.Writer) error {
 	// Build a tree of ManifestData.
-	loader := tree.Loader{FS: fs.MakeRealFS(), Path: o.manifestPath}
-	root, err := loader.LoadManifestDataFromPath(o.manifestPath)
+	loader := tree.Loader{FS: fs.MakeRealFS(), InitialPath: o.manifestPath}
+	root, err := loader.LoadManifestDataFromPath()
 	if err != nil {
 		return err
 	}

@@ -33,9 +33,11 @@ type ManifestLoader struct {
 	FS fs.FileSystem
 }
 
-//This is a placeholder for the ManifestErrors type
-//TODO: Think about this struct and make is better
-type ManifestErrors []string
+// First pass to encapsulate fields for more informative error messages.
+type ManifestErrors struct {
+	filepath string
+	errorMsg string
+}
 
 func (m *ManifestLoader) fs() fs.FileSystem {
 	if m.FS == nil {
@@ -99,7 +101,7 @@ func (m *ManifestLoader) Write(filename string, manifest *manifest.Manifest) err
 }
 
 // Read must have already been called and we have a loaded manifest
-func (m *ManifestLoader) Validate(manifest *manifest.Manifest) ManifestErrors {
+func (m *ManifestLoader) Validate(manifest *manifest.Manifest) []ManifestErrors {
 	//TODO: implement this function
 	//// validate Packages
 	//merrors := m.validatePackages(manifest.Packages)

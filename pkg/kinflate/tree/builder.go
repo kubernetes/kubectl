@@ -29,23 +29,41 @@ import (
 )
 
 type Loader struct {
-	FS   fs.FileSystem
-	Path string
+	// Allows unit tests with fake filesystem.
+	FS fs.FileSystem
+	// Unexpanded manifest directory or manifest filename.
+	// Examples: "." or "sean-manifest.yaml"
+	InitialPath string
+	// Full expanded manifest file path.
+	// Examples:  "/usr/local/Kube-manifest.yaml" or "/home/seans/project/sean-manifest.yaml"
+	FullFilePath string
 }
 
 // LoadManifestDataFromPath takes a path to a Kube-manifest.yaml or a dir that has a Kube-manifest.yaml.
 // It returns a tree of ManifestData.
-func (l *Loader) LoadManifestDataFromPath(path string) (*ManifestData, error) {
-	return l.loadManifestDataFromPath(path)
-}
-
-// loadManifestDataFromPath make a ManifestData from path
-func (l *Loader) loadManifestDataFromPath(path string) (*ManifestData, error) {
-	m, err := l.loadManifestFileFromPath(path)
+func (l *Loader) LoadManifestDataFromPath() (*ManifestData, error) {
+	m, err := l.loadManifestFileFromPath()
 	if err != nil {
 		return nil, err
 	}
 	return l.manifestToManifestData(m)
+}
+
+// loadManifestFileFromPath loads a manifest object from file.
+func (l *Loader) loadManifestFileFromPath() (*manifest.Manifest, error) {
+	mLoader := kutil.ManifestLoader{FS: l.FS}
+	// Expand the initial directory or file path into the full manifest file path.
+	fullFilepath, err := mLoader.MakeValidManifestPath(l.InitialPath)
+	if err != nil {
+		return nil, err
+	}
+	l.FullFilePath = fullFilepath
+	m, err := mLoader.Read(fullFilepath)
+	if err != nil {
+		return nil, err
+	}
+	mLoader.Validate(m)
+	return m, err
 }
 
 // manifestToManifestData make a ManifestData given an Manifest object
@@ -57,7 +75,8 @@ func (l *Loader) manifestToManifestData(m *manifest.Manifest) (*ManifestData, er
 
 	pkgs := []*ManifestData{}
 	for _, pkg := range m.Packages {
-		pkgNode, err := l.LoadManifestDataFromPath(pkg)
+		loader := &Loader{FS: l.FS, InitialPath: pkg}
+		pkgNode, err := loader.LoadManifestDataFromPath()
 		if err != nil {
 			return nil, err
 		}
@@ -65,22 +84,6 @@ func (l *Loader) manifestToManifestData(m *manifest.Manifest) (*ManifestData, er
 	}
 	mdata.Packages = pkgs
 	return mdata, nil
-}
-
-// loadManifestFileFromPath loads a manifest object from file.
-func (l *Loader) loadManifestFileFromPath(filename string) (*manifest.Manifest, error) {
-	var loader = kutil.ManifestLoader{FS: l.FS}
-	fullFilename, err := loader.MakeValidManifestPath(filename)
-	if err != nil {
-		return nil, err
-	}
-	l.Path = fullFilename
-	m, err := loader.Read(fullFilename)
-	if err != nil {
-		return nil, err
-	}
-	loader.Validate(m)
-	return m, err
 }
 
 func (l *Loader) loadManifestDataFromManifestFileAndResources(m *manifest.Manifest) (*ManifestData, error) {
@@ -91,15 +94,15 @@ func (l *Loader) loadManifestDataFromManifestFileAndResources(m *manifest.Manife
 	mdata.ObjectLabels = m.ObjectLabels
 	mdata.ObjectAnnotations = m.ObjectAnnotations
 
-	res, err := l.LoadKObjectFromPaths(m.Resources)
+	res, err := l.loadKObjectFromPaths(m.Resources)
 	if err != nil {
 		errorMsg := fmt.Sprintf("Resource from Manifest (%s) couldn't be loaded properly.\n%v\n"+
-			"Please check the Resource subsection in (%s).", l.Path, err, l.Path)
+			"Please check the Resource subsection in (%s).", l.FullFilePath, err, l.FullFilePath)
 		return nil, fmt.Errorf(errorMsg)
 	}
 	mdata.Resources = ResourcesType(res)
 
-	pat, err := l.LoadKObjectFromPaths(m.Patches)
+	pat, err := l.loadKObjectFromPaths(m.Patches)
 	if err != nil {
 		return nil, err
 	}
@@ -125,10 +128,10 @@ func (l *Loader) loadManifestDataFromManifestFileAndResources(m *manifest.Manife
 	return mdata, nil
 }
 
-func (l *Loader) LoadKObjectFromPaths(paths []string) (types.KObject, error) {
+func (l *Loader) loadKObjectFromPaths(paths []string) (types.KObject, error) {
 	res := types.KObject{}
 	for _, path := range paths {
-		err := l.LoadKObjectFromPath(path, res)
+		err := l.loadKObjectFromPath(path, res)
 		if err != nil {
 			return nil, err
 		}
@@ -136,7 +139,7 @@ func (l *Loader) LoadKObjectFromPaths(paths []string) (types.KObject, error) {
 	return res, nil
 }
 
-func (l *Loader) LoadKObjectFromPath(path string, into types.KObject) error {
+func (l *Loader) loadKObjectFromPath(path string, into types.KObject) error {
 	_, err := l.FS.Stat(path)
 	if err != nil {
 		return err
@@ -156,13 +159,13 @@ func (l *Loader) LoadKObjectFromPath(path string, into types.KObject) error {
 			return nil
 		}
 
-		err = l.LoadKObjectFromFile(filepath, into)
+		err = l.loadKObjectFromFile(filepath, into)
 		return nil
 	})
 	return e
 }
 
-func (l *Loader) LoadKObjectFromFile(filename string, into types.KObject) error {
+func (l *Loader) loadKObjectFromFile(filename string, into types.KObject) error {
 	f, err := l.FS.Stat(filename)
 	if err != nil {
 		return err
