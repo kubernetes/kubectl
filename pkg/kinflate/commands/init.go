@@ -40,9 +40,10 @@ objectLabels:
   app: helloworld
 objectAnnotations:
   note: This is an example annotation
-resources:
-- deployment.yaml
-- service.yaml
+# Add Resources to inflate below. List of directories/file-paths to add.
+resources: []
+#- service.yaml
+#- ../some-dir/
 # There could also be configmaps in Base, which would make these overlays
 configmaps: []
 # There could be secrets in Base, if just using a fork/rebase workflow
@@ -62,7 +63,8 @@ func newCmdInit(out, errOut io.Writer, fs fs.FileSystem) *cobra.Command {
 		Short: "Creates a file called \"" + constants.KubeManifestFileName + "\" in the current directory",
 		Long: "Creates a file called \"" +
 			constants.KubeManifestFileName + "\" in the current directory with example values.",
-		Example: `init`,
+		Example:      `init`,
+		SilenceUsage: true,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			err := o.Validate(cmd, args)
 			if err != nil {

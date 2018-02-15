@@ -31,9 +31,9 @@ func NewDefaultCommand() *cobra.Command {
 
 	c := &cobra.Command{
 		Use:   "kinflate",
-		Short: "kinflate is a kubernetes cluster configuration utility",
+		Short: "kinflate manages Kubernetes application configuration.",
 		Long: `
-kinflate is a kubernetes cluster configuration utility.
+kinflate manages Kubernetes application configuration.
 
 Find more information at:
 	https://github.com/kubernetes/kubectl/tree/master/cmd/kinflate
