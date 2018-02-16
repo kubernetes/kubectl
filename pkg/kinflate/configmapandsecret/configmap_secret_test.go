@@ -198,6 +198,20 @@ func TestConstructSecret(t *testing.T) {
 	}
 }
 
+func TestFailConstructSecret(t *testing.T) {
+	secret := manifest.SecretGenerator{
+		Name: "secret",
+		Commands: map[string]string{
+			"FAILURE": "false", // This will fail.
+		},
+		Type: "Opaque",
+	}
+	_, err := makeSecret(secret, ".")
+	if err == nil {
+		t.Fatalf("Expected failure.")
+	}
+}
+
 func TestObjectConvertToUnstructured(t *testing.T) {
 	type testCase struct {
 		description string

@@ -17,11 +17,13 @@ limitations under the License.
 package configmapandsecret
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
+	"time"
 
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/meta"
@@ -175,7 +177,9 @@ func createSecretKey(wd string, command string) ([]byte, error) {
 	if err != nil || !fi.IsDir() {
 		wd = filepath.Dir(wd)
 	}
-	cmd := exec.Command("sh", "-c", command)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	cmd := exec.CommandContext(ctx, "sh", "-c", command)
 	cmd.Dir = wd
 
 	return cmd.Output()
