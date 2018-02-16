@@ -20,39 +20,92 @@ import (
 	"bytes"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 	"reflect"
+	"strings"
 	"testing"
+
+	"gopkg.in/yaml.v2"
+
+	"k8s.io/apimachinery/pkg/util/sets"
 )
 
-const (
-	input    = "../examples/simple/instances/exampleinstance/"
-	expected = "testdata/simple/out/expected.yaml"
-)
+type InflateTestCase struct {
+	Description string   `yaml:"description"`
+	Args        []string `yaml:"args"`
+	Filename    string   `yaml:"filename"`
+	// path to the file that contains the expected output
+	ExpectedStdout string `yaml:"expectedStdout"`
+}
 
 func TestInflate(t *testing.T) {
 	const updateEnvVar = "UPDATE_KINFLATE_EXPECTED_DATA"
 	updateKinflateExpected := os.Getenv(updateEnvVar) == "true"
 
-	buf := bytes.NewBuffer([]byte{})
+	var (
+		name     string
+		testcase InflateTestCase
+	)
 
-	cmd := newCmdInflate(buf, os.Stderr)
-	cmd.Flags().Set("filename", input)
-
-	err := cmd.Execute()
-	if err != nil {
-		t.Errorf("unexpected error: %v", err)
-	}
-
-	actualBytes := buf.Bytes()
-	if !updateKinflateExpected {
-		expectedBytes, err := ioutil.ReadFile(expected)
+	testcases := sets.NewString()
+	filepath.Walk("testdata", func(path string, info os.FileInfo, err error) error {
 		if err != nil {
-			t.Errorf("unexpected error: %v", err)
+			return err
 		}
-		if !reflect.DeepEqual(actualBytes, expectedBytes) {
-			t.Errorf("%s\ndoesn't equal expected:\n%s\n", actualBytes, expectedBytes)
+		if path == "testdata" {
+			return nil
 		}
-	} else {
-		ioutil.WriteFile(expected, actualBytes, 0644)
+		name := filepath.Base(path)
+		if info.IsDir() {
+			if strings.HasPrefix(name, "testcase-") {
+				testcases.Insert(strings.TrimPrefix(name, "testcase-"))
+			}
+			return filepath.SkipDir
+		}
+		return nil
+	})
+	// sanity check that we found the right folder
+	if !testcases.Has("simple") {
+		t.Fatalf("Error locating kinflate inflate testcases")
 	}
+
+	for _, testcaseName := range testcases.List() {
+		t.Run(testcaseName, func(t *testing.T) {
+			name = testcaseName
+			testcase = InflateTestCase{}
+			testcaseDir := filepath.Join("testdata", "testcase-"+name)
+			testcaseData, err := ioutil.ReadFile(filepath.Join(testcaseDir, "test.yaml"))
+			if err != nil {
+				t.Fatalf("%s: %v", name, err)
+			}
+			if err := yaml.Unmarshal(testcaseData, &testcase); err != nil {
+				t.Fatalf("%s: %v", name, err)
+			}
+
+			buf := bytes.NewBuffer([]byte{})
+
+			cmd := newCmdInflate(buf, os.Stderr)
+			cmd.Flags().Set("filename", testcase.Filename)
+
+			err = cmd.Execute()
+			if err != nil {
+				t.Errorf("unexpected error: %v", err)
+			}
+
+			actualBytes := buf.Bytes()
+			if !updateKinflateExpected {
+				expectedBytes, err := ioutil.ReadFile(testcase.ExpectedStdout)
+				if err != nil {
+					t.Errorf("unexpected error: %v", err)
+				}
+				if !reflect.DeepEqual(actualBytes, expectedBytes) {
+					t.Errorf("%s\ndoesn't equal expected:\n%s\n", actualBytes, expectedBytes)
+				}
+			} else {
+				ioutil.WriteFile(testcase.ExpectedStdout, actualBytes, 0644)
+			}
+
+		})
+	}
+
 }
