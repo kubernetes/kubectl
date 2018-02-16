@@ -114,7 +114,7 @@ func (l *Loader) loadManifestDataFromManifestFileAndResources(m *manifest.Manife
 	}
 	mdata.Configmaps = ConfigmapsType(cms)
 
-	sec, err := cutil.MakeSecretsKObject(m.Secrets, l.FullFilePath)
+	sec, err := cutil.MakeSecretsKObject(m.SecretGenerators, l.FullFilePath)
 	if err != nil {
 		return nil, err
 	}

@@ -109,7 +109,7 @@ type Manifest struct {
 	// Base/overlay concept doesn't apply to this field.
 	// If a secret want to have a base and an overlay, it should go to Bases and
 	// Overlays fields.
-	Secrets []Secret `json:"secrets,omitempty" yaml:"secrets,omitempty"`
+	SecretGenerators []SecretGenerator `json:"secretGenerators,omitempty" yaml:"secretGenerators,omitempty"`
 
 	// Whether prune resources not defined in Kube-manifest.yaml, similar to
 	// `kubectl apply --prune` behavior.
@@ -136,10 +136,10 @@ type ConfigMap struct {
 	DataSources `json:",inline,omitempty" yaml:",inline,omitempty"`
 }
 
-// Secret contains the metadata of how to generate a generic secret.
-type Secret struct {
+// SecretGenerator contains the metadata of how to generate a secret.
+type SecretGenerator struct {
 	// Name of the secret.
-	// The full name should be Manifest.NamePrefix + GenericSecret.Name +
+	// The full name should be Manifest.NamePrefix + SecretGenerator.Name +
 	// hash(content of secret).
 	Name string `json:"name,omitempty" yaml:"name,omitempty"`
 

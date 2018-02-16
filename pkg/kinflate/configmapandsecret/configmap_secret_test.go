@@ -180,7 +180,7 @@ func TestConstructConfigMap(t *testing.T) {
 }
 
 func TestConstructSecret(t *testing.T) {
-	secret := manifest.Secret{
+	secret := manifest.SecretGenerator{
 		Name: "secret",
 		Commands: map[string]string{
 			"DB_USERNAME": "printf admin",

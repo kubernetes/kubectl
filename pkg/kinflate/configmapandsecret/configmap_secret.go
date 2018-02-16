@@ -49,7 +49,7 @@ func MakeConfigmapAndGenerateName(cm manifest.ConfigMap) (*unstructured.Unstruct
 }
 
 // MakeSecretAndGenerateName returns a secret with the name appended with a hash.
-func MakeSecretAndGenerateName(secret manifest.Secret, path string) (*unstructured.Unstructured, string, error) {
+func MakeSecretAndGenerateName(secret manifest.SecretGenerator, path string) (*unstructured.Unstructured, string, error) {
 	corev1Secret, err := makeSecret(secret, path)
 	if err != nil {
 		return nil, "", err
@@ -99,7 +99,7 @@ func makeConfigMap(cm manifest.ConfigMap) (*corev1.ConfigMap, error) {
 	return corev1cm, nil
 }
 
-func makeSecret(secret manifest.Secret, path string) (*corev1.Secret, error) {
+func makeSecret(secret manifest.SecretGenerator, path string) (*corev1.Secret, error) {
 	corev1secret := &corev1.Secret{}
 	corev1secret.APIVersion = "v1"
 	corev1secret.Kind = "Secret"
@@ -155,7 +155,7 @@ func MakeConfigMapsKObject(maps []manifest.ConfigMap) (types.KObject, error) {
 }
 
 // MakeSecretsKObject returns a map of <GVK, oldName> -> unstructured object.
-func MakeSecretsKObject(secrets []manifest.Secret, path string) (types.KObject, error) {
+func MakeSecretsKObject(secrets []manifest.SecretGenerator, path string) (types.KObject, error) {
 	m := types.KObject{}
 	for _, secret := range secrets {
 		unstructuredSecret, nameWithHash, err := MakeSecretAndGenerateName(secret, path)
