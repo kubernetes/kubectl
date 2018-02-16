@@ -31,7 +31,7 @@ import (
 
 type inflateOptions struct {
 	manifestPath string
-	namespace    string
+	mode         tree.ModeType
 }
 
 // newCmdInflate creates a new inflate command.
@@ -56,7 +56,7 @@ func newCmdInflate(out, errOut io.Writer) *cobra.Command {
 				fmt.Fprintf(errOut, "error: %v\n", err)
 				os.Exit(1)
 			}
-			err = o.RunKinflate(out, errOut)
+			err = o.RunInflate(out, errOut)
 			if err != nil {
 				fmt.Fprintf(errOut, "error: %v\n", err)
 				os.Exit(1)
@@ -66,7 +66,6 @@ func newCmdInflate(out, errOut io.Writer) *cobra.Command {
 
 	cmd.Flags().StringVarP(&o.manifestPath, "filename", "f", "", "Pass in a Kube-manifest.yaml file or a directory that contains the file.")
 	cmd.MarkFlagRequired("filename")
-	cmd.Flags().StringVarP(&o.namespace, "namespace", "o", "yaml", "Output mode. Support json or yaml.")
 	return cmd
 }
 
@@ -77,11 +76,12 @@ func (o *inflateOptions) Validate(cmd *cobra.Command, args []string) error {
 
 // Complete completes inflate command.
 func (o *inflateOptions) Complete(cmd *cobra.Command, args []string) error {
+	o.mode = tree.ModeNormal
 	return nil
 }
 
 // RunKinflate runs inflate command (do real work).
-func (o *inflateOptions) RunKinflate(out, errOut io.Writer) error {
+func (o *inflateOptions) RunInflate(out, errOut io.Writer) error {
 	// Build a tree of ManifestData.
 	loader := tree.Loader{FS: fs.MakeRealFS(), InitialPath: o.manifestPath}
 	root, err := loader.LoadManifestDataFromPath()
@@ -90,7 +90,7 @@ func (o *inflateOptions) RunKinflate(out, errOut io.Writer) error {
 	}
 
 	// Do the transformation for the tree.
-	err = root.Inflate()
+	err = root.Inflate(o.mode)
 	if err != nil {
 		return err
 	}

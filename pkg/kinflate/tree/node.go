@@ -17,6 +17,9 @@ limitations under the License.
 package tree
 
 import (
+	"fmt"
+
+	"k8s.io/kubectl/pkg/kinflate/transformers"
 	"k8s.io/kubectl/pkg/kinflate/types"
 )
 
@@ -64,10 +67,42 @@ func (md *ManifestData) allResources() error {
 	return types.Merge(md.Resources, md.Secrets)
 }
 
+// ModeType is the option type for kinflate inflate
+type ModeType string
+
+const (
+	// ModeNormal means regular transformation.
+	ModeNormal ModeType = "normal_mode"
+	// ModeNoop means no transformation.
+	ModeNoop ModeType = "noop_mode"
+)
+
+func (md *ManifestData) preprocess(mode ModeType) error {
+	switch mode {
+	case ModeNormal:
+		return md.allResources()
+	case ModeNoop:
+		return nil
+	default:
+		return fmt.Errorf("unknown mode for inflate")
+	}
+}
+
+func (md *ManifestData) makeTransformer(mode ModeType) (transformers.Transformer, error) {
+	switch mode {
+	case ModeNormal:
+		return DefaultTransformer(md)
+	case ModeNoop:
+		return transformers.NewNoOpTransformer(), nil
+	default:
+		return transformers.NewNoOpTransformer(), fmt.Errorf("unknown mode for inflate")
+	}
+}
+
 // Inflate will recursively do the transformation on all the nodes below.
-func (md *ManifestData) Inflate() error {
+func (md *ManifestData) Inflate(mode ModeType) error {
 	for _, pkg := range md.Packages {
-		err := pkg.Inflate()
+		err := pkg.Inflate(ModeNormal)
 		if err != nil {
 			return err
 		}
@@ -80,10 +115,14 @@ func (md *ManifestData) Inflate() error {
 		}
 	}
 
-	err := md.allResources()
+	err := md.preprocess(mode)
 	if err != nil {
 		return err
 	}
-	t, err := DefaultTransformer(md)
+
+	t, err := md.makeTransformer(mode)
+	if err != nil {
+		return err
+	}
 	return t.Transform(types.KObject(md.Resources))
 }
