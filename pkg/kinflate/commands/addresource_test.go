@@ -28,10 +28,8 @@ import (
 )
 
 const (
-	// This should be in manifestTemplate.
-	resourceKnownToBeInManifest = "deployment.yaml"
-	resourceFileName            = "myWonderfulResource.yaml"
-	resourceFileContent         = `
+	resourceFileName    = "myWonderfulResource.yaml"
+	resourceFileContent = `
 Lorem ipsum dolor sit amet, consectetur adipiscing elit,
 sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
 `
@@ -61,15 +59,22 @@ func TestAddResourceHappyPath(t *testing.T) {
 func TestAddResourceAlreadyThere(t *testing.T) {
 	buf := bytes.NewBuffer([]byte{})
 	fakeFS := fs.MakeFakeFS()
-	fakeFS.WriteFile(resourceKnownToBeInManifest, []byte(resourceFileContent))
+	fakeFS.WriteFile(resourceFileName, []byte(resourceFileContent))
 	fakeFS.WriteFile(constants.KubeManifestFileName, []byte(manifestTemplate))
+
 	cmd := newCmdAddResource(buf, os.Stderr, fakeFS)
-	args := []string{resourceKnownToBeInManifest}
+	args := []string{resourceFileName}
 	err := cmd.RunE(cmd, args)
+	if err != nil {
+		t.Fatalf("unexpected cmd error: %v", err)
+	}
+
+	// adding an existing resource should return an error
+	err = cmd.RunE(cmd, args)
 	if err == nil {
 		t.Errorf("expected already there problem")
 	}
-	if err.Error() != "resource "+resourceKnownToBeInManifest+" already in manifest" {
+	if err.Error() != "resource "+resourceFileName+" already in manifest" {
 		t.Errorf("unexpected error %v", err)
 	}
 }
