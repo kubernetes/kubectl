@@ -17,10 +17,13 @@ limitations under the License.
 package configmapandsecret
 
 import (
-	"crypto/tls"
+	"context"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"time"
 
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/meta"
@@ -47,31 +50,18 @@ func MakeConfigmapAndGenerateName(cm manifest.ConfigMap) (*unstructured.Unstruct
 	return unstructuredCM, nameWithHash, err
 }
 
-// MakeGenericSecretAndGenerateName makes a generic secret and returns the secret and the name appended with a hash.
-func MakeGenericSecretAndGenerateName(secret manifest.GenericSecret) (*unstructured.Unstructured, string, error) {
-	corev1Secret, err := makeGenericSecret(secret)
+// MakeSecretAndGenerateName returns a secret with the name appended with a hash.
+func MakeSecretAndGenerateName(secret manifest.SecretGenerator, path string) (*unstructured.Unstructured, string, error) {
+	corev1Secret, err := makeSecret(secret, path)
 	if err != nil {
 		return nil, "", err
 	}
-	return makeSecretAndGenerateName(corev1Secret, secret.Name)
-}
-
-// MakeTLSSecretAndGenerateName makes a generic secret and returns the secret and the name appended with a hash.
-func MakeTLSSecretAndGenerateName(secret manifest.TLSSecret) (*unstructured.Unstructured, string, error) {
-	corev1Secret, err := makeTlsSecret(secret)
+	h, err := hash.SecretHash(corev1Secret)
 	if err != nil {
 		return nil, "", err
 	}
-	return makeSecretAndGenerateName(corev1Secret, secret.Name)
-}
-
-func makeSecretAndGenerateName(secret *corev1.Secret, name string) (*unstructured.Unstructured, string, error) {
-	h, err := hash.SecretHash(secret)
-	if err != nil {
-		return nil, "", err
-	}
-	nameWithHash := fmt.Sprintf("%s-%s", name, h)
-	unstructuredCM, err := objectToUnstructured(secret)
+	nameWithHash := fmt.Sprintf("%s-%s", secret.Name, h)
+	unstructuredCM, err := objectToUnstructured(corev1Secret)
 	return unstructuredCM, nameWithHash, err
 }
 
@@ -111,68 +101,26 @@ func makeConfigMap(cm manifest.ConfigMap) (*corev1.ConfigMap, error) {
 	return corev1cm, nil
 }
 
-func makeGenericSecret(secret manifest.GenericSecret) (*corev1.Secret, error) {
+func makeSecret(secret manifest.SecretGenerator, path string) (*corev1.Secret, error) {
 	corev1secret := &corev1.Secret{}
 	corev1secret.APIVersion = "v1"
 	corev1secret.Kind = "Secret"
 	corev1secret.Name = secret.Name
-	corev1secret.Type = corev1.SecretTypeOpaque
+	corev1secret.Type = corev1.SecretType(secret.Type)
+	if corev1secret.Type == "" {
+		corev1secret.Type = corev1.SecretTypeOpaque
+	}
 	corev1secret.Data = map[string][]byte{}
 
-	if secret.EnvSource != "" {
-		if err := cutil.HandleFromEnvFileSource(corev1secret, secret.EnvSource); err != nil {
+	for k, v := range secret.Commands {
+		out, err := createSecretKey(path, v)
+		if err != nil {
 			return nil, err
 		}
+		corev1secret.Data[k] = out
 	}
-	if secret.FileSources != nil {
-		if err := cutil.HandleFromFileSources(corev1secret, secret.FileSources); err != nil {
-			return nil, err
-		}
-	}
-	if secret.LiteralSources != nil {
-		if err := cutil.HandleFromLiteralSources(corev1secret, secret.LiteralSources); err != nil {
-			return nil, err
-		}
-	}
+
 	return corev1secret, nil
-}
-
-func makeTlsSecret(secret manifest.TLSSecret) (*corev1.Secret, error) {
-	corev1secret := &corev1.Secret{}
-	corev1secret.APIVersion = "v1"
-	corev1secret.Kind = "Secret"
-	corev1secret.Name = secret.Name
-	corev1secret.Type = corev1.SecretTypeTLS
-	corev1secret.Data = map[string][]byte{}
-
-	if err := validateTLS(secret.CertFile, secret.KeyFile); err != nil {
-		return nil, err
-	}
-	tlsCrt, err := ioutil.ReadFile(secret.CertFile)
-	if err != nil {
-		return nil, err
-	}
-	tlsKey, err := ioutil.ReadFile(secret.KeyFile)
-	if err != nil {
-		return nil, err
-	}
-	corev1secret.Data[corev1.TLSCertKey] = []byte(tlsCrt)
-	corev1secret.Data[corev1.TLSPrivateKeyKey] = []byte(tlsKey)
-
-	return corev1secret, err
-}
-
-func validateTLS(cert, key string) error {
-	if len(key) == 0 {
-		return fmt.Errorf("key must be specified")
-	}
-	if len(cert) == 0 {
-		return fmt.Errorf("certificate must be specified")
-	}
-	if _, err := tls.LoadX509KeyPair(cert, key); err != nil {
-		return fmt.Errorf("failed to load key pair %v", err)
-	}
-	return nil
 }
 
 func populateMap(m types.KObject, obj *unstructured.Unstructured, newName string) error {
@@ -208,11 +156,11 @@ func MakeConfigMapsKObject(maps []manifest.ConfigMap) (types.KObject, error) {
 	return m, nil
 }
 
-// MakeGenericSecretsKObject returns a map of <GVK, oldName> -> unstructured object.
-func MakeGenericSecretsKObject(secrets []manifest.GenericSecret) (types.KObject, error) {
+// MakeSecretsKObject returns a map of <GVK, oldName> -> unstructured object.
+func MakeSecretsKObject(secrets []manifest.SecretGenerator, path string) (types.KObject, error) {
 	m := types.KObject{}
 	for _, secret := range secrets {
-		unstructuredSecret, nameWithHash, err := MakeGenericSecretAndGenerateName(secret)
+		unstructuredSecret, nameWithHash, err := MakeSecretAndGenerateName(secret, path)
 		if err != nil {
 			return nil, err
 		}
@@ -224,18 +172,15 @@ func MakeGenericSecretsKObject(secrets []manifest.GenericSecret) (types.KObject,
 	return m, nil
 }
 
-// MakeTLSSecretsKObject returns a map of <GVK, oldName> -> unstructured object.
-func MakeTLSSecretsKObject(secrets []manifest.TLSSecret) (types.KObject, error) {
-	m := types.KObject{}
-	for _, secret := range secrets {
-		unstructuredSecret, nameWithHash, err := MakeTLSSecretAndGenerateName(secret)
-		if err != nil {
-			return nil, err
-		}
-		err = populateMap(m, unstructuredSecret, nameWithHash)
-		if err != nil {
-			return nil, err
-		}
+func createSecretKey(wd string, command string) ([]byte, error) {
+	fi, err := os.Stat(wd)
+	if err != nil || !fi.IsDir() {
+		wd = filepath.Dir(wd)
 	}
-	return m, nil
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	cmd := exec.CommandContext(ctx, "sh", "-c", command)
+	cmd.Dir = wd
+
+	return cmd.Output()
 }

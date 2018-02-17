@@ -28,9 +28,11 @@ configmaps:
   files:
   - configmap/app-init.ini
 #There could be secrets in Base, if just using a fork/rebase workflow
-tlsSecrets:
+secretGenerators:
 - name: app-tls
-  certFile: secret/tls.cert
-  keyFile: secret/tls.key
+  commands:
+    tls.crt: "cat secret/tls.cert"
+    tls.key: "cat secret/tls.key"
+  type: "kubernetes.io/tls"
 recursive: false
 prune: true # I’d make this the default

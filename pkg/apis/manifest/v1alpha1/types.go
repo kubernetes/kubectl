@@ -105,17 +105,11 @@ type Manifest struct {
 	// and Overlays fields.
 	Configmaps []ConfigMap `json:"configmaps,omitempty" yaml:"configmaps,omitempty"`
 
-	// List of generic secrets to generate from secret sources.
+	// List of secrets to generate from secret commands.
 	// Base/overlay concept doesn't apply to this field.
 	// If a secret want to have a base and an overlay, it should go to Bases and
 	// Overlays fields.
-	GenericSecrets []GenericSecret `json:"genericSecrets,omitempty" yaml:"genericSecrets,omitempty"`
-
-	// List of TLS secrets to generate from secret sources.
-	// Base/overlay concept doesn't apply to this field.
-	// If a secret want to have a base and an overlay, it should go to Bases and
-	// Overlays fields.
-	TLSSecrets []TLSSecret `json:"tlsSecrets,omitempty" yaml:"tlsSecrets,omitempty"`
+	SecretGenerators []SecretGenerator `json:"secretGenerators,omitempty" yaml:"secretGenerators,omitempty"`
 
 	// Whether prune resources not defined in Kube-manifest.yaml, similar to
 	// `kubectl apply --prune` behavior.
@@ -142,29 +136,24 @@ type ConfigMap struct {
 	DataSources `json:",inline,omitempty" yaml:",inline,omitempty"`
 }
 
-// GenericSecret contains the metadata of how to generate a generic secret.
-type GenericSecret struct {
+// SecretGenerator contains the metadata of how to generate a secret.
+type SecretGenerator struct {
 	// Name of the secret.
-	// The full name should be Manifest.NamePrefix + GenericSecret.Name +
+	// The full name should be Manifest.NamePrefix + SecretGenerator.Name +
 	// hash(content of secret).
 	Name string `json:"name,omitempty" yaml:"name,omitempty"`
 
-	// DataSources for secret.
-	DataSources `json:",inline,omitempty" yaml:",inline,omitempty"`
-}
+	// Type of the secret.
+	//
+	// This is the same field as the secret type field in v1/Secret:
+	// It can be "Opaque" (default), or "kubernetes.io/tls".
+	//
+	// If type is "kubernetes.io/tls", then "Commands" must have exactly two
+	// keys: "tls.key" and "tls.crt"
+	Type string `json:"type,omitempty" yaml:"type,omitempty"`
 
-// TLSSecret contains the metadata of how to generate a TLS secret.
-type TLSSecret struct {
-	// Name of the secret
-	// The full name should be Manifest.NamePrefix + TLSSecret.Name +
-	// hash(content of secret).
-	Name string `json:"name,omitempty" yaml:"name,omitempty"`
-
-	// Path to PEM encoded public key certificate.
-	CertFile string `json:"certFile,omitempty" yaml:"certFile,omitempty"`
-
-	// Path to private key associated with given certificate.
-	KeyFile string `json:"keyFile,omitempty" yaml:"keyFile,omitempty"`
+	// Map of keys to commands to generate the values
+	Commands map[string]string `json:",commands,omitempty" yaml:",inline,omitempty"`
 }
 
 // DataSources contains some generic sources for configmap or secret.
