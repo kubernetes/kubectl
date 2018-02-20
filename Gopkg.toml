@@ -36,3 +36,7 @@
 [[constraint]]
   branch = "master"
   name = "k8s.io/client-go"
+
+[[constraint]]
+  branch = "master"
+  name = "k8s.io/utils"
