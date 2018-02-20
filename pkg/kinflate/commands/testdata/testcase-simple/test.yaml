@@ -2,4 +2,3 @@ description: simple
 args: []
 filename: ../examples/simple/instances/exampleinstance/
 expectedStdout: testdata/testcase-simple/expected.yaml
-expectedExitCode: 0

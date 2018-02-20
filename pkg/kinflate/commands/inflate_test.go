@@ -28,12 +28,14 @@ import (
 	"gopkg.in/yaml.v2"
 
 	"k8s.io/apimachinery/pkg/util/sets"
+	"k8s.io/kubectl/pkg/kinflate/tree"
 )
 
 type InflateTestCase struct {
-	Description string   `yaml:"description"`
-	Args        []string `yaml:"args"`
-	Filename    string   `yaml:"filename"`
+	Description string        `yaml:"description"`
+	Args        []string      `yaml:"args"`
+	Filename    string        `yaml:"filename"`
+	Mode        tree.ModeType `yaml:"mode"`
 	// path to the file that contains the expected output
 	ExpectedStdout string `yaml:"expectedStdout"`
 }
@@ -82,16 +84,18 @@ func TestInflate(t *testing.T) {
 				t.Fatalf("%s: %v", name, err)
 			}
 
+			if testcase.Mode == "" {
+				testcase.Mode = tree.ModeNormal
+			}
+			ops := &inflateOptions{
+				manifestPath: testcase.Filename,
+				mode:         testcase.Mode,
+			}
 			buf := bytes.NewBuffer([]byte{})
-
-			cmd := newCmdInflate(buf, os.Stderr)
-			cmd.Flags().Set("filename", testcase.Filename)
-
-			err = cmd.Execute()
+			err = ops.RunInflate(buf, os.Stderr)
 			if err != nil {
 				t.Errorf("unexpected error: %v", err)
 			}
-
 			actualBytes := buf.Bytes()
 			if !updateKinflateExpected {
 				expectedBytes, err := ioutil.ReadFile(testcase.ExpectedStdout)

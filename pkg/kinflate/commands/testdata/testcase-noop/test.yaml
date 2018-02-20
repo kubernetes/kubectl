@@ -1,0 +1,5 @@
+description: noop
+args: []
+filename: testdata/testcase-noop/
+mode: noop_mode
+expectedStdout: testdata/testcase-noop/expected.yaml

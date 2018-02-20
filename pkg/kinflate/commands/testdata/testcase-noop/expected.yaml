@@ -1,0 +1,81 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    note: This is a test annotation
+  labels:
+    app: mysql
+    component: mysql
+  name: mysql
+spec:
+  ports:
+  - port: 3306
+  selector:
+    app: mysql
+    component: mysql
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    note: This is a test annotation
+  labels:
+    app: wordpress
+    component: wordpress
+  name: wordpress
+spec:
+  ports:
+  - port: 80
+  selector:
+    app: wordpress
+    component: wordpress
+---
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  annotations:
+    note: This is a test annotation
+  labels:
+    app: mysql
+    component: mysql
+  name: mysql
+spec:
+  selector:
+    matchLabels:
+      component: mysql
+  template:
+    metadata:
+      annotations:
+        note: This is a test annotation
+      labels:
+        app: mysql
+        component: mysql
+    spec:
+      containers:
+      - image: mysql
+        name: mysql
+---
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  annotations:
+    note: This is a test annotation
+  labels:
+    app: wordpress
+    component: wordpress
+  name: wordpress
+spec:
+  selector:
+    matchLabels:
+      component: wordpress
+  template:
+    metadata:
+      annotations:
+        note: This is a test annotation
+      labels:
+        app: wordpress
+        component: wordpress
+    spec:
+      containers:
+      - image: wordpress
+        name: wordpress
