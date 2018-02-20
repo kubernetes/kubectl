@@ -30,6 +30,7 @@ import (
 )
 
 type inflateOptions struct {
+	outputdir    string
 	manifestPath string
 	mode         tree.ModeType
 }
@@ -80,23 +81,35 @@ func (o *inflateOptions) Complete(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// RunKinflate runs inflate command (do real work).
-func (o *inflateOptions) RunInflate(out, errOut io.Writer) error {
+// runInflate does the real transformation.
+func (o *inflateOptions) runInflate(fs fs.FileSystem) (types.KObject, error) {
 	// Build a tree of ManifestData.
-	loader := tree.Loader{FS: fs.MakeRealFS(), InitialPath: o.manifestPath}
+	loader := tree.Loader{FS: fs, InitialPath: o.manifestPath}
 	root, err := loader.LoadManifestDataFromPath()
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	// Do the transformation for the tree.
 	err = root.Inflate(o.mode)
 	if err != nil {
+		return nil, err
+	}
+
+	return types.KObject(root.Resources), nil
+}
+
+// RunInflate runs inflate command (do real work).
+func (o *inflateOptions) RunInflate(out, errOut io.Writer) error {
+	fs := fs.MakeRealFS()
+
+	kobj, err := o.runInflate(fs)
+	if err != nil {
 		return err
 	}
 
 	// Output the objects.
-	res, err := kutil.Encode(types.KObject(root.Resources))
+	res, err := kutil.Encode(kobj)
 	if err != nil {
 		return err
 	}
