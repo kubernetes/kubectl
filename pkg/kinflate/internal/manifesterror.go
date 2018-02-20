@@ -14,9 +14,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package util
+package internal
 
-import "fmt"
+import (
+	"fmt"
+)
 
 // First pass to encapsulate fields for more informative error messages.
 type ManifestError struct {
@@ -26,4 +28,30 @@ type ManifestError struct {
 
 func (me ManifestError) Error() string {
 	return fmt.Sprintf("Manifest File [%s]: %s\n", me.ManifestFilepath, me.ErrorMsg)
+}
+
+type ManifestErrors struct {
+	merrors []error
+}
+
+func (me *ManifestErrors) Error() string {
+	errormsg := ""
+	for _, e := range me.merrors {
+		errormsg += e.Error() + "\n"
+	}
+	return errormsg
+}
+
+func (me *ManifestErrors) Append(e error) {
+	me.merrors = append(me.merrors, e)
+}
+
+func (me *ManifestErrors) Get() []error {
+	return me.merrors
+}
+
+func (me *ManifestErrors) BatchAppend(e ManifestErrors) {
+	for _, err := range e.Get() {
+		me.merrors = append(me.merrors, err)
+	}
 }
