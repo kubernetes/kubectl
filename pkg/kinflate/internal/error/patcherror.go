@@ -14,16 +14,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package util
+package error
 
-import "fmt"
+import (
+	"fmt"
+)
 
-// First pass to encapsulate fields for more informative error messages.
-type ManifestError struct {
+type PatchError struct {
 	ManifestFilepath string
+	PatchFilepath    string
 	ErrorMsg         string
 }
 
-func (me ManifestError) Error() string {
-	return fmt.Sprintf("Manifest File [%s]: %s\n", me.ManifestFilepath, me.ErrorMsg)
+func (e PatchError) Error() string {
+	return fmt.Sprintf("Manifest file [%s] encounters a patch error for [%s]: %s\n", e.ManifestFilepath, e.PatchFilepath, e.ErrorMsg)
 }

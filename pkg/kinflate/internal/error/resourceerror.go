@@ -14,21 +14,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package util
+package error
 
-import (
-	"fmt"
-	"testing"
-)
+import "fmt"
 
-func TestManifestError_Error(t *testing.T) {
-	filepath := "/path/to/Kube-manifest.yaml"
-	errorMsg := "Manifest not found"
-	expectedErrorMsg := fmt.Sprintf("Manifest File [%s]: %s\n", filepath, errorMsg)
-	me := ManifestError{ManifestFilepath: filepath, ErrorMsg: errorMsg}
-	if me.Error() != expectedErrorMsg {
-		t.Errorf("Incorrect ManifestError.Error() message\n")
-		t.Errorf("  Expected: %s\n", expectedErrorMsg)
-		t.Errorf("  Got: %s\n", me.Error())
-	}
+// First pass to encapsulate fields for more informative error messages.
+type ResourceError struct {
+	ManifestFilepath string
+	ResourceFilepath string
+	ErrorMsg         string
+}
+
+func (e ResourceError) Error() string {
+	return fmt.Sprintf("Manifest file [%s] encounters a resource error for [%s]: %s\n", e.ManifestFilepath, e.ResourceFilepath, e.ErrorMsg)
 }
