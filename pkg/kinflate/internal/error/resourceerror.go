@@ -14,15 +14,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package internal
+package error
 
 import "fmt"
 
-type SecretError struct {
+// First pass to encapsulate fields for more informative error messages.
+type ResourceError struct {
 	ManifestFilepath string
+	ResourceFilepath string
 	ErrorMsg         string
 }
 
-func (e SecretError) Error() string {
-	return fmt.Sprintf("Manifest file [%s] encounters a secret error: %s\n", e.ManifestFilepath, e.ErrorMsg)
+func (e ResourceError) Error() string {
+	return fmt.Sprintf("Manifest file [%s] encounters a resource error for [%s]: %s\n", e.ManifestFilepath, e.ResourceFilepath, e.ErrorMsg)
 }

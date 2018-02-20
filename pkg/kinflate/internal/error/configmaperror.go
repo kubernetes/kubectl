@@ -14,18 +14,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package internal
+package error
 
-import (
-	"fmt"
-)
+import "fmt"
 
-type PatchError struct {
+type ConfigmapError struct {
 	ManifestFilepath string
-	PatchFilepath    string
 	ErrorMsg         string
 }
 
-func (e PatchError) Error() string {
-	return fmt.Sprintf("Manifest file [%s] encounters a patch error for [%s]: %s\n", e.ManifestFilepath, e.PatchFilepath, e.ErrorMsg)
+func (e ConfigmapError) Error() string {
+	return fmt.Sprintf("Manifest file [%s] encounters a configmap error: %s\n", e.ManifestFilepath, e.ErrorMsg)
 }

@@ -14,25 +14,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package internal
+package error
 
 import (
-	"strings"
-	"testing"
+	"fmt"
 )
 
-func TestConfigmapError_Error(t *testing.T) {
-	filepath := "/path/to/Kube-manifest.yaml"
-	errorMsg := "configmap name is missing"
-	me := ConfigmapError{ManifestFilepath: filepath, ErrorMsg: errorMsg}
+type PatchError struct {
+	ManifestFilepath string
+	PatchFilepath    string
+	ErrorMsg         string
+}
 
-	if !strings.Contains(me.Error(), filepath) {
-		t.Errorf("Incorrect ConfigmapError.Error() message \n")
-		t.Errorf("Expected filepath %s, but unfound\n", filepath)
-	}
-
-	if !strings.Contains(me.Error(), errorMsg) {
-		t.Errorf("Incorrect ConfigmapError.Error() message \n")
-		t.Errorf("Expected errorMsg %s, but unfound\n", errorMsg)
-	}
+func (e PatchError) Error() string {
+	return fmt.Sprintf("Manifest file [%s] encounters a patch error for [%s]: %s\n", e.ManifestFilepath, e.PatchFilepath, e.ErrorMsg)
 }

@@ -14,15 +14,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package internal
+package error
 
 import "fmt"
 
-type ConfigmapError struct {
+type SecretError struct {
 	ManifestFilepath string
 	ErrorMsg         string
 }
 
-func (e ConfigmapError) Error() string {
-	return fmt.Sprintf("Manifest file [%s] encounters a configmap error: %s\n", e.ManifestFilepath, e.ErrorMsg)
+func (e SecretError) Error() string {
+	return fmt.Sprintf("Manifest file [%s] encounters a secret error: %s\n", e.ManifestFilepath, e.ErrorMsg)
 }

@@ -14,17 +14,24 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package internal
+package error
 
-import "fmt"
+import (
+	"strings"
+	"testing"
+)
 
-// First pass to encapsulate fields for more informative error messages.
-type ResourceError struct {
-	ManifestFilepath string
-	ResourceFilepath string
-	ErrorMsg         string
-}
+func TestSecretError_Error(t *testing.T) {
+	filepath := "/path/to/secret.yaml"
+	errorMsg := "missing a command"
+	me := SecretError{ManifestFilepath: filepath, ErrorMsg: errorMsg}
+	if !strings.Contains(me.Error(), filepath) {
+		t.Errorf("Incorrect SecretError.Error() message \n")
+		t.Errorf("Expected filepath %s, but unfound\n", filepath)
+	}
 
-func (e ResourceError) Error() string {
-	return fmt.Sprintf("Manifest file [%s] encounters a resource error for [%s]: %s\n", e.ManifestFilepath, e.ResourceFilepath, e.ErrorMsg)
+	if !strings.Contains(me.Error(), errorMsg) {
+		t.Errorf("Incorrect SecretError.Error() message \n")
+		t.Errorf("Expected errorMsg %s, but unfound\n", errorMsg)
+	}
 }

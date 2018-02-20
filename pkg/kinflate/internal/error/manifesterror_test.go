@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package internal
+package error
 
 import (
 	"fmt"
@@ -73,8 +73,8 @@ func TestManifestErrors_Append(t *testing.T) {
 	mes.Append(pe)
 	if len(mes.Get()) != 2 {
 		t.Errorf("Incorrect ManifestErrors.Append()\n")
-		t.Errorf(" Expected: %d errors\n%v/n", 2, []error{ce, pe})
-		t.Errorf(" Got: %d errors\n%v\n", len(mes.Get()), mes.Get())
+		t.Errorf(" Expected: %d error\n%v/n", 2, []error{ce, pe})
+		t.Errorf(" Got: %d error\n%v\n", len(mes.Get()), mes.Get())
 	}
 }
 
@@ -86,7 +86,7 @@ func TestManifestErrors_BatchAppend(t *testing.T) {
 	mes.BatchAppend(me)
 	if len(mes.Get()) != 2 {
 		t.Errorf("Incorrect ManifestErrors.Append()\n")
-		t.Errorf(" Expected: %d errors\n%v/n", 2, []error{ce, pe})
-		t.Errorf(" Got: %d errors\n%v\n", len(mes.Get()), mes.Get())
+		t.Errorf(" Expected: %d error\n%v/n", 2, []error{ce, pe})
+		t.Errorf(" Got: %d error\n%v\n", len(mes.Get()), mes.Get())
 	}
 }
