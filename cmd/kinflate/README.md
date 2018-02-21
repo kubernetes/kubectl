@@ -8,7 +8,7 @@
 
 <!-- @installKinflate @test -->
 ```shell
-go get -u k8s.io/kubectl/cmd/kinflate
+go get k8s.io/kubectl/cmd/kinflate
 ```
 
 After running the above command, `kinflate` should get installed in your `GOPATH/bin` directory.
