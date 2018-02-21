@@ -19,13 +19,11 @@ package commands
 import (
 	"io"
 
-	"github.com/ghodss/yaml"
-
 	"errors"
 
 	"github.com/spf13/cobra"
-	manifest "k8s.io/kubectl/pkg/apis/manifest/v1alpha1"
 	"k8s.io/kubectl/pkg/kinflate/constants"
+	"k8s.io/kubectl/pkg/kinflate/tree"
 	"k8s.io/kubectl/pkg/kinflate/util/fs"
 )
 
@@ -80,29 +78,11 @@ func (o *setNamePrefixOptions) Complete(cmd *cobra.Command, args []string) error
 
 // RunSetNamePrefix runs setNamePrefix command (does real work).
 func (o *setNamePrefixOptions) RunSetNamePrefix(out, errOut io.Writer, fsys fs.FileSystem) error {
-	content, err := fsys.ReadFile(constants.KubeManifestFileName)
+	loader := tree.ManifestLoader{FS: fsys}
+	m, err := loader.Read(constants.KubeManifestFileName)
 	if err != nil {
 		return err
 	}
-
-	// TODO: Refactor manifest reading to a common location.
-	// See pkg/kinflate/util.go:loadManifestPkg
-	var m manifest.Manifest
-	err = yaml.Unmarshal(content, &m)
-	if err != nil {
-		return err
-	}
-
 	m.NamePrefix = o.prefix
-
-	bytes, err := yaml.Marshal(m)
-	if err != nil {
-		return err
-	}
-
-	err = fsys.WriteFile(constants.KubeManifestFileName, bytes)
-	if err != nil {
-		return err
-	}
-	return nil
+	return loader.Write(constants.KubeManifestFileName, m)
 }
