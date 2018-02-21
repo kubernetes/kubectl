@@ -84,7 +84,7 @@ func (o *inflateOptions) Complete(cmd *cobra.Command, args []string) error {
 // runInflate does the real transformation.
 func (o *inflateOptions) runInflate(fs fs.FileSystem) (types.KObject, error) {
 	// Build a tree of ManifestData.
-	loader := tree.Loader{FS: fs, InitialPath: o.manifestPath}
+	loader := tree.ManifestLoader{FS: fs, InitialPath: o.manifestPath}
 	root, err := loader.LoadManifestDataFromPath()
 	if err != nil {
 		return nil, err

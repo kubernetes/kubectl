@@ -23,7 +23,7 @@ import (
 	manifest "k8s.io/kubectl/pkg/apis/manifest/v1alpha1"
 	"k8s.io/kubectl/pkg/kinflate/configmapandsecret"
 	"k8s.io/kubectl/pkg/kinflate/constants"
-	kutil "k8s.io/kubectl/pkg/kinflate/util"
+	"k8s.io/kubectl/pkg/kinflate/tree"
 	"k8s.io/kubectl/pkg/kinflate/util/fs"
 
 	"github.com/spf13/cobra"
@@ -52,7 +52,7 @@ func newCmdAddConfigMap(errOut io.Writer, fsys fs.FileSystem) *cobra.Command {
 			}
 
 			// Load in the manifest file.
-			loader := kutil.ManifestLoader{FS: fsys}
+			loader := tree.ManifestLoader{FS: fsys}
 			m, err := loader.Read(constants.KubeManifestFileName)
 			if err != nil {
 				return err

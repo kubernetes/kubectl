@@ -131,7 +131,7 @@ func TestFileToMap(t *testing.T) {
 	}
 
 	// TODO: Convert to a fake filesystem instead of using test files.
-	loader := Loader{FS: fs.MakeRealFS()}
+	loader := ManifestLoader{FS: fs.MakeRealFS()}
 
 	for _, tc := range testcases {
 		actual := types.KObject{}
@@ -184,7 +184,7 @@ func TestPathToMap(t *testing.T) {
 	}
 
 	// TODO: Convert to a fake filesystem instead of using test files.
-	loader := Loader{FS: fs.MakeRealFS()}
+	loader := ManifestLoader{FS: fs.MakeRealFS()}
 
 	for _, tc := range testcases {
 		actual := types.KObject{}
@@ -248,7 +248,7 @@ func TestPathsToMap(t *testing.T) {
 	}
 
 	// TODO: Convert to a fake filesystem instead of using test files.
-	loader := Loader{FS: fs.MakeRealFS()}
+	loader := ManifestLoader{FS: fs.MakeRealFS()}
 
 	for _, tc := range testcases {
 		actual, err := loader.loadKObjectFromPaths(tc.filenames)
@@ -312,7 +312,7 @@ func TestManifestToManifestData(t *testing.T) {
 	}
 
 	// TODO: Convert to a fake filesystem instead of using test files.
-	loader := Loader{FS: fs.MakeRealFS()}
+	loader := ManifestLoader{FS: fs.MakeRealFS()}
 	actual, err := loader.loadManifestDataFromManifestFileAndResources(m)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -333,7 +333,7 @@ func TestLoadManifestDataFromPath(t *testing.T) {
 	parent1.Packages = []*ManifestData{child1}
 	parent2.Packages = []*ManifestData{child2}
 
-	loader := Loader{FS: fs.MakeRealFS(), InitialPath: "testdata/hierarchy"}
+	loader := ManifestLoader{FS: fs.MakeRealFS(), InitialPath: "testdata/hierarchy"}
 	expected := grandparent
 	actual, err := loader.LoadManifestDataFromPath()
 	if err != nil {
