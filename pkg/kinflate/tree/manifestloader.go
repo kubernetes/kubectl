@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package util
+package tree
 
 import (
 	"errors"
@@ -30,7 +30,14 @@ import (
 )
 
 type ManifestLoader struct {
+	// Allows unit tests with fake filesystem.
 	FS fs.FileSystem
+
+	// Initial path to manifest directory or manifest filename.
+	InitialPath string
+
+	// Full expanded manifest file path.
+	fullFilePath string
 }
 
 // First pass to encapsulate fields for more informative error messages.

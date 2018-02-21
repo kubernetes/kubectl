@@ -24,7 +24,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"k8s.io/kubectl/pkg/kinflate/constants"
-	kutil "k8s.io/kubectl/pkg/kinflate/util"
+	"k8s.io/kubectl/pkg/kinflate/tree"
 	"k8s.io/kubectl/pkg/kinflate/util/fs"
 )
 
@@ -87,7 +87,7 @@ func (o *addResourceOptions) RunAddResource(out, errOut io.Writer, fsys fs.FileS
 		return err
 	}
 
-	loader := kutil.ManifestLoader{FS: fsys}
+	loader := tree.ManifestLoader{FS: fsys}
 	m, err := loader.Read(constants.KubeManifestFileName)
 	if err != nil {
 		return err

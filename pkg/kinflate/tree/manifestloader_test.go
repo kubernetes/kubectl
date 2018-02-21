@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package util_test
+package tree_test
 
 import (
 	"reflect"
@@ -23,7 +23,7 @@ import (
 	"strings"
 
 	manifest "k8s.io/kubectl/pkg/apis/manifest/v1alpha1"
-	kutil "k8s.io/kubectl/pkg/kinflate/util"
+	"k8s.io/kubectl/pkg/kinflate/tree"
 	"k8s.io/kubectl/pkg/kinflate/util/fs"
 )
 
@@ -31,7 +31,7 @@ func TestManifestLoader(t *testing.T) {
 	manifest := &manifest.Manifest{
 		NamePrefix: "prefix",
 	}
-	loader := kutil.ManifestLoader{FS: fs.MakeFakeFS()}
+	loader := tree.ManifestLoader{FS: fs.MakeFakeFS()}
 
 	if err := loader.Write("Kube-manifest.yaml", manifest); err != nil {
 		t.Fatalf("Couldn't write manifest file: %v\n", err)
@@ -50,7 +50,7 @@ func TestManifestLoaderEmptyFile(t *testing.T) {
 	manifest := &manifest.Manifest{
 		NamePrefix: "prefix",
 	}
-	loader := kutil.ManifestLoader{}
+	loader := tree.ManifestLoader{}
 	if loader.Write("", manifest) == nil {
 		t.Fatalf("Write to empty filename should fail")
 	}
@@ -61,7 +61,7 @@ func TestLoadNotExist(t *testing.T) {
 	fakeFS := fs.MakeFakeFS()
 	fakeFS.Mkdir(".", 0644)
 	fakeFS.Create(badSuffix)
-	loader := kutil.ManifestLoader{FS: fakeFS}
+	loader := tree.ManifestLoader{FS: fakeFS}
 	_, err := loader.MakeValidManifestPath("Kube-manifest.yaml")
 	if err == nil {
 		t.Fatalf("expect an error")
