@@ -114,3 +114,24 @@ func Encode(in types.KObject) ([]byte, error) {
 	}
 	return buf.Bytes(), nil
 }
+
+// WriteToDir write each object in KObject to a file named with GroupVersionKindName.
+func WriteToDir(in types.KObject, dirName string, printer Printer) (*Directory, error) {
+	dir, err := CreateDirectory(dirName)
+	if err != nil {
+		return &Directory{}, err
+	}
+
+	for gvkn, obj := range in {
+		f, err := dir.NewFile(gvkn.String())
+		if err != nil {
+			return &Directory{}, err
+		}
+		defer f.Close()
+		err = printer.Print(obj, f)
+		if err != nil {
+			return &Directory{}, err
+		}
+	}
+	return dir, nil
+}

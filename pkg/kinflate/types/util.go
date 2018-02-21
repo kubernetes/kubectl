@@ -18,10 +18,18 @@ package types
 
 import (
 	"fmt"
+	"strings"
 
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 )
+
+func (gvkn GroupVersionKindName) String() string {
+	if gvkn.GVK.Group == "" {
+		return strings.Join([]string{gvkn.GVK.Version, gvkn.GVK.Kind, gvkn.Name}, "_") + ".yaml"
+	}
+	return strings.Join([]string{gvkn.GVK.Group, gvkn.GVK.Version, gvkn.GVK.Kind, gvkn.Name}, "_") + ".yaml"
+}
 
 // SelectByGVK returns true if `selector` selects `in`; otherwise, false.
 // If `selector` and `in` are the same, return true.

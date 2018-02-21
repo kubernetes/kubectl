@@ -217,9 +217,15 @@
   packages = ["pkg/common"]
   revision = "39a7bf85c140f972372c2a0d1ee40adbf0c8bfe1"
 
+[[projects]]
+  branch = "master"
+  name = "k8s.io/utils"
+  packages = ["exec"]
+  revision = "258e2a2fa64568210fbd6267cf1d8fd87c3cb86e"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "2b20626f5c5afea676ac5585d24de154de000f6a9fb0a307eb264a8cf3bd0253"
+  inputs-digest = "a778052416a71e5aca31256e71794eda11fed3c896b231ca36a045770abad827"
   solver-name = "gps-cdcl"
   solver-version = 1

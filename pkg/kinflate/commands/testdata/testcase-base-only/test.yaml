@@ -2,4 +2,3 @@ description: base only
 args: []
 filename: testdata/testcase-base-only/in
 expectedStdout: testdata/testcase-base-only/expected.yaml
-expectedExitCode: 0
