@@ -25,7 +25,7 @@ import (
 	"strings"
 	"testing"
 
-	"gopkg.in/yaml.v2"
+	"github.com/ghodss/yaml"
 
 	"k8s.io/apimachinery/pkg/util/sets"
 	"k8s.io/kubectl/pkg/kinflate/tree"
