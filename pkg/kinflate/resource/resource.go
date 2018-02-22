@@ -16,10 +16,41 @@ limitations under the License.
 
 package resource
 
-import "k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
+import (
+	"encoding/json"
 
-// Examples: deployment, service, configmap, secret, etc.
-type Resource interface {
-	Name() string
-	Data() unstructured.Unstructured
+	"k8s.io/apimachinery/pkg/api/meta"
+	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
+	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/kubectl/pkg/kinflate/types"
+)
+
+// Resource represents a Kubernetes Resource Object for ex. Deployment, Server
+// ConfigMap etc.
+type Resource struct {
+	Data *unstructured.Unstructured
+}
+
+// GVKN returns Group/Version/Kind/Name for the resource.
+func (r *Resource) GVKN() types.GroupVersionKindName {
+	var emptyZVKN types.GroupVersionKindName
+	if r.Data == nil {
+		return emptyZVKN
+	}
+	accessor, err := meta.Accessor(r.Data)
+	if err != nil {
+		return emptyZVKN
+	}
+	gvk := r.Data.GetObjectKind().GroupVersionKind()
+	return types.GroupVersionKindName{GVK: gvk, Name: accessor.GetName()}
+}
+
+func objectToUnstructured(in runtime.Object) (*unstructured.Unstructured, error) {
+	marshaled, err := json.Marshal(in)
+	if err != nil {
+		return nil, err
+	}
+	var out unstructured.Unstructured
+	err = out.UnmarshalJSON(marshaled)
+	return &out, err
 }
