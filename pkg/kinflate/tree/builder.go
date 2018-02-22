@@ -160,7 +160,7 @@ func (l *ManifestLoader) loadKObjectFromFile(filename string, into types.KObject
 		return err
 	}
 
-	_, err = kutil.Decode(content, into)
+	_, err = kutil.DecodeToKObject(content, into)
 	if err != nil {
 		return err
 	}
