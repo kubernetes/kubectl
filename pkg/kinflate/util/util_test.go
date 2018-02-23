@@ -64,9 +64,10 @@ func makeConfigMaps(name1InGVKN, name2InGVKN, name1InObj, name2InObj string) typ
 	}
 }
 
-func TestDecode(t *testing.T) {
+func TestDecodeToKObject(t *testing.T) {
 	expected := makeConfigMaps("cm1", "cm2", "cm1", "cm2")
-	m, err := Decode(encoded, nil)
+	m, err := DecodeToKObject(encoded, nil)
+	fmt.Printf("%v\n", m)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}

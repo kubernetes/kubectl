@@ -31,10 +31,8 @@ import (
 	"k8s.io/kubectl/pkg/kinflate/types"
 )
 
-// Decode decodes a list of objects in byte array format.
-// Decoded object will be inserted in `into` if it's not nil. Otherwise, it will
-// construct a new map and return it.
-func Decode(in []byte, into types.KObject) (types.KObject, error) {
+// Decode decodes a list of objects in byte array format
+func Decode(in []byte) ([]*unstructured.Unstructured, error) {
 	decoder := k8syaml.NewYAMLOrJSONDecoder(bytes.NewReader(in), 1024)
 	objs := []*unstructured.Unstructured{}
 
@@ -48,6 +46,17 @@ func Decode(in []byte, into types.KObject) (types.KObject, error) {
 		objs = append(objs, &out)
 	}
 	if err != io.EOF {
+		return nil, err
+	}
+	return objs, nil
+}
+
+// DecodeToKObject decodes a list of objects in byte array format.
+// Decoded object will be inserted in `into` if it's not nil. Otherwise, it will
+// construct a new map and return it.
+func DecodeToKObject(in []byte, into types.KObject) (types.KObject, error) {
+	objs, err := Decode(in)
+	if err != nil {
 		return nil, err
 	}
 
