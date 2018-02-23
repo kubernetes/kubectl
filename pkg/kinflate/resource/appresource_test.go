@@ -9,28 +9,6 @@ import (
 	"k8s.io/kubectl/pkg/loader"
 )
 
-var encoded = []byte(`apiVersion: v1
-kind: Deployment
-metadata:
-  name: dply1
----
-apiVersion: v1
-kind: Deployment
-metadata:
-  name: dply2
-`)
-
-type fakeLoader struct {
-}
-
-func (l fakeLoader) New(newRoot string) (loader.Loader, error) {
-	return l, nil
-}
-
-func (l fakeLoader) Load(location string) ([]byte, error) {
-	return encoded, nil
-}
-
 func makeUnconstructed(name string) *unstructured.Unstructured {
 	return &unstructured.Unstructured{
 		Object: map[string]interface{}{
@@ -44,7 +22,19 @@ func makeUnconstructed(name string) *unstructured.Unstructured {
 }
 
 func TestAppResourceList_Resources(t *testing.T) {
-	l := fakeLoader{}
+
+	resourceContent := `apiVersion: v1
+kind: Deployment
+metadata:
+  name: dply1
+---
+apiVersion: v1
+kind: Deployment
+metadata:
+  name: dply2
+`
+
+	l := loader.FakeLoader{Content: resourceContent}
 	expected := []*Resource{
 		{Data: makeUnconstructed("dply1")},
 		{Data: makeUnconstructed("dply2")},
