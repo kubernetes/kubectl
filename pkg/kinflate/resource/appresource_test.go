@@ -43,14 +43,14 @@ func makeUnconstructed(name string) *unstructured.Unstructured {
 	}
 }
 
-func TestAppResourceList_Resources(t *testing.T) {
+func TestNewFromPath(t *testing.T) {
 	l := fakeLoader{}
 	expected := []*Resource{
 		{Data: makeUnconstructed("dply1")},
 		{Data: makeUnconstructed("dply2")},
 	}
 
-	resources, _ := ResourcesFromPath("fake/path", l)
+	resources, _ := NewFromPath("fake/path", l)
 	if len(resources) != 2 {
 		t.Fatalf("%#v should contain 2 appResource, but got %d", resources, len(resources))
 	}

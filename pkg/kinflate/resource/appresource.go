@@ -21,7 +21,7 @@ import (
 	"k8s.io/kubectl/pkg/loader"
 )
 
-func ResourcesFromPath(path string, loader loader.Loader) ([]*Resource, error) {
+func NewFromPath(path string, loader loader.Loader) ([]*Resource, error) {
 	content, err := loader.Load(path)
 	if err != nil {
 		return nil, err
