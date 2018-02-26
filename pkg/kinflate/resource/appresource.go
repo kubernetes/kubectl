@@ -21,7 +21,8 @@ import (
 	"k8s.io/kubectl/pkg/loader"
 )
 
-func ResourcesFromPath(path string, loader loader.Loader) ([]*Resource, error) {
+//  NewFromPath returns a Resource list given a resource path from manifest file.
+func NewFromPath(path string, loader loader.Loader) ([]*Resource, error) {
 	content, err := loader.Load(path)
 	if err != nil {
 		return nil, err
