@@ -25,23 +25,23 @@ import (
 	"k8s.io/kubectl/pkg/scheme"
 )
 
-// OverlayTransformer contains a map of overlay objects
-type OverlayTransformer struct {
+// overlayTransformer contains a map of overlay objects
+type overlayTransformer struct {
 	overlay types.KObject
 }
 
-var _ Transformer = &OverlayTransformer{}
+var _ Transformer = &overlayTransformer{}
 
-// NewOverlayTransformer constructs a OverlayTransformer.
+// NewOverlayTransformer constructs a overlayTransformer.
 func NewOverlayTransformer(overlay types.KObject) (Transformer, error) {
 	if len(overlay) == 0 {
 		return NewNoOpTransformer(), nil
 	}
-	return &OverlayTransformer{overlay}, nil
+	return &overlayTransformer{overlay}, nil
 }
 
 // Transform apply the overlay on top of the base resources.
-func (o *OverlayTransformer) Transform(baseResourceMap types.KObject) error {
+func (o *overlayTransformer) Transform(baseResourceMap types.KObject) error {
 	// Strategic merge the resources exist in both base and overlay.
 	for gvkn, overlay := range o.overlay {
 		// Merge overlay with base resource.

@@ -18,17 +18,17 @@ package transformers
 
 import "k8s.io/kubectl/pkg/kinflate/types"
 
-// NoOpTransformer contains a no-op transformer.
-type NoOpTransformer struct{}
+// noOpTransformer contains a no-op transformer.
+type noOpTransformer struct{}
 
-var _ Transformer = &NoOpTransformer{}
+var _ Transformer = &noOpTransformer{}
 
-// NewNoOpTransformer constructs a NoOpTransformer.
+// NewNoOpTransformer constructs a noOpTransformer.
 func NewNoOpTransformer() Transformer {
-	return &NoOpTransformer{}
+	return &noOpTransformer{}
 }
 
 // Transform does nothing.
-func (o *NoOpTransformer) Transform(_ types.KObject) error {
+func (o *noOpTransformer) Transform(_ types.KObject) error {
 	return nil
 }

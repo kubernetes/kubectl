@@ -24,32 +24,32 @@ import (
 	"k8s.io/kubectl/pkg/kinflate/types"
 )
 
-// NameReferenceTransformer contains the referencing info between 2 GroupVersionKinds
-type NameReferenceTransformer struct {
+// nameReferenceTransformer contains the referencing info between 2 GroupVersionKinds
+type nameReferenceTransformer struct {
 	pathConfigs []referencePathConfig
 }
 
-var _ Transformer = &NameReferenceTransformer{}
+var _ Transformer = &nameReferenceTransformer{}
 
-// NewDefaultingNameReferenceTransformer constructs a NameReferenceTransformer
+// NewDefaultingNameReferenceTransformer constructs a nameReferenceTransformer
 // with defaultNameReferencepathConfigs.
 func NewDefaultingNameReferenceTransformer() (Transformer, error) {
 	return NewNameReferenceTransformer(defaultNameReferencePathConfigs)
 }
 
-// NewNameReferenceTransformer construct a NameReferenceTransformer.
+// NewNameReferenceTransformer construct a nameReferenceTransformer.
 func NewNameReferenceTransformer(pc []referencePathConfig) (Transformer, error) {
 	if pc == nil {
 		return nil, errors.New("pathConfigs is not expected to be nil")
 	}
-	return &NameReferenceTransformer{pathConfigs: pc}, nil
+	return &nameReferenceTransformer{pathConfigs: pc}, nil
 }
 
 // Transform does the fields update according to pathConfigs.
 // The old name is in the key in the map and the new name is in the object
 // associated with the key. e.g. if <k, v> is one of the key-value pair in the map,
 // then the old name is k.Name and the new name is v.GetName()
-func (o *NameReferenceTransformer) Transform(
+func (o *nameReferenceTransformer) Transform(
 	m types.KObject) error {
 	for GVKn := range m {
 		obj := m[GVKn]
@@ -70,29 +70,23 @@ func (o *NameReferenceTransformer) Transform(
 	return nil
 }
 
-// NoMatchingGVKNError indicates failing to find a gvkn.GroupVersionKindName.
-type NoMatchingGVKNError struct {
+// noMatchingGVKNError indicates failing to find a gvkn.GroupVersionKindName.
+type noMatchingGVKNError struct {
 	message string
 }
 
-// NewNoMatchingGVKNError constructs an instance of NoMatchingGVKNError with
+// newNoMatchingGVKNError constructs an instance of noMatchingGVKNError with
 // a given error message.
-func NewNoMatchingGVKNError(errMsg string) NoMatchingGVKNError {
-	return NoMatchingGVKNError{errMsg}
-}
-
-// IsNoMatchingGVKNError checks if the error is NoMatchingGVKNError type.
-func IsNoMatchingGVKNError(err error) bool {
-	_, ok := err.(NoMatchingGVKNError)
-	return ok
+func newNoMatchingGVKNError(errMsg string) noMatchingGVKNError {
+	return noMatchingGVKNError{errMsg}
 }
 
 // Error returns the error in string format.
-func (err NoMatchingGVKNError) Error() string {
+func (err noMatchingGVKNError) Error() string {
 	return err.message
 }
 
-func (o *NameReferenceTransformer) updateNameReference(
+func (o *nameReferenceTransformer) updateNameReference(
 	GVK schema.GroupVersionKind,
 	m types.KObject,
 ) func(in interface{}) (interface{}, error) {

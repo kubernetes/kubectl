@@ -23,14 +23,14 @@ import (
 	"k8s.io/kubectl/pkg/kinflate/types"
 )
 
-// NamePrefixTransformer contains the prefix and the path config for each field that
+// namePrefixTransformer contains the prefix and the path config for each field that
 // the name prefix will be applied.
-type NamePrefixTransformer struct {
+type namePrefixTransformer struct {
 	prefix      string
 	pathConfigs []PathConfig
 }
 
-var _ Transformer = &NamePrefixTransformer{}
+var _ Transformer = &namePrefixTransformer{}
 
 var defaultNamePrefixPathConfigs = []PathConfig{
 	{
@@ -39,12 +39,12 @@ var defaultNamePrefixPathConfigs = []PathConfig{
 	},
 }
 
-// NewDefaultingNamePrefixTransformer construct a NamePrefixTransformer with defaultNamePrefixPathConfigs.
+// NewDefaultingNamePrefixTransformer construct a namePrefixTransformer with defaultNamePrefixPathConfigs.
 func NewDefaultingNamePrefixTransformer(nameprefix string) (Transformer, error) {
 	return NewNamePrefixTransformer(defaultNamePrefixPathConfigs, nameprefix)
 }
 
-// NewNamePrefixTransformer construct a NamePrefixTransformer.
+// NewNamePrefixTransformer construct a namePrefixTransformer.
 func NewNamePrefixTransformer(pc []PathConfig, np string) (Transformer, error) {
 	if len(np) == 0 {
 		return NewNoOpTransformer(), nil
@@ -52,11 +52,11 @@ func NewNamePrefixTransformer(pc []PathConfig, np string) (Transformer, error) {
 	if pc == nil {
 		return nil, errors.New("pathConfigs is not expected to be nil")
 	}
-	return &NamePrefixTransformer{pathConfigs: pc, prefix: np}, nil
+	return &namePrefixTransformer{pathConfigs: pc, prefix: np}, nil
 }
 
 // Transform prepends the name prefix.
-func (o *NamePrefixTransformer) Transform(m types.KObject) error {
+func (o *namePrefixTransformer) Transform(m types.KObject) error {
 	for gvkn := range m {
 		obj := m[gvkn]
 		objMap := obj.UnstructuredContent()
@@ -73,7 +73,7 @@ func (o *NamePrefixTransformer) Transform(m types.KObject) error {
 	return nil
 }
 
-func (o *NamePrefixTransformer) addPrefix(in interface{}) (interface{}, error) {
+func (o *namePrefixTransformer) addPrefix(in interface{}) (interface{}, error) {
 	s, ok := in.(string)
 	if !ok {
 		return nil, fmt.Errorf("%#v is expectd to be %T", in, s)

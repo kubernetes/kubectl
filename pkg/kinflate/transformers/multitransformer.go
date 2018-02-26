@@ -18,23 +18,23 @@ package transformers
 
 import "k8s.io/kubectl/pkg/kinflate/types"
 
-// MultiTransformer contains a list of transformers.
-type MultiTransformer struct {
+// multiTransformer contains a list of transformers.
+type multiTransformer struct {
 	transformers []Transformer
 }
 
-var _ Transformer = &MultiTransformer{}
+var _ Transformer = &multiTransformer{}
 
-// NewMultiTransformer constructs a MultiTransformer.
+// NewMultiTransformer constructs a multiTransformer.
 func NewMultiTransformer(t []Transformer) Transformer {
-	r := &MultiTransformer{
+	r := &multiTransformer{
 		transformers: make([]Transformer, len(t))}
 	copy(r.transformers, t)
 	return r
 }
 
 // Transform prepends the name prefix.
-func (o *MultiTransformer) Transform(m types.KObject) error {
+func (o *multiTransformer) Transform(m types.KObject) error {
 	for _, t := range o.transformers {
 		err := t.Transform(m)
 		if err != nil {
