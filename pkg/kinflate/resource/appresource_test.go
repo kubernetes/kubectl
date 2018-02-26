@@ -23,6 +23,10 @@ metadata:
 type fakeLoader struct {
 }
 
+func (l fakeLoader) Root() string {
+	return "unused"
+}
+
 func (l fakeLoader) New(newRoot string) (loader.Loader, error) {
 	return l, nil
 }
