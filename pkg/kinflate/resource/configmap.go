@@ -17,17 +17,19 @@ limitations under the License.
 package resource
 
 import (
+	"fmt"
+	"strings"
+
 	corev1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/util/validation"
 	manifest "k8s.io/kubectl/pkg/apis/manifest/v1alpha1"
 	cutil "k8s.io/kubectl/pkg/kinflate/configmapandsecret/util"
+	"k8s.io/kubectl/pkg/loader"
 )
 
-// (Note): pass in loader which has rootPath context and knows how to load
-// files given a relative path.
-// NewFromConfigMap returns a Resource given a configmap metadata from manifest
-// file.
-func NewFromConfigMap(cm manifest.ConfigMap) (*Resource, error) {
-	corev1CM, err := makeConfigMap(cm)
+// NewFromConfigMap returns a Resource given a configmap metadata from manifest file.
+func NewFromConfigMap(cm manifest.ConfigMap, l loader.Loader) (*Resource, error) {
+	corev1CM, err := makeConfigMap(cm, l)
 	if err != nil {
 		return nil, err
 	}
@@ -39,29 +41,92 @@ func NewFromConfigMap(cm manifest.ConfigMap) (*Resource, error) {
 	return &Resource{Data: data}, nil
 }
 
-func makeConfigMap(cm manifest.ConfigMap) (*corev1.ConfigMap, error) {
+func makeConfigMap(cm manifest.ConfigMap, l loader.Loader) (*corev1.ConfigMap, error) {
+	var envPairs, literalPairs, filePairs []kvPair
+	var err error
+
 	corev1cm := &corev1.ConfigMap{}
 	corev1cm.APIVersion = "v1"
 	corev1cm.Kind = "ConfigMap"
 	corev1cm.Name = cm.Name
 	corev1cm.Data = map[string]string{}
 
-	// TODO: move the configmap helpers functions in this file/package
 	if cm.EnvSource != "" {
-		if err := cutil.HandleConfigMapFromEnvFileSource(corev1cm, cm.EnvSource); err != nil {
-			return nil, err
+		envPairs, err = keyValuesFromEnvFile(l, cm.EnvSource)
+		if err != nil {
+			return nil, fmt.Errorf("error reading keys from env source file: %s %v", cm.EnvSource, err)
 		}
 	}
-	if cm.FileSources != nil {
-		if err := cutil.HandleConfigMapFromFileSources(corev1cm, cm.FileSources); err != nil {
-			return nil, err
-		}
+
+	literalPairs, err = keyValuesFromLiteralSources(cm.LiteralSources)
+	if err != nil {
+		return nil, fmt.Errorf("error reading key values from literal sources: %v", err)
 	}
-	if cm.LiteralSources != nil {
-		if err := cutil.HandleConfigMapFromLiteralSources(corev1cm, cm.LiteralSources); err != nil {
-			return nil, err
+
+	filePairs, err = keyValuesFromFileSources(l, cm.FileSources)
+	if err != nil {
+		return nil, fmt.Errorf("error reading key values from file sources: %v", err)
+	}
+
+	allPairs := append(append(envPairs, literalPairs...), filePairs...)
+
+	// merge key value pairs from all the sources
+	for _, kv := range allPairs {
+		err = addKV(corev1cm.Data, kv)
+		if err != nil {
+			return nil, fmt.Errorf("error adding key in configmap: %v", err)
 		}
 	}
 
 	return corev1cm, nil
+}
+
+func keyValuesFromEnvFile(l loader.Loader, path string) ([]kvPair, error) {
+	content, err := l.Load(path)
+	if err != nil {
+		return nil, err
+	}
+	return keyValuesFromLines(content)
+}
+
+func keyValuesFromLiteralSources(sources []string) ([]kvPair, error) {
+	var kvs []kvPair
+	for _, s := range sources {
+		// TODO: move ParseLiteralSource in this file
+		k, v, err := cutil.ParseLiteralSource(s)
+		if err != nil {
+			return nil, err
+		}
+		kvs = append(kvs, kvPair{key: k, value: v})
+	}
+	return kvs, nil
+}
+
+func keyValuesFromFileSources(l loader.Loader, sources []string) ([]kvPair, error) {
+	var kvs []kvPair
+
+	for _, s := range sources {
+		key, path, err := cutil.ParseFileSource(s)
+		if err != nil {
+			return nil, err
+		}
+		fileContent, err := l.Load(path)
+		if err != nil {
+			return nil, err
+		}
+		kvs = append(kvs, kvPair{key: key, value: string(fileContent)})
+	}
+	return kvs, nil
+}
+
+// addKV adds key-value pair to the provided map.
+func addKV(m map[string]string, kv kvPair) error {
+	if errs := validation.IsConfigMapKey(kv.key); len(errs) != 0 {
+		return fmt.Errorf("%q is not a valid key name: %s", kv.key, strings.Join(errs, ";"))
+	}
+	if _, exists := m[kv.key]; exists {
+		return fmt.Errorf("key %s already exists: %v.", kv.key, m)
+	}
+	m[kv.key] = kv.value
+	return nil
 }
