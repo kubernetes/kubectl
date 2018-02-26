@@ -23,26 +23,26 @@ import (
 	"k8s.io/kubectl/pkg/kinflate/types"
 )
 
-// MapTransformer contains a map string->string and path configs
+// mapTransformer contains a map string->string and path configs
 // The map will be applied to the fields specified in path configs.
-type MapTransformer struct {
+type mapTransformer struct {
 	m           map[string]string
 	pathConfigs []PathConfig
 }
 
-var _ Transformer = &MapTransformer{}
+var _ Transformer = &mapTransformer{}
 
-// NewDefaultingLabelsMapTransformer construct a MapTransformer with defaultLabelsPathConfigs.
+// NewDefaultingLabelsMapTransformer construct a mapTransformer with defaultLabelsPathConfigs.
 func NewDefaultingLabelsMapTransformer(m map[string]string) (Transformer, error) {
 	return NewMapTransformer(defaultLabelsPathConfigs, m)
 }
 
-// NewDefaultingAnnotationsMapTransformer construct a MapTransformer with defaultAnnotationsPathConfigs.
+// NewDefaultingAnnotationsMapTransformer construct a mapTransformer with defaultAnnotationsPathConfigs.
 func NewDefaultingAnnotationsMapTransformer(m map[string]string) (Transformer, error) {
 	return NewMapTransformer(defaultAnnotationsPathConfigs, m)
 }
 
-// NewMapTransformer construct a MapTransformer.
+// NewMapTransformer construct a mapTransformer.
 func NewMapTransformer(pc []PathConfig, m map[string]string) (Transformer, error) {
 	if m == nil {
 		return NewNoOpTransformer(), nil
@@ -50,12 +50,12 @@ func NewMapTransformer(pc []PathConfig, m map[string]string) (Transformer, error
 	if pc == nil {
 		return nil, errors.New("pathConfigs is not expected to be nil")
 	}
-	return &MapTransformer{pathConfigs: pc, m: m}, nil
+	return &mapTransformer{pathConfigs: pc, m: m}, nil
 }
 
-// Transform apply each <key, value> pair in the MapTransformer to the
-// fields specified in MapTransformer.
-func (o *MapTransformer) Transform(m types.KObject) error {
+// Transform apply each <key, value> pair in the mapTransformer to the
+// fields specified in mapTransformer.
+func (o *mapTransformer) Transform(m types.KObject) error {
 	for gvkn := range m {
 		obj := m[gvkn]
 		objMap := obj.UnstructuredContent()
@@ -72,7 +72,7 @@ func (o *MapTransformer) Transform(m types.KObject) error {
 	return nil
 }
 
-func (o *MapTransformer) addMap(in interface{}) (interface{}, error) {
+func (o *mapTransformer) addMap(in interface{}) (interface{}, error) {
 	m, ok := in.(map[string]interface{})
 	if !ok {
 		return nil, fmt.Errorf("%#v is expectd to be %T", in, m)
