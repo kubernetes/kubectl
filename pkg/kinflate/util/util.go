@@ -92,19 +92,12 @@ func DecodeToKObject(in []byte, into types.KObject) (types.KObject, error) {
 	return into, nil
 }
 
-// Encode encodes the map `in` and output the encoded objects separated by `---`.
-func Encode(in types.KObject) ([]byte, error) {
-	gvknList := []types.GroupVersionKindName{}
-	for gvkn := range in {
-		gvknList = append(gvknList, gvkn)
-	}
-	sort.Sort(types.ByGVKN(gvknList))
-
+// Encode encodes a list of Unstructed objects to byte format separated by `---`.
+func Encode(objs []*unstructured.Unstructured) ([]byte, error) {
 	firstObj := true
 	var b []byte
 	buf := bytes.NewBuffer(b)
-	for _, gvkn := range gvknList {
-		obj := in[gvkn]
+	for _, obj := range objs {
 		out, err := yaml.Marshal(obj)
 		if err != nil {
 			return nil, err
@@ -122,6 +115,21 @@ func Encode(in types.KObject) ([]byte, error) {
 		firstObj = false
 	}
 	return buf.Bytes(), nil
+}
+
+// EncodeFromKObject encodes the map `in` and output the encoded objects separated by `---`.
+func EncodeFromKObject(in types.KObject) ([]byte, error) {
+	gvknList := []types.GroupVersionKindName{}
+	for gvkn := range in {
+		gvknList = append(gvknList, gvkn)
+	}
+	sort.Sort(types.ByGVKN(gvknList))
+
+	objs := []*unstructured.Unstructured{}
+	for _, gvkn := range gvknList {
+		objs = append(objs, in[gvkn])
+	}
+	return Encode(objs)
 }
 
 // WriteToDir write each object in KObject to a file named with GroupVersionKindName.

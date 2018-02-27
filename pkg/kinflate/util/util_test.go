@@ -76,8 +76,8 @@ func TestDecodeToKObject(t *testing.T) {
 	}
 }
 
-func TestEncode(t *testing.T) {
-	out, err := Encode(makeConfigMaps("cm1", "cm2", "cm1", "cm2"))
+func TestEncodeFromKObject(t *testing.T) {
+	out, err := EncodeFromKObject(makeConfigMaps("cm1", "cm2", "cm1", "cm2"))
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
