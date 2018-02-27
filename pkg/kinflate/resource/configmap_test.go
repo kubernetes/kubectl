@@ -35,7 +35,7 @@ func TestNewFromConfigMap(t *testing.T) {
 		expected    resource.Resource
 	}
 
-	l := loadertest.NewFakeLoader("/home/seans/project/Kube-manifest.yaml")
+	l := loadertest.NewFakeLoader("/home/seans/project/")
 	testCases := []testCase{
 		{
 			description: "construct config map from env",
