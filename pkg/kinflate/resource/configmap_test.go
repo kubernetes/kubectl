@@ -23,7 +23,6 @@ import (
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	manifest "k8s.io/kubectl/pkg/apis/manifest/v1alpha1"
 	"k8s.io/kubectl/pkg/kinflate/resource"
-	"k8s.io/kubectl/pkg/loader"
 	"k8s.io/kubectl/pkg/loader/loadertest"
 )
 
@@ -31,10 +30,12 @@ func TestNewFromConfigMap(t *testing.T) {
 	type testCase struct {
 		description string
 		input       manifest.ConfigMap
-		l           loader.Loader
+		filepath    string
+		content     string
 		expected    resource.Resource
 	}
 
+	l := loadertest.NewFakeLoader("/home/seans/project/Kube-manifest.yaml")
 	testCases := []testCase{
 		{
 			description: "construct config map from env",
@@ -44,11 +45,8 @@ func TestNewFromConfigMap(t *testing.T) {
 					EnvSource: "app.env",
 				},
 			},
-			l: loadertest.FakeLoader{
-				Content: `DB_USERNAME=admin
-DB_PASSWORD=somepw
-`,
-			},
+			filepath: "/home/seans/project/app.env",
+			content:  "DB_USERNAME=admin\nDB_PASSWORD=somepw",
 			expected: resource.Resource{
 				Data: &unstructured.Unstructured{
 					Object: map[string]interface{}{
@@ -74,11 +72,8 @@ DB_PASSWORD=somepw
 					FileSources: []string{"app-init.ini"},
 				},
 			},
-			l: loadertest.FakeLoader{
-				Content: `FOO=bar
-BAR=baz
-`,
-			},
+			filepath: "/home/seans/project/app-init.ini",
+			content:  "FOO=bar\nBAR=baz\n",
 			expected: resource.Resource{
 				Data: &unstructured.Unstructured{
 					Object: map[string]interface{}{
@@ -127,7 +122,11 @@ BAR=baz
 	}
 
 	for _, tc := range testCases {
-		r, err := resource.NewFromConfigMap(tc.input, tc.l)
+
+		if ferr := l.AddFile(tc.filepath, []byte(tc.content)); ferr != nil {
+			t.Fatalf("Error adding fake file: %v\n", ferr)
+		}
+		r, err := resource.NewFromConfigMap(tc.input, l)
 		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
 		}

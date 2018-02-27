@@ -23,7 +23,7 @@ func makeUnconstructed(name string) *unstructured.Unstructured {
 
 func TestNewFromPath(t *testing.T) {
 
-	resourceContent := `apiVersion: v1
+	resourceStr := `apiVersion: v1
 kind: Deployment
 metadata:
   name: dply1
@@ -34,13 +34,16 @@ metadata:
   name: dply2
 `
 
-	l := loadertest.FakeLoader{Content: resourceContent}
+	l := loadertest.NewFakeLoader("/home/seans/project")
+	if ferr := l.AddFile("/home/seans/project/deployment.yaml", []byte(resourceStr)); ferr != nil {
+		t.Fatalf("Error adding fake file: %v\n", ferr)
+	}
 	expected := []*Resource{
 		{Data: makeUnconstructed("dply1")},
 		{Data: makeUnconstructed("dply2")},
 	}
 
-	resources, _ := NewFromPath("fake/path", l)
+	resources, _ := NewFromPath("/home/seans/project/deployment.yaml", l)
 	if len(resources) != 2 {
 		t.Fatalf("%#v should contain 2 appResource, but got %d", resources, len(resources))
 	}
