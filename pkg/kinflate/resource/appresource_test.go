@@ -6,7 +6,7 @@ import (
 	"reflect"
 
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
-	"k8s.io/kubectl/pkg/loader"
+	"k8s.io/kubectl/pkg/loader/loadertest"
 )
 
 func makeUnconstructed(name string) *unstructured.Unstructured {
@@ -34,7 +34,7 @@ metadata:
   name: dply2
 `
 
-	l := loader.FakeLoader{Content: resourceContent}
+	l := loadertest.FakeLoader{Content: resourceContent}
 	expected := []*Resource{
 		{Data: makeUnconstructed("dply1")},
 		{Data: makeUnconstructed("dply2")},

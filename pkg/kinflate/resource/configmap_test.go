@@ -24,6 +24,7 @@ import (
 	manifest "k8s.io/kubectl/pkg/apis/manifest/v1alpha1"
 	"k8s.io/kubectl/pkg/kinflate/resource"
 	"k8s.io/kubectl/pkg/loader"
+	"k8s.io/kubectl/pkg/loader/loadertest"
 )
 
 func TestNewFromConfigMap(t *testing.T) {
@@ -43,7 +44,7 @@ func TestNewFromConfigMap(t *testing.T) {
 					EnvSource: "app.env",
 				},
 			},
-			l: loader.FakeLoader{
+			l: loadertest.FakeLoader{
 				Content: `DB_USERNAME=admin
 DB_PASSWORD=somepw
 `,
@@ -73,7 +74,7 @@ DB_PASSWORD=somepw
 					FileSources: []string{"app-init.ini"},
 				},
 			},
-			l: loader.FakeLoader{
+			l: loadertest.FakeLoader{
 				Content: `FOO=bar
 BAR=baz
 `,
