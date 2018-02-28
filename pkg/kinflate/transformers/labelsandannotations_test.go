@@ -25,13 +25,13 @@ import (
 	"k8s.io/kubectl/pkg/kinflate/types"
 )
 
-func makeConfigmap() *unstructured.Unstructured {
+func makeConfigmap(name string) *unstructured.Unstructured {
 	return &unstructured.Unstructured{
 		Object: map[string]interface{}{
 			"apiVersion": "v1",
 			"kind":       "ConfigMap",
 			"metadata": map[string]interface{}{
-				"name": "cm1",
+				"name": name,
 			},
 		},
 	}
@@ -92,7 +92,7 @@ func makeTestMap() types.KObject {
 		{
 			GVK:  schema.GroupVersionKind{Version: "v1", Kind: "ConfigMap"},
 			Name: "cm1",
-		}: makeConfigmap(),
+		}: makeConfigmap("cm1"),
 		{
 			GVK:  schema.GroupVersionKind{Group: "apps", Version: "v1", Kind: "Deployment"},
 			Name: "deploy1",
