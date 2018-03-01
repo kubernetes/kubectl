@@ -26,37 +26,41 @@ import (
 	manifest "k8s.io/kubectl/pkg/apis/manifest/v1alpha1"
 )
 
-func TestNewFromSecretGenerator(t *testing.T) {
-	secret := manifest.SecretGenerator{
-		Name: "secret",
-		Commands: map[string]string{
-			"DB_USERNAME": "printf admin",
-			"DB_PASSWORD": "printf somepw",
+func TestNewFromSecretGenerators(t *testing.T) {
+	secrets := []manifest.SecretGenerator{
+		{
+			Name: "secret",
+			Commands: map[string]string{
+				"DB_USERNAME": "printf admin",
+				"DB_PASSWORD": "printf somepw",
+			},
+			Type: "Opaque",
 		},
-		Type: "Opaque",
 	}
-	re, err := NewFromSecretGenerator(secret, ".")
+	re, err := NewFromSecretGenerators(".", secrets)
 
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	expected := &unstructured.Unstructured{
-		Object: map[string]interface{}{
-			"apiVersion": "v1",
-			"kind":       "Secret",
-			"metadata": map[string]interface{}{
-				"name":              "secret",
-				"creationTimestamp": nil,
+	expected := []*Resource{
+		{Data: &unstructured.Unstructured{
+			Object: map[string]interface{}{
+				"apiVersion": "v1",
+				"kind":       "Secret",
+				"metadata": map[string]interface{}{
+					"name":              "secret",
+					"creationTimestamp": nil,
+				},
+				"type": string(corev1.SecretTypeOpaque),
+				"data": map[string]interface{}{
+					"DB_USERNAME": base64.StdEncoding.EncodeToString([]byte("admin")),
+					"DB_PASSWORD": base64.StdEncoding.EncodeToString([]byte("somepw")),
+				},
 			},
-			"type": string(corev1.SecretTypeOpaque),
-			"data": map[string]interface{}{
-				"DB_USERNAME": base64.StdEncoding.EncodeToString([]byte("admin")),
-				"DB_PASSWORD": base64.StdEncoding.EncodeToString([]byte("somepw")),
-			},
-		},
+		}},
 	}
 
-	if !reflect.DeepEqual(*re.Data, *expected) {
-		t.Fatalf("%#v\ndoesn't match expected:\n%#v", *re.Data, *expected)
+	if !reflect.DeepEqual(re, expected) {
+		t.Fatalf("%#v\ndoesn't match expected:\n%#v", re, expected)
 	}
 }

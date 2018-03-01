@@ -26,39 +26,43 @@ import (
 	"k8s.io/kubectl/pkg/loader/loadertest"
 )
 
-func TestNewFromConfigMap(t *testing.T) {
+func TestNewFromConfigMaps(t *testing.T) {
 	type testCase struct {
 		description string
-		input       manifest.ConfigMap
+		input       []manifest.ConfigMap
 		filepath    string
 		content     string
-		expected    resource.Resource
+		expected    []*resource.Resource
 	}
 
 	l := loadertest.NewFakeLoader("/home/seans/project/")
 	testCases := []testCase{
 		{
 			description: "construct config map from env",
-			input: manifest.ConfigMap{
-				Name: "envConfigMap",
-				DataSources: manifest.DataSources{
-					EnvSource: "app.env",
+			input: []manifest.ConfigMap{
+				{
+					Name: "envConfigMap",
+					DataSources: manifest.DataSources{
+						EnvSource: "app.env",
+					},
 				},
 			},
 			filepath: "/home/seans/project/app.env",
 			content:  "DB_USERNAME=admin\nDB_PASSWORD=somepw",
-			expected: resource.Resource{
-				Data: &unstructured.Unstructured{
-					Object: map[string]interface{}{
-						"apiVersion": "v1",
-						"kind":       "ConfigMap",
-						"metadata": map[string]interface{}{
-							"name":              "envConfigMap",
-							"creationTimestamp": nil,
-						},
-						"data": map[string]interface{}{
-							"DB_USERNAME": "admin",
-							"DB_PASSWORD": "somepw",
+			expected: []*resource.Resource{
+				{
+					Data: &unstructured.Unstructured{
+						Object: map[string]interface{}{
+							"apiVersion": "v1",
+							"kind":       "ConfigMap",
+							"metadata": map[string]interface{}{
+								"name":              "envConfigMap",
+								"creationTimestamp": nil,
+							},
+							"data": map[string]interface{}{
+								"DB_USERNAME": "admin",
+								"DB_PASSWORD": "somepw",
+							},
 						},
 					},
 				},
@@ -66,27 +70,30 @@ func TestNewFromConfigMap(t *testing.T) {
 		},
 		{
 			description: "construct config map from file",
-			input: manifest.ConfigMap{
+			input: []manifest.ConfigMap{{
 				Name: "fileConfigMap",
 				DataSources: manifest.DataSources{
 					FileSources: []string{"app-init.ini"},
 				},
 			},
+			},
 			filepath: "/home/seans/project/app-init.ini",
 			content:  "FOO=bar\nBAR=baz\n",
-			expected: resource.Resource{
-				Data: &unstructured.Unstructured{
-					Object: map[string]interface{}{
-						"apiVersion": "v1",
-						"kind":       "ConfigMap",
-						"metadata": map[string]interface{}{
-							"name":              "fileConfigMap",
-							"creationTimestamp": nil,
-						},
-						"data": map[string]interface{}{
-							"app-init.ini": `FOO=bar
+			expected: []*resource.Resource{
+				{
+					Data: &unstructured.Unstructured{
+						Object: map[string]interface{}{
+							"apiVersion": "v1",
+							"kind":       "ConfigMap",
+							"metadata": map[string]interface{}{
+								"name":              "fileConfigMap",
+								"creationTimestamp": nil,
+							},
+							"data": map[string]interface{}{
+								"app-init.ini": `FOO=bar
 BAR=baz
 `,
+							},
 						},
 					},
 				},
@@ -94,24 +101,28 @@ BAR=baz
 		},
 		{
 			description: "construct config map from literal",
-			input: manifest.ConfigMap{
-				Name: "literalConfigMap",
-				DataSources: manifest.DataSources{
-					LiteralSources: []string{"a=x", "b=y"},
+			input: []manifest.ConfigMap{
+				{
+					Name: "literalConfigMap",
+					DataSources: manifest.DataSources{
+						LiteralSources: []string{"a=x", "b=y"},
+					},
 				},
 			},
-			expected: resource.Resource{
-				Data: &unstructured.Unstructured{
-					Object: map[string]interface{}{
-						"apiVersion": "v1",
-						"kind":       "ConfigMap",
-						"metadata": map[string]interface{}{
-							"name":              "literalConfigMap",
-							"creationTimestamp": nil,
-						},
-						"data": map[string]interface{}{
-							"a": "x",
-							"b": "y",
+			expected: []*resource.Resource{
+				{
+					Data: &unstructured.Unstructured{
+						Object: map[string]interface{}{
+							"apiVersion": "v1",
+							"kind":       "ConfigMap",
+							"metadata": map[string]interface{}{
+								"name":              "literalConfigMap",
+								"creationTimestamp": nil,
+							},
+							"data": map[string]interface{}{
+								"a": "x",
+								"b": "y",
+							},
 						},
 					},
 				},
@@ -126,12 +137,12 @@ BAR=baz
 		if ferr := l.AddFile(tc.filepath, []byte(tc.content)); ferr != nil {
 			t.Fatalf("Error adding fake file: %v\n", ferr)
 		}
-		r, err := resource.NewFromConfigMap(tc.input, l)
+		r, err := resource.NewFromConfigMaps(l, tc.input)
 		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
 		}
-		if !reflect.DeepEqual(*r, tc.expected) {
-			t.Fatalf("in testcase: %q got:\n%+v\n expected:\n%+v\n", tc.description, *r, tc.expected)
+		if !reflect.DeepEqual(r, tc.expected) {
+			t.Fatalf("in testcase: %q got:\n%+v\n expected:\n%+v\n", tc.description, r, tc.expected)
 		}
 	}
 }
