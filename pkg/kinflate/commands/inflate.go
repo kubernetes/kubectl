@@ -109,7 +109,7 @@ func (o *inflateOptions) RunInflate(out, errOut io.Writer) error {
 	}
 
 	// Output the objects.
-	res, err := kutil.Encode(kobj)
+	res, err := kutil.EncodeFromKObject(kobj)
 	if err != nil {
 		return err
 	}
