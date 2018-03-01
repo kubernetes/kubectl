@@ -27,9 +27,7 @@ import (
 	manifest "k8s.io/kubectl/pkg/apis/manifest/v1alpha1"
 )
 
-// NewFromSecretGenerator takes a SecretGenerator and executes its command in directory p
-// then writes the output to a Resource object and returns a pointer to it.
-func NewFromSecretGenerator(s manifest.SecretGenerator, p string) (*Resource, error) {
+func newFromSecretGenerator(p string, s manifest.SecretGenerator) (*Resource, error) {
 	corev1secret := &corev1.Secret{}
 	corev1secret.APIVersion = "v1"
 	corev1secret.Kind = "Secret"
@@ -68,4 +66,18 @@ func createSecretKey(wd string, command string) ([]byte, error) {
 	cmd.Dir = wd
 
 	return cmd.Output()
+}
+
+// NewFromSecretGenerators takes a SecretGenerator slice and executes its command in directory p
+// then writes the output to a Resource slice and return it.
+func NewFromSecretGenerators(p string, secretList []manifest.SecretGenerator) ([]*Resource, error) {
+	allResources := []*Resource{}
+	for _, secret := range secretList {
+		res, err := newFromSecretGenerator(p, secret)
+		if err != nil {
+			return nil, err
+		}
+		allResources = append(allResources, res)
+	}
+	return allResources, nil
 }

@@ -21,8 +21,7 @@ import (
 	"k8s.io/kubectl/pkg/loader"
 )
 
-//  NewFromPath returns a Resource list given a resource path from manifest file.
-func NewFromPath(path string, loader loader.Loader) ([]*Resource, error) {
+func resourcesFromPath(loader loader.Loader, path string) ([]*Resource, error) {
 	content, err := loader.Load(path)
 	if err != nil {
 		return nil, err
@@ -38,4 +37,17 @@ func NewFromPath(path string, loader loader.Loader) ([]*Resource, error) {
 		res = append(res, &Resource{Data: obj})
 	}
 	return res, nil
+}
+
+//  NewFromPaths returns a slice of Resources given a resource path slice from manifest file.
+func NewFromPaths(loader loader.Loader, paths []string) ([]*Resource, error) {
+	allResources := []*Resource{}
+	for _, path := range paths {
+		res, err := resourcesFromPath(loader, path)
+		if err != nil {
+			return nil, err
+		}
+		allResources = append(allResources, res...)
+	}
+	return allResources, nil
 }

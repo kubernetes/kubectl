@@ -21,7 +21,7 @@ func makeUnconstructed(name string) *unstructured.Unstructured {
 	}
 }
 
-func TestNewFromPath(t *testing.T) {
+func TestNewFromPaths(t *testing.T) {
 
 	resourceStr := `apiVersion: v1
 kind: Deployment
@@ -43,7 +43,7 @@ metadata:
 		{Data: makeUnconstructed("dply2")},
 	}
 
-	resources, _ := NewFromPath("/home/seans/project/deployment.yaml", l)
+	resources, _ := NewFromPaths(l, []string{"/home/seans/project/deployment.yaml"})
 	if len(resources) != 2 {
 		t.Fatalf("%#v should contain 2 appResource, but got %d", resources, len(resources))
 	}

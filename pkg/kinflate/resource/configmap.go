@@ -27,9 +27,8 @@ import (
 	"k8s.io/kubectl/pkg/loader"
 )
 
-// NewFromConfigMap returns a Resource given a configmap metadata from manifest file.
-func NewFromConfigMap(cm manifest.ConfigMap, l loader.Loader) (*Resource, error) {
-	corev1CM, err := makeConfigMap(cm, l)
+func newFromConfigMap(l loader.Loader, cm manifest.ConfigMap) (*Resource, error) {
+	corev1CM, err := makeConfigMap(l, cm)
 	if err != nil {
 		return nil, err
 	}
@@ -41,7 +40,7 @@ func NewFromConfigMap(cm manifest.ConfigMap, l loader.Loader) (*Resource, error)
 	return &Resource{Data: data}, nil
 }
 
-func makeConfigMap(cm manifest.ConfigMap, l loader.Loader) (*corev1.ConfigMap, error) {
+func makeConfigMap(l loader.Loader, cm manifest.ConfigMap) (*corev1.ConfigMap, error) {
 	var envPairs, literalPairs, filePairs []kvPair
 	var err error
 
@@ -129,4 +128,17 @@ func addKV(m map[string]string, kv kvPair) error {
 	}
 	m[kv.key] = kv.value
 	return nil
+}
+
+// NewFromConfigMaps returns a Resource slice given a configmap metadata slice from manifest file.
+func NewFromConfigMaps(loader loader.Loader, cmList []manifest.ConfigMap) ([]*Resource, error) {
+	allResources := []*Resource{}
+	for _, cm := range cmList {
+		res, err := newFromConfigMap(loader, cm)
+		if err != nil {
+			return nil, err
+		}
+		allResources = append(allResources, res)
+	}
+	return allResources, nil
 }
