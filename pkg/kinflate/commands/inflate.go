@@ -20,13 +20,16 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path/filepath"
 
 	"github.com/spf13/cobra"
 
+	"k8s.io/kubectl/pkg/kinflate/app"
 	"k8s.io/kubectl/pkg/kinflate/tree"
 	"k8s.io/kubectl/pkg/kinflate/types"
 	kutil "k8s.io/kubectl/pkg/kinflate/util"
 	"k8s.io/kubectl/pkg/kinflate/util/fs"
+	"k8s.io/kubectl/pkg/loader"
 )
 
 type inflateOptions struct {
@@ -83,20 +86,35 @@ func (o *inflateOptions) Complete(cmd *cobra.Command, args []string) error {
 
 // runInflate does the real transformation.
 func (o *inflateOptions) runInflate(fs fs.FileSystem) (types.KObject, error) {
-	// Build a tree of ManifestData.
-	loader := tree.ManifestLoader{FS: fs, InitialPath: o.manifestPath}
-	root, err := loader.LoadManifestDataFromPath()
+	l := loader.Init([]loader.SchemeLoader{loader.NewFileLoader(fs)})
+
+	absPath, err := filepath.Abs(o.manifestPath)
 	if err != nil {
 		return nil, err
 	}
 
-	// Do the transformation for the tree.
-	err = root.Inflate(o.mode)
+	rootLoader, err := l.New(absPath)
 	if err != nil {
 		return nil, err
 	}
 
-	return types.KObject(root.Resources), nil
+	application, err := app.New(rootLoader)
+	if err != nil {
+		return nil, err
+	}
+
+	allResources := types.ResourceCollection{}
+	switch o.mode {
+	case tree.ModeNormal:
+		allResources, err = application.Resources()
+	case tree.ModeNoop:
+		allResources, err = application.RawResources()
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	return types.KObject(allResources), nil
 }
 
 // RunInflate runs inflate command (do real work).
