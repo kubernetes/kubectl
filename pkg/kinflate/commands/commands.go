@@ -41,7 +41,7 @@ Find more information at:
 	}
 
 	c.AddCommand(
-		newCmdInflate(stdOut, stdErr),
+		newCmdInflate(stdOut, stdErr, fsys),
 		newCmdDiff(stdOut, stdErr, fsys),
 		newCmdInit(stdOut, stdErr, fsys),
 		// 'add' sub command

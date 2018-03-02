@@ -2,3 +2,4 @@ description: single overlay
 args: []
 filename: testdata/testcase-single-overlay/in/overlay/
 expectedStdout: testdata/testcase-single-overlay/expected.yaml
+expectedDiff: testdata/testcase-single-overlay/expected.diff
