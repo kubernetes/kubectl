@@ -31,3 +31,5 @@ type GroupVersionKindName struct {
 
 // KObject is a map from GroupVersionKindName to unstructured objects
 type KObject map[GroupVersionKindName]*unstructured.Unstructured
+
+type ResourceCollection KObject
