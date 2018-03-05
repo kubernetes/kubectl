@@ -149,7 +149,10 @@ func (p *parser) isGroupVersionMatch(group, version string) bool {
 // getOpenAPI retrieves a schema object from the API based on a
 // GroupVersionResource triplet.
 func (p *parser) getOpenAPI(group, version, kind string) proto.Schema {
-	schema := p.resources.LookupResource(schema.GroupVersionKind{group, version, kind})
+	schema := p.resources.LookupResource(schema.GroupVersionKind{
+		Group:   group,
+		Version: version,
+		Kind:    kind})
 	if schema == nil {
 		return nil
 	}
@@ -180,11 +183,11 @@ func (p *parser) indexResources(gvs []*v1.APIResourceList) (Resources, map[schem
 			}
 			newResource := &Resource{
 				Resource:        r,
-				apiGroupVersion: schema.GroupVersion{group, version},
+				apiGroupVersion: schema.GroupVersion{Group: group, Version: version},
 				schema:          newSchema,
 			}
 			resources[name] = append(resources[name], newResource)
-			bygvr[schema.GroupVersionResource{group, version, r.Kind}] = newResource
+			bygvr[schema.GroupVersionResource{Group: group, Version: version, Resource: r.Kind}] = newResource
 		}
 	}
 	return resources, bygvr
@@ -214,7 +217,7 @@ func (p *parser) attachSubResources(
 				continue
 			}
 			// Make sure the Parent resource wasn't filtered out
-			gvr := schema.GroupVersionResource{group, version, resourceName}
+			gvr := schema.GroupVersionResource{Group: group, Version: version, Resource: resourceName}
 			if _, found := bygvr[gvr]; !found {
 				continue
 			}
@@ -222,7 +225,7 @@ func (p *parser) attachSubResources(
 			subRes := &SubResource{
 				Resource:        r,
 				parent:          parent,
-				apiGroupVersion: schema.GroupVersion{group, version},
+				apiGroupVersion: schema.GroupVersion{Group: group, Version: version},
 				schema:          newSchema,
 			}
 			parent.SubResources = append(parent.SubResources, subRes)
