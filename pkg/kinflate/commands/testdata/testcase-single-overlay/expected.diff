@@ -1,0 +1,56 @@
+diff -u -N /tmp/noop/apps_v1beta2_Deployment_nginx.yaml /tmp/transformed/apps_v1beta2_Deployment_nginx.yaml
+--- /tmp/noop/apps_v1beta2_Deployment_nginx.yaml	YYYY-MM-DD HH:MM:SS
++++ /tmp/transformed/apps_v1beta2_Deployment_nginx.yaml	YYYY-MM-DD HH:MM:SS
+@@ -5,13 +5,15 @@
+     note: This is a test annotation
+   labels:
+     app: mynginx
++    env: staging
+     org: example.com
+     team: foo
+-  name: team-foo-nginx
++  name: staging-team-foo-nginx
+ spec:
+   selector:
+     matchLabels:
+       app: mynginx
++      env: staging
+       org: example.com
+       team: foo
+   template:
+@@ -20,6 +22,7 @@
+         note: This is a test annotation
+       labels:
+         app: mynginx
++        env: staging
+         org: example.com
+         team: foo
+     spec:
+@@ -30,5 +33,6 @@
+         - mountPath: /tmp/ps
+           name: nginx-persistent-storage
+       volumes:
+-      - emptyDir: {}
++      - gcePersistentDisk:
++          pdName: nginx-persistent-storage
+         name: nginx-persistent-storage
+diff -u -N /tmp/noop/v1_Service_nginx.yaml /tmp/transformed/v1_Service_nginx.yaml
+--- /tmp/noop/v1_Service_nginx.yaml	YYYY-MM-DD HH:MM:SS
++++ /tmp/transformed/v1_Service_nginx.yaml	YYYY-MM-DD HH:MM:SS
+@@ -5,13 +5,15 @@
+     note: This is a test annotation
+   labels:
+     app: mynginx
++    env: staging
+     org: example.com
+     team: foo
+-  name: team-foo-nginx
++  name: staging-team-foo-nginx
+ spec:
+   ports:
+   - port: 80
+   selector:
+     app: mynginx
++    env: staging
+     org: example.com
+     team: foo

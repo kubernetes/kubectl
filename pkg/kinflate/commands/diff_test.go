@@ -1,5 +1,5 @@
 /*
-Copyright 2017 The Kubernetes Authors.
+Copyright 2018 The Kubernetes Authors.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-
 package commands
 
 import (
@@ -22,6 +21,7 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
+	"regexp"
 	"strings"
 	"testing"
 
@@ -31,17 +31,22 @@ import (
 	"k8s.io/kubectl/pkg/kinflate/util/fs"
 )
 
-type InflateTestCase struct {
+type DiffTestCase struct {
 	Description string   `yaml:"description"`
 	Args        []string `yaml:"args"`
 	Filename    string   `yaml:"filename"`
 	// path to the file that contains the expected output
-	ExpectedStdout string `yaml:"expectedStdout"`
+	ExpectedDiff string `yaml:"expectedDiff"`
 }
 
-func TestInflate(t *testing.T) {
+func TestDiff(t *testing.T) {
 	const updateEnvVar = "UPDATE_KINFLATE_EXPECTED_DATA"
 	updateKinflateExpected := os.Getenv(updateEnvVar) == "true"
+
+	noopDir, _ := regexp.Compile(`/tmp/noop-[0-9]*/`)
+	transformedDir, _ := regexp.Compile(`/tmp/transformed-[0-9]*/`)
+	timestamp, _ := regexp.Compile(`[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1]) (2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9].[0-9]* [+-]{1}[0-9]{4}`)
+
 	fs := fs.MakeRealFS()
 
 	testcases := sets.NewString()
@@ -69,7 +74,7 @@ func TestInflate(t *testing.T) {
 	for _, testcaseName := range testcases.List() {
 		t.Run(testcaseName, func(t *testing.T) {
 			name := testcaseName
-			testcase := InflateTestCase{}
+			testcase := DiffTestCase{}
 			testcaseDir := filepath.Join("testdata", "testcase-"+name)
 			testcaseData, err := ioutil.ReadFile(filepath.Join(testcaseDir, "test.yaml"))
 			if err != nil {
@@ -79,17 +84,21 @@ func TestInflate(t *testing.T) {
 				t.Fatalf("%s: %v", name, err)
 			}
 
-			ops := &inflateOptions{
+			diffOps := &diffOptions{
 				manifestPath: testcase.Filename,
 			}
 			buf := bytes.NewBuffer([]byte{})
-			err = ops.RunInflate(buf, os.Stderr, fs)
+			err = diffOps.RunDiff(buf, os.Stderr, fs)
 			if err != nil {
 				t.Errorf("unexpected error: %v", err)
 			}
-			actualBytes := buf.Bytes()
+			actualString := string(buf.Bytes())
+			actualString = noopDir.ReplaceAllString(actualString, "/tmp/noop/")
+			actualString = transformedDir.ReplaceAllString(actualString, "/tmp/transformed/")
+			actualString = timestamp.ReplaceAllString(actualString, "YYYY-MM-DD HH:MM:SS")
+			actualBytes := []byte(actualString)
 			if !updateKinflateExpected {
-				expectedBytes, err := ioutil.ReadFile(testcase.ExpectedStdout)
+				expectedBytes, err := ioutil.ReadFile(testcase.ExpectedDiff)
 				if err != nil {
 					t.Errorf("unexpected error: %v", err)
 				}
@@ -97,10 +106,9 @@ func TestInflate(t *testing.T) {
 					t.Errorf("%s\ndoesn't equal expected:\n%s\n", actualBytes, expectedBytes)
 				}
 			} else {
-				ioutil.WriteFile(testcase.ExpectedStdout, actualBytes, 0644)
+				ioutil.WriteFile(testcase.ExpectedDiff, actualBytes, 0644)
 			}
 
 		})
 	}
-
 }

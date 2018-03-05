@@ -23,23 +23,20 @@ import (
 	"path/filepath"
 
 	"github.com/spf13/cobra"
+	"k8s.io/kubectl/pkg/kinflate/types"
 
 	"k8s.io/kubectl/pkg/kinflate/app"
-	"k8s.io/kubectl/pkg/kinflate/tree"
-	"k8s.io/kubectl/pkg/kinflate/types"
 	kutil "k8s.io/kubectl/pkg/kinflate/util"
 	"k8s.io/kubectl/pkg/kinflate/util/fs"
 	"k8s.io/kubectl/pkg/loader"
 )
 
 type inflateOptions struct {
-	outputdir    string
 	manifestPath string
-	mode         tree.ModeType
 }
 
 // newCmdInflate creates a new inflate command.
-func newCmdInflate(out, errOut io.Writer) *cobra.Command {
+func newCmdInflate(out, errOut io.Writer, fs fs.FileSystem) *cobra.Command {
 	var o inflateOptions
 
 	cmd := &cobra.Command{
@@ -60,7 +57,7 @@ func newCmdInflate(out, errOut io.Writer) *cobra.Command {
 				fmt.Fprintf(errOut, "error: %v\n", err)
 				os.Exit(1)
 			}
-			err = o.RunInflate(out, errOut)
+			err = o.RunInflate(out, errOut, fs)
 			if err != nil {
 				fmt.Fprintf(errOut, "error: %v\n", err)
 				os.Exit(1)
@@ -80,54 +77,36 @@ func (o *inflateOptions) Validate(cmd *cobra.Command, args []string) error {
 
 // Complete completes inflate command.
 func (o *inflateOptions) Complete(cmd *cobra.Command, args []string) error {
-	o.mode = tree.ModeNormal
 	return nil
 }
 
-// runInflate does the real transformation.
-func (o *inflateOptions) runInflate(fs fs.FileSystem) (types.KObject, error) {
+// RunInflate runs inflate command (do real work).
+func (o *inflateOptions) RunInflate(out, errOut io.Writer, fs fs.FileSystem) error {
 	l := loader.Init([]loader.SchemeLoader{loader.NewFileLoader(fs)})
 
 	absPath, err := filepath.Abs(o.manifestPath)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	rootLoader, err := l.New(absPath)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	application, err := app.New(rootLoader)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	allResources := types.ResourceCollection{}
-	switch o.mode {
-	case tree.ModeNormal:
-		allResources, err = application.Resources()
-	case tree.ModeNoop:
-		allResources, err = application.RawResources()
-	}
-	if err != nil {
-		return nil, err
-	}
+	allResources, err := application.Resources()
 
-	return types.KObject(allResources), nil
-}
-
-// RunInflate runs inflate command (do real work).
-func (o *inflateOptions) RunInflate(out, errOut io.Writer) error {
-	fs := fs.MakeRealFS()
-
-	kobj, err := o.runInflate(fs)
 	if err != nil {
 		return err
 	}
 
 	// Output the objects.
-	res, err := kutil.Encode(kobj)
+	res, err := kutil.Encode(types.KObject(allResources))
 	if err != nil {
 		return err
 	}

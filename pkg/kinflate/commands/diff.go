@@ -19,10 +19,13 @@ package commands
 import (
 	"errors"
 	"io"
+	"path/filepath"
 
 	"github.com/spf13/cobra"
+	"k8s.io/kubectl/pkg/kinflate/app"
+	"k8s.io/kubectl/pkg/kinflate/types"
+	"k8s.io/kubectl/pkg/loader"
 
-	"k8s.io/kubectl/pkg/kinflate/tree"
 	"k8s.io/kubectl/pkg/kinflate/util"
 	"k8s.io/kubectl/pkg/kinflate/util/fs"
 	"k8s.io/utils/exec"
@@ -72,7 +75,7 @@ func (o *diffOptions) Complete(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// RunInit writes a manifest file.
+// RunDiff gets the differences between Application.Resources() and Application.RawResources().
 func (o *diffOptions) RunDiff(out, errOut io.Writer, fs fs.FileSystem) error {
 	printer := util.Printer{}
 	diff := util.DiffProgram{
@@ -81,23 +84,38 @@ func (o *diffOptions) RunDiff(out, errOut io.Writer, fs fs.FileSystem) error {
 		Stderr: errOut,
 	}
 
-	inflateOp := inflateOptions{manifestPath: o.manifestPath, mode: tree.ModeNormal}
-	kobj1, err := inflateOp.runInflate(fs)
+	l := loader.Init([]loader.SchemeLoader{loader.NewFileLoader(fs)})
+
+	absPath, err := filepath.Abs(o.manifestPath)
 	if err != nil {
 		return err
 	}
-	transformedDir, err := util.WriteToDir(kobj1, "transformed", printer)
+
+	rootLoader, err := l.New(absPath)
+	if err != nil {
+		return err
+	}
+
+	application, err := app.New(rootLoader)
+	if err != nil {
+		return err
+	}
+	resources, err := application.Resources()
+	if err != nil {
+		return err
+	}
+	rawResources, err := application.RawResources()
+	if err != nil {
+		return err
+	}
+
+	transformedDir, err := util.WriteToDir(types.KObject(resources), "transformed", printer)
 	if err != nil {
 		return err
 	}
 	defer transformedDir.Delete()
 
-	inflateNoOp := inflateOptions{manifestPath: o.manifestPath, mode: tree.ModeNoop}
-	kobj2, err := inflateNoOp.runInflate(fs)
-	if err != nil {
-		return err
-	}
-	noopDir, err := util.WriteToDir(kobj2, "noop", printer)
+	noopDir, err := util.WriteToDir(types.KObject(rawResources), "noop", printer)
 	if err != nil {
 		return err
 	}
