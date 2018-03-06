@@ -24,7 +24,6 @@ import (
 	"github.com/spf13/cobra"
 
 	"k8s.io/kubectl/pkg/kinflate/constants"
-	"k8s.io/kubectl/pkg/kinflate/tree"
 	"k8s.io/kubectl/pkg/kinflate/util/fs"
 )
 
@@ -87,8 +86,12 @@ func (o *addResourceOptions) RunAddResource(out, errOut io.Writer, fsys fs.FileS
 		return err
 	}
 
-	loader := tree.ManifestLoader{FS: fsys}
-	m, err := loader.Read(constants.KubeManifestFileName)
+	mf, err := newManifestFile(constants.KubeManifestFileName, fsys)
+	if err != nil {
+		return err
+	}
+
+	m, err := mf.read()
 	if err != nil {
 		return err
 	}
@@ -99,5 +102,5 @@ func (o *addResourceOptions) RunAddResource(out, errOut io.Writer, fsys fs.FileS
 
 	m.Resources = append(m.Resources, o.resourceFilePath)
 
-	return loader.Write(constants.KubeManifestFileName, m)
+	return mf.write(m)
 }

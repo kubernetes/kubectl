@@ -17,13 +17,12 @@ limitations under the License.
 package commands
 
 import (
+	"errors"
 	"io"
 
-	"errors"
-
 	"github.com/spf13/cobra"
+
 	"k8s.io/kubectl/pkg/kinflate/constants"
-	"k8s.io/kubectl/pkg/kinflate/tree"
 	"k8s.io/kubectl/pkg/kinflate/util/fs"
 )
 
@@ -78,11 +77,14 @@ func (o *setNamePrefixOptions) Complete(cmd *cobra.Command, args []string) error
 
 // RunSetNamePrefix runs setNamePrefix command (does real work).
 func (o *setNamePrefixOptions) RunSetNamePrefix(out, errOut io.Writer, fsys fs.FileSystem) error {
-	loader := tree.ManifestLoader{FS: fsys}
-	m, err := loader.Read(constants.KubeManifestFileName)
+	mf, err := newManifestFile(constants.KubeManifestFileName, fsys)
+	if err != nil {
+		return err
+	}
+	m, err := mf.read()
 	if err != nil {
 		return err
 	}
 	m.NamePrefix = o.prefix
-	return loader.Write(constants.KubeManifestFileName, m)
+	return mf.write(m)
 }

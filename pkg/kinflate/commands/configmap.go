@@ -20,13 +20,12 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/spf13/cobra"
+
 	manifest "k8s.io/kubectl/pkg/apis/manifest/v1alpha1"
 	"k8s.io/kubectl/pkg/kinflate/configmapandsecret"
 	"k8s.io/kubectl/pkg/kinflate/constants"
-	"k8s.io/kubectl/pkg/kinflate/tree"
 	"k8s.io/kubectl/pkg/kinflate/util/fs"
-
-	"github.com/spf13/cobra"
 )
 
 func newCmdAddConfigMap(errOut io.Writer, fsys fs.FileSystem) *cobra.Command {
@@ -52,8 +51,12 @@ func newCmdAddConfigMap(errOut io.Writer, fsys fs.FileSystem) *cobra.Command {
 			}
 
 			// Load in the manifest file.
-			loader := tree.ManifestLoader{FS: fsys}
-			m, err := loader.Read(constants.KubeManifestFileName)
+			mf, err := newManifestFile(constants.KubeManifestFileName, fsys)
+			if err != nil {
+				return err
+			}
+
+			m, err := mf.read()
 			if err != nil {
 				return err
 			}
@@ -65,7 +68,7 @@ func newCmdAddConfigMap(errOut io.Writer, fsys fs.FileSystem) *cobra.Command {
 			}
 
 			// Write out the manifest with added configmap.
-			return loader.Write(constants.KubeManifestFileName, m)
+			return mf.write(m)
 		},
 	}
 
