@@ -17,7 +17,10 @@ limitations under the License.
 package transformers
 
 import (
+	"encoding/json"
 	"fmt"
+
+	jsonpatch "github.com/evanphx/json-patch"
 
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/util/strategicpatch"
@@ -49,23 +52,42 @@ func (o *overlayTransformer) Transform(baseResourceMap types.KObject) error {
 		if !found {
 			return fmt.Errorf("failed to find an object with %#v to apply the patch", gvkn.GVK)
 		}
+		merged := map[string]interface{}{}
 		versionedObj, err := scheme.Scheme.New(gvkn.GVK)
-		if err != nil {
-			if runtime.IsNotRegisteredError(err) {
-				return fmt.Errorf("failed to find schema for %#v (which may be a CRD type): %v", gvkn.GVK, err)
-			}
-			return err
-		}
-		// TODO: Change this to use the new Merge package.
-		// Store the name of the base object, because this name may have been munged.
-		// Apply this name to the StrategicMergePatched object.
 		baseName := base.GetName()
-		merged, err := strategicpatch.StrategicMergeMapPatch(
-			base.UnstructuredContent(),
-			overlay.UnstructuredContent(),
-			versionedObj)
-		if err != nil {
+		switch {
+		case runtime.IsNotRegisteredError(err):
+			// Use JSON merge patch to handle types w/o schema
+			baseBytes, err := json.Marshal(base)
+			if err != nil {
+				return err
+			}
+			patchBytes, err := json.Marshal(overlay)
+			if err != nil {
+				return err
+			}
+			mergedBytes, err := jsonpatch.MergePatch(baseBytes, patchBytes)
+			if err != nil {
+				return err
+			}
+			err = json.Unmarshal(mergedBytes, &merged)
+			if err != nil {
+				return err
+			}
+		case err != nil:
 			return err
+		default:
+			// Use Strategic Merge Patch to handle types w/ schema
+			// TODO: Change this to use the new Merge package.
+			// Store the name of the base object, because this name may have been munged.
+			// Apply this name to the StrategicMergePatched object.
+			merged, err = strategicpatch.StrategicMergeMapPatch(
+				base.UnstructuredContent(),
+				overlay.UnstructuredContent(),
+				versionedObj)
+			if err != nil {
+				return err
+			}
 		}
 		base.SetName(baseName)
 		baseResourceMap[gvkn].Object = merged

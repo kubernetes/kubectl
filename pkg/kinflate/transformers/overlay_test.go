@@ -150,3 +150,78 @@ func TestOverlayRun(t *testing.T) {
 		t.Fatalf("actual doesn't match expected: %v", err)
 	}
 }
+
+func TestNoSchemaOverlayRun(t *testing.T) {
+	base := types.KObject{
+		{
+			GVK:  schema.GroupVersionKind{Group: "example.com", Version: "v1", Kind: "Foo"},
+			Name: "my-foo",
+		}: {
+			Object: map[string]interface{}{
+				"apiVersion": "example.com/v1",
+				"kind":       "Foo",
+				"metadata": map[string]interface{}{
+					"name": "my-foo",
+				},
+				"spec": map[string]interface{}{
+					"bar": map[string]interface{}{
+						"A": "X",
+						"B": "Y",
+					},
+				},
+			},
+		},
+	}
+	Overlay := types.KObject{
+		{
+			GVK:  schema.GroupVersionKind{Group: "example.com", Version: "v1", Kind: "Foo"},
+			Name: "my-foo",
+		}: {
+			Object: map[string]interface{}{
+				"apiVersion": "example.com/v1",
+				"kind":       "Foo",
+				"metadata": map[string]interface{}{
+					"name": "my-foo",
+				},
+				"spec": map[string]interface{}{
+					"bar": map[string]interface{}{
+						"B": nil,
+						"C": "Z",
+					},
+				},
+			},
+		},
+	}
+	expected := types.KObject{
+		{
+			GVK:  schema.GroupVersionKind{Group: "example.com", Version: "v1", Kind: "Foo"},
+			Name: "my-foo",
+		}: {
+			Object: map[string]interface{}{
+				"apiVersion": "example.com/v1",
+				"kind":       "Foo",
+				"metadata": map[string]interface{}{
+					"name": "my-foo",
+				},
+				"spec": map[string]interface{}{
+					"bar": map[string]interface{}{
+						"A": "X",
+						"C": "Z",
+					},
+				},
+			},
+		},
+	}
+
+	lt, err := NewOverlayTransformer(Overlay)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	err = lt.Transform(base)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if err = compareMap(base, expected); err != nil {
+		t.Fatalf("actual doesn't match expected: %v", err)
+	}
+}
