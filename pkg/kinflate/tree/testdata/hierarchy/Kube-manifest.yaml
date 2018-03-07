@@ -1,7 +1,0 @@
-apiVersion: manifest.k8s.io/v1alpha1
-kind: Manifest
-metadata:
-  name: grandparent
-packages:
-  - parent1/
-  - parent2/
