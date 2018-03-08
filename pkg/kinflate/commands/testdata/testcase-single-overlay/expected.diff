@@ -26,7 +26,7 @@ diff -u -N /tmp/noop/apps_v1beta2_Deployment_nginx.yaml /tmp/transformed/apps_v1
          org: example.com
          team: foo
      spec:
-@@ -30,5 +33,6 @@
+@@ -30,8 +33,12 @@
          - mountPath: /tmp/ps
            name: nginx-persistent-storage
        volumes:
@@ -34,6 +34,37 @@ diff -u -N /tmp/noop/apps_v1beta2_Deployment_nginx.yaml /tmp/transformed/apps_v1
 +      - gcePersistentDisk:
 +          pdName: nginx-persistent-storage
          name: nginx-persistent-storage
+       - configMap:
++          name: staging-configmap-in-overlay-h4hbb8fckf
++        name: configmap-in-overlay
++      - configMap:
+           name: team-foo-configmap-in-base-72t84tc949
+         name: configmap-in-base
+diff -u -N /tmp/noop/v1_ConfigMap_configmap-in-base.yaml /tmp/transformed/v1_ConfigMap_configmap-in-base.yaml
+--- /tmp/noop/v1_ConfigMap_configmap-in-base.yaml	YYYY-MM-DD HH:MM:SS
++++ /tmp/transformed/v1_ConfigMap_configmap-in-base.yaml	YYYY-MM-DD HH:MM:SS
+@@ -8,6 +8,7 @@
+   creationTimestamp: null
+   labels:
+     app: mynginx
++    env: staging
+     org: example.com
+     team: foo
+-  name: team-foo-configmap-in-base-72t84tc949
++  name: staging-team-foo-configmap-in-base-72t84tc949
+diff -u -N /tmp/noop/v1_ConfigMap_configmap-in-overlay.yaml /tmp/transformed/v1_ConfigMap_configmap-in-overlay.yaml
+--- /tmp/noop/v1_ConfigMap_configmap-in-overlay.yaml	YYYY-MM-DD HH:MM:SS
++++ /tmp/transformed/v1_ConfigMap_configmap-in-overlay.yaml	YYYY-MM-DD HH:MM:SS
+@@ -0,0 +1,9 @@
++apiVersion: v1
++data:
++  hello: world
++kind: ConfigMap
++metadata:
++  creationTimestamp: null
++  labels:
++    env: staging
++  name: staging-configmap-in-overlay-h4hbb8fckf
 diff -u -N /tmp/noop/v1_Service_nginx.yaml /tmp/transformed/v1_Service_nginx.yaml
 --- /tmp/noop/v1_Service_nginx.yaml	YYYY-MM-DD HH:MM:SS
 +++ /tmp/transformed/v1_Service_nginx.yaml	YYYY-MM-DD HH:MM:SS

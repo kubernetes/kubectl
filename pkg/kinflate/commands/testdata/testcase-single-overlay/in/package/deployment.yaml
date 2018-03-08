@@ -19,3 +19,6 @@ spec:
       volumes:
       - name: nginx-persistent-storage
         emptyDir: {}
+      - configMap:
+          name: configmap-in-base
+        name: configmap-in-base

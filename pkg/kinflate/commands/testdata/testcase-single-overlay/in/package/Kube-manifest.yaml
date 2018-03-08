@@ -13,3 +13,7 @@ objectAnnotations:
 resources:
   - deployment.yaml
   - service.yaml
+configmaps:
+  - name: configmap-in-base
+    literals:
+      - foo=bar

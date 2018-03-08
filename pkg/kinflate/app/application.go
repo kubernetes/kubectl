@@ -83,6 +83,16 @@ func (a *applicationImpl) Resources() (types.ResourceCollection, error) {
 	} else {
 		resources = append(resources, secrets...)
 	}
+	res, err := resourceCollectionFromResources(resources)
+	if err != nil {
+		return nil, err
+	}
+	// Only append hash for generated configmaps and secrets.
+	nht := transformers.NewNameHashTransformer()
+	err = nht.Transform(types.KObject(res))
+	if err != nil {
+		return nil, err
+	}
 
 	ps, err := resource.NewFromPaths(a.loader, a.manifest.Patches)
 	if err != nil {
@@ -98,11 +108,7 @@ func (a *applicationImpl) Resources() (types.ResourceCollection, error) {
 		return nil, errs
 	}
 
-	allResources, err := resourceCollectionFromResources(resources)
-	if err != nil {
-		return nil, err
-	}
-	err = types.Merge(allResources, raw)
+	err = types.Merge(res, raw)
 	if err != nil {
 		return nil, err
 	}
@@ -111,11 +117,11 @@ func (a *applicationImpl) Resources() (types.ResourceCollection, error) {
 	if err != nil {
 		return nil, err
 	}
-	err = t.Transform(types.KObject(allResources))
+	err = t.Transform(types.KObject(res))
 	if err != nil {
 		return nil, err
 	}
-	return allResources, nil
+	return res, nil
 }
 
 // RawResources computes and returns the raw resources from the manifest.
@@ -164,17 +170,13 @@ func (a *applicationImpl) subAppResources() (types.ResourceCollection, *interror
 }
 
 // getTransformer generates the following transformers:
-// 1) append hash for configmaps ans secrets
-// 2) apply overlay
-// 3) name prefix
-// 4) apply labels
-// 5) apply annotations
-// 6) update name reference
+// 1) apply overlay
+// 2) name prefix
+// 3) apply labels
+// 4) apply annotations
+// 5) update name reference
 func (a *applicationImpl) getTransformer(patches types.ResourceCollection) (transformers.Transformer, error) {
 	ts := []transformers.Transformer{}
-
-	nht := transformers.NewNameHashTransformer()
-	ts = append(ts, nht)
 
 	ot, err := transformers.NewOverlayTransformer(types.KObject(patches))
 	if err != nil {
