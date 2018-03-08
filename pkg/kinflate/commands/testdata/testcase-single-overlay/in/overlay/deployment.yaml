@@ -10,3 +10,6 @@ spec:
         emptyDir: null
         gcePersistentDisk:
           pdName: nginx-persistent-storage
+      - configMap:
+          name: configmap-in-overlay
+        name: configmap-in-overlay

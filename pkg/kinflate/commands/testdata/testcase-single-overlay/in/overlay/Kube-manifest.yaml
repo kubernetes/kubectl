@@ -10,3 +10,7 @@ patches:
   - deployment.yaml
 packages:
   - ../package/
+configmaps:
+  - name: configmap-in-overlay
+    literals:
+      - hello=world
