@@ -34,7 +34,7 @@ func NewMultiTransformer(t []Transformer) Transformer {
 }
 
 // Transform prepends the name prefix.
-func (o *multiTransformer) Transform(m types.KObject) error {
+func (o *multiTransformer) Transform(m types.ResourceCollection) error {
 	for _, t := range o.transformers {
 		err := t.Transform(m)
 		if err != nil {

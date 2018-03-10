@@ -116,8 +116,8 @@ func makeNameRefDeployment(cmName, secretName string) *unstructured.Unstructured
 	}
 }
 
-func makeNameReferenceTestMap() types.KObject {
-	return types.KObject{
+func makeNameReferenceTestMap() types.ResourceCollection {
+	return types.ResourceCollection{
 		{
 			GVK:  schema.GroupVersionKind{Version: "v1", Kind: "ConfigMap"},
 			Name: "cm1",
@@ -133,8 +133,8 @@ func makeNameReferenceTestMap() types.KObject {
 	}
 }
 
-func makeNameReferenceUpdatedTestMap() types.KObject {
-	return types.KObject{
+func makeNameReferenceUpdatedTestMap() types.ResourceCollection {
+	return types.ResourceCollection{
 		{
 			GVK:  schema.GroupVersionKind{Version: "v1", Kind: "ConfigMap"},
 			Name: "cm1",

@@ -23,7 +23,6 @@ import (
 	"path/filepath"
 
 	"github.com/spf13/cobra"
-	"k8s.io/kubectl/pkg/kinflate/types"
 
 	"k8s.io/kubectl/pkg/kinflate/app"
 	kutil "k8s.io/kubectl/pkg/kinflate/util"
@@ -106,7 +105,7 @@ func (o *inflateOptions) RunInflate(out, errOut io.Writer, fs fs.FileSystem) err
 	}
 
 	// Output the objects.
-	res, err := kutil.Encode(types.KObject(allResources))
+	res, err := kutil.Encode(allResources)
 	if err != nil {
 		return err
 	}

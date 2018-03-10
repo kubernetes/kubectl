@@ -30,13 +30,13 @@ import (
 
 // overlayTransformer contains a map of overlay objects
 type overlayTransformer struct {
-	overlay types.KObject
+	overlay types.ResourceCollection
 }
 
 var _ Transformer = &overlayTransformer{}
 
 // NewOverlayTransformer constructs a overlayTransformer.
-func NewOverlayTransformer(overlay types.KObject) (Transformer, error) {
+func NewOverlayTransformer(overlay types.ResourceCollection) (Transformer, error) {
 	if len(overlay) == 0 {
 		return NewNoOpTransformer(), nil
 	}
@@ -44,7 +44,7 @@ func NewOverlayTransformer(overlay types.KObject) (Transformer, error) {
 }
 
 // Transform apply the overlay on top of the base resources.
-func (o *overlayTransformer) Transform(baseResourceMap types.KObject) error {
+func (o *overlayTransformer) Transform(baseResourceMap types.ResourceCollection) error {
 	// Strategic merge the resources exist in both base and overlay.
 	for gvkn, overlay := range o.overlay {
 		// Merge overlay with base resource.

@@ -22,12 +22,11 @@ import (
 	"path/filepath"
 
 	"github.com/spf13/cobra"
-	"k8s.io/kubectl/pkg/kinflate/app"
-	"k8s.io/kubectl/pkg/kinflate/types"
-	"k8s.io/kubectl/pkg/loader"
 
+	"k8s.io/kubectl/pkg/kinflate/app"
 	"k8s.io/kubectl/pkg/kinflate/util"
 	"k8s.io/kubectl/pkg/kinflate/util/fs"
+	"k8s.io/kubectl/pkg/loader"
 	"k8s.io/utils/exec"
 )
 
@@ -109,13 +108,13 @@ func (o *diffOptions) RunDiff(out, errOut io.Writer, fs fs.FileSystem) error {
 		return err
 	}
 
-	transformedDir, err := util.WriteToDir(types.KObject(resources), "transformed", printer)
+	transformedDir, err := util.WriteToDir(resources, "transformed", printer)
 	if err != nil {
 		return err
 	}
 	defer transformedDir.Delete()
 
-	noopDir, err := util.WriteToDir(types.KObject(rawResources), "noop", printer)
+	noopDir, err := util.WriteToDir(rawResources, "noop", printer)
 	if err != nil {
 		return err
 	}

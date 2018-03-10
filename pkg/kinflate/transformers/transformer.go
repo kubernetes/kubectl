@@ -21,5 +21,5 @@ import "k8s.io/kubectl/pkg/kinflate/types"
 // Transformer can transform objects.
 type Transformer interface {
 	// Transform modifies objects in a map, e.g. add prefixes or additional labels.
-	Transform(m types.KObject) error
+	Transform(m types.ResourceCollection) error
 }

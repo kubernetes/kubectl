@@ -123,7 +123,7 @@ func makeSecret(secret manifest.SecretGenerator, path string) (*corev1.Secret, e
 	return corev1secret, nil
 }
 
-func populateMap(m types.KObject, obj *unstructured.Unstructured, newName string) error {
+func populateMap(m types.ResourceCollection, obj *unstructured.Unstructured, newName string) error {
 	accessor, err := meta.Accessor(obj)
 	if err != nil {
 		return err
@@ -140,9 +140,9 @@ func populateMap(m types.KObject, obj *unstructured.Unstructured, newName string
 	return nil
 }
 
-// MakeConfigMapsKObject returns a map of <GVK, oldName> -> unstructured object.
-func MakeConfigMapsKObject(maps []manifest.ConfigMap) (types.KObject, error) {
-	m := types.KObject{}
+// MakeConfigMapsResourceCollection returns a map of <GVK, oldName> -> unstructured object.
+func MakeConfigMapsResourceCollection(maps []manifest.ConfigMap) (types.ResourceCollection, error) {
+	m := types.ResourceCollection{}
 	for _, cm := range maps {
 		unstructuredConfigMap, nameWithHash, err := MakeConfigmapAndGenerateName(cm)
 		if err != nil {
@@ -156,9 +156,9 @@ func MakeConfigMapsKObject(maps []manifest.ConfigMap) (types.KObject, error) {
 	return m, nil
 }
 
-// MakeSecretsKObject returns a map of <GVK, oldName> -> unstructured object.
-func MakeSecretsKObject(secrets []manifest.SecretGenerator, path string) (types.KObject, error) {
-	m := types.KObject{}
+// MakeSecretsResourceCollection returns a map of <GVK, oldName> -> unstructured object.
+func MakeSecretsResourceCollection(secrets []manifest.SecretGenerator, path string) (types.ResourceCollection, error) {
+	m := types.ResourceCollection{}
 	for _, secret := range secrets {
 		unstructuredSecret, nameWithHash, err := MakeSecretAndGenerateName(secret, path)
 		if err != nil {
