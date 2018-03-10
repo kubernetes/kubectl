@@ -37,8 +37,8 @@ func makeSecret(name string) *unstructured.Unstructured {
 	}
 }
 
-func makeHashTestMap() types.KObject {
-	return types.KObject{
+func makeHashTestMap() types.ResourceCollection {
+	return types.ResourceCollection{
 		{
 			GVK:  schema.GroupVersionKind{Version: "v1", Kind: "ConfigMap"},
 			Name: "cm1",
@@ -58,8 +58,8 @@ func makeHashTestMap() types.KObject {
 	}
 }
 
-func makeExpectedHashTestMap() types.KObject {
-	return types.KObject{
+func makeExpectedHashTestMap() types.ResourceCollection {
+	return types.ResourceCollection{
 		{
 			GVK:  schema.GroupVersionKind{Version: "v1", Kind: "ConfigMap"},
 			Name: "cm1",

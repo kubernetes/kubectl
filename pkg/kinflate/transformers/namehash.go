@@ -39,7 +39,7 @@ func NewNameHashTransformer() Transformer {
 }
 
 // Transform appends hash to configmaps and secrets.
-func (o *nameHashTransformer) Transform(m types.KObject) error {
+func (o *nameHashTransformer) Transform(m types.ResourceCollection) error {
 	for gvkn, obj := range m {
 		switch {
 		case types.SelectByGVK(gvkn.GVK, &schema.GroupVersionKind{Version: "v1", Kind: "ConfigMap"}):

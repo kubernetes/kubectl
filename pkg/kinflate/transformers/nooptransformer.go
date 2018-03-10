@@ -29,6 +29,6 @@ func NewNoOpTransformer() Transformer {
 }
 
 // Transform does nothing.
-func (o *noOpTransformer) Transform(_ types.KObject) error {
+func (o *noOpTransformer) Transform(_ types.ResourceCollection) error {
 	return nil
 }

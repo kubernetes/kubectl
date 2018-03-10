@@ -55,7 +55,7 @@ func NewMapTransformer(pc []PathConfig, m map[string]string) (Transformer, error
 
 // Transform apply each <key, value> pair in the mapTransformer to the
 // fields specified in mapTransformer.
-func (o *mapTransformer) Transform(m types.KObject) error {
+func (o *mapTransformer) Transform(m types.ResourceCollection) error {
 	for gvkn := range m {
 		obj := m[gvkn]
 		objMap := obj.UnstructuredContent()

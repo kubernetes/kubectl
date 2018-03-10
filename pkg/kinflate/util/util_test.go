@@ -49,10 +49,10 @@ func makeConfigMap(name string) *unstructured.Unstructured {
 	}
 }
 
-func makeConfigMaps(name1InGVKN, name2InGVKN, name1InObj, name2InObj string) types.KObject {
+func makeConfigMaps(name1InGVKN, name2InGVKN, name1InObj, name2InObj string) types.ResourceCollection {
 	cm1 := makeConfigMap(name1InObj)
 	cm2 := makeConfigMap(name2InObj)
-	return types.KObject{
+	return types.ResourceCollection{
 		{
 			GVK:  schema.GroupVersionKind{Version: "v1", Kind: "ConfigMap"},
 			Name: name1InGVKN,
@@ -64,9 +64,9 @@ func makeConfigMaps(name1InGVKN, name2InGVKN, name1InObj, name2InObj string) typ
 	}
 }
 
-func TestDecodeToKObject(t *testing.T) {
+func TestDecodeToResourceCollection(t *testing.T) {
 	expected := makeConfigMaps("cm1", "cm2", "cm1", "cm2")
-	m, err := DecodeToKObject(encoded, nil)
+	m, err := DecodeToResourceCollection(encoded, nil)
 	fmt.Printf("%v\n", m)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -86,7 +86,7 @@ func TestEncode(t *testing.T) {
 	}
 }
 
-func compareMap(m1, m2 types.KObject) error {
+func compareMap(m1, m2 types.ResourceCollection) error {
 	if len(m1) != len(m2) {
 		keySet1 := []types.GroupVersionKindName{}
 		keySet2 := []types.GroupVersionKindName{}

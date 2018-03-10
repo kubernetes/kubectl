@@ -89,7 +89,7 @@ func (a *applicationImpl) Resources() (types.ResourceCollection, error) {
 	}
 	// Only append hash for generated configmaps and secrets.
 	nht := transformers.NewNameHashTransformer()
-	err = nht.Transform(types.KObject(res))
+	err = nht.Transform(res)
 	if err != nil {
 		return nil, err
 	}
@@ -117,7 +117,7 @@ func (a *applicationImpl) Resources() (types.ResourceCollection, error) {
 	if err != nil {
 		return nil, err
 	}
-	err = t.Transform(types.KObject(res))
+	err = t.Transform(res)
 	if err != nil {
 		return nil, err
 	}
@@ -178,7 +178,7 @@ func (a *applicationImpl) subAppResources() (types.ResourceCollection, *interror
 func (a *applicationImpl) getTransformer(patches types.ResourceCollection) (transformers.Transformer, error) {
 	ts := []transformers.Transformer{}
 
-	ot, err := transformers.NewOverlayTransformer(types.KObject(patches))
+	ot, err := transformers.NewOverlayTransformer(patches)
 	if err != nil {
 		return nil, err
 	}

@@ -87,8 +87,8 @@ func makeService() *unstructured.Unstructured {
 	}
 }
 
-func makeTestMap() types.KObject {
-	return types.KObject{
+func makeTestMap() types.ResourceCollection {
+	return types.ResourceCollection{
 		{
 			GVK:  schema.GroupVersionKind{Version: "v1", Kind: "ConfigMap"},
 			Name: "cm1",
@@ -190,8 +190,8 @@ func makeLabeledService() *unstructured.Unstructured {
 	}
 }
 
-func makeLabeledMap() types.KObject {
-	return types.KObject{
+func makeLabeledMap() types.ResourceCollection {
+	return types.ResourceCollection{
 		{
 			GVK:  schema.GroupVersionKind{Version: "v1", Kind: "ConfigMap"},
 			Name: "cm1",
@@ -302,8 +302,8 @@ func makeAnnotatededService() *unstructured.Unstructured {
 	}
 }
 
-func makeAnnotatedMap() types.KObject {
-	return types.KObject{
+func makeAnnotatedMap() types.ResourceCollection {
+	return types.ResourceCollection{
 		{
 			GVK:  schema.GroupVersionKind{Version: "v1", Kind: "ConfigMap"},
 			Name: "cm1",

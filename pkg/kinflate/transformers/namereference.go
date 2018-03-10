@@ -50,7 +50,7 @@ func NewNameReferenceTransformer(pc []referencePathConfig) (Transformer, error) 
 // associated with the key. e.g. if <k, v> is one of the key-value pair in the map,
 // then the old name is k.Name and the new name is v.GetName()
 func (o *nameReferenceTransformer) Transform(
-	m types.KObject) error {
+	m types.ResourceCollection) error {
 	for GVKn := range m {
 		obj := m[GVKn]
 		objMap := obj.UnstructuredContent()
@@ -88,7 +88,7 @@ func (err noMatchingGVKNError) Error() string {
 
 func (o *nameReferenceTransformer) updateNameReference(
 	GVK schema.GroupVersionKind,
-	m types.KObject,
+	m types.ResourceCollection,
 ) func(in interface{}) (interface{}, error) {
 	return func(in interface{}) (interface{}, error) {
 		s, ok := in.(string)

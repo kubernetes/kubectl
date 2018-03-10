@@ -56,7 +56,7 @@ func NewNamePrefixTransformer(pc []PathConfig, np string) (Transformer, error) {
 }
 
 // Transform prepends the name prefix.
-func (o *namePrefixTransformer) Transform(m types.KObject) error {
+func (o *namePrefixTransformer) Transform(m types.ResourceCollection) error {
 	for gvkn := range m {
 		obj := m[gvkn]
 		objMap := obj.UnstructuredContent()

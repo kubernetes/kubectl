@@ -51,17 +51,17 @@ func Decode(in []byte) ([]*unstructured.Unstructured, error) {
 	return objs, nil
 }
 
-// DecodeToKObject decodes a list of objects in byte array format.
+// DecodeToResourceCollection decodes a list of objects in byte array format.
 // Decoded object will be inserted in `into` if it's not nil. Otherwise, it will
 // construct a new map and return it.
-func DecodeToKObject(in []byte, into types.KObject) (types.KObject, error) {
+func DecodeToResourceCollection(in []byte, into types.ResourceCollection) (types.ResourceCollection, error) {
 	objs, err := Decode(in)
 	if err != nil {
 		return nil, err
 	}
 
 	if into == nil {
-		into = types.KObject{}
+		into = types.ResourceCollection{}
 	}
 	for i := range objs {
 		metaAccessor, err := meta.Accessor(objs[i])
@@ -93,7 +93,7 @@ func DecodeToKObject(in []byte, into types.KObject) (types.KObject, error) {
 }
 
 // Encode encodes the map `in` and output the encoded objects separated by `---`.
-func Encode(in types.KObject) ([]byte, error) {
+func Encode(in types.ResourceCollection) ([]byte, error) {
 	gvknList := []types.GroupVersionKindName{}
 	for gvkn := range in {
 		gvknList = append(gvknList, gvkn)
@@ -124,8 +124,8 @@ func Encode(in types.KObject) ([]byte, error) {
 	return buf.Bytes(), nil
 }
 
-// WriteToDir write each object in KObject to a file named with GroupVersionKindName.
-func WriteToDir(in types.KObject, dirName string, printer Printer) (*Directory, error) {
+// WriteToDir write each object in ResourceCollection to a file named with GroupVersionKindName.
+func WriteToDir(in types.ResourceCollection, dirName string, printer Printer) (*Directory, error) {
 	dir, err := CreateDirectory(dirName)
 	if err != nil {
 		return &Directory{}, err

@@ -125,8 +125,8 @@ func makeMergedDeployment() *unstructured.Unstructured {
 	}
 }
 
-func makeTestKObject(genDeployment func() *unstructured.Unstructured) types.KObject {
-	return types.KObject{
+func makeTestResourceCollection(genDeployment func() *unstructured.Unstructured) types.ResourceCollection {
+	return types.ResourceCollection{
 		{
 			GVK:  schema.GroupVersionKind{Group: "apps", Version: "v1", Kind: "Deployment"},
 			Name: "deploy1",
@@ -135,8 +135,8 @@ func makeTestKObject(genDeployment func() *unstructured.Unstructured) types.KObj
 }
 
 func TestOverlayRun(t *testing.T) {
-	base := makeTestKObject(makeBaseDeployment)
-	lt, err := NewOverlayTransformer(makeTestKObject(makeOverlayDeployment))
+	base := makeTestResourceCollection(makeBaseDeployment)
+	lt, err := NewOverlayTransformer(makeTestResourceCollection(makeOverlayDeployment))
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -144,7 +144,7 @@ func TestOverlayRun(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	expected := makeTestKObject(makeMergedDeployment)
+	expected := makeTestResourceCollection(makeMergedDeployment)
 	if !reflect.DeepEqual(base, expected) {
 		err = compareMap(base, expected)
 		t.Fatalf("actual doesn't match expected: %v", err)
@@ -152,7 +152,7 @@ func TestOverlayRun(t *testing.T) {
 }
 
 func TestNoSchemaOverlayRun(t *testing.T) {
-	base := types.KObject{
+	base := types.ResourceCollection{
 		{
 			GVK:  schema.GroupVersionKind{Group: "example.com", Version: "v1", Kind: "Foo"},
 			Name: "my-foo",
@@ -172,7 +172,7 @@ func TestNoSchemaOverlayRun(t *testing.T) {
 			},
 		},
 	}
-	Overlay := types.KObject{
+	Overlay := types.ResourceCollection{
 		{
 			GVK:  schema.GroupVersionKind{Group: "example.com", Version: "v1", Kind: "Foo"},
 			Name: "my-foo",
@@ -192,7 +192,7 @@ func TestNoSchemaOverlayRun(t *testing.T) {
 			},
 		},
 	}
-	expected := types.KObject{
+	expected := types.ResourceCollection{
 		{
 			GVK:  schema.GroupVersionKind{Group: "example.com", Version: "v1", Kind: "Foo"},
 			Name: "my-foo",
