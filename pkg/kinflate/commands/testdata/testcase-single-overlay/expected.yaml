@@ -85,5 +85,5 @@ spec:
           name: staging-configmap-in-overlay-h4hbb8fckf
         name: configmap-in-overlay
       - configMap:
-          name: team-foo-configmap-in-base-72t84tc949
+          name: staging-team-foo-configmap-in-base-72t84tc949
         name: configmap-in-base

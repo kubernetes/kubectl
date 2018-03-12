@@ -95,7 +95,28 @@ func (a *applicationImpl) Resources() (resource.ResourceCollection, error) {
 		return nil, errs
 	}
 
+	// Reindex the Raw Resources (resources from sub package and resources field of this package).
+	// raw is a ResourceCollection (map) from <GVK, original name> to object with the transformed name.
+	// transRaw is a ResourceCollection (map) from <GVK, transformed name> to object with the transformed name.
+	transRaw := reindexResourceCollection(raw)
+	// allRes contains the resources that are indexed by the original names (old names).
+	// allTransRes contains the resources that are indexed by the transformed names (new names).
+	// allRes and allTransRes point to the same set of objects with new names.
+	allTransRes, err := resource.Merge(res, transRaw)
+	if err != nil {
+		return nil, err
+	}
 	allRes, err := resource.Merge(res, raw)
+	if err != nil {
+		return nil, err
+	}
+
+	ot, err := transformers.NewOverlayTransformer(patches)
+	if err != nil {
+		return nil, err
+	}
+	// Overlay transformer uses the ResourceCollection indexed by the original names.
+	err = ot.Transform(allRes)
 	if err != nil {
 		return nil, err
 	}
@@ -104,10 +125,11 @@ func (a *applicationImpl) Resources() (resource.ResourceCollection, error) {
 	if err != nil {
 		return nil, err
 	}
-	err = t.Transform(allRes)
+	err = t.Transform(allTransRes)
 	if err != nil {
 		return nil, err
 	}
+
 	return allRes, nil
 }
 
@@ -156,19 +178,12 @@ func (a *applicationImpl) subAppResources() (resource.ResourceCollection, *inter
 }
 
 // getTransformer generates the following transformers:
-// 1) apply overlay
-// 2) name prefix
-// 3) apply labels
-// 4) apply annotations
-// 5) update name reference
+// 1) name prefix
+// 2) apply labels
+// 3) apply annotations
+// 4) update name reference
 func (a *applicationImpl) getTransformer(patches resource.ResourceCollection) (transformers.Transformer, error) {
 	ts := []transformers.Transformer{}
-
-	ot, err := transformers.NewOverlayTransformer(patches)
-	if err != nil {
-		return nil, err
-	}
-	ts = append(ts, ot)
 
 	npt, err := transformers.NewDefaultingNamePrefixTransformer(string(a.manifest.NamePrefix))
 	if err != nil {
@@ -194,4 +209,15 @@ func (a *applicationImpl) getTransformer(patches resource.ResourceCollection) (t
 	}
 	ts = append(ts, nrt)
 	return transformers.NewMultiTransformer(ts), nil
+}
+
+// reindexResourceCollection returns a new instance of ResourceCollection which
+// is indexed using the new name in the object.
+func reindexResourceCollection(rc resource.ResourceCollection) resource.ResourceCollection {
+	result := resource.ResourceCollection{}
+	for gvkn, res := range rc {
+		gvkn.Name = res.Data.GetName()
+		result[gvkn] = res
+	}
+	return result
 }
