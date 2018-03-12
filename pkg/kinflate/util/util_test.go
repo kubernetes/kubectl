@@ -23,10 +23,12 @@ import (
 
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
+	"k8s.io/kubectl/pkg/kinflate/resource"
 	"k8s.io/kubectl/pkg/kinflate/types"
 )
 
-var encoded = []byte(`apiVersion: v1
+func TestEncode(t *testing.T) {
+	encoded := []byte(`apiVersion: v1
 kind: ConfigMap
 metadata:
   name: cm1
@@ -36,48 +38,37 @@ kind: ConfigMap
 metadata:
   name: cm2
 `)
-
-func makeConfigMap(name string) *unstructured.Unstructured {
-	return &unstructured.Unstructured{
-		Object: map[string]interface{}{
-			"apiVersion": "v1",
-			"kind":       "ConfigMap",
-			"metadata": map[string]interface{}{
-				"name": name,
+	input := resource.ResourceCollection{
+		{
+			GVK:  schema.GroupVersionKind{Version: "v1", Kind: "ConfigMap"},
+			Name: "cm1",
+		}: &resource.Resource{
+			Data: &unstructured.Unstructured{
+				Object: map[string]interface{}{
+					"apiVersion": "v1",
+					"kind":       "ConfigMap",
+					"metadata": map[string]interface{}{
+						"name": "cm1",
+					},
+				},
+			},
+		},
+		{
+			GVK:  schema.GroupVersionKind{Version: "v1", Kind: "ConfigMap"},
+			Name: "cm2",
+		}: &resource.Resource{
+			Data: &unstructured.Unstructured{
+				Object: map[string]interface{}{
+					"apiVersion": "v1",
+					"kind":       "ConfigMap",
+					"metadata": map[string]interface{}{
+						"name": "cm2",
+					},
+				},
 			},
 		},
 	}
-}
-
-func makeConfigMaps(name1InGVKN, name2InGVKN, name1InObj, name2InObj string) types.ResourceCollection {
-	cm1 := makeConfigMap(name1InObj)
-	cm2 := makeConfigMap(name2InObj)
-	return types.ResourceCollection{
-		{
-			GVK:  schema.GroupVersionKind{Version: "v1", Kind: "ConfigMap"},
-			Name: name1InGVKN,
-		}: cm1,
-		{
-			GVK:  schema.GroupVersionKind{Version: "v1", Kind: "ConfigMap"},
-			Name: name2InGVKN,
-		}: cm2,
-	}
-}
-
-func TestDecodeToResourceCollection(t *testing.T) {
-	expected := makeConfigMaps("cm1", "cm2", "cm1", "cm2")
-	m, err := DecodeToResourceCollection(encoded, nil)
-	fmt.Printf("%v\n", m)
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-	if !reflect.DeepEqual(m, expected) {
-		t.Fatalf("%#v doesn't match expected %#v", m, expected)
-	}
-}
-
-func TestEncode(t *testing.T) {
-	out, err := Encode(makeConfigMaps("cm1", "cm2", "cm1", "cm2"))
+	out, err := Encode(input)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -86,7 +77,7 @@ func TestEncode(t *testing.T) {
 	}
 }
 
-func compareMap(m1, m2 types.ResourceCollection) error {
+func compareMap(m1, m2 resource.ResourceCollection) error {
 	if len(m1) != len(m2) {
 		keySet1 := []types.GroupVersionKindName{}
 		keySet2 := []types.GroupVersionKindName{}

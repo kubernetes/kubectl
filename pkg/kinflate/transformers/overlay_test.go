@@ -22,121 +22,123 @@ import (
 
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
-	"k8s.io/kubectl/pkg/kinflate/types"
+	"k8s.io/kubectl/pkg/kinflate/resource"
 )
 
-func makeBaseDeployment() *unstructured.Unstructured {
-	return &unstructured.Unstructured{
-		Object: map[string]interface{}{
-			"apiVersion": "apps/v1",
-			"kind":       "Deployment",
-			"metadata": map[string]interface{}{
-				"name": "deploy1",
-			},
-			"spec": map[string]interface{}{
-				"template": map[string]interface{}{
-					"metadata": map[string]interface{}{
-						"labels": map[string]interface{}{
-							"old-label": "old-value",
-						},
-					},
-					"spec": map[string]interface{}{
-						"containers": []interface{}{
-							map[string]interface{}{
-								"name":  "nginx",
-								"image": "nginx",
-							},
-						},
-					},
-				},
-			},
-		},
-	}
-}
-
-func makeOverlayDeployment() *unstructured.Unstructured {
-	return &unstructured.Unstructured{
-		Object: map[string]interface{}{
-			"apiVersion": "apps/v1",
-			"kind":       "Deployment",
-			"metadata": map[string]interface{}{
-				"name": "deploy1",
-			},
-			"spec": map[string]interface{}{
-				"template": map[string]interface{}{
-					"metadata": map[string]interface{}{
-						"labels": map[string]interface{}{
-							"another-label": "foo",
-						},
-					},
-					"spec": map[string]interface{}{
-						"containers": []interface{}{
-							map[string]interface{}{
-								"name":  "nginx",
-								"image": "nginx:latest",
-								"env": []interface{}{
-									map[string]interface{}{
-										"name":  "SOMEENV",
-										"value": "BAR",
-									},
-								},
-							},
-						},
-					},
-				},
-			},
-		},
-	}
-}
-
-func makeMergedDeployment() *unstructured.Unstructured {
-	return &unstructured.Unstructured{
-		Object: map[string]interface{}{
-			"apiVersion": "apps/v1",
-			"kind":       "Deployment",
-			"metadata": map[string]interface{}{
-				"name": "deploy1",
-			},
-			"spec": map[string]interface{}{
-				"template": map[string]interface{}{
-					"metadata": map[string]interface{}{
-						"labels": map[string]interface{}{
-							"old-label":     "old-value",
-							"another-label": "foo",
-						},
-					},
-					"spec": map[string]interface{}{
-						"containers": []interface{}{
-							map[string]interface{}{
-								"name":  "nginx",
-								"image": "nginx:latest",
-								"env": []interface{}{
-									map[string]interface{}{
-										"name":  "SOMEENV",
-										"value": "BAR",
-									},
-								},
-							},
-						},
-					},
-				},
-			},
-		},
-	}
-}
-
-func makeTestResourceCollection(genDeployment func() *unstructured.Unstructured) types.ResourceCollection {
-	return types.ResourceCollection{
+func TestOverlayRun(t *testing.T) {
+	base := resource.ResourceCollection{
 		{
 			GVK:  schema.GroupVersionKind{Group: "apps", Version: "v1", Kind: "Deployment"},
 			Name: "deploy1",
-		}: genDeployment(),
+		}: &resource.Resource{
+			Data: &unstructured.Unstructured{
+				Object: map[string]interface{}{
+					"apiVersion": "apps/v1",
+					"kind":       "Deployment",
+					"metadata": map[string]interface{}{
+						"name": "deploy1",
+					},
+					"spec": map[string]interface{}{
+						"template": map[string]interface{}{
+							"metadata": map[string]interface{}{
+								"labels": map[string]interface{}{
+									"old-label": "old-value",
+								},
+							},
+							"spec": map[string]interface{}{
+								"containers": []interface{}{
+									map[string]interface{}{
+										"name":  "nginx",
+										"image": "nginx",
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
 	}
-}
-
-func TestOverlayRun(t *testing.T) {
-	base := makeTestResourceCollection(makeBaseDeployment)
-	lt, err := NewOverlayTransformer(makeTestResourceCollection(makeOverlayDeployment))
+	overlay := resource.ResourceCollection{
+		{
+			GVK:  schema.GroupVersionKind{Group: "apps", Version: "v1", Kind: "Deployment"},
+			Name: "deploy1",
+		}: &resource.Resource{
+			Data: &unstructured.Unstructured{
+				Object: map[string]interface{}{
+					"apiVersion": "apps/v1",
+					"kind":       "Deployment",
+					"metadata": map[string]interface{}{
+						"name": "deploy1",
+					},
+					"spec": map[string]interface{}{
+						"template": map[string]interface{}{
+							"metadata": map[string]interface{}{
+								"labels": map[string]interface{}{
+									"another-label": "foo",
+								},
+							},
+							"spec": map[string]interface{}{
+								"containers": []interface{}{
+									map[string]interface{}{
+										"name":  "nginx",
+										"image": "nginx:latest",
+										"env": []interface{}{
+											map[string]interface{}{
+												"name":  "SOMEENV",
+												"value": "BAR",
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+	expected := resource.ResourceCollection{
+		{
+			GVK:  schema.GroupVersionKind{Group: "apps", Version: "v1", Kind: "Deployment"},
+			Name: "deploy1",
+		}: &resource.Resource{
+			Data: &unstructured.Unstructured{
+				Object: map[string]interface{}{
+					"apiVersion": "apps/v1",
+					"kind":       "Deployment",
+					"metadata": map[string]interface{}{
+						"name": "deploy1",
+					},
+					"spec": map[string]interface{}{
+						"template": map[string]interface{}{
+							"metadata": map[string]interface{}{
+								"labels": map[string]interface{}{
+									"old-label":     "old-value",
+									"another-label": "foo",
+								},
+							},
+							"spec": map[string]interface{}{
+								"containers": []interface{}{
+									map[string]interface{}{
+										"name":  "nginx",
+										"image": "nginx:latest",
+										"env": []interface{}{
+											map[string]interface{}{
+												"name":  "SOMEENV",
+												"value": "BAR",
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+	lt, err := NewOverlayTransformer(overlay)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -144,7 +146,6 @@ func TestOverlayRun(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	expected := makeTestResourceCollection(makeMergedDeployment)
 	if !reflect.DeepEqual(base, expected) {
 		err = compareMap(base, expected)
 		t.Fatalf("actual doesn't match expected: %v", err)
@@ -152,68 +153,74 @@ func TestOverlayRun(t *testing.T) {
 }
 
 func TestNoSchemaOverlayRun(t *testing.T) {
-	base := types.ResourceCollection{
+	base := resource.ResourceCollection{
 		{
 			GVK:  schema.GroupVersionKind{Group: "example.com", Version: "v1", Kind: "Foo"},
 			Name: "my-foo",
-		}: {
-			Object: map[string]interface{}{
-				"apiVersion": "example.com/v1",
-				"kind":       "Foo",
-				"metadata": map[string]interface{}{
-					"name": "my-foo",
-				},
-				"spec": map[string]interface{}{
-					"bar": map[string]interface{}{
-						"A": "X",
-						"B": "Y",
+		}: &resource.Resource{
+			Data: &unstructured.Unstructured{
+				Object: map[string]interface{}{
+					"apiVersion": "example.com/v1",
+					"kind":       "Foo",
+					"metadata": map[string]interface{}{
+						"name": "my-foo",
+					},
+					"spec": map[string]interface{}{
+						"bar": map[string]interface{}{
+							"A": "X",
+							"B": "Y",
+						},
 					},
 				},
 			},
 		},
 	}
-	Overlay := types.ResourceCollection{
+	overlay := resource.ResourceCollection{
 		{
 			GVK:  schema.GroupVersionKind{Group: "example.com", Version: "v1", Kind: "Foo"},
 			Name: "my-foo",
-		}: {
-			Object: map[string]interface{}{
-				"apiVersion": "example.com/v1",
-				"kind":       "Foo",
-				"metadata": map[string]interface{}{
-					"name": "my-foo",
-				},
-				"spec": map[string]interface{}{
-					"bar": map[string]interface{}{
-						"B": nil,
-						"C": "Z",
+		}: &resource.Resource{
+			Data: &unstructured.Unstructured{
+				Object: map[string]interface{}{
+					"apiVersion": "example.com/v1",
+					"kind":       "Foo",
+					"metadata": map[string]interface{}{
+						"name": "my-foo",
+					},
+					"spec": map[string]interface{}{
+						"bar": map[string]interface{}{
+							"B": nil,
+							"C": "Z",
+						},
 					},
 				},
 			},
 		},
 	}
-	expected := types.ResourceCollection{
+	expected := resource.ResourceCollection{
 		{
 			GVK:  schema.GroupVersionKind{Group: "example.com", Version: "v1", Kind: "Foo"},
 			Name: "my-foo",
-		}: {
-			Object: map[string]interface{}{
-				"apiVersion": "example.com/v1",
-				"kind":       "Foo",
-				"metadata": map[string]interface{}{
-					"name": "my-foo",
-				},
-				"spec": map[string]interface{}{
-					"bar": map[string]interface{}{
-						"A": "X",
-						"C": "Z",
+		}: &resource.Resource{
+			Data: &unstructured.Unstructured{
+				Object: map[string]interface{}{
+					"apiVersion": "example.com/v1",
+					"kind":       "Foo",
+					"metadata": map[string]interface{}{
+						"name": "my-foo",
+					},
+					"spec": map[string]interface{}{
+						"bar": map[string]interface{}{
+							"A": "X",
+							"C": "Z",
+						},
 					},
 				},
 			},
 		},
 	}
 
-	lt, err := NewOverlayTransformer(Overlay)
+	lt, err := NewOverlayTransformer(overlay)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}

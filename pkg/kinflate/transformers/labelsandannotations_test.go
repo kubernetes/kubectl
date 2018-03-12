@@ -22,42 +22,73 @@ import (
 
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
-	"k8s.io/kubectl/pkg/kinflate/types"
+	"k8s.io/kubectl/pkg/kinflate/resource"
 )
 
-func makeConfigmap(name string) *unstructured.Unstructured {
-	return &unstructured.Unstructured{
-		Object: map[string]interface{}{
-			"apiVersion": "v1",
-			"kind":       "ConfigMap",
-			"metadata": map[string]interface{}{
-				"name": name,
+func TestLabelsRun(t *testing.T) {
+	m := resource.ResourceCollection{
+		{
+			GVK:  schema.GroupVersionKind{Version: "v1", Kind: "ConfigMap"},
+			Name: "cm1",
+		}: &resource.Resource{
+			Data: &unstructured.Unstructured{
+				Object: map[string]interface{}{
+					"apiVersion": "v1",
+					"kind":       "ConfigMap",
+					"metadata": map[string]interface{}{
+						"name": "cm1",
+					},
+				},
 			},
 		},
-	}
-}
-
-func makeDeployment() *unstructured.Unstructured {
-	return &unstructured.Unstructured{
-		Object: map[string]interface{}{
-			"group":      "apps",
-			"apiVersion": "v1",
-			"kind":       "Deployment",
-			"metadata": map[string]interface{}{
-				"name": "deploy1",
-			},
-			"spec": map[string]interface{}{
-				"template": map[string]interface{}{
+		{
+			GVK:  schema.GroupVersionKind{Group: "apps", Version: "v1", Kind: "Deployment"},
+			Name: "deploy1",
+		}: &resource.Resource{
+			Data: &unstructured.Unstructured{
+				Object: map[string]interface{}{
+					"group":      "apps",
+					"apiVersion": "v1",
+					"kind":       "Deployment",
 					"metadata": map[string]interface{}{
-						"labels": map[string]interface{}{
-							"old-label": "old-value",
-						},
+						"name": "deploy1",
 					},
 					"spec": map[string]interface{}{
-						"containers": []interface{}{
+						"template": map[string]interface{}{
+							"metadata": map[string]interface{}{
+								"labels": map[string]interface{}{
+									"old-label": "old-value",
+								},
+							},
+							"spec": map[string]interface{}{
+								"containers": []interface{}{
+									map[string]interface{}{
+										"name":  "nginx",
+										"image": "nginx:1.7.9",
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		{
+			GVK:  schema.GroupVersionKind{Version: "v1", Kind: "Service"},
+			Name: "svc1",
+		}: &resource.Resource{
+			Data: &unstructured.Unstructured{
+				Object: map[string]interface{}{
+					"apiVersion": "v1",
+					"kind":       "Service",
+					"metadata": map[string]interface{}{
+						"name": "svc1",
+					},
+					"spec": map[string]interface{}{
+						"ports": []interface{}{
 							map[string]interface{}{
-								"name":  "nginx",
-								"image": "nginx:1.7.9",
+								"name": "port1",
+								"port": "12345",
 							},
 						},
 					},
@@ -65,150 +96,101 @@ func makeDeployment() *unstructured.Unstructured {
 			},
 		},
 	}
-}
-
-func makeService() *unstructured.Unstructured {
-	return &unstructured.Unstructured{
-		Object: map[string]interface{}{
-			"apiVersion": "v1",
-			"kind":       "Service",
-			"metadata": map[string]interface{}{
-				"name": "svc1",
-			},
-			"spec": map[string]interface{}{
-				"ports": []interface{}{
-					map[string]interface{}{
-						"name": "port1",
-						"port": "12345",
-					},
-				},
-			},
-		},
-	}
-}
-
-func makeTestMap() types.ResourceCollection {
-	return types.ResourceCollection{
+	expected := resource.ResourceCollection{
 		{
 			GVK:  schema.GroupVersionKind{Version: "v1", Kind: "ConfigMap"},
 			Name: "cm1",
-		}: makeConfigmap("cm1"),
-		{
-			GVK:  schema.GroupVersionKind{Group: "apps", Version: "v1", Kind: "Deployment"},
-			Name: "deploy1",
-		}: makeDeployment(),
-		{
-			GVK:  schema.GroupVersionKind{Version: "v1", Kind: "Service"},
-			Name: "svc1",
-		}: makeService(),
-	}
-}
-
-func makeLabeledConfigMap() *unstructured.Unstructured {
-	return &unstructured.Unstructured{
-		Object: map[string]interface{}{
-			"apiVersion": "v1",
-			"kind":       "ConfigMap",
-			"metadata": map[string]interface{}{
-				"name": "cm1",
-				"labels": map[string]interface{}{
-					"label-key1": "label-value1",
-					"label-key2": "label-value2",
+		}: &resource.Resource{
+			Data: &unstructured.Unstructured{
+				Object: map[string]interface{}{
+					"apiVersion": "v1",
+					"kind":       "ConfigMap",
+					"metadata": map[string]interface{}{
+						"name": "cm1",
+						"labels": map[string]interface{}{
+							"label-key1": "label-value1",
+							"label-key2": "label-value2",
+						},
+					},
 				},
 			},
 		},
-	}
-}
-
-func makeLabeledDeployment() *unstructured.Unstructured {
-	return &unstructured.Unstructured{
-		Object: map[string]interface{}{
-			"group":      "apps",
-			"apiVersion": "v1",
-			"kind":       "Deployment",
-			"metadata": map[string]interface{}{
-				"name": "deploy1",
-				"labels": map[string]interface{}{
-					"label-key1": "label-value1",
-					"label-key2": "label-value2",
-				},
-			},
-			"spec": map[string]interface{}{
-				"selector": map[string]interface{}{
-					"matchLabels": map[string]interface{}{
-						"label-key1": "label-value1",
-						"label-key2": "label-value2",
-					},
-				},
-				"template": map[string]interface{}{
+		{
+			GVK:  schema.GroupVersionKind{Group: "apps", Version: "v1", Kind: "Deployment"},
+			Name: "deploy1",
+		}: &resource.Resource{
+			Data: &unstructured.Unstructured{
+				Object: map[string]interface{}{
+					"group":      "apps",
+					"apiVersion": "v1",
+					"kind":       "Deployment",
 					"metadata": map[string]interface{}{
+						"name": "deploy1",
 						"labels": map[string]interface{}{
-							"old-label":  "old-value",
 							"label-key1": "label-value1",
 							"label-key2": "label-value2",
 						},
 					},
 					"spec": map[string]interface{}{
-						"containers": []interface{}{
-							map[string]interface{}{
-								"name":  "nginx",
-								"image": "nginx:1.7.9",
+						"selector": map[string]interface{}{
+							"matchLabels": map[string]interface{}{
+								"label-key1": "label-value1",
+								"label-key2": "label-value2",
+							},
+						},
+						"template": map[string]interface{}{
+							"metadata": map[string]interface{}{
+								"labels": map[string]interface{}{
+									"old-label":  "old-value",
+									"label-key1": "label-value1",
+									"label-key2": "label-value2",
+								},
+							},
+							"spec": map[string]interface{}{
+								"containers": []interface{}{
+									map[string]interface{}{
+										"name":  "nginx",
+										"image": "nginx:1.7.9",
+									},
+								},
 							},
 						},
 					},
 				},
 			},
 		},
-	}
-}
-
-func makeLabeledService() *unstructured.Unstructured {
-	return &unstructured.Unstructured{
-		Object: map[string]interface{}{
-			"apiVersion": "v1",
-			"kind":       "Service",
-			"metadata": map[string]interface{}{
-				"name": "svc1",
-				"labels": map[string]interface{}{
-					"label-key1": "label-value1",
-					"label-key2": "label-value2",
-				},
-			},
-			"spec": map[string]interface{}{
-				"ports": []interface{}{
-					map[string]interface{}{
-						"name": "port1",
-						"port": "12345",
+		{
+			GVK:  schema.GroupVersionKind{Version: "v1", Kind: "Service"},
+			Name: "svc1",
+		}: &resource.Resource{
+			Data: &unstructured.Unstructured{
+				Object: map[string]interface{}{
+					"apiVersion": "v1",
+					"kind":       "Service",
+					"metadata": map[string]interface{}{
+						"name": "svc1",
+						"labels": map[string]interface{}{
+							"label-key1": "label-value1",
+							"label-key2": "label-value2",
+						},
 					},
-				},
-				"selector": map[string]interface{}{
-					"label-key1": "label-value1",
-					"label-key2": "label-value2",
+					"spec": map[string]interface{}{
+						"ports": []interface{}{
+							map[string]interface{}{
+								"name": "port1",
+								"port": "12345",
+							},
+						},
+						"selector": map[string]interface{}{
+							"label-key1": "label-value1",
+							"label-key2": "label-value2",
+						},
+					},
 				},
 			},
 		},
 	}
-}
 
-func makeLabeledMap() types.ResourceCollection {
-	return types.ResourceCollection{
-		{
-			GVK:  schema.GroupVersionKind{Version: "v1", Kind: "ConfigMap"},
-			Name: "cm1",
-		}: makeLabeledConfigMap(),
-		{
-			GVK:  schema.GroupVersionKind{Group: "apps", Version: "v1", Kind: "Deployment"},
-			Name: "deploy1",
-		}: makeLabeledDeployment(),
-		{
-			GVK:  schema.GroupVersionKind{Version: "v1", Kind: "Service"},
-			Name: "svc1",
-		}: makeLabeledService(),
-	}
-}
-
-func TestLabelsRun(t *testing.T) {
-	m := makeTestMap()
 	lt, err := NewDefaultingLabelsMapTransformer(map[string]string{"label-key1": "label-value1", "label-key2": "label-value2"})
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -217,7 +199,6 @@ func TestLabelsRun(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	expected := makeLabeledMap()
 	if !reflect.DeepEqual(m, expected) {
 		err = compareMap(m, expected)
 		t.Fatalf("actual doesn't match expected: %v", err)
@@ -302,25 +283,163 @@ func makeAnnotatededService() *unstructured.Unstructured {
 	}
 }
 
-func makeAnnotatedMap() types.ResourceCollection {
-	return types.ResourceCollection{
+func TestAnnotationsRun(t *testing.T) {
+	m := resource.ResourceCollection{
 		{
 			GVK:  schema.GroupVersionKind{Version: "v1", Kind: "ConfigMap"},
 			Name: "cm1",
-		}: makeAnnotatededConfigMap(),
+		}: &resource.Resource{
+			Data: &unstructured.Unstructured{
+				Object: map[string]interface{}{
+					"apiVersion": "v1",
+					"kind":       "ConfigMap",
+					"metadata": map[string]interface{}{
+						"name": "cm1",
+					},
+				},
+			},
+		},
 		{
 			GVK:  schema.GroupVersionKind{Group: "apps", Version: "v1", Kind: "Deployment"},
 			Name: "deploy1",
-		}: makeAnnotatededDeployment(),
+		}: &resource.Resource{
+			Data: &unstructured.Unstructured{
+				Object: map[string]interface{}{
+					"group":      "apps",
+					"apiVersion": "v1",
+					"kind":       "Deployment",
+					"metadata": map[string]interface{}{
+						"name": "deploy1",
+					},
+					"spec": map[string]interface{}{
+						"template": map[string]interface{}{
+							"metadata": map[string]interface{}{
+								"labels": map[string]interface{}{
+									"old-label": "old-value",
+								},
+							},
+							"spec": map[string]interface{}{
+								"containers": []interface{}{
+									map[string]interface{}{
+										"name":  "nginx",
+										"image": "nginx:1.7.9",
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
 		{
 			GVK:  schema.GroupVersionKind{Version: "v1", Kind: "Service"},
 			Name: "svc1",
-		}: makeAnnotatededService(),
+		}: &resource.Resource{
+			Data: &unstructured.Unstructured{
+				Object: map[string]interface{}{
+					"apiVersion": "v1",
+					"kind":       "Service",
+					"metadata": map[string]interface{}{
+						"name": "svc1",
+					},
+					"spec": map[string]interface{}{
+						"ports": []interface{}{
+							map[string]interface{}{
+								"name": "port1",
+								"port": "12345",
+							},
+						},
+					},
+				},
+			},
+		},
 	}
-}
-
-func TestAnnotationsRun(t *testing.T) {
-	m := makeTestMap()
+	expected := resource.ResourceCollection{
+		{
+			GVK:  schema.GroupVersionKind{Version: "v1", Kind: "ConfigMap"},
+			Name: "cm1",
+		}: &resource.Resource{
+			Data: &unstructured.Unstructured{
+				Object: map[string]interface{}{
+					"apiVersion": "v1",
+					"kind":       "ConfigMap",
+					"metadata": map[string]interface{}{
+						"name": "cm1",
+						"annotations": map[string]interface{}{
+							"anno-key1": "anno-value1",
+							"anno-key2": "anno-value2",
+						},
+					},
+				},
+			},
+		},
+		{
+			GVK:  schema.GroupVersionKind{Group: "apps", Version: "v1", Kind: "Deployment"},
+			Name: "deploy1",
+		}: &resource.Resource{
+			Data: &unstructured.Unstructured{
+				Object: map[string]interface{}{
+					"group":      "apps",
+					"apiVersion": "v1",
+					"kind":       "Deployment",
+					"metadata": map[string]interface{}{
+						"name": "deploy1",
+						"annotations": map[string]interface{}{
+							"anno-key1": "anno-value1",
+							"anno-key2": "anno-value2",
+						},
+					},
+					"spec": map[string]interface{}{
+						"template": map[string]interface{}{
+							"metadata": map[string]interface{}{
+								"annotations": map[string]interface{}{
+									"anno-key1": "anno-value1",
+									"anno-key2": "anno-value2",
+								},
+								"labels": map[string]interface{}{
+									"old-label": "old-value",
+								},
+							},
+							"spec": map[string]interface{}{
+								"containers": []interface{}{
+									map[string]interface{}{
+										"name":  "nginx",
+										"image": "nginx:1.7.9",
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		{
+			GVK:  schema.GroupVersionKind{Version: "v1", Kind: "Service"},
+			Name: "svc1",
+		}: &resource.Resource{
+			Data: &unstructured.Unstructured{
+				Object: map[string]interface{}{
+					"apiVersion": "v1",
+					"kind":       "Service",
+					"metadata": map[string]interface{}{
+						"name": "svc1",
+						"annotations": map[string]interface{}{
+							"anno-key1": "anno-value1",
+							"anno-key2": "anno-value2",
+						},
+					},
+					"spec": map[string]interface{}{
+						"ports": []interface{}{
+							map[string]interface{}{
+								"name": "port1",
+								"port": "12345",
+							},
+						},
+					},
+				},
+			},
+		},
+	}
 	at, err := NewDefaultingAnnotationsMapTransformer(map[string]string{"anno-key1": "anno-value1", "anno-key2": "anno-value2"})
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -329,7 +448,6 @@ func TestAnnotationsRun(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	expected := makeAnnotatedMap()
 	if !reflect.DeepEqual(m, expected) {
 		err = compareMap(m, expected)
 		t.Fatalf("actual doesn't match expected: %v", err)

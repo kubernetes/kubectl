@@ -19,7 +19,6 @@ package resource
 import (
 	"encoding/json"
 
-	"k8s.io/apimachinery/pkg/api/meta"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/kubectl/pkg/kinflate/types"
@@ -37,13 +36,12 @@ func (r *Resource) GVKN() types.GroupVersionKindName {
 	if r.Data == nil {
 		return emptyZVKN
 	}
-	accessor, err := meta.Accessor(r.Data)
-	if err != nil {
-		return emptyZVKN
-	}
-	gvk := r.Data.GetObjectKind().GroupVersionKind()
-	return types.GroupVersionKindName{GVK: gvk, Name: accessor.GetName()}
+	gvk := r.Data.GroupVersionKind()
+	return types.GroupVersionKindName{GVK: gvk, Name: r.Data.GetName()}
 }
+
+// ResourceCollection is a map from GroupVersionKindName to Resource
+type ResourceCollection map[types.GroupVersionKindName]*Resource
 
 func objectToUnstructured(in runtime.Object) (*unstructured.Unstructured, error) {
 	marshaled, err := json.Marshal(in)

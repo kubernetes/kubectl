@@ -21,6 +21,7 @@ import (
 	"fmt"
 
 	"k8s.io/apimachinery/pkg/runtime/schema"
+	"k8s.io/kubectl/pkg/kinflate/resource"
 	"k8s.io/kubectl/pkg/kinflate/types"
 )
 
@@ -50,9 +51,9 @@ func NewNameReferenceTransformer(pc []referencePathConfig) (Transformer, error) 
 // associated with the key. e.g. if <k, v> is one of the key-value pair in the map,
 // then the old name is k.Name and the new name is v.GetName()
 func (o *nameReferenceTransformer) Transform(
-	m types.ResourceCollection) error {
+	m resource.ResourceCollection) error {
 	for GVKn := range m {
-		obj := m[GVKn]
+		obj := m[GVKn].Data
 		objMap := obj.UnstructuredContent()
 		for _, referencePathConfig := range o.pathConfigs {
 			for _, path := range referencePathConfig.pathConfigs {
@@ -88,7 +89,7 @@ func (err noMatchingGVKNError) Error() string {
 
 func (o *nameReferenceTransformer) updateNameReference(
 	GVK schema.GroupVersionKind,
-	m types.ResourceCollection,
+	m resource.ResourceCollection,
 ) func(in interface{}) (interface{}, error) {
 	return func(in interface{}) (interface{}, error) {
 		s, ok := in.(string)
@@ -101,7 +102,7 @@ func (o *nameReferenceTransformer) updateNameReference(
 				continue
 			}
 			if GVKn.Name == s {
-				return obj.GetName(), nil
+				return obj.Data.GetName(), nil
 			}
 		}
 		return in, nil

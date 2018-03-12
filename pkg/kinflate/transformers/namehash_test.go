@@ -22,70 +22,182 @@ import (
 
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
-	"k8s.io/kubectl/pkg/kinflate/types"
+	"k8s.io/kubectl/pkg/kinflate/resource"
 )
 
-func makeSecret(name string) *unstructured.Unstructured {
-	return &unstructured.Unstructured{
-		Object: map[string]interface{}{
-			"apiVersion": "v1",
-			"kind":       "Secret",
-			"metadata": map[string]interface{}{
-				"name": name,
+func TestNameHashTransformer(t *testing.T) {
+	objs := resource.ResourceCollection{
+		{
+			GVK:  schema.GroupVersionKind{Version: "v1", Kind: "ConfigMap"},
+			Name: "cm1",
+		}: &resource.Resource{
+			Data: &unstructured.Unstructured{
+				Object: map[string]interface{}{
+					"apiVersion": "v1",
+					"kind":       "ConfigMap",
+					"metadata": map[string]interface{}{
+						"name": "cm1",
+					},
+				},
+			},
+		},
+		{
+			GVK:  schema.GroupVersionKind{Group: "apps", Version: "v1", Kind: "Deployment"},
+			Name: "deploy1",
+		}: &resource.Resource{
+			Data: &unstructured.Unstructured{
+				Object: map[string]interface{}{
+					"group":      "apps",
+					"apiVersion": "v1",
+					"kind":       "Deployment",
+					"metadata": map[string]interface{}{
+						"name": "deploy1",
+					},
+					"spec": map[string]interface{}{
+						"template": map[string]interface{}{
+							"metadata": map[string]interface{}{
+								"labels": map[string]interface{}{
+									"old-label": "old-value",
+								},
+							},
+							"spec": map[string]interface{}{
+								"containers": []interface{}{
+									map[string]interface{}{
+										"name":  "nginx",
+										"image": "nginx:1.7.9",
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		{
+			GVK:  schema.GroupVersionKind{Version: "v1", Kind: "Service"},
+			Name: "svc1",
+		}: &resource.Resource{
+			Data: &unstructured.Unstructured{
+				Object: map[string]interface{}{
+					"apiVersion": "v1",
+					"kind":       "Service",
+					"metadata": map[string]interface{}{
+						"name": "svc1",
+					},
+					"spec": map[string]interface{}{
+						"ports": []interface{}{
+							map[string]interface{}{
+								"name": "port1",
+								"port": "12345",
+							},
+						},
+					},
+				},
+			},
+		},
+		{
+			GVK:  schema.GroupVersionKind{Version: "v1", Kind: "Secret"},
+			Name: "secret1",
+		}: &resource.Resource{
+			Data: &unstructured.Unstructured{
+				Object: map[string]interface{}{
+					"apiVersion": "v1",
+					"kind":       "Secret",
+					"metadata": map[string]interface{}{
+						"name": "secret1",
+					},
+				},
 			},
 		},
 	}
-}
 
-func makeHashTestMap() types.ResourceCollection {
-	return types.ResourceCollection{
+	expected := resource.ResourceCollection{
 		{
 			GVK:  schema.GroupVersionKind{Version: "v1", Kind: "ConfigMap"},
 			Name: "cm1",
-		}: makeConfigmap("cm1"),
+		}: &resource.Resource{
+			Data: &unstructured.Unstructured{
+				Object: map[string]interface{}{
+					"apiVersion": "v1",
+					"kind":       "ConfigMap",
+					"metadata": map[string]interface{}{
+						"name": "cm1-m462kdfb68",
+					},
+				},
+			},
+		},
 		{
 			GVK:  schema.GroupVersionKind{Group: "apps", Version: "v1", Kind: "Deployment"},
 			Name: "deploy1",
-		}: makeDeployment(),
+		}: &resource.Resource{
+			Data: &unstructured.Unstructured{
+				Object: map[string]interface{}{
+					"group":      "apps",
+					"apiVersion": "v1",
+					"kind":       "Deployment",
+					"metadata": map[string]interface{}{
+						"name": "deploy1",
+					},
+					"spec": map[string]interface{}{
+						"template": map[string]interface{}{
+							"metadata": map[string]interface{}{
+								"labels": map[string]interface{}{
+									"old-label": "old-value",
+								},
+							},
+							"spec": map[string]interface{}{
+								"containers": []interface{}{
+									map[string]interface{}{
+										"name":  "nginx",
+										"image": "nginx:1.7.9",
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
 		{
 			GVK:  schema.GroupVersionKind{Version: "v1", Kind: "Service"},
 			Name: "svc1",
-		}: makeService(),
+		}: &resource.Resource{
+			Data: &unstructured.Unstructured{
+				Object: map[string]interface{}{
+					"apiVersion": "v1",
+					"kind":       "Service",
+					"metadata": map[string]interface{}{
+						"name": "svc1",
+					},
+					"spec": map[string]interface{}{
+						"ports": []interface{}{
+							map[string]interface{}{
+								"name": "port1",
+								"port": "12345",
+							},
+						},
+					},
+				},
+			},
+		},
 		{
 			GVK:  schema.GroupVersionKind{Version: "v1", Kind: "Secret"},
 			Name: "secret1",
-		}: makeSecret("secret1"),
+		}: &resource.Resource{
+			Data: &unstructured.Unstructured{
+				Object: map[string]interface{}{
+					"apiVersion": "v1",
+					"kind":       "Secret",
+					"metadata": map[string]interface{}{
+						"name": "secret1-7kc45hd5f7",
+					},
+				},
+			},
+		},
 	}
-}
-
-func makeExpectedHashTestMap() types.ResourceCollection {
-	return types.ResourceCollection{
-		{
-			GVK:  schema.GroupVersionKind{Version: "v1", Kind: "ConfigMap"},
-			Name: "cm1",
-		}: makeConfigmap("cm1-m462kdfb68"),
-		{
-			GVK:  schema.GroupVersionKind{Group: "apps", Version: "v1", Kind: "Deployment"},
-			Name: "deploy1",
-		}: makeDeployment(),
-		{
-			GVK:  schema.GroupVersionKind{Version: "v1", Kind: "Service"},
-			Name: "svc1",
-		}: makeService(),
-		{
-			GVK:  schema.GroupVersionKind{Version: "v1", Kind: "Secret"},
-			Name: "secret1",
-		}: makeSecret("secret1-7kc45hd5f7"),
-	}
-}
-
-func TestNameHashTransformer(t *testing.T) {
-	objs := makeHashTestMap()
 
 	tran := NewNameHashTransformer()
 	tran.Transform(objs)
-
-	expected := makeExpectedHashTestMap()
 
 	if !reflect.DeepEqual(objs, expected) {
 		err := compareMap(objs, expected)

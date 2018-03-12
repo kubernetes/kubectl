@@ -18,82 +18,16 @@ package util
 
 import (
 	"bytes"
-	"fmt"
-	"io"
 	"sort"
 
 	"github.com/ghodss/yaml"
 
-	"k8s.io/apimachinery/pkg/api/meta"
-	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
-	"k8s.io/apimachinery/pkg/runtime/schema"
-	k8syaml "k8s.io/apimachinery/pkg/util/yaml"
+	"k8s.io/kubectl/pkg/kinflate/resource"
 	"k8s.io/kubectl/pkg/kinflate/types"
 )
 
-// Decode decodes a list of objects in byte array format
-func Decode(in []byte) ([]*unstructured.Unstructured, error) {
-	decoder := k8syaml.NewYAMLOrJSONDecoder(bytes.NewReader(in), 1024)
-	objs := []*unstructured.Unstructured{}
-
-	var err error
-	for {
-		var out unstructured.Unstructured
-		err = decoder.Decode(&out)
-		if err != nil {
-			break
-		}
-		objs = append(objs, &out)
-	}
-	if err != io.EOF {
-		return nil, err
-	}
-	return objs, nil
-}
-
-// DecodeToResourceCollection decodes a list of objects in byte array format.
-// Decoded object will be inserted in `into` if it's not nil. Otherwise, it will
-// construct a new map and return it.
-func DecodeToResourceCollection(in []byte, into types.ResourceCollection) (types.ResourceCollection, error) {
-	objs, err := Decode(in)
-	if err != nil {
-		return nil, err
-	}
-
-	if into == nil {
-		into = types.ResourceCollection{}
-	}
-	for i := range objs {
-		metaAccessor, err := meta.Accessor(objs[i])
-		if err != nil {
-			return nil, err
-		}
-		name := metaAccessor.GetName()
-		typeAccessor, err := meta.TypeAccessor(objs[i])
-		if err != nil {
-			return nil, err
-		}
-		apiVersion := typeAccessor.GetAPIVersion()
-		kind := typeAccessor.GetKind()
-		gv, err := schema.ParseGroupVersion(apiVersion)
-		if err != nil {
-			return nil, err
-		}
-		gvk := gv.WithKind(kind)
-		gvkn := types.GroupVersionKindName{
-			GVK:  gvk,
-			Name: name,
-		}
-		if _, found := into[gvkn]; found {
-			return into, fmt.Errorf("GroupVersionKindName: %#v already exists in the map", gvkn)
-		}
-		into[gvkn] = objs[i]
-	}
-	return into, nil
-}
-
 // Encode encodes the map `in` and output the encoded objects separated by `---`.
-func Encode(in types.ResourceCollection) ([]byte, error) {
+func Encode(in resource.ResourceCollection) ([]byte, error) {
 	gvknList := []types.GroupVersionKindName{}
 	for gvkn := range in {
 		gvknList = append(gvknList, gvkn)
@@ -104,7 +38,7 @@ func Encode(in types.ResourceCollection) ([]byte, error) {
 	var b []byte
 	buf := bytes.NewBuffer(b)
 	for _, gvkn := range gvknList {
-		obj := in[gvkn]
+		obj := in[gvkn].Data
 		out, err := yaml.Marshal(obj)
 		if err != nil {
 			return nil, err
@@ -125,7 +59,7 @@ func Encode(in types.ResourceCollection) ([]byte, error) {
 }
 
 // WriteToDir write each object in ResourceCollection to a file named with GroupVersionKindName.
-func WriteToDir(in types.ResourceCollection, dirName string, printer Printer) (*Directory, error) {
+func WriteToDir(in resource.ResourceCollection, dirName string, printer Printer) (*Directory, error) {
 	dir, err := CreateDirectory(dirName)
 	if err != nil {
 		return &Directory{}, err
@@ -137,7 +71,7 @@ func WriteToDir(in types.ResourceCollection, dirName string, printer Printer) (*
 			return &Directory{}, err
 		}
 		defer f.Close()
-		err = printer.Print(obj, f)
+		err = printer.Print(obj.Data, f)
 		if err != nil {
 			return &Directory{}, err
 		}

@@ -20,6 +20,7 @@ import (
 	"errors"
 	"fmt"
 
+	"k8s.io/kubectl/pkg/kinflate/resource"
 	"k8s.io/kubectl/pkg/kinflate/types"
 )
 
@@ -56,9 +57,9 @@ func NewNamePrefixTransformer(pc []PathConfig, np string) (Transformer, error) {
 }
 
 // Transform prepends the name prefix.
-func (o *namePrefixTransformer) Transform(m types.ResourceCollection) error {
+func (o *namePrefixTransformer) Transform(m resource.ResourceCollection) error {
 	for gvkn := range m {
-		obj := m[gvkn]
+		obj := m[gvkn].Data
 		objMap := obj.UnstructuredContent()
 		for _, path := range o.pathConfigs {
 			if !types.SelectByGVK(gvkn.GVK, path.GroupVersionKind) {

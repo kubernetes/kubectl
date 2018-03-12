@@ -131,7 +131,7 @@ func addKV(m map[string]string, kv kvPair) error {
 }
 
 // NewFromConfigMaps returns a Resource slice given a configmap metadata slice from manifest file.
-func NewFromConfigMaps(loader loader.Loader, cmList []manifest.ConfigMap) ([]*Resource, error) {
+func NewFromConfigMaps(loader loader.Loader, cmList []manifest.ConfigMap) (ResourceCollection, error) {
 	allResources := []*Resource{}
 	for _, cm := range cmList {
 		res, err := newFromConfigMap(loader, cm)
@@ -140,5 +140,5 @@ func NewFromConfigMaps(loader loader.Loader, cmList []manifest.ConfigMap) ([]*Re
 		}
 		allResources = append(allResources, res)
 	}
-	return allResources, nil
+	return resourceCollectionFromResources(allResources)
 }

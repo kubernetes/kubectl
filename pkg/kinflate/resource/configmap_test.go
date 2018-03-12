@@ -21,6 +21,7 @@ import (
 	"testing"
 
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
+	"k8s.io/apimachinery/pkg/runtime/schema"
 	manifest "k8s.io/kubectl/pkg/apis/manifest/v1alpha1"
 	"k8s.io/kubectl/pkg/kinflate/resource"
 	"k8s.io/kubectl/pkg/loader/loadertest"
@@ -32,7 +33,7 @@ func TestNewFromConfigMaps(t *testing.T) {
 		input       []manifest.ConfigMap
 		filepath    string
 		content     string
-		expected    []*resource.Resource
+		expected    resource.ResourceCollection
 	}
 
 	l := loadertest.NewFakeLoader("/home/seans/project/")
@@ -49,8 +50,11 @@ func TestNewFromConfigMaps(t *testing.T) {
 			},
 			filepath: "/home/seans/project/app.env",
 			content:  "DB_USERNAME=admin\nDB_PASSWORD=somepw",
-			expected: []*resource.Resource{
+			expected: resource.ResourceCollection{
 				{
+					GVK:  schema.GroupVersionKind{Version: "v1", Kind: "ConfigMap"},
+					Name: "envConfigMap",
+				}: &resource.Resource{
 					Data: &unstructured.Unstructured{
 						Object: map[string]interface{}{
 							"apiVersion": "v1",
@@ -79,8 +83,11 @@ func TestNewFromConfigMaps(t *testing.T) {
 			},
 			filepath: "/home/seans/project/app-init.ini",
 			content:  "FOO=bar\nBAR=baz\n",
-			expected: []*resource.Resource{
+			expected: resource.ResourceCollection{
 				{
+					GVK:  schema.GroupVersionKind{Version: "v1", Kind: "ConfigMap"},
+					Name: "fileConfigMap",
+				}: &resource.Resource{
 					Data: &unstructured.Unstructured{
 						Object: map[string]interface{}{
 							"apiVersion": "v1",
@@ -109,8 +116,11 @@ BAR=baz
 					},
 				},
 			},
-			expected: []*resource.Resource{
+			expected: resource.ResourceCollection{
 				{
+					GVK:  schema.GroupVersionKind{Version: "v1", Kind: "ConfigMap"},
+					Name: "literalConfigMap",
+				}: &resource.Resource{
 					Data: &unstructured.Unstructured{
 						Object: map[string]interface{}{
 							"apiVersion": "v1",

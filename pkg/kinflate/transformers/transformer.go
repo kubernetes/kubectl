@@ -16,10 +16,10 @@ limitations under the License.
 
 package transformers
 
-import "k8s.io/kubectl/pkg/kinflate/types"
+import "k8s.io/kubectl/pkg/kinflate/resource"
 
 // Transformer can transform objects.
 type Transformer interface {
 	// Transform modifies objects in a map, e.g. add prefixes or additional labels.
-	Transform(m types.ResourceCollection) error
+	Transform(m resource.ResourceCollection) error
 }

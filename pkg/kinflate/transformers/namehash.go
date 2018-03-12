@@ -24,6 +24,7 @@ import (
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/kubectl/pkg/kinflate/hash"
+	"k8s.io/kubectl/pkg/kinflate/resource"
 	"k8s.io/kubectl/pkg/kinflate/types"
 )
 
@@ -39,14 +40,14 @@ func NewNameHashTransformer() Transformer {
 }
 
 // Transform appends hash to configmaps and secrets.
-func (o *nameHashTransformer) Transform(m types.ResourceCollection) error {
+func (o *nameHashTransformer) Transform(m resource.ResourceCollection) error {
 	for gvkn, obj := range m {
 		switch {
 		case types.SelectByGVK(gvkn.GVK, &schema.GroupVersionKind{Version: "v1", Kind: "ConfigMap"}):
-			appendHashForConfigMap(obj)
+			appendHashForConfigMap(obj.Data)
 
 		case types.SelectByGVK(gvkn.GVK, &schema.GroupVersionKind{Version: "v1", Kind: "Secret"}):
-			appendHashForSecret(obj)
+			appendHashForSecret(obj.Data)
 		}
 	}
 	return nil
