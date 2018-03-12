@@ -35,10 +35,11 @@ diff -u -N /tmp/noop/apps_v1beta2_Deployment_nginx.yaml /tmp/transformed/apps_v1
 +          pdName: nginx-persistent-storage
          name: nginx-persistent-storage
        - configMap:
+-          name: team-foo-configmap-in-base-72t84tc949
 +          name: staging-configmap-in-overlay-h4hbb8fckf
 +        name: configmap-in-overlay
 +      - configMap:
-           name: team-foo-configmap-in-base-72t84tc949
++          name: staging-team-foo-configmap-in-base-72t84tc949
          name: configmap-in-base
 diff -u -N /tmp/noop/v1_ConfigMap_configmap-in-base.yaml /tmp/transformed/v1_ConfigMap_configmap-in-base.yaml
 --- /tmp/noop/v1_ConfigMap_configmap-in-base.yaml	YYYY-MM-DD HH:MM:SS
