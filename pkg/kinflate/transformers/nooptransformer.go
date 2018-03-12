@@ -16,7 +16,7 @@ limitations under the License.
 
 package transformers
 
-import "k8s.io/kubectl/pkg/kinflate/types"
+import "k8s.io/kubectl/pkg/kinflate/resource"
 
 // noOpTransformer contains a no-op transformer.
 type noOpTransformer struct{}
@@ -29,6 +29,6 @@ func NewNoOpTransformer() Transformer {
 }
 
 // Transform does nothing.
-func (o *noOpTransformer) Transform(_ types.ResourceCollection) error {
+func (o *noOpTransformer) Transform(_ resource.ResourceCollection) error {
 	return nil
 }

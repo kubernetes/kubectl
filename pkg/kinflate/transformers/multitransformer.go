@@ -16,7 +16,7 @@ limitations under the License.
 
 package transformers
 
-import "k8s.io/kubectl/pkg/kinflate/types"
+import "k8s.io/kubectl/pkg/kinflate/resource"
 
 // multiTransformer contains a list of transformers.
 type multiTransformer struct {
@@ -34,7 +34,7 @@ func NewMultiTransformer(t []Transformer) Transformer {
 }
 
 // Transform prepends the name prefix.
-func (o *multiTransformer) Transform(m types.ResourceCollection) error {
+func (o *multiTransformer) Transform(m resource.ResourceCollection) error {
 	for _, t := range o.transformers {
 		err := t.Transform(m)
 		if err != nil {

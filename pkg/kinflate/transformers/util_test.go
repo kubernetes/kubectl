@@ -20,39 +20,11 @@ import (
 	"fmt"
 	"reflect"
 
-	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
-	"k8s.io/apimachinery/pkg/runtime/schema"
+	"k8s.io/kubectl/pkg/kinflate/resource"
 	"k8s.io/kubectl/pkg/kinflate/types"
 )
 
-func makeConfigMap(name string) *unstructured.Unstructured {
-	return &unstructured.Unstructured{
-		Object: map[string]interface{}{
-			"apiVersion": "v1",
-			"kind":       "ConfigMap",
-			"metadata": map[string]interface{}{
-				"name": name,
-			},
-		},
-	}
-}
-
-func makeConfigMaps(name1InGVKN, name2InGVKN, name1InObj, name2InObj string) types.ResourceCollection {
-	cm1 := makeConfigMap(name1InObj)
-	cm2 := makeConfigMap(name2InObj)
-	return types.ResourceCollection{
-		{
-			GVK:  schema.GroupVersionKind{Version: "v1", Kind: "ConfigMap"},
-			Name: name1InGVKN,
-		}: cm1,
-		{
-			GVK:  schema.GroupVersionKind{Version: "v1", Kind: "ConfigMap"},
-			Name: name2InGVKN,
-		}: cm2,
-	}
-}
-
-func compareMap(m1, m2 types.ResourceCollection) error {
+func compareMap(m1, m2 resource.ResourceCollection) error {
 	if len(m1) != len(m2) {
 		keySet1 := []types.GroupVersionKindName{}
 		keySet2 := []types.GroupVersionKindName{}
@@ -69,8 +41,8 @@ func compareMap(m1, m2 types.ResourceCollection) error {
 		if !found {
 			return fmt.Errorf("%#v doesn't exist in %#v", GVKn, m2)
 		}
-		if !reflect.DeepEqual(obj1, obj2) {
-			return fmt.Errorf("%#v doesn't match %#v", obj1, obj2)
+		if !reflect.DeepEqual(obj1.Data, obj2.Data) {
+			return fmt.Errorf("%#v doesn't match %#v", obj1.Data, obj2.Data)
 		}
 	}
 	return nil

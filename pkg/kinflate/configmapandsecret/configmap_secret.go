@@ -26,12 +26,12 @@ import (
 	"time"
 
 	corev1 "k8s.io/api/core/v1"
-	"k8s.io/apimachinery/pkg/api/meta"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime"
 	manifest "k8s.io/kubectl/pkg/apis/manifest/v1alpha1"
 	cutil "k8s.io/kubectl/pkg/kinflate/configmapandsecret/util"
 	"k8s.io/kubectl/pkg/kinflate/hash"
+	"k8s.io/kubectl/pkg/kinflate/resource"
 	"k8s.io/kubectl/pkg/kinflate/types"
 )
 
@@ -123,26 +123,22 @@ func makeSecret(secret manifest.SecretGenerator, path string) (*corev1.Secret, e
 	return corev1secret, nil
 }
 
-func populateMap(m types.ResourceCollection, obj *unstructured.Unstructured, newName string) error {
-	accessor, err := meta.Accessor(obj)
-	if err != nil {
-		return err
-	}
-	oldName := accessor.GetName()
-	gvk := obj.GetObjectKind().GroupVersionKind()
+func populateMap(m resource.ResourceCollection, obj *unstructured.Unstructured, newName string) error {
+	oldName := obj.GetName()
+	gvk := obj.GroupVersionKind()
 	gvkn := types.GroupVersionKindName{GVK: gvk, Name: oldName}
 
 	if _, found := m[gvkn]; found {
 		return fmt.Errorf("The <name: %q, GroupVersionKind: %v> already exists in the map", oldName, gvk)
 	}
-	accessor.SetName(newName)
-	m[gvkn] = obj
+	obj.SetName(newName)
+	m[gvkn] = &resource.Resource{Data: obj}
 	return nil
 }
 
 // MakeConfigMapsResourceCollection returns a map of <GVK, oldName> -> unstructured object.
-func MakeConfigMapsResourceCollection(maps []manifest.ConfigMap) (types.ResourceCollection, error) {
-	m := types.ResourceCollection{}
+func MakeConfigMapsResourceCollection(maps []manifest.ConfigMap) (resource.ResourceCollection, error) {
+	m := resource.ResourceCollection{}
 	for _, cm := range maps {
 		unstructuredConfigMap, nameWithHash, err := MakeConfigmapAndGenerateName(cm)
 		if err != nil {
@@ -157,8 +153,8 @@ func MakeConfigMapsResourceCollection(maps []manifest.ConfigMap) (types.Resource
 }
 
 // MakeSecretsResourceCollection returns a map of <GVK, oldName> -> unstructured object.
-func MakeSecretsResourceCollection(secrets []manifest.SecretGenerator, path string) (types.ResourceCollection, error) {
-	m := types.ResourceCollection{}
+func MakeSecretsResourceCollection(secrets []manifest.SecretGenerator, path string) (resource.ResourceCollection, error) {
+	m := resource.ResourceCollection{}
 	for _, secret := range secrets {
 		unstructuredSecret, nameWithHash, err := MakeSecretAndGenerateName(secret, path)
 		if err != nil {

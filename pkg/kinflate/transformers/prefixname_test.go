@@ -19,10 +19,74 @@ package transformers
 import (
 	"reflect"
 	"testing"
+
+	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
+	"k8s.io/apimachinery/pkg/runtime/schema"
+	"k8s.io/kubectl/pkg/kinflate/resource"
 )
 
 func TestPrefixNameRun(t *testing.T) {
-	m := makeConfigMaps("cm1", "cm2", "cm1", "cm2")
+	m := resource.ResourceCollection{
+		{
+			GVK:  schema.GroupVersionKind{Version: "v1", Kind: "ConfigMap"},
+			Name: "cm1",
+		}: &resource.Resource{
+			Data: &unstructured.Unstructured{
+				Object: map[string]interface{}{
+					"apiVersion": "v1",
+					"kind":       "ConfigMap",
+					"metadata": map[string]interface{}{
+						"name": "cm1",
+					},
+				},
+			},
+		},
+		{
+			GVK:  schema.GroupVersionKind{Version: "v1", Kind: "ConfigMap"},
+			Name: "cm2",
+		}: &resource.Resource{
+			Data: &unstructured.Unstructured{
+				Object: map[string]interface{}{
+					"apiVersion": "v1",
+					"kind":       "ConfigMap",
+					"metadata": map[string]interface{}{
+						"name": "cm2",
+					},
+				},
+			},
+		},
+	}
+	expected := resource.ResourceCollection{
+		{
+			GVK:  schema.GroupVersionKind{Version: "v1", Kind: "ConfigMap"},
+			Name: "cm1",
+		}: &resource.Resource{
+			Data: &unstructured.Unstructured{
+				Object: map[string]interface{}{
+					"apiVersion": "v1",
+					"kind":       "ConfigMap",
+					"metadata": map[string]interface{}{
+						"name": "someprefix-cm1",
+					},
+				},
+			},
+		},
+		{
+			GVK:  schema.GroupVersionKind{Version: "v1", Kind: "ConfigMap"},
+			Name: "cm2",
+		}: &resource.Resource{
+			Data: &unstructured.Unstructured{
+				Object: map[string]interface{}{
+					"apiVersion": "v1",
+					"kind":       "ConfigMap",
+					"metadata": map[string]interface{}{
+						"name": "someprefix-cm2",
+					},
+				},
+			},
+		},
+	}
+
 	npt, err := NewDefaultingNamePrefixTransformer("someprefix-")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -31,7 +95,6 @@ func TestPrefixNameRun(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	expected := makeConfigMaps("cm1", "cm2", "someprefix-cm1", "someprefix-cm2")
 	if !reflect.DeepEqual(m, expected) {
 		err = compareMap(m, expected)
 		t.Fatalf("actual doesn't match expected: %v", err)

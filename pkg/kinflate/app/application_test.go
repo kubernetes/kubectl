@@ -25,6 +25,7 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
+	"k8s.io/kubectl/pkg/kinflate/resource"
 	"k8s.io/kubectl/pkg/kinflate/types"
 	"k8s.io/kubectl/pkg/loader"
 	"k8s.io/kubectl/pkg/loader/loadertest"
@@ -74,36 +75,38 @@ metadata:
 }
 
 func TestResources(t *testing.T) {
-	expected := types.ResourceCollection{
+	expected := resource.ResourceCollection{
 		types.GroupVersionKindName{
 			GVK:  schema.GroupVersionKind{Group: "apps", Version: "v1", Kind: "Deployment"},
 			Name: "dply1",
-		}: &unstructured.Unstructured{
-			Object: map[string]interface{}{
-				"apiVersion": "apps/v1",
-				"kind":       "Deployment",
-				"metadata": map[string]interface{}{
-					"name": "foo-dply1",
-					"labels": map[string]interface{}{
-						"app": "nginx",
-					},
-					"annotations": map[string]interface{}{
-						"note": "This is a test annotation",
-					},
-				},
-				"spec": map[string]interface{}{
-					"selector": map[string]interface{}{
-						"matchLabels": map[string]interface{}{
+		}: &resource.Resource{
+			Data: &unstructured.Unstructured{
+				Object: map[string]interface{}{
+					"apiVersion": "apps/v1",
+					"kind":       "Deployment",
+					"metadata": map[string]interface{}{
+						"name": "foo-dply1",
+						"labels": map[string]interface{}{
 							"app": "nginx",
 						},
+						"annotations": map[string]interface{}{
+							"note": "This is a test annotation",
+						},
 					},
-					"template": map[string]interface{}{
-						"metadata": map[string]interface{}{
-							"annotations": map[string]interface{}{
-								"note": "This is a test annotation",
-							},
-							"labels": map[string]interface{}{
+					"spec": map[string]interface{}{
+						"selector": map[string]interface{}{
+							"matchLabels": map[string]interface{}{
 								"app": "nginx",
+							},
+						},
+						"template": map[string]interface{}{
+							"metadata": map[string]interface{}{
+								"annotations": map[string]interface{}{
+									"note": "This is a test annotation",
+								},
+								"labels": map[string]interface{}{
+									"app": "nginx",
+								},
 							},
 						},
 					},
@@ -113,47 +116,51 @@ func TestResources(t *testing.T) {
 		types.GroupVersionKindName{
 			GVK:  schema.GroupVersionKind{Version: "v1", Kind: "ConfigMap"},
 			Name: "literalConfigMap",
-		}: &unstructured.Unstructured{
-			Object: map[string]interface{}{
-				"apiVersion": "v1",
-				"kind":       "ConfigMap",
-				"metadata": map[string]interface{}{
-					"name": "foo-literalConfigMap-h25f8c59t4",
-					"labels": map[string]interface{}{
-						"app": "nginx",
+		}: &resource.Resource{
+			Data: &unstructured.Unstructured{
+				Object: map[string]interface{}{
+					"apiVersion": "v1",
+					"kind":       "ConfigMap",
+					"metadata": map[string]interface{}{
+						"name": "foo-literalConfigMap-h25f8c59t4",
+						"labels": map[string]interface{}{
+							"app": "nginx",
+						},
+						"annotations": map[string]interface{}{
+							"note": "This is a test annotation",
+						},
+						"creationTimestamp": nil,
 					},
-					"annotations": map[string]interface{}{
-						"note": "This is a test annotation",
+					"data": map[string]interface{}{
+						"DB_USERNAME": "admin",
+						"DB_PASSWORD": "somepw",
 					},
-					"creationTimestamp": nil,
-				},
-				"data": map[string]interface{}{
-					"DB_USERNAME": "admin",
-					"DB_PASSWORD": "somepw",
 				},
 			},
 		},
 		types.GroupVersionKindName{
 			GVK:  schema.GroupVersionKind{Version: "v1", Kind: "Secret"},
 			Name: "secret",
-		}: &unstructured.Unstructured{
-			Object: map[string]interface{}{
-				"apiVersion": "v1",
-				"kind":       "Secret",
-				"metadata": map[string]interface{}{
-					"name": "foo-secret-2c9kh7fh8t",
-					"labels": map[string]interface{}{
-						"app": "nginx",
+		}: &resource.Resource{
+			Data: &unstructured.Unstructured{
+				Object: map[string]interface{}{
+					"apiVersion": "v1",
+					"kind":       "Secret",
+					"metadata": map[string]interface{}{
+						"name": "foo-secret-2c9kh7fh8t",
+						"labels": map[string]interface{}{
+							"app": "nginx",
+						},
+						"annotations": map[string]interface{}{
+							"note": "This is a test annotation",
+						},
+						"creationTimestamp": nil,
 					},
-					"annotations": map[string]interface{}{
-						"note": "This is a test annotation",
+					"type": string(corev1.SecretTypeOpaque),
+					"data": map[string]interface{}{
+						"DB_USERNAME": base64.StdEncoding.EncodeToString([]byte("admin")),
+						"DB_PASSWORD": base64.StdEncoding.EncodeToString([]byte("somepw")),
 					},
-					"creationTimestamp": nil,
-				},
-				"type": string(corev1.SecretTypeOpaque),
-				"data": map[string]interface{}{
-					"DB_USERNAME": base64.StdEncoding.EncodeToString([]byte("admin")),
-					"DB_PASSWORD": base64.StdEncoding.EncodeToString([]byte("somepw")),
 				},
 			},
 		},
@@ -175,16 +182,18 @@ func TestResources(t *testing.T) {
 }
 
 func TestRawResources(t *testing.T) {
-	expected := types.ResourceCollection{
+	expected := resource.ResourceCollection{
 		types.GroupVersionKindName{
 			GVK:  schema.GroupVersionKind{Group: "apps", Version: "v1", Kind: "Deployment"},
 			Name: "dply1",
-		}: &unstructured.Unstructured{
-			Object: map[string]interface{}{
-				"apiVersion": "apps/v1",
-				"kind":       "Deployment",
-				"metadata": map[string]interface{}{
-					"name": "dply1",
+		}: &resource.Resource{
+			Data: &unstructured.Unstructured{
+				Object: map[string]interface{}{
+					"apiVersion": "apps/v1",
+					"kind":       "Deployment",
+					"metadata": map[string]interface{}{
+						"name": "dply1",
+					},
 				},
 			},
 		},
@@ -204,7 +213,7 @@ func TestRawResources(t *testing.T) {
 	}
 }
 
-func compareMap(m1, m2 types.ResourceCollection) error {
+func compareMap(m1, m2 resource.ResourceCollection) error {
 	if len(m1) != len(m2) {
 		keySet1 := []types.GroupVersionKindName{}
 		keySet2 := []types.GroupVersionKindName{}

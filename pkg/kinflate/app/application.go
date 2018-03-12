@@ -17,8 +17,6 @@ limitations under the License.
 package app
 
 import (
-	"fmt"
-
 	"github.com/ghodss/yaml"
 
 	manifest "k8s.io/kubectl/pkg/apis/manifest/v1alpha1"
@@ -26,16 +24,15 @@ import (
 	interror "k8s.io/kubectl/pkg/kinflate/internal/error"
 	"k8s.io/kubectl/pkg/kinflate/resource"
 	"k8s.io/kubectl/pkg/kinflate/transformers"
-	"k8s.io/kubectl/pkg/kinflate/types"
 	"k8s.io/kubectl/pkg/loader"
 )
 
 type Application interface {
 	// Resources computes and returns the resources for the app.
-	Resources() (types.ResourceCollection, error)
+	Resources() (resource.ResourceCollection, error)
 	// RawResources computes and returns the raw resources from the manifest.
 	// It contains resources from 1) untransformed resources from current manifest 2) transformed resources from sub packages
-	RawResources() (types.ResourceCollection, error)
+	RawResources() (resource.ResourceCollection, error)
 }
 
 var _ Application = &applicationImpl{}
@@ -63,27 +60,22 @@ func New(loader loader.Loader) (Application, error) {
 }
 
 // Resources computes and returns the resources from the manifest.
-func (a *applicationImpl) Resources() (types.ResourceCollection, error) {
+func (a *applicationImpl) Resources() (resource.ResourceCollection, error) {
 	errs := &interror.ManifestErrors{}
 	raw, err := a.RawResources()
 	if err != nil {
 		errs.Append(err)
 	}
 
-	resources := []*resource.Resource{}
 	cms, err := resource.NewFromConfigMaps(a.loader, a.manifest.Configmaps)
 	if err != nil {
 		errs.Append(err)
-	} else {
-		resources = append(resources, cms...)
 	}
 	secrets, err := resource.NewFromSecretGenerators(a.loader.Root(), a.manifest.SecretGenerators)
 	if err != nil {
 		errs.Append(err)
-	} else {
-		resources = append(resources, secrets...)
 	}
-	res, err := resourceCollectionFromResources(resources)
+	res, err := resource.Merge(cms, secrets)
 	if err != nil {
 		return nil, err
 	}
@@ -94,12 +86,7 @@ func (a *applicationImpl) Resources() (types.ResourceCollection, error) {
 		return nil, err
 	}
 
-	ps, err := resource.NewFromPaths(a.loader, a.manifest.Patches)
-	if err != nil {
-		errs.Append(err)
-	}
-	// TODO: remove this func after migrating to ResourceCollection
-	patches, err := resourceCollectionFromResources(ps)
+	patches, err := resource.NewFromPaths(a.loader, a.manifest.Patches)
 	if err != nil {
 		errs.Append(err)
 	}
@@ -108,7 +95,7 @@ func (a *applicationImpl) Resources() (types.ResourceCollection, error) {
 		return nil, errs
 	}
 
-	err = types.Merge(res, raw)
+	allRes, err := resource.Merge(res, raw)
 	if err != nil {
 		return nil, err
 	}
@@ -117,35 +104,30 @@ func (a *applicationImpl) Resources() (types.ResourceCollection, error) {
 	if err != nil {
 		return nil, err
 	}
-	err = t.Transform(res)
+	err = t.Transform(allRes)
 	if err != nil {
 		return nil, err
 	}
-	return res, nil
+	return allRes, nil
 }
 
 // RawResources computes and returns the raw resources from the manifest.
-func (a *applicationImpl) RawResources() (types.ResourceCollection, error) {
+func (a *applicationImpl) RawResources() (resource.ResourceCollection, error) {
 	subAppResources, errs := a.subAppResources()
-	allRes, err := resource.NewFromPaths(a.loader, a.manifest.Resources)
+	resources, err := resource.NewFromPaths(a.loader, a.manifest.Resources)
 	if err != nil {
 		errs.Append(err)
 	}
-	// TODO: remove this func after migrating to ResourceCollection
-	allResources, err := resourceCollectionFromResources(allRes)
-	if err != nil {
-		errs.Append(err)
-	}
+
 	if len(errs.Get()) > 0 {
 		return nil, errs
 	}
 
-	err = types.Merge(allResources, subAppResources)
-	return allResources, err
+	return resource.Merge(resources, subAppResources)
 }
 
-func (a *applicationImpl) subAppResources() (types.ResourceCollection, *interror.ManifestErrors) {
-	allResources := types.ResourceCollection{}
+func (a *applicationImpl) subAppResources() (resource.ResourceCollection, *interror.ManifestErrors) {
+	sliceOfSubAppResources := []resource.ResourceCollection{}
 	errs := &interror.ManifestErrors{}
 	for _, pkgPath := range a.manifest.Packages {
 		subloader, err := a.loader.New(pkgPath)
@@ -164,7 +146,11 @@ func (a *applicationImpl) subAppResources() (types.ResourceCollection, *interror
 			errs.Append(err)
 			continue
 		}
-		types.Merge(allResources, subAppResources)
+		sliceOfSubAppResources = append(sliceOfSubAppResources, subAppResources)
+	}
+	allResources, err := resource.Merge(sliceOfSubAppResources...)
+	if err != nil {
+		errs.Append(err)
 	}
 	return allResources, errs
 }
@@ -175,7 +161,7 @@ func (a *applicationImpl) subAppResources() (types.ResourceCollection, *interror
 // 3) apply labels
 // 4) apply annotations
 // 5) update name reference
-func (a *applicationImpl) getTransformer(patches types.ResourceCollection) (transformers.Transformer, error) {
+func (a *applicationImpl) getTransformer(patches resource.ResourceCollection) (transformers.Transformer, error) {
 	ts := []transformers.Transformer{}
 
 	ot, err := transformers.NewOverlayTransformer(patches)
@@ -208,16 +194,4 @@ func (a *applicationImpl) getTransformer(patches types.ResourceCollection) (tran
 	}
 	ts = append(ts, nrt)
 	return transformers.NewMultiTransformer(ts), nil
-}
-
-func resourceCollectionFromResources(res []*resource.Resource) (types.ResourceCollection, error) {
-	out := types.ResourceCollection{}
-	for _, res := range res {
-		gvkn := res.GVKN()
-		if _, found := out[gvkn]; found {
-			return nil, fmt.Errorf("duplicated %#v is not allowed", gvkn)
-		}
-		out[gvkn] = res.Data
-	}
-	return out, nil
 }
