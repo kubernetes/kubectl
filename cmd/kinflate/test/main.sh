@@ -14,6 +14,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+function exit_with {
+  local msg=$1
+  echo >&2 ${msg}
+  exit 1
+}
+
 base_dir="$( cd "$(dirname "$0")/../../.." && pwd )"
 cd "$base_dir" || {
   echo "Cannot cd to '$base_dir'. Aborting." >&2
@@ -21,7 +27,7 @@ cd "$base_dir" || {
 }
 
 # Install kinflate to $GOPATH/bin and export PATH
-go install ./cmd/kinflate
+go install ./cmd/kinflate || { exit_with "Failed to install kinflate"; }
 export PATH=$GOPATH/bin:$PATH
 
 home=`pwd`
@@ -29,17 +35,21 @@ example_dir="some/default/dir/for/examples"
 if [ $# -eq 1 ]; then
     example_dir=$1
 fi
+if [ ! -d ${example_dir} ]; then
+    exit_with "directory ${example_dir} doesn't exist"
+fi
+
 test_targets=$(ls ${example_dir})
 
 for t in ${test_targets}; do
     cd ${example_dir}/${t}
     if [ -x "tests/test.sh" ]; then
         tests/test.sh .
-    fi
-    if [ $? -eq 0 ]; then
-        echo "testing ${t} passed."
-    else
-        echo "testing ${t} failed."
+        if [ $? -eq 0 ]; then
+            echo "testing ${t} passed."
+        else
+            exit_with "testing ${t} failed."
+        fi
     fi
     cd ${home}
 done
