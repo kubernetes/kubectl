@@ -33,23 +33,17 @@ export PATH=$GOPATH/bin:$PATH
 home=`pwd`
 example_dir="some/default/dir/for/examples"
 if [ $# -eq 1 ]; then
-    example_dir=$1
+  example_dir=$1
 fi
 if [ ! -d ${example_dir} ]; then
-    exit_with "directory ${example_dir} doesn't exist"
+  exit_with "directory ${example_dir} doesn't exist"
 fi
 
-test_targets=$(ls ${example_dir})
-
-for t in ${test_targets}; do
-    cd ${example_dir}/${t}
-    if [ -x "tests/test.sh" ]; then
-        tests/test.sh .
-        if [ $? -eq 0 ]; then
-            echo "testing ${t} passed."
-        else
-            exit_with "testing ${t} failed."
-        fi
-    fi
-    cd ${home}
-done
+if [ -x "${example_dir}/tests/test.sh" ]; then
+  ${example_dir}/tests/test.sh ${example_dir}
+  if [ $? -eq 0 ]; then
+    echo "testing ${example_dir} passed."
+  else
+    exit_with "testing ${example_dir} failed."
+  fi
+fi
