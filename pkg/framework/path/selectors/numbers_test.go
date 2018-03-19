@@ -14,14 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package unstructpath_test
+package selectors_test
 
 import (
 	"reflect"
 	"testing"
 
-	p "k8s.io/kubectl/pkg/framework/predicates"
-	. "k8s.io/kubectl/pkg/framework/unstructpath"
+	p "k8s.io/kubectl/pkg/framework/path/predicates"
+	. "k8s.io/kubectl/pkg/framework/path/selectors"
 )
 
 func TestNumberSSelectFrom(t *testing.T) {

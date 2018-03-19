@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-// This package helps you find specific fields in your unstruct
+// This package helps you find specific fields in your interface{}
 // object. It is similar to what you can do with jsonpath, but reads the
 // path from strongly typed object, not strings.
-package unstructpath
+package selectors

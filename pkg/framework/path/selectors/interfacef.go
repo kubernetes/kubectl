@@ -14,10 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package unstructpath
+package selectors
 
 import (
-	p "k8s.io/kubectl/pkg/framework/predicates"
+	p "k8s.io/kubectl/pkg/framework/path/predicates"
 )
 
 // A interfaceFilter allows us to chain InterfaceS to InterfaceS. None of this is

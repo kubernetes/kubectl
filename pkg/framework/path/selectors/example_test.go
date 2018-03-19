@@ -14,12 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package unstructpath
+package selectors
 
 import (
 	"github.com/ghodss/yaml"
 
-	p "k8s.io/kubectl/pkg/framework/predicates"
+	p "k8s.io/kubectl/pkg/framework/path/predicates"
 )
 
 // This example is inspired from http://goessner.net/articles/JsonPath/#e3.

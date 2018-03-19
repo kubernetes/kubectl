@@ -20,7 +20,7 @@ import (
 	"fmt"
 	"testing"
 
-	. "k8s.io/kubectl/pkg/framework/predicates"
+	. "k8s.io/kubectl/pkg/framework/path/predicates"
 )
 
 // This example shows you how you can create a IntP, and how it's use to

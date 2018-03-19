@@ -19,7 +19,7 @@ package predicates_test
 import (
 	"testing"
 
-	. "k8s.io/kubectl/pkg/framework/predicates"
+	. "k8s.io/kubectl/pkg/framework/path/predicates"
 )
 
 type MapTrue struct{}
