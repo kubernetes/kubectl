@@ -24,10 +24,10 @@ import (
 // possible) and filters those strings based on the "filtered"
 // predicates.
 type StringS interface {
-	// StringS can be used as a Value predicate. If the selector can't
+	// StringS can be used as a Interface predicate. If the selector can't
 	// select any string from the value, then the predicate is
 	// false.
-	p.Value
+	p.Interface
 
 	// SelectFrom finds strings from values using this selector. The
 	// list can be bigger or smaller than the initial lists,
@@ -40,7 +40,7 @@ type StringS interface {
 }
 
 type stringS struct {
-	vs ValueS
+	vs InterfaceS
 	sp p.String
 }
 

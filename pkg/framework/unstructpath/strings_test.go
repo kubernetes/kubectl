@@ -60,7 +60,7 @@ func TestStringSPredicate(t *testing.T) {
 	}
 }
 
-func TestStringSFromValueS(t *testing.T) {
+func TestStringSFromInterfaceS(t *testing.T) {
 	if !Children().String().Filter(p.StringLength(p.NumberEqual(4))).Match([]interface{}{"four", "five"}) {
 		t.Fatal("SelectFromor should find element that match")
 	}

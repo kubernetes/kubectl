@@ -60,7 +60,7 @@ func TestNumberSPredicate(t *testing.T) {
 	}
 }
 
-func TestNumberSFromValueS(t *testing.T) {
+func TestNumberSFromInterfaceS(t *testing.T) {
 	if !Children().Number().Filter(p.NumberGreaterThan(10)).Match([]interface{}{1., 2., 5., 12.}) {
 		t.Fatal("SelectFromor should find element that match")
 	}

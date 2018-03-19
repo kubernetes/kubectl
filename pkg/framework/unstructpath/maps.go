@@ -20,60 +20,60 @@ import (
 	p "k8s.io/kubectl/pkg/framework/predicates"
 )
 
-// MapS is a "map selector". It selects values as maps (if
+// MapS is a "map selector". It selects interfaces as maps (if
 // possible) and filters those maps based on the "filtered"
 // predicates.
 type MapS interface {
-	// MapS can be used as a Value predicate. If the selector can't
-	// select any map from the value, then the predicate is
+	// MapS can be used as a Interface predicate. If the selector can't
+	// select any map from the interface, then the predicate is
 	// false.
-	p.Value
+	p.Interface
 
-	// SelectFrom finds maps from values using this selector. The
+	// SelectFrom finds maps from interfaces using this selector. The
 	// list can be bigger or smaller than the initial lists,
 	// depending on the select criterias.
 	SelectFrom(...interface{}) []map[string]interface{}
 
-	// Field returns the value pointed by this specific field in the
+	// Field returns the interface pointed by this specific field in the
 	// map. If the field doesn't exist, the value will be filtered
 	// out.
-	Field(string) ValueS
-	// FieldP returns all the values pointed by field that match the
+	Field(string) InterfaceS
+	// FieldP returns all the interfaces pointed by field that match the
 	// string predicate. This selector can return more values than
 	// it gets (for one map, it can returns multiple sub-values, one
 	// for each field that matches the predicate).
-	FieldP(...p.String) ValueS
+	FieldP(...p.String) InterfaceS
 
 	// All returns a selector that selects all direct and indrect
 	// children of the given values.
-	Children() ValueS
+	Children() InterfaceS
 	// All returns a selector that selects all direct and indrect
 	// children of the given values.
-	All() ValueS
+	All() InterfaceS
 
 	// Filter will create a new MapS that filters only the values
 	// who match the predicate.
 	Filter(...p.Map) MapS
 }
 
-// Map creates a selector that takes values and filters them into maps
+// Map creates a selector that takes interfaces and filters them into maps
 // if possible.
 func Map() MapS {
 	return &mapS{}
 }
 
 type mapS struct {
-	vs ValueS
+	vs InterfaceS
 	mp p.Map
 }
 
-func (s *mapS) SelectFrom(values ...interface{}) []map[string]interface{} {
+func (s *mapS) SelectFrom(interfaces ...interface{}) []map[string]interface{} {
 	if s.vs != nil {
-		values = s.vs.SelectFrom(values...)
+		interfaces = s.vs.SelectFrom(interfaces...)
 	}
 
 	maps := []map[string]interface{}{}
-	for _, value := range values {
+	for _, value := range interfaces {
 		m, ok := value.(map[string]interface{})
 		if !ok {
 			continue
@@ -87,20 +87,20 @@ func (s *mapS) SelectFrom(values ...interface{}) []map[string]interface{} {
 	return maps
 }
 
-func (s *mapS) Field(str string) ValueS {
+func (s *mapS) Field(str string) InterfaceS {
 	return s.FieldP(p.StringEqual(str))
 }
 
-func (s *mapS) FieldP(predicates ...p.String) ValueS {
+func (s *mapS) FieldP(predicates ...p.String) InterfaceS {
 	return filterMap(s, mapFieldPFilter{sp: p.StringAnd(predicates...)})
 }
 
-func (s *mapS) Children() ValueS {
+func (s *mapS) Children() InterfaceS {
 	// No predicate means select all.
 	return s.FieldP()
 }
 
-func (s *mapS) All() ValueS {
+func (s *mapS) All() InterfaceS {
 	return filterMap(s, mapAllFilter{})
 }
 

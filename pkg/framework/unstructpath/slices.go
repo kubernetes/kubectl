@@ -24,10 +24,10 @@ import (
 // possible) and filters those slices based on the "filtered"
 // predicates.
 type SliceS interface {
-	// SliceS can be used as a Value predicate. If the selector
+	// SliceS can be used as a Interface predicate. If the selector
 	// can't select any slice from the value, then the predicate is
 	// false.
-	p.Value
+	p.Interface
 
 	// SelectFrom finds slices from values using this selector. The
 	// list can be bigger or smaller than the initial lists,
@@ -37,21 +37,21 @@ type SliceS interface {
 	// At returns a selector that select the child at the given
 	// index, if the list has such an index. Otherwise, nothing is
 	// returned.
-	At(index int) ValueS
+	At(index int) InterfaceS
 	// AtP returns a selector that selects all the item whose index
 	// matches the number predicate. More predicates can be given,
 	// they are "and"-ed by this method.
-	AtP(ips ...p.Number) ValueS
+	AtP(ips ...p.Number) InterfaceS
 	// Last returns a selector that selects the last value of the
 	// list. If the list is empty, then nothing will be selected.
-	Last() ValueS
+	Last() InterfaceS
 
 	// All returns a selector that selects all direct and indrect
 	// children of the given values.
-	Children() ValueS
+	Children() InterfaceS
 	// All returns a selector that selects all direct and indrect
 	// children of the given values.
-	All() ValueS
+	All() InterfaceS
 
 	// Filter will create a new SliceS that filters only the values
 	// who match the predicate.
@@ -65,17 +65,17 @@ func Slice() SliceS {
 }
 
 type sliceS struct {
-	vs ValueS
+	vs InterfaceS
 	sp p.Slice
 }
 
-func (s *sliceS) SelectFrom(values ...interface{}) [][]interface{} {
+func (s *sliceS) SelectFrom(interfaces ...interface{}) [][]interface{} {
 	if s.vs != nil {
-		values = s.vs.SelectFrom(values...)
+		interfaces = s.vs.SelectFrom(interfaces...)
 	}
 
 	slices := [][]interface{}{}
-	for _, value := range values {
+	for _, value := range interfaces {
 		slice, ok := value.([]interface{})
 		if !ok {
 			continue
@@ -89,24 +89,24 @@ func (s *sliceS) SelectFrom(values ...interface{}) [][]interface{} {
 	return slices
 }
 
-func (s *sliceS) At(index int) ValueS {
+func (s *sliceS) At(index int) InterfaceS {
 	return s.AtP(p.NumberEqual(float64(index)))
 }
 
-func (s *sliceS) AtP(predicates ...p.Number) ValueS {
+func (s *sliceS) AtP(predicates ...p.Number) InterfaceS {
 	return filterSlice(s, sliceAtPFilter{ip: p.NumberAnd(predicates...)})
 }
 
-func (s *sliceS) Last() ValueS {
+func (s *sliceS) Last() InterfaceS {
 	return filterSlice(s, sliceLastFilter{})
 }
 
-func (s *sliceS) Children() ValueS {
+func (s *sliceS) Children() InterfaceS {
 	// No predicates means select all direct children.
 	return s.AtP()
 }
 
-func (s *sliceS) All() ValueS {
+func (s *sliceS) All() InterfaceS {
 	return filterSlice(s, sliceAllFilter{})
 }
 

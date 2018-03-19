@@ -20,15 +20,15 @@ import (
 	p "k8s.io/kubectl/pkg/framework/predicates"
 )
 
-// ValueS is a "value selector". It filters values based on the
+// InterfaceS is a "interface selector". It filters interfaces based on the
 // "filtered" predicates.
-type ValueS interface {
-	// ValueS can be used as a Value predicate. If the selector can't
-	// select any value from the value, then the predicate is
+type InterfaceS interface {
+	// InterfaceS can be used as a Interface predicate. If the selector can't
+	// select any interface from the interface, then the predicate is
 	// false.
-	p.Value
+	p.Interface
 
-	// SelectFrom finds values from values using this selector. The
+	// SelectFrom finds interfaces from interfaces using this selector. The
 	// list can be bigger or smaller than the initial lists,
 	// depending on the select criterias.
 	SelectFrom(...interface{}) []interface{}
@@ -46,75 +46,75 @@ type ValueS interface {
 
 	// Children returns a selector that selects the direct children
 	// of the given values.
-	Children() ValueS
+	Children() InterfaceS
 	// All returns a selector that selects all direct and indrect
 	// children of the given values.
-	All() ValueS
+	All() InterfaceS
 
 	// Filter will create a new StringS that filters only the values
 	// who match the predicate.
-	Filter(...p.Value) ValueS
+	Filter(...p.Interface) InterfaceS
 }
 
 // Children selects all the children of the values.
-func Children() ValueS {
-	return &valueS{vf: valueChildrenFilter{}}
+func Children() InterfaceS {
+	return &interfaceS{vf: interfaceChildrenFilter{}}
 }
 
 // All selects all the direct and indirect childrens of the values.
-func All() ValueS {
-	return &valueS{vf: valueAllFilter{}}
+func All() InterfaceS {
+	return &interfaceS{vf: interfaceAllFilter{}}
 }
 
 // Filter will only return the values that match the predicate.
-func Filter(predicates ...p.Value) ValueS {
-	return &valueS{vf: &valueFilterP{vp: p.ValueAnd(predicates...)}}
+func Filter(predicates ...p.Interface) InterfaceS {
+	return &interfaceS{vf: &interfaceFilterP{vp: p.InterfaceAnd(predicates...)}}
 }
 
-// ValueS is a "Value SelectFromor". It selects a list of values, maps,
+// InterfaceS is a "Interface SelectFromor". It selects a list of values, maps,
 // slices, strings, integer from a list of values.
-type valueS struct {
-	vs ValueS
-	vf valueFilter
+type interfaceS struct {
+	vs InterfaceS
+	vf interfaceFilter
 }
 
 // Match returns true if the selector can find items in the given
 // value. Otherwise, it returns false.
-func (s *valueS) Match(value interface{}) bool {
+func (s *interfaceS) Match(value interface{}) bool {
 	return len(s.SelectFrom(value)) != 0
 }
 
-func (s *valueS) SelectFrom(values ...interface{}) []interface{} {
+func (s *interfaceS) SelectFrom(interfaces ...interface{}) []interface{} {
 	if s.vs != nil {
-		values = s.vs.SelectFrom(values...)
+		interfaces = s.vs.SelectFrom(interfaces...)
 	}
-	return s.vf.SelectFrom(values...)
+	return s.vf.SelectFrom(interfaces...)
 }
 
-func (s *valueS) Map() MapS {
+func (s *interfaceS) Map() MapS {
 	return &mapS{vs: s}
 }
 
-func (s *valueS) Slice() SliceS {
+func (s *interfaceS) Slice() SliceS {
 	return &sliceS{vs: s}
 }
 
-func (s *valueS) Number() NumberS {
+func (s *interfaceS) Number() NumberS {
 	return &numberS{vs: s}
 }
 
-func (s *valueS) String() StringS {
+func (s *interfaceS) String() StringS {
 	return &stringS{vs: s}
 }
 
-func (s *valueS) Children() ValueS {
-	return &valueS{vs: s, vf: valueChildrenFilter{}}
+func (s *interfaceS) Children() InterfaceS {
+	return &interfaceS{vs: s, vf: interfaceChildrenFilter{}}
 }
 
-func (s *valueS) All() ValueS {
-	return &valueS{vs: s, vf: valueAllFilter{}}
+func (s *interfaceS) All() InterfaceS {
+	return &interfaceS{vs: s, vf: interfaceAllFilter{}}
 }
 
-func (s *valueS) Filter(predicates ...p.Value) ValueS {
-	return &valueS{vs: s, vf: &valueFilterP{vp: p.ValueAnd(predicates...)}}
+func (s *interfaceS) Filter(predicates ...p.Interface) InterfaceS {
+	return &interfaceS{vs: s, vf: &interfaceFilterP{vp: p.InterfaceAnd(predicates...)}}
 }

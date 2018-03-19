@@ -66,13 +66,13 @@ func TestFilter(t *testing.T) {
 	}
 }
 
-func TestValueSPredicate(t *testing.T) {
+func TestInterfaceSPredicate(t *testing.T) {
 	if !unstructpath.Slice().Match([]interface{}{}) {
 		t.Fatal("SelectFroming a slice from a slice should match.")
 	}
 }
 
-func TestValueSMap(t *testing.T) {
+func TestInterfaceSMap(t *testing.T) {
 	root := map[string]interface{}{
 		"key1": "value",
 		"key2": 1,
@@ -98,7 +98,7 @@ func TestValueSMap(t *testing.T) {
 	}
 }
 
-func TestValueSSlice(t *testing.T) {
+func TestInterfaceSSlice(t *testing.T) {
 	root := map[string]interface{}{
 		"key1": "value",
 		"key2": 1,
@@ -124,7 +124,7 @@ func TestValueSSlice(t *testing.T) {
 	}
 }
 
-func TestValueSChildren(t *testing.T) {
+func TestInterfaceSChildren(t *testing.T) {
 	root := map[string]interface{}{
 		"key1": "value",
 		"key2": 1,
@@ -150,7 +150,7 @@ func TestValueSChildren(t *testing.T) {
 	}
 }
 
-func TestValueSNumber(t *testing.T) {
+func TestInterfaceSNumber(t *testing.T) {
 	u := []interface{}{1., 2., "three", 4., 5., []interface{}{}}
 
 	numbers := unstructpath.Children().Number().SelectFrom(u)
@@ -161,7 +161,7 @@ func TestValueSNumber(t *testing.T) {
 	}
 }
 
-func TestValueSString(t *testing.T) {
+func TestInterfaceSString(t *testing.T) {
 	root := map[string]interface{}{
 		"key1": "value",
 		"key2": 1,
@@ -188,7 +188,7 @@ func TestValueSString(t *testing.T) {
 	}
 }
 
-func TestValueSAll(t *testing.T) {
+func TestInterfaceSAll(t *testing.T) {
 	root := map[string]interface{}{
 		"key1": "value",
 		"key2": 1,
