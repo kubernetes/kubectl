@@ -14,20 +14,20 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package unstructpath
+package predicates
 
 import (
 	"reflect"
 )
 
-// ValueP is a "value predicate". It's a type that decides if a
+// Value is a "value predicate". It's a type that decides if a
 // value matches or not.
-type ValueP interface {
+type Value interface {
 	Match(interface{}) bool
 }
 
 // ValueDeepEqual compares the Value data with DeepEqual.
-func ValueDeepEqual(v interface{}) ValueP {
+func ValueDeepEqual(v interface{}) Value {
 	return valueEqual{v: v}
 }
 
@@ -40,12 +40,12 @@ func (p valueEqual) Match(v interface{}) bool {
 }
 
 // ValueNot inverses the value of the predicate.
-func ValueNot(predicate ValueP) ValueP {
+func ValueNot(predicate Value) Value {
 	return valueNot{vp: predicate}
 }
 
 type valueNot struct {
-	vp ValueP
+	vp Value
 }
 
 func (p valueNot) Match(v interface{}) bool {
@@ -54,12 +54,12 @@ func (p valueNot) Match(v interface{}) bool {
 
 // ValueAnd returns true if all the sub-predicates are true. If there are
 // no sub-predicates, always returns true.
-func ValueAnd(predicates ...ValueP) ValueP {
+func ValueAnd(predicates ...Value) Value {
 	return valueAnd{vps: predicates}
 }
 
 type valueAnd struct {
-	vps []ValueP
+	vps []Value
 }
 
 func (p valueAnd) Match(value interface{}) bool {
@@ -73,8 +73,8 @@ func (p valueAnd) Match(value interface{}) bool {
 
 // ValueOr returns true if any sub-predicate is true. If there are no
 // sub-predicates, always returns false.
-func ValueOr(predicates ...ValueP) ValueP {
-	vps := []ValueP{}
+func ValueOr(predicates ...Value) Value {
+	vps := []Value{}
 
 	// Implements "De Morgan's law"
 	for _, vp := range predicates {

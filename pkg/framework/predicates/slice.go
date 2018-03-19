@@ -14,21 +14,21 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package unstructpath
+package predicates
 
-// SliceP is a "slice predicate". It's a type that decides if a
+// Slice is a "slice predicate". It's a type that decides if a
 // slice matches or not.
-type SliceP interface {
+type Slice interface {
 	Match([]interface{}) bool
 }
 
 // SliceNot inverses the value of the predicate.
-func SliceNot(predicate SliceP) SliceP {
+func SliceNot(predicate Slice) Slice {
 	return sliceNot{vp: predicate}
 }
 
 type sliceNot struct {
-	vp SliceP
+	vp Slice
 }
 
 func (p sliceNot) Match(slice []interface{}) bool {
@@ -37,12 +37,12 @@ func (p sliceNot) Match(slice []interface{}) bool {
 
 // SliceAnd returns true if all the sub-predicates are true. If there are
 // no sub-predicates, always returns true.
-func SliceAnd(predicates ...SliceP) SliceP {
+func SliceAnd(predicates ...Slice) Slice {
 	return sliceAnd{sps: predicates}
 }
 
 type sliceAnd struct {
-	sps []SliceP
+	sps []Slice
 }
 
 func (p sliceAnd) Match(slice []interface{}) bool {
@@ -56,8 +56,8 @@ func (p sliceAnd) Match(slice []interface{}) bool {
 
 // SliceOr returns true if any sub-predicate is true. If there are no
 // sub-predicates, always returns false.
-func SliceOr(predicates ...SliceP) SliceP {
-	sps := []SliceP{}
+func SliceOr(predicates ...Slice) Slice {
+	sps := []Slice{}
 
 	// Implements "De Morgan's law"
 	for _, sp := range predicates {
@@ -68,12 +68,12 @@ func SliceOr(predicates ...SliceP) SliceP {
 
 // SliceLength matches if the length of the list matches the given
 // integer predicate.
-func SliceLength(ip NumberP) SliceP {
+func SliceLength(ip Number) Slice {
 	return sliceLength{ip: ip}
 }
 
 type sliceLength struct {
-	ip NumberP
+	ip Number
 }
 
 func (p sliceLength) Match(slice []interface{}) bool {

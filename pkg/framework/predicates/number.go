@@ -14,21 +14,21 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package unstructpath
+package predicates
 
-// NumberP is a "number predicate". It's a type that decides if a
+// Number is a "number predicate". It's a type that decides if a
 // number matches or not.
-type NumberP interface {
+type Number interface {
 	Match(float64) bool
 }
 
 // NumberNot inverts the result of the sub-predicate.
-func NumberNot(predicate NumberP) NumberP {
+func NumberNot(predicate Number) Number {
 	return numberNot{ip: predicate}
 }
 
 type numberNot struct {
-	ip NumberP
+	ip Number
 }
 
 func (p numberNot) Match(i float64) bool {
@@ -37,12 +37,12 @@ func (p numberNot) Match(i float64) bool {
 
 // NumberAnd returns true if all the sub-predicates are true. If there are
 // no sub-predicates, always returns true.
-func NumberAnd(predicates ...NumberP) NumberP {
+func NumberAnd(predicates ...Number) Number {
 	return numberAnd{ips: predicates}
 }
 
 type numberAnd struct {
-	ips []NumberP
+	ips []Number
 }
 
 func (p numberAnd) Match(i float64) bool {
@@ -56,8 +56,8 @@ func (p numberAnd) Match(i float64) bool {
 
 // NumberOr returns true if any sub-predicate is true. If there are no
 // sub-predicates, always returns false.
-func NumberOr(predicates ...NumberP) NumberP {
-	ips := []NumberP{}
+func NumberOr(predicates ...Number) Number {
+	ips := []Number{}
 
 	// Implements "De Morgan's law"
 	for _, ip := range predicates {
@@ -67,7 +67,7 @@ func NumberOr(predicates ...NumberP) NumberP {
 }
 
 // NumberEqual returns true if the value is exactly i.
-func NumberEqual(i float64) NumberP {
+func NumberEqual(i float64) Number {
 	return numberEqual{i: i}
 }
 
@@ -80,7 +80,7 @@ func (p numberEqual) Match(i float64) bool {
 }
 
 // NumberGreaterThan returns true if the value is strictly greater than i.
-func NumberGreaterThan(i float64) NumberP {
+func NumberGreaterThan(i float64) Number {
 	return numberGreaterThan{i: i}
 }
 
@@ -94,17 +94,17 @@ func (p numberGreaterThan) Match(i float64) bool {
 
 // NumberEqualOrGreaterThan returns true if the value is equal or greater
 // than i.
-func NumberEqualOrGreaterThan(i float64) NumberP {
+func NumberEqualOrGreaterThan(i float64) Number {
 	return NumberOr(NumberEqual(i), NumberGreaterThan(i))
 }
 
 // NumberLessThan returns true if the value is strictly less than i.
-func NumberLessThan(i float64) NumberP {
+func NumberLessThan(i float64) Number {
 	// It's not equal, and it's not greater than i.
 	return NumberAnd(NumberNot(NumberEqual(i)), NumberNot(NumberGreaterThan(i)))
 }
 
 // NumberEqualOrLessThan returns true if the value is equal or less than i.
-func NumberEqualOrLessThan(i float64) NumberP {
+func NumberEqualOrLessThan(i float64) Number {
 	return NumberOr(NumberEqual(i), NumberLessThan(i))
 }

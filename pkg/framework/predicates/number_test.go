@@ -14,20 +14,20 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package unstructpath_test
+package predicates_test
 
 import (
 	"fmt"
 	"testing"
 
-	. "k8s.io/kubectl/pkg/framework/unstructpath"
+	. "k8s.io/kubectl/pkg/framework/predicates"
 )
 
 // This example shows you how you can create a IntP, and how it's use to
 // compare with the actual value.
 //
 // XXX: This could definitely be improved to add a better example.
-func ExampleNumberP() {
+func ExampleNumber() {
 	fmt.Println(NumberEqual(5).Match(5))
 	// Output: true
 }

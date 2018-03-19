@@ -16,6 +16,10 @@ limitations under the License.
 
 package unstructpath
 
+import (
+	p "k8s.io/kubectl/pkg/framework/predicates"
+)
+
 // StringS is a "string selector". It selects values as strings (if
 // possible) and filters those strings based on the "filtered"
 // predicates.
@@ -23,7 +27,7 @@ type StringS interface {
 	// StringS can be used as a Value predicate. If the selector can't
 	// select any string from the value, then the predicate is
 	// false.
-	ValueP
+	p.Value
 
 	// SelectFrom finds strings from values using this selector. The
 	// list can be bigger or smaller than the initial lists,
@@ -32,12 +36,12 @@ type StringS interface {
 
 	// Filter will create a new StringS that filters only the values
 	// who match the predicate.
-	Filter(...StringP) StringS
+	Filter(...p.String) StringS
 }
 
 type stringS struct {
 	vs ValueS
-	sp StringP
+	sp p.String
 }
 
 // String returns a StringS that selects strings from values.
@@ -63,13 +67,13 @@ func (s *stringS) SelectFrom(values ...interface{}) []string {
 	return strings
 }
 
-func (s *stringS) Filter(predicates ...StringP) StringS {
+func (s *stringS) Filter(predicates ...p.String) StringS {
 	if s.sp != nil {
 		predicates = append(predicates, s.sp)
 	}
 	return &stringS{
 		vs: s.vs,
-		sp: StringAnd(predicates...),
+		sp: p.StringAnd(predicates...),
 	}
 }
 

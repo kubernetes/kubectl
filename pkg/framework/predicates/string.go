@@ -14,26 +14,26 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package unstructpath
+package predicates
 
 import (
 	"regexp"
 	"strings"
 )
 
-// StringP is a "string predicate". It's a type that decides if a
+// String is a "string predicate". It's a type that decides if a
 // string matches or not.
-type StringP interface {
+type String interface {
 	Match(string) bool
 }
 
 // StringNot will inverse the result of the predicate.
-func StringNot(predicate StringP) StringP {
+func StringNot(predicate String) String {
 	return stringNot{sp: predicate}
 }
 
 type stringNot struct {
-	sp StringP
+	sp String
 }
 
 func (p stringNot) Match(str string) bool {
@@ -42,12 +42,12 @@ func (p stringNot) Match(str string) bool {
 
 // StringAnd returns true if all the sub-predicates are true. If there are
 // no sub-predicates, always returns true.
-func StringAnd(predicates ...StringP) StringP {
+func StringAnd(predicates ...String) String {
 	return stringAnd{sps: predicates}
 }
 
 type stringAnd struct {
-	sps []StringP
+	sps []String
 }
 
 func (p stringAnd) Match(str string) bool {
@@ -61,8 +61,8 @@ func (p stringAnd) Match(str string) bool {
 
 // StringOr returns true if any sub-predicate is true. If there are no
 // sub-predicates, always returns false.
-func StringOr(predicates ...StringP) StringP {
-	sps := []StringP{}
+func StringOr(predicates ...String) String {
+	sps := []String{}
 
 	// Implements "De Morgan's law"
 	for _, sp := range predicates {
@@ -72,7 +72,7 @@ func StringOr(predicates ...StringP) StringP {
 }
 
 // StringEqual returns a predicate that matches only the exact string.
-func StringEqual(str string) StringP {
+func StringEqual(str string) String {
 	return stringEqual{str: str}
 }
 
@@ -86,12 +86,12 @@ func (p stringEqual) Match(str string) bool {
 
 // StringLength matches if the length of the string matches the given
 // integer predicate.
-func StringLength(predicate NumberP) StringP {
+func StringLength(predicate Number) String {
 	return stringLength{ip: predicate}
 }
 
 type stringLength struct {
-	ip NumberP
+	ip Number
 }
 
 func (p stringLength) Match(str string) bool {
@@ -99,7 +99,7 @@ func (p stringLength) Match(str string) bool {
 }
 
 // StringHasPrefix matches if the string starts with the given prefix.
-func StringHasPrefix(prefix string) StringP {
+func StringHasPrefix(prefix string) String {
 	return stringHasPrefix{prefix: prefix}
 }
 
@@ -112,7 +112,7 @@ func (p stringHasPrefix) Match(str string) bool {
 }
 
 // StringHasSuffix matches if the string ends with the given suffix.
-func StringHasSuffix(suffix string) StringP {
+func StringHasSuffix(suffix string) String {
 	return stringHasSuffix{suffix: suffix}
 }
 
@@ -125,7 +125,7 @@ func (p stringHasSuffix) Match(str string) bool {
 }
 
 // StringRegexp matches if the string matches with the given regexp.
-func StringRegexp(regex *regexp.Regexp) StringP {
+func StringRegexp(regex *regexp.Regexp) String {
 	return stringRegexp{regex: regex}
 }
 

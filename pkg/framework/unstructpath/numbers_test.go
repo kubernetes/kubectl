@@ -20,6 +20,7 @@ import (
 	"reflect"
 	"testing"
 
+	p "k8s.io/kubectl/pkg/framework/predicates"
 	. "k8s.io/kubectl/pkg/framework/unstructpath"
 )
 
@@ -37,7 +38,7 @@ func TestNumberSSelectFrom(t *testing.T) {
 
 func TestNumberSFilter(t *testing.T) {
 	s := Number().
-		Filter(NumberGreaterThan(2), NumberEqualOrLessThan(4)).
+		Filter(p.NumberGreaterThan(2), p.NumberEqualOrLessThan(4)).
 		SelectFrom(
 			1.,
 			2.,
@@ -51,19 +52,19 @@ func TestNumberSFilter(t *testing.T) {
 }
 
 func TestNumberSPredicate(t *testing.T) {
-	if !Number().Filter(NumberGreaterThan(10)).Match(12.) {
+	if !Number().Filter(p.NumberGreaterThan(10)).Match(12.) {
 		t.Fatal("SelectFromor matching element should match")
 	}
-	if Number().Filter(NumberGreaterThan(10)).Match(4.) {
+	if Number().Filter(p.NumberGreaterThan(10)).Match(4.) {
 		t.Fatal("SelectFromor not matching element should not match")
 	}
 }
 
 func TestNumberSFromValueS(t *testing.T) {
-	if !Children().Number().Filter(NumberGreaterThan(10)).Match([]interface{}{1., 2., 5., 12.}) {
+	if !Children().Number().Filter(p.NumberGreaterThan(10)).Match([]interface{}{1., 2., 5., 12.}) {
 		t.Fatal("SelectFromor should find element that match")
 	}
-	if Children().Number().Filter(NumberGreaterThan(10)).Match([]interface{}{1., 2., 5.}) {
+	if Children().Number().Filter(p.NumberGreaterThan(10)).Match([]interface{}{1., 2., 5.}) {
 		t.Fatal("SelectFromor shouldn't find element that match")
 	}
 }

@@ -16,13 +16,17 @@ limitations under the License.
 
 package unstructpath
 
+import (
+	p "k8s.io/kubectl/pkg/framework/predicates"
+)
+
 // ValueS is a "value selector". It filters values based on the
 // "filtered" predicates.
 type ValueS interface {
 	// ValueS can be used as a Value predicate. If the selector can't
 	// select any value from the value, then the predicate is
 	// false.
-	ValueP
+	p.Value
 
 	// SelectFrom finds values from values using this selector. The
 	// list can be bigger or smaller than the initial lists,
@@ -49,7 +53,7 @@ type ValueS interface {
 
 	// Filter will create a new StringS that filters only the values
 	// who match the predicate.
-	Filter(...ValueP) ValueS
+	Filter(...p.Value) ValueS
 }
 
 // Children selects all the children of the values.
@@ -63,8 +67,8 @@ func All() ValueS {
 }
 
 // Filter will only return the values that match the predicate.
-func Filter(predicates ...ValueP) ValueS {
-	return &valueS{vf: &valueFilterP{vp: ValueAnd(predicates...)}}
+func Filter(predicates ...p.Value) ValueS {
+	return &valueS{vf: &valueFilterP{vp: p.ValueAnd(predicates...)}}
 }
 
 // ValueS is a "Value SelectFromor". It selects a list of values, maps,
@@ -111,6 +115,6 @@ func (s *valueS) All() ValueS {
 	return &valueS{vs: s, vf: valueAllFilter{}}
 }
 
-func (s *valueS) Filter(predicates ...ValueP) ValueS {
-	return &valueS{vs: s, vf: &valueFilterP{vp: ValueAnd(predicates...)}}
+func (s *valueS) Filter(predicates ...p.Value) ValueS {
+	return &valueS{vs: s, vf: &valueFilterP{vp: p.ValueAnd(predicates...)}}
 }

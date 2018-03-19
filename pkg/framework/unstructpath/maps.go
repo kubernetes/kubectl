@@ -16,6 +16,10 @@ limitations under the License.
 
 package unstructpath
 
+import (
+	p "k8s.io/kubectl/pkg/framework/predicates"
+)
+
 // MapS is a "map selector". It selects values as maps (if
 // possible) and filters those maps based on the "filtered"
 // predicates.
@@ -23,7 +27,7 @@ type MapS interface {
 	// MapS can be used as a Value predicate. If the selector can't
 	// select any map from the value, then the predicate is
 	// false.
-	ValueP
+	p.Value
 
 	// SelectFrom finds maps from values using this selector. The
 	// list can be bigger or smaller than the initial lists,
@@ -38,7 +42,7 @@ type MapS interface {
 	// string predicate. This selector can return more values than
 	// it gets (for one map, it can returns multiple sub-values, one
 	// for each field that matches the predicate).
-	FieldP(...StringP) ValueS
+	FieldP(...p.String) ValueS
 
 	// All returns a selector that selects all direct and indrect
 	// children of the given values.
@@ -49,7 +53,7 @@ type MapS interface {
 
 	// Filter will create a new MapS that filters only the values
 	// who match the predicate.
-	Filter(...MapP) MapS
+	Filter(...p.Map) MapS
 }
 
 // Map creates a selector that takes values and filters them into maps
@@ -60,7 +64,7 @@ func Map() MapS {
 
 type mapS struct {
 	vs ValueS
-	mp MapP
+	mp p.Map
 }
 
 func (s *mapS) SelectFrom(values ...interface{}) []map[string]interface{} {
@@ -84,11 +88,11 @@ func (s *mapS) SelectFrom(values ...interface{}) []map[string]interface{} {
 }
 
 func (s *mapS) Field(str string) ValueS {
-	return s.FieldP(StringEqual(str))
+	return s.FieldP(p.StringEqual(str))
 }
 
-func (s *mapS) FieldP(predicates ...StringP) ValueS {
-	return filterMap(s, mapFieldPFilter{sp: StringAnd(predicates...)})
+func (s *mapS) FieldP(predicates ...p.String) ValueS {
+	return filterMap(s, mapFieldPFilter{sp: p.StringAnd(predicates...)})
 }
 
 func (s *mapS) Children() ValueS {
@@ -100,8 +104,8 @@ func (s *mapS) All() ValueS {
 	return filterMap(s, mapAllFilter{})
 }
 
-func (s *mapS) Filter(predicates ...MapP) MapS {
-	return &mapS{vs: s.vs, mp: MapAnd(append(predicates, s.mp)...)}
+func (s *mapS) Filter(predicates ...p.Map) MapS {
+	return &mapS{vs: s.vs, mp: p.MapAnd(append(predicates, s.mp)...)}
 }
 
 func (s *mapS) Match(value interface{}) bool {
