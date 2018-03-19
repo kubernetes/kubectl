@@ -20,6 +20,7 @@ import (
 	"reflect"
 	"testing"
 
+	p "k8s.io/kubectl/pkg/framework/predicates"
 	. "k8s.io/kubectl/pkg/framework/unstructpath"
 )
 
@@ -37,7 +38,7 @@ func TestStringSSelectFrom(t *testing.T) {
 
 func TestStringSFilter(t *testing.T) {
 	s := String().
-		Filter(StringLength(NumberEqual(4))).
+		Filter(p.StringLength(p.NumberEqual(4))).
 		SelectFrom(
 			"one",
 			"two",
@@ -51,19 +52,19 @@ func TestStringSFilter(t *testing.T) {
 }
 
 func TestStringSPredicate(t *testing.T) {
-	if !String().Filter(StringLength(NumberEqual(4))).Match("four") {
+	if !String().Filter(p.StringLength(p.NumberEqual(4))).Match("four") {
 		t.Fatal("SelectFromor matching element should match")
 	}
-	if String().Filter(StringLength(NumberEqual(10))).Match("four") {
+	if String().Filter(p.StringLength(p.NumberEqual(10))).Match("four") {
 		t.Fatal("SelectFromor not matching element should not match")
 	}
 }
 
 func TestStringSFromValueS(t *testing.T) {
-	if !Children().String().Filter(StringLength(NumberEqual(4))).Match([]interface{}{"four", "five"}) {
+	if !Children().String().Filter(p.StringLength(p.NumberEqual(4))).Match([]interface{}{"four", "five"}) {
 		t.Fatal("SelectFromor should find element that match")
 	}
-	if Children().String().Filter(StringLength(NumberEqual(4))).Match([]interface{}{"one", "two", "three"}) {
+	if Children().String().Filter(p.StringLength(p.NumberEqual(4))).Match([]interface{}{"one", "two", "three"}) {
 		t.Fatal("SelectFromor shouldn't find element that match")
 	}
 }

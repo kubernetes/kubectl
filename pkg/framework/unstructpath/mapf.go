@@ -16,7 +16,11 @@ limitations under the License.
 
 package unstructpath
 
-import "sort"
+import (
+	"sort"
+
+	p "k8s.io/kubectl/pkg/framework/predicates"
+)
 
 // This is a Map-to-Value filter.
 type mapFilter interface {
@@ -33,7 +37,7 @@ func filterMap(ms MapS, mf mapFilter) ValueS {
 }
 
 type mapFieldPFilter struct {
-	sp StringP
+	sp p.String
 }
 
 func (f mapFieldPFilter) SelectFrom(maps ...map[string]interface{}) []interface{} {

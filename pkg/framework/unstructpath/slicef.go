@@ -16,6 +16,10 @@ limitations under the License.
 
 package unstructpath
 
+import (
+	p "k8s.io/kubectl/pkg/framework/predicates"
+)
+
 func filterSlice(ss SliceS, sf sliceFilter) ValueS {
 	return &valueS{
 		vf: &valueSliceFilter{
@@ -31,7 +35,7 @@ type sliceFilter interface {
 }
 
 type sliceAtPFilter struct {
-	ip NumberP
+	ip p.Number
 }
 
 func (f sliceAtPFilter) SelectFrom(slices ...[]interface{}) []interface{} {

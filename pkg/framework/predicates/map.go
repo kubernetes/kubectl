@@ -14,21 +14,21 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package unstructpath
+package predicates
 
-// MapP is a "map predicate". It's a type that decides if a
+// Map is a "map predicate". It's a type that decides if a
 // map matches or not.
-type MapP interface {
+type Map interface {
 	Match(map[string]interface{}) bool
 }
 
 // MapNot inverses the value of the predicate.
-func MapNot(predicate MapP) MapP {
+func MapNot(predicate Map) Map {
 	return mapNot{mp: predicate}
 }
 
 type mapNot struct {
-	mp MapP
+	mp Map
 }
 
 func (p mapNot) Match(m map[string]interface{}) bool {
@@ -37,12 +37,12 @@ func (p mapNot) Match(m map[string]interface{}) bool {
 
 // MapAnd returns true if all the sub-predicates are true. If there are
 // no sub-predicates, always returns true.
-func MapAnd(predicates ...MapP) MapP {
+func MapAnd(predicates ...Map) Map {
 	return mapAnd{mps: predicates}
 }
 
 type mapAnd struct {
-	mps []MapP
+	mps []Map
 }
 
 func (p mapAnd) Match(m map[string]interface{}) bool {
@@ -56,8 +56,8 @@ func (p mapAnd) Match(m map[string]interface{}) bool {
 
 // MapOr returns true if any sub-predicate is true. If there are no
 // sub-predicates, always returns false.
-func MapOr(predicates ...MapP) MapP {
-	mps := []MapP{}
+func MapOr(predicates ...Map) Map {
+	mps := []Map{}
 
 	// Implements "De Morgan's law"
 	for _, mp := range predicates {
@@ -68,12 +68,12 @@ func MapOr(predicates ...MapP) MapP {
 
 // MapNumFields matches if the number of fields matches the number
 // predicate.
-func MapNumFields(predicate NumberP) MapP {
+func MapNumFields(predicate Number) Map {
 	return mapNumFields{ip: predicate}
 }
 
 type mapNumFields struct {
-	ip NumberP
+	ip Number
 }
 
 func (p mapNumFields) Match(m map[string]interface{}) bool {

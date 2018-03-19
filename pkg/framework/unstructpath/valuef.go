@@ -16,6 +16,10 @@ limitations under the License.
 
 package unstructpath
 
+import (
+	p "k8s.io/kubectl/pkg/framework/predicates"
+)
+
 // A valueFilter allows us to chain ValueS to ValueS. None of this is
 // public. It's implementing the "SelectFrom" part of a ValueS.
 type valueFilter interface {
@@ -24,7 +28,7 @@ type valueFilter interface {
 
 // valueFilterP filters using a predicate.
 type valueFilterP struct {
-	vp ValueP
+	vp p.Value
 }
 
 func (f *valueFilterP) SelectFrom(values ...interface{}) []interface{} {

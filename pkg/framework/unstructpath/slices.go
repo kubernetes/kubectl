@@ -16,6 +16,10 @@ limitations under the License.
 
 package unstructpath
 
+import (
+	p "k8s.io/kubectl/pkg/framework/predicates"
+)
+
 // SliceS is a "slice selector". It selects values as slices (if
 // possible) and filters those slices based on the "filtered"
 // predicates.
@@ -23,7 +27,7 @@ type SliceS interface {
 	// SliceS can be used as a Value predicate. If the selector
 	// can't select any slice from the value, then the predicate is
 	// false.
-	ValueP
+	p.Value
 
 	// SelectFrom finds slices from values using this selector. The
 	// list can be bigger or smaller than the initial lists,
@@ -37,7 +41,7 @@ type SliceS interface {
 	// AtP returns a selector that selects all the item whose index
 	// matches the number predicate. More predicates can be given,
 	// they are "and"-ed by this method.
-	AtP(ips ...NumberP) ValueS
+	AtP(ips ...p.Number) ValueS
 	// Last returns a selector that selects the last value of the
 	// list. If the list is empty, then nothing will be selected.
 	Last() ValueS
@@ -51,7 +55,7 @@ type SliceS interface {
 
 	// Filter will create a new SliceS that filters only the values
 	// who match the predicate.
-	Filter(...SliceP) SliceS
+	Filter(...p.Slice) SliceS
 }
 
 // Slice creates a selector that takes values and filters them into
@@ -62,7 +66,7 @@ func Slice() SliceS {
 
 type sliceS struct {
 	vs ValueS
-	sp SliceP
+	sp p.Slice
 }
 
 func (s *sliceS) SelectFrom(values ...interface{}) [][]interface{} {
@@ -86,11 +90,11 @@ func (s *sliceS) SelectFrom(values ...interface{}) [][]interface{} {
 }
 
 func (s *sliceS) At(index int) ValueS {
-	return s.AtP(NumberEqual(float64(index)))
+	return s.AtP(p.NumberEqual(float64(index)))
 }
 
-func (s *sliceS) AtP(predicates ...NumberP) ValueS {
-	return filterSlice(s, sliceAtPFilter{ip: NumberAnd(predicates...)})
+func (s *sliceS) AtP(predicates ...p.Number) ValueS {
+	return filterSlice(s, sliceAtPFilter{ip: p.NumberAnd(predicates...)})
 }
 
 func (s *sliceS) Last() ValueS {
@@ -106,8 +110,8 @@ func (s *sliceS) All() ValueS {
 	return filterSlice(s, sliceAllFilter{})
 }
 
-func (s *sliceS) Filter(sps ...SliceP) SliceS {
-	return &sliceS{vs: s.vs, sp: SliceAnd(append(sps, s.sp)...)}
+func (s *sliceS) Filter(sps ...p.Slice) SliceS {
+	return &sliceS{vs: s.vs, sp: p.SliceAnd(append(sps, s.sp)...)}
 }
 
 func (s *sliceS) Match(value interface{}) bool {

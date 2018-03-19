@@ -18,6 +18,8 @@ package unstructpath
 
 import (
 	"github.com/ghodss/yaml"
+
+	p "k8s.io/kubectl/pkg/framework/predicates"
 )
 
 // This example is inspired from http://goessner.net/articles/JsonPath/#e3.
@@ -77,13 +79,13 @@ func Example() {
 	All().Map().Field("book").Slice().Last().SelectFrom(u)
 
 	// The first two books. Returns a list of 2 interface{}.
-	All().Map().Field("book").Slice().AtP(NumberLessThan(2)).SelectFrom(u)
+	All().Map().Field("book").Slice().AtP(p.NumberLessThan(2)).SelectFrom(u)
 
 	// Filter all books with isbn number. Returns a list of interface{}.
 	All().Map().Field("book").Filter(Map().Field("isbn")).SelectFrom(u)
 
 	// Filter all books cheaper than 10. Returns a list of interface{}.
-	All().Map().Field("book").Children().Filter(Map().Field("price").Number().Filter(NumberLessThan(10))).SelectFrom(u)
+	All().Map().Field("book").Children().Filter(Map().Field("price").Number().Filter(p.NumberLessThan(10))).SelectFrom(u)
 
 	// All elements in structure. Returns a list of interface{}.
 	All().SelectFrom(u)

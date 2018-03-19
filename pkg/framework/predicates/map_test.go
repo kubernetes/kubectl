@@ -14,12 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package unstructpath_test
+package predicates_test
 
 import (
 	"testing"
 
-	. "k8s.io/kubectl/pkg/framework/unstructpath"
+	. "k8s.io/kubectl/pkg/framework/predicates"
 )
 
 type MapTrue struct{}

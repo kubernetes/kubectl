@@ -16,6 +16,10 @@ limitations under the License.
 
 package unstructpath
 
+import (
+	p "k8s.io/kubectl/pkg/framework/predicates"
+)
+
 // NumberS is a "number selector". It selects values as numbers (if
 // possible) and filters those numbers based on the "filtered"
 // predicates.
@@ -23,7 +27,7 @@ type NumberS interface {
 	// NumberS can be used as a Value predicate. If the selector can't
 	// select any number from the value, then the predicate is
 	// false.
-	ValueP
+	p.Value
 
 	// SelectFrom finds numbers from values using this selector. The
 	// list can be bigger or smaller than the initial lists,
@@ -32,7 +36,7 @@ type NumberS interface {
 
 	// Filter will create a new NumberS that filters only the values
 	// who match the predicate.
-	Filter(...NumberP) NumberS
+	Filter(...p.Number) NumberS
 }
 
 // Number returns a NumberS that selects numbers from given values.
@@ -42,7 +46,7 @@ func Number() NumberS {
 
 type numberS struct {
 	vs ValueS
-	ip NumberP
+	ip p.Number
 }
 
 func (s *numberS) SelectFrom(values ...interface{}) []float64 {
@@ -63,13 +67,13 @@ func (s *numberS) SelectFrom(values ...interface{}) []float64 {
 	return numbers
 }
 
-func (s *numberS) Filter(predicates ...NumberP) NumberS {
+func (s *numberS) Filter(predicates ...p.Number) NumberS {
 	if s.ip != nil {
 		predicates = append(predicates, s.ip)
 	}
 	return &numberS{
 		vs: s.vs,
-		ip: NumberAnd(predicates...),
+		ip: p.NumberAnd(predicates...),
 	}
 }
 
