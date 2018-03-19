@@ -39,8 +39,8 @@ type NumberS interface {
 	Filter(...p.Number) NumberS
 }
 
-// Number returns a NumberS that selects numbers from given values.
-func Number() NumberS {
+// AsNumber returns a NumberS that selects numbers from given values.
+func AsNumber() NumberS {
 	return &numberS{}
 }
 

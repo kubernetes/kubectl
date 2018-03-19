@@ -17,6 +17,8 @@ limitations under the License.
 package selectors
 
 import (
+	"sort"
+
 	p "k8s.io/kubectl/pkg/framework/path/predicates"
 )
 
@@ -49,32 +51,83 @@ func (interfaceChildrenFilter) SelectFrom(interfaces ...interface{}) []interface
 	// keep things in the same order.
 	for _, value := range interfaces {
 		// Only one of the two should do something useful.
-		children = append(children, Slice().Children().SelectFrom(value)...)
-		children = append(children, Map().Children().SelectFrom(value)...)
+		// AtP() with nothing selects all the children of a list
+		children = append(children, AtP().SelectFrom(value)...)
+		// FieldP() with nothing selects all the children of a map
+		children = append(children, FieldP().SelectFrom(value)...)
 	}
 	return children
 }
 
-// interfaceSliceFilter is a Interface-to-Slice combined with a Slice-to-Interface
-// to form a Interface-to-Interface.
-type interfaceSliceFilter struct {
-	ss SliceS
-	sf sliceFilter
+type interfaceAtPFilter struct {
+	ip p.Number
 }
 
-func (s *interfaceSliceFilter) SelectFrom(interfaces ...interface{}) []interface{} {
-	return s.sf.SelectFrom(s.ss.SelectFrom(interfaces...)...)
+func (f interfaceAtPFilter) SelectFrom(values ...interface{}) []interface{} {
+	interfaces := []interface{}{}
+
+	for _, value := range values {
+		slice, ok := value.([]interface{})
+		if !ok {
+			continue
+		}
+		for i := range slice {
+			if !f.ip.Match(float64(i)) {
+				continue
+			}
+			interfaces = append(interfaces, slice[i])
+		}
+	}
+	return interfaces
 }
 
-// interfaceMapFilter is a Interface-to-Map combined with a Map-to-Interface to form
-// a Interface-to-Interface.
-type interfaceMapFilter struct {
-	ms MapS
-	mf mapFilter
+type interfaceLastFilter struct{}
+
+func (f interfaceLastFilter) SelectFrom(values ...interface{}) []interface{} {
+	interfaces := []interface{}{}
+	for _, value := range values {
+		slice, ok := value.([]interface{})
+		if !ok {
+			continue
+		}
+		if len(slice) == 0 {
+			continue
+		}
+		interfaces = append(interfaces, slice[len(slice)-1])
+	}
+	return interfaces
 }
 
-func (s *interfaceMapFilter) SelectFrom(interfaces ...interface{}) []interface{} {
-	return s.mf.SelectFrom(s.ms.SelectFrom(interfaces...)...)
+type interfaceFieldPFilter struct {
+	sp p.String
+}
+
+func (f interfaceFieldPFilter) SelectFrom(values ...interface{}) []interface{} {
+	interfaces := []interface{}{}
+
+	for _, value := range values {
+		m, ok := value.(map[string]interface{})
+		if !ok {
+			continue
+		}
+
+		for _, field := range sortedKeys(m) {
+			if !f.sp.Match(field) {
+				continue
+			}
+			interfaces = append(interfaces, m[field])
+		}
+	}
+	return interfaces
+}
+
+func sortedKeys(m map[string]interface{}) []string {
+	keys := []string{}
+	for key := range m {
+		keys = append(keys, key)
+	}
+	sort.Strings(keys)
+	return keys
 }
 
 type interfaceAllFilter struct{}
@@ -83,9 +136,7 @@ func (interfaceAllFilter) SelectFrom(interfaces ...interface{}) []interface{} {
 	vs := []interface{}{}
 	for _, value := range interfaces {
 		vs = append(vs, value)
-		// Only one of the follow two statements should return something ...
-		vs = append(vs, Slice().All().SelectFrom(value)...)
-		vs = append(vs, Map().All().SelectFrom(value)...)
+		vs = append(vs, Children().All().SelectFrom(value)...)
 	}
 	return vs
 }

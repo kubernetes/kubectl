@@ -30,7 +30,7 @@ func TestAll(t *testing.T) {
 		"key4": map[string]interface{}{"key5": 5.},
 	}
 
-	numbers := selectors.All().Number().SelectFrom(u)
+	numbers := selectors.All().AsNumber().SelectFrom(u)
 	expected := []float64{1., 2., 3., 4., 5.}
 	if !reflect.DeepEqual(expected, numbers) {
 		t.Fatalf("Expected to find all numbers (%v), got: %v", expected, numbers)
@@ -44,7 +44,7 @@ func TestChildren(t *testing.T) {
 		"key4": 5.,
 	}
 
-	numbers := selectors.Children().Number().SelectFrom(u)
+	numbers := selectors.Children().AsNumber().SelectFrom(u)
 	expected := []float64{1., 5.}
 	if !reflect.DeepEqual(expected, numbers) {
 		t.Fatalf("Expected to find all numbers (%v), got: %v", expected, numbers)
@@ -60,14 +60,14 @@ func TestFilter(t *testing.T) {
 		"string",
 	}
 	expected := []interface{}{us[1]}
-	actual := selectors.Filter(selectors.Slice().At(3)).SelectFrom(us...)
+	actual := selectors.Filter(selectors.At(3)).SelectFrom(us...)
 	if !reflect.DeepEqual(expected, actual) {
 		t.Fatalf("Expected to filter (%v), got: %v", expected, actual)
 	}
 }
 
 func TestInterfaceSPredicate(t *testing.T) {
-	if !selectors.Slice().Match([]interface{}{}) {
+	if !selectors.AsSlice().Match([]interface{}{}) {
 		t.Fatal("SelectFroming a slice from a slice should match.")
 	}
 }
@@ -92,9 +92,9 @@ func TestInterfaceSMap(t *testing.T) {
 		root,
 		root["key4"].(map[string]interface{}),
 	}
-	actual := selectors.All().Map().SelectFrom(root)
+	actual := selectors.All().AsMap().SelectFrom(root)
 	if !reflect.DeepEqual(expected, actual) {
-		t.Fatalf("Map should find maps %v, got %v", expected, actual)
+		t.Fatalf("AsMap should find maps %v, got %v", expected, actual)
 	}
 }
 
@@ -118,7 +118,7 @@ func TestInterfaceSSlice(t *testing.T) {
 		root["key3"].([]interface{}),
 		root["key4"].(map[string]interface{})["subkey"].([]interface{}),
 	}
-	actual := selectors.All().Slice().SelectFrom(root)
+	actual := selectors.All().AsSlice().SelectFrom(root)
 	if !reflect.DeepEqual(expected, actual) {
 		t.Fatalf("Slice should find slices %#v, got %#v", expected, actual)
 	}
@@ -144,7 +144,7 @@ func TestInterfaceSChildren(t *testing.T) {
 		root["key3"].([]interface{})[0],
 		root["key3"].([]interface{})[1],
 	}
-	actual := selectors.Map().Field("key3").Children().SelectFrom(root)
+	actual := selectors.Field("key3").Children().SelectFrom(root)
 	if !reflect.DeepEqual(expected, actual) {
 		t.Fatalf("Expected %v, got %v", expected, actual)
 	}
@@ -153,10 +153,10 @@ func TestInterfaceSChildren(t *testing.T) {
 func TestInterfaceSNumber(t *testing.T) {
 	u := []interface{}{1., 2., "three", 4., 5., []interface{}{}}
 
-	numbers := selectors.Children().Number().SelectFrom(u)
+	numbers := selectors.Children().AsNumber().SelectFrom(u)
 	expected := []float64{1., 2., 4., 5.}
 	if !reflect.DeepEqual(expected, numbers) {
-		t.Fatalf("Children().Number() should select %v, got %v", expected, numbers)
+		t.Fatalf("Children().AsNumber() should select %v, got %v", expected, numbers)
 
 	}
 }
@@ -182,7 +182,7 @@ func TestInterfaceSString(t *testing.T) {
 		"other value",
 		"string",
 	}
-	actual := selectors.All().String().SelectFrom(root)
+	actual := selectors.All().AsString().SelectFrom(root)
 	if !reflect.DeepEqual(expected, actual) {
 		t.Fatalf("Expected %v, got %v", expected, actual)
 	}
@@ -211,7 +211,7 @@ func TestInterfaceSAll(t *testing.T) {
 		root["key4"].(map[string]interface{})["subkey"].([]interface{})[1],
 	}
 
-	actual := selectors.Map().Field("key4").All().SelectFrom(root)
+	actual := selectors.Field("key4").All().SelectFrom(root)
 	if !reflect.DeepEqual(expected, actual) {
 		t.Fatalf("Expected %v, got %v", expected, actual)
 	}

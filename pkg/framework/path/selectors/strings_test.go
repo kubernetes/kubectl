@@ -25,7 +25,7 @@ import (
 )
 
 func TestStringSSelectFrom(t *testing.T) {
-	s := String().SelectFrom(
+	s := AsString().SelectFrom(
 		"my string",
 		1,
 		"your string",
@@ -37,7 +37,7 @@ func TestStringSSelectFrom(t *testing.T) {
 }
 
 func TestStringSFilter(t *testing.T) {
-	s := String().
+	s := AsString().
 		Filter(p.StringLength(p.NumberEqual(4))).
 		SelectFrom(
 			"one",
@@ -52,19 +52,19 @@ func TestStringSFilter(t *testing.T) {
 }
 
 func TestStringSPredicate(t *testing.T) {
-	if !String().Filter(p.StringLength(p.NumberEqual(4))).Match("four") {
+	if !AsString().Filter(p.StringLength(p.NumberEqual(4))).Match("four") {
 		t.Fatal("SelectFromor matching element should match")
 	}
-	if String().Filter(p.StringLength(p.NumberEqual(10))).Match("four") {
+	if AsString().Filter(p.StringLength(p.NumberEqual(10))).Match("four") {
 		t.Fatal("SelectFromor not matching element should not match")
 	}
 }
 
 func TestStringSFromInterfaceS(t *testing.T) {
-	if !Children().String().Filter(p.StringLength(p.NumberEqual(4))).Match([]interface{}{"four", "five"}) {
+	if !Children().AsString().Filter(p.StringLength(p.NumberEqual(4))).Match([]interface{}{"four", "five"}) {
 		t.Fatal("SelectFromor should find element that match")
 	}
-	if Children().String().Filter(p.StringLength(p.NumberEqual(4))).Match([]interface{}{"one", "two", "three"}) {
+	if Children().AsString().Filter(p.StringLength(p.NumberEqual(4))).Match([]interface{}{"one", "two", "three"}) {
 		t.Fatal("SelectFromor shouldn't find element that match")
 	}
 }

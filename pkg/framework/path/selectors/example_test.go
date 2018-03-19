@@ -61,31 +61,31 @@ func Example() {
 	}
 
 	// The authors of all books in the store. Returns a list of strings.
-	Children().Map().Field("book").Children().Map().Field("author").String().SelectFrom(u)
+	Children().Field("book").Children().Field("author").AsString().SelectFrom(u)
 
 	// All authors. Returns a list of strings.
-	All().Map().Field("author").String().SelectFrom(u)
+	All().Field("author").AsString().SelectFrom(u)
 
-	// All things in store, which are some books and a red bicycle. Returns a list of interface{}.
-	Map().Field("store").Children().SelectFrom(u)
+	// All things in store, which are some books and a red bicycle. Returns a list of maps.
+	Field("store").Children().AsMap().SelectFrom(u)
 
 	// The price of everything in the store. Returns a list of "float64".
-	Map().Field("store").All().Map().Field("price").Number().SelectFrom(u)
+	Field("store").All().Field("price").AsNumber().SelectFrom(u)
 
 	// The third book. Returns a list of 1 interface{}.
-	All().Map().Field("book").Slice().At(2).SelectFrom(u)
+	All().Field("book").At(2).SelectFrom(u)
 
 	// The last book in order. Return a list of 1 interface{}.
-	All().Map().Field("book").Slice().Last().SelectFrom(u)
+	All().Field("book").Last().SelectFrom(u)
 
 	// The first two books. Returns a list of 2 interface{}.
-	All().Map().Field("book").Slice().AtP(p.NumberLessThan(2)).SelectFrom(u)
+	All().Field("book").AtP(p.NumberLessThan(2)).SelectFrom(u)
 
 	// Filter all books with isbn number. Returns a list of interface{}.
-	All().Map().Field("book").Filter(Map().Field("isbn")).SelectFrom(u)
+	All().Field("book").Filter(Field("isbn")).SelectFrom(u)
 
 	// Filter all books cheaper than 10. Returns a list of interface{}.
-	All().Map().Field("book").Children().Filter(Map().Field("price").Number().Filter(p.NumberLessThan(10))).SelectFrom(u)
+	All().Field("book").Children().Filter(Field("price").AsNumber().Filter(p.NumberLessThan(10))).SelectFrom(u)
 
 	// All elements in structure. Returns a list of interface{}.
 	All().SelectFrom(u)

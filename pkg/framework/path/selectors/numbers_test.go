@@ -25,7 +25,7 @@ import (
 )
 
 func TestNumberSSelectFrom(t *testing.T) {
-	s := Number().SelectFrom(
+	s := AsNumber().SelectFrom(
 		1.,
 		"string",
 		2.,
@@ -37,7 +37,7 @@ func TestNumberSSelectFrom(t *testing.T) {
 }
 
 func TestNumberSFilter(t *testing.T) {
-	s := Number().
+	s := AsNumber().
 		Filter(p.NumberGreaterThan(2), p.NumberEqualOrLessThan(4)).
 		SelectFrom(
 			1.,
@@ -52,19 +52,19 @@ func TestNumberSFilter(t *testing.T) {
 }
 
 func TestNumberSPredicate(t *testing.T) {
-	if !Number().Filter(p.NumberGreaterThan(10)).Match(12.) {
+	if !AsNumber().Filter(p.NumberGreaterThan(10)).Match(12.) {
 		t.Fatal("SelectFromor matching element should match")
 	}
-	if Number().Filter(p.NumberGreaterThan(10)).Match(4.) {
+	if AsNumber().Filter(p.NumberGreaterThan(10)).Match(4.) {
 		t.Fatal("SelectFromor not matching element should not match")
 	}
 }
 
 func TestNumberSFromInterfaceS(t *testing.T) {
-	if !Children().Number().Filter(p.NumberGreaterThan(10)).Match([]interface{}{1., 2., 5., 12.}) {
+	if !Children().AsNumber().Filter(p.NumberGreaterThan(10)).Match([]interface{}{1., 2., 5., 12.}) {
 		t.Fatal("SelectFromor should find element that match")
 	}
-	if Children().Number().Filter(p.NumberGreaterThan(10)).Match([]interface{}{1., 2., 5.}) {
+	if Children().AsNumber().Filter(p.NumberGreaterThan(10)).Match([]interface{}{1., 2., 5.}) {
 		t.Fatal("SelectFromor shouldn't find element that match")
 	}
 }

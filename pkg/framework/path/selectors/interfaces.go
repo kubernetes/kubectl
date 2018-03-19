@@ -33,16 +33,38 @@ type InterfaceS interface {
 	// depending on the select criterias.
 	SelectFrom(...interface{}) []interface{}
 
-	// Map returns a selector that selects Maps from the given
+	// AsMap returns a selector that selects Maps from the given
 	// values.
-	Map() MapS
-	// Slice returns a selector that selects Slices from the given
+	AsMap() MapS
+	// AsSlice returns a selector that selects Slices from the given
 	// values.
-	Slice() SliceS
+	AsSlice() SliceS
 	// Number returns a selector taht selects Numbers from the given values.
-	Number() NumberS
+	AsNumber() NumberS
 	// String returns a selector that selects strings from the given values.
-	String() StringS
+	AsString() StringS
+
+	// Field returns the interface pointed by this specific field in the
+	// map. If the field doesn't exist, the value will be filtered
+	// out.
+	Field(string) InterfaceS
+	// FieldP returns all the interfaces pointed by field that match the
+	// string predicate. This selector can return more values than
+	// it gets (for one map, it can returns multiple sub-values, one
+	// for each field that matches the predicate).
+	FieldP(...p.String) InterfaceS
+
+	// At returns a selector that select the child at the given
+	// index, if the list has such an index. Otherwise, nothing is
+	// returned.
+	At(index int) InterfaceS
+	// AtP returns a selector that selects all the item whose index
+	// matches the number predicate. More predicates can be given,
+	// they are "and"-ed by this method.
+	AtP(ips ...p.Number) InterfaceS
+	// Last returns a selector that selects the last value of the
+	// list. If the list is empty, then nothing will be selected.
+	Last() InterfaceS
 
 	// Children returns a selector that selects the direct children
 	// of the given values.
@@ -54,6 +76,41 @@ type InterfaceS interface {
 	// Filter will create a new StringS that filters only the values
 	// who match the predicate.
 	Filter(...p.Interface) InterfaceS
+}
+
+// Field returns the interface pointed by this specific field in the
+// map. If the field doesn't exist, the value will be filtered
+// out.
+func Field(field string) InterfaceS {
+	return FieldP(p.StringEqual(field))
+}
+
+// FieldP returns all the interfaces pointed by field that match the
+// string predicate. This selector can return more values than
+// it gets (for one map, it can returns multiple sub-values, one
+// for each field that matches the predicate).
+func FieldP(predicates ...p.String) InterfaceS {
+	return &interfaceS{vf: interfaceFieldPFilter{sp: p.StringAnd(predicates...)}}
+}
+
+// At returns a selector that select the child at the given
+// index, if the list has such an index. Otherwise, nothing is
+// returned.
+func At(index int) InterfaceS {
+	return AtP(p.NumberEqual(float64(index)))
+}
+
+// AtP returns a selector that selects all the item whose index
+// matches the number predicate. More predicates can be given,
+// they are "and"-ed by this method.
+func AtP(ips ...p.Number) InterfaceS {
+	return &interfaceS{vf: interfaceAtPFilter{ip: p.NumberAnd(ips...)}}
+}
+
+// Last returns a selector that selects the last value of the
+// list. If the list is empty, then nothing will be selected.
+func Last() InterfaceS {
+	return &interfaceS{vf: interfaceLastFilter{}}
 }
 
 // Children selects all the children of the values.
@@ -71,7 +128,7 @@ func Filter(predicates ...p.Interface) InterfaceS {
 	return &interfaceS{vf: &interfaceFilterP{vp: p.InterfaceAnd(predicates...)}}
 }
 
-// InterfaceS is a "Interface SelectFromor". It selects a list of values, maps,
+// InterfaceS is a "Interface Selector". It selects a list of values, maps,
 // slices, strings, integer from a list of values.
 type interfaceS struct {
 	vs InterfaceS
@@ -91,20 +148,40 @@ func (s *interfaceS) SelectFrom(interfaces ...interface{}) []interface{} {
 	return s.vf.SelectFrom(interfaces...)
 }
 
-func (s *interfaceS) Map() MapS {
+func (s *interfaceS) AsMap() MapS {
 	return &mapS{vs: s}
 }
 
-func (s *interfaceS) Slice() SliceS {
+func (s *interfaceS) AsSlice() SliceS {
 	return &sliceS{vs: s}
 }
 
-func (s *interfaceS) Number() NumberS {
+func (s *interfaceS) AsNumber() NumberS {
 	return &numberS{vs: s}
 }
 
-func (s *interfaceS) String() StringS {
+func (s *interfaceS) AsString() StringS {
 	return &stringS{vs: s}
+}
+
+func (s *interfaceS) At(index int) InterfaceS {
+	return s.AtP(p.NumberEqual(float64(index)))
+}
+
+func (s *interfaceS) AtP(predicates ...p.Number) InterfaceS {
+	return &interfaceS{vs: s, vf: interfaceAtPFilter{ip: p.NumberAnd(predicates...)}}
+}
+
+func (s *interfaceS) Last() InterfaceS {
+	return &interfaceS{vs: s, vf: interfaceLastFilter{}}
+}
+
+func (s *interfaceS) Field(key string) InterfaceS {
+	return s.FieldP(p.StringEqual(key))
+}
+
+func (s *interfaceS) FieldP(predicates ...p.String) InterfaceS {
+	return &interfaceS{vs: s, vf: interfaceFieldPFilter{sp: p.StringAnd(predicates...)}}
 }
 
 func (s *interfaceS) Children() InterfaceS {

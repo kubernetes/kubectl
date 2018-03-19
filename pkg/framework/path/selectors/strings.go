@@ -44,8 +44,8 @@ type stringS struct {
 	sp p.String
 }
 
-// String returns a StringS that selects strings from values.
-func String() StringS {
+// AsString returns a StringS that selects strings from values.
+func AsString() StringS {
 	return &stringS{}
 }
 

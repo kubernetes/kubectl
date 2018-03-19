@@ -34,23 +34,6 @@ type MapS interface {
 	// depending on the select criterias.
 	SelectFrom(...interface{}) []map[string]interface{}
 
-	// Field returns the interface pointed by this specific field in the
-	// map. If the field doesn't exist, the value will be filtered
-	// out.
-	Field(string) InterfaceS
-	// FieldP returns all the interfaces pointed by field that match the
-	// string predicate. This selector can return more values than
-	// it gets (for one map, it can returns multiple sub-values, one
-	// for each field that matches the predicate).
-	FieldP(...p.String) InterfaceS
-
-	// All returns a selector that selects all direct and indrect
-	// children of the given values.
-	Children() InterfaceS
-	// All returns a selector that selects all direct and indrect
-	// children of the given values.
-	All() InterfaceS
-
 	// Filter will create a new MapS that filters only the values
 	// who match the predicate.
 	Filter(...p.Map) MapS
@@ -58,7 +41,7 @@ type MapS interface {
 
 // Map creates a selector that takes interfaces and filters them into maps
 // if possible.
-func Map() MapS {
+func AsMap() MapS {
 	return &mapS{}
 }
 
@@ -85,23 +68,6 @@ func (s *mapS) SelectFrom(interfaces ...interface{}) []map[string]interface{} {
 	}
 
 	return maps
-}
-
-func (s *mapS) Field(str string) InterfaceS {
-	return s.FieldP(p.StringEqual(str))
-}
-
-func (s *mapS) FieldP(predicates ...p.String) InterfaceS {
-	return filterMap(s, mapFieldPFilter{sp: p.StringAnd(predicates...)})
-}
-
-func (s *mapS) Children() InterfaceS {
-	// No predicate means select all.
-	return s.FieldP()
-}
-
-func (s *mapS) All() InterfaceS {
-	return filterMap(s, mapAllFilter{})
 }
 
 func (s *mapS) Filter(predicates ...p.Map) MapS {
