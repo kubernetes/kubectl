@@ -202,7 +202,7 @@ objectLabels:
 
 ```
 
-At this point, running `kinflate inflate -f .` will generate MySQL configs with name-prefix 'prod-' and labels `env:prod`.
+At this point, running `kinflate inflate -f .` will generate MySQL configs with name-prefix 'prod-' and labels `app:prod`.
 
 ### Storage customization
 
