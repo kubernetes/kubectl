@@ -20,20 +20,20 @@ import (
 	p "k8s.io/kubectl/pkg/framework/predicates"
 )
 
-// A valueFilter allows us to chain ValueS to ValueS. None of this is
-// public. It's implementing the "SelectFrom" part of a ValueS.
-type valueFilter interface {
+// A interfaceFilter allows us to chain InterfaceS to InterfaceS. None of this is
+// public. It's implementing the "SelectFrom" part of a InterfaceS.
+type interfaceFilter interface {
 	SelectFrom(...interface{}) []interface{}
 }
 
-// valueFilterP filters using a predicate.
-type valueFilterP struct {
-	vp p.Value
+// interfaceFilterP filters using a predicate.
+type interfaceFilterP struct {
+	vp p.Interface
 }
 
-func (f *valueFilterP) SelectFrom(values ...interface{}) []interface{} {
+func (f *interfaceFilterP) SelectFrom(interfaces ...interface{}) []interface{} {
 	vs := []interface{}{}
-	for _, value := range values {
+	for _, value := range interfaces {
 		if f.vp.Match(value) {
 			vs = append(vs, value)
 		}
@@ -41,13 +41,13 @@ func (f *valueFilterP) SelectFrom(values ...interface{}) []interface{} {
 	return vs
 }
 
-type valueChildrenFilter struct{}
+type interfaceChildrenFilter struct{}
 
-func (valueChildrenFilter) SelectFrom(values ...interface{}) []interface{} {
+func (interfaceChildrenFilter) SelectFrom(interfaces ...interface{}) []interface{} {
 	children := []interface{}{}
 	// We could process all slices and then all maps, but we want to
 	// keep things in the same order.
-	for _, value := range values {
+	for _, value := range interfaces {
 		// Only one of the two should do something useful.
 		children = append(children, Slice().Children().SelectFrom(value)...)
 		children = append(children, Map().Children().SelectFrom(value)...)
@@ -55,33 +55,33 @@ func (valueChildrenFilter) SelectFrom(values ...interface{}) []interface{} {
 	return children
 }
 
-// valueSliceFilter is a Value-to-Slice combined with a Slice-to-Value
-// to form a Value-to-Value.
-type valueSliceFilter struct {
+// interfaceSliceFilter is a Interface-to-Slice combined with a Slice-to-Interface
+// to form a Interface-to-Interface.
+type interfaceSliceFilter struct {
 	ss SliceS
 	sf sliceFilter
 }
 
-func (s *valueSliceFilter) SelectFrom(values ...interface{}) []interface{} {
-	return s.sf.SelectFrom(s.ss.SelectFrom(values...)...)
+func (s *interfaceSliceFilter) SelectFrom(interfaces ...interface{}) []interface{} {
+	return s.sf.SelectFrom(s.ss.SelectFrom(interfaces...)...)
 }
 
-// valueMapFilter is a Value-to-Map combined with a Map-to-Value to form
-// a Value-to-Value.
-type valueMapFilter struct {
+// interfaceMapFilter is a Interface-to-Map combined with a Map-to-Interface to form
+// a Interface-to-Interface.
+type interfaceMapFilter struct {
 	ms MapS
 	mf mapFilter
 }
 
-func (s *valueMapFilter) SelectFrom(values ...interface{}) []interface{} {
-	return s.mf.SelectFrom(s.ms.SelectFrom(values...)...)
+func (s *interfaceMapFilter) SelectFrom(interfaces ...interface{}) []interface{} {
+	return s.mf.SelectFrom(s.ms.SelectFrom(interfaces...)...)
 }
 
-type valueAllFilter struct{}
+type interfaceAllFilter struct{}
 
-func (valueAllFilter) SelectFrom(values ...interface{}) []interface{} {
+func (interfaceAllFilter) SelectFrom(interfaces ...interface{}) []interface{} {
 	vs := []interface{}{}
-	for _, value := range values {
+	for _, value := range interfaces {
 		vs = append(vs, value)
 		// Only one of the follow two statements should return something ...
 		vs = append(vs, Slice().All().SelectFrom(value)...)

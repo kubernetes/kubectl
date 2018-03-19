@@ -24,10 +24,10 @@ import (
 // possible) and filters those numbers based on the "filtered"
 // predicates.
 type NumberS interface {
-	// NumberS can be used as a Value predicate. If the selector can't
+	// NumberS can be used as a Interface predicate. If the selector can't
 	// select any number from the value, then the predicate is
 	// false.
-	p.Value
+	p.Interface
 
 	// SelectFrom finds numbers from values using this selector. The
 	// list can be bigger or smaller than the initial lists,
@@ -45,7 +45,7 @@ func Number() NumberS {
 }
 
 type numberS struct {
-	vs ValueS
+	vs InterfaceS
 	ip p.Number
 }
 

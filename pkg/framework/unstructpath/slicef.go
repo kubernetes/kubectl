@@ -20,16 +20,16 @@ import (
 	p "k8s.io/kubectl/pkg/framework/predicates"
 )
 
-func filterSlice(ss SliceS, sf sliceFilter) ValueS {
-	return &valueS{
-		vf: &valueSliceFilter{
+func filterSlice(ss SliceS, sf sliceFilter) InterfaceS {
+	return &interfaceS{
+		vf: &interfaceSliceFilter{
 			ss: ss,
 			sf: sf,
 		},
 	}
 }
 
-// This is a Slice-to-Value filter.
+// This is a Slice-to-Interface filter.
 type sliceFilter interface {
 	SelectFrom(...[]interface{}) []interface{}
 }
@@ -39,40 +39,40 @@ type sliceAtPFilter struct {
 }
 
 func (f sliceAtPFilter) SelectFrom(slices ...[]interface{}) []interface{} {
-	values := []interface{}{}
+	interfaces := []interface{}{}
 
 	for _, slice := range slices {
 		for i := range slice {
 			if !f.ip.Match(float64(i)) {
 				continue
 			}
-			values = append(values, slice[i])
+			interfaces = append(interfaces, slice[i])
 		}
 	}
-	return values
+	return interfaces
 }
 
 type sliceLastFilter struct{}
 
 func (f sliceLastFilter) SelectFrom(slices ...[]interface{}) []interface{} {
-	values := []interface{}{}
+	interfaces := []interface{}{}
 	for _, slice := range slices {
 		if len(slice) == 0 {
 			continue
 		}
-		values = append(values, slice[len(slice)-1])
+		interfaces = append(interfaces, slice[len(slice)-1])
 	}
-	return values
+	return interfaces
 }
 
 type sliceAllFilter struct{}
 
 func (sliceAllFilter) SelectFrom(slices ...[]interface{}) []interface{} {
-	values := []interface{}{}
+	interfaces := []interface{}{}
 	for _, slice := range slices {
 		for _, v := range slice {
-			values = append(values, All().SelectFrom(v)...)
+			interfaces = append(interfaces, All().SelectFrom(v)...)
 		}
 	}
-	return values
+	return interfaces
 }

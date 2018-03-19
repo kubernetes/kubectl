@@ -22,14 +22,14 @@ import (
 	p "k8s.io/kubectl/pkg/framework/predicates"
 )
 
-// This is a Map-to-Value filter.
+// This is a Map-to-Interface filter.
 type mapFilter interface {
 	SelectFrom(...map[string]interface{}) []interface{}
 }
 
-func filterMap(ms MapS, mf mapFilter) ValueS {
-	return &valueS{
-		vf: &valueMapFilter{
+func filterMap(ms MapS, mf mapFilter) InterfaceS {
+	return &interfaceS{
+		vf: &interfaceMapFilter{
 			ms: ms,
 			mf: mf,
 		},
@@ -41,29 +41,29 @@ type mapFieldPFilter struct {
 }
 
 func (f mapFieldPFilter) SelectFrom(maps ...map[string]interface{}) []interface{} {
-	values := []interface{}{}
+	interfaces := []interface{}{}
 
 	for _, m := range maps {
 		for _, field := range sortedKeys(m) {
 			if !f.sp.Match(field) {
 				continue
 			}
-			values = append(values, m[field])
+			interfaces = append(interfaces, m[field])
 		}
 	}
-	return values
+	return interfaces
 }
 
 type mapAllFilter struct{}
 
 func (mapAllFilter) SelectFrom(maps ...map[string]interface{}) []interface{} {
-	values := []interface{}{}
+	interfaces := []interface{}{}
 	for _, m := range maps {
 		for _, field := range sortedKeys(m) {
-			values = append(values, All().SelectFrom(m[field])...)
+			interfaces = append(interfaces, All().SelectFrom(m[field])...)
 		}
 	}
-	return values
+	return interfaces
 }
 
 func sortedKeys(m map[string]interface{}) []string {
