@@ -24,47 +24,47 @@ import (
 	. "k8s.io/kubectl/pkg/framework/path/selectors"
 )
 
-func TestNumberSSelectFrom(t *testing.T) {
-	s := AsNumber().SelectFrom(
-		1.,
-		"string",
-		2.,
-		[]float64{3, 4})
+func TestStringSelectFrom(t *testing.T) {
+	s := AsString().SelectFrom(
+		"my string",
+		1,
+		"your string",
+		[]int{3, 4})
 
-	if !reflect.DeepEqual(s, []float64{1, 2}) {
+	if !reflect.DeepEqual(s, []string{"my string", "your string"}) {
 		t.Fatal("SelectFrom should select all integers")
 	}
 }
 
-func TestNumberSFilter(t *testing.T) {
-	s := AsNumber().
-		Filter(p.NumberGreaterThan(2), p.NumberEqualOrLessThan(4)).
+func TestStringFilter(t *testing.T) {
+	s := AsString().
+		Filter(p.StringLength(p.NumberEqual(4))).
 		SelectFrom(
-			1.,
-			2.,
-			3.,
-			4.,
-			5.)
+			"one",
+			"two",
+			"three",
+			"four",
+			"five")
 
-	if !reflect.DeepEqual(s, []float64{3, 4}) {
-		t.Fatal("SelectFrom should filter selected numberegers")
+	if !reflect.DeepEqual(s, []string{"four", "five"}) {
+		t.Fatal("SelectFrom should filter selected strings")
 	}
 }
 
-func TestNumberSPredicate(t *testing.T) {
-	if !AsNumber().Filter(p.NumberGreaterThan(10)).Match(12.) {
+func TestStringPredicate(t *testing.T) {
+	if !AsString().Filter(p.StringLength(p.NumberEqual(4))).Match("four") {
 		t.Fatal("SelectFromor matching element should match")
 	}
-	if AsNumber().Filter(p.NumberGreaterThan(10)).Match(4.) {
+	if AsString().Filter(p.StringLength(p.NumberEqual(10))).Match("four") {
 		t.Fatal("SelectFromor not matching element should not match")
 	}
 }
 
-func TestNumberSFromInterfaceS(t *testing.T) {
-	if !Children().AsNumber().Filter(p.NumberGreaterThan(10)).Match([]interface{}{1., 2., 5., 12.}) {
+func TestStringFromInterface(t *testing.T) {
+	if !Children().AsString().Filter(p.StringLength(p.NumberEqual(4))).Match([]interface{}{"four", "five"}) {
 		t.Fatal("SelectFromor should find element that match")
 	}
-	if Children().AsNumber().Filter(p.NumberGreaterThan(10)).Match([]interface{}{1., 2., 5.}) {
+	if Children().AsString().Filter(p.StringLength(p.NumberEqual(4))).Match([]interface{}{"one", "two", "three"}) {
 		t.Fatal("SelectFromor shouldn't find element that match")
 	}
 }

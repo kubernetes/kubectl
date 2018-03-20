@@ -20,11 +20,11 @@ import (
 	p "k8s.io/kubectl/pkg/framework/path/predicates"
 )
 
-// NumberS is a "number selector". It selects values as numbers (if
+// Number is a "number selector". It selects values as numbers (if
 // possible) and filters those numbers based on the "filtered"
 // predicates.
-type NumberS interface {
-	// NumberS can be used as a Interface predicate. If the selector can't
+type Number interface {
+	// Number can be used as a Interface predicate. If the selector can't
 	// select any number from the value, then the predicate is
 	// false.
 	p.Interface
@@ -34,18 +34,18 @@ type NumberS interface {
 	// depending on the select criterias.
 	SelectFrom(...interface{}) []float64
 
-	// Filter will create a new NumberS that filters only the values
+	// Filter will create a new Number that filters only the values
 	// who match the predicate.
-	Filter(...p.Number) NumberS
+	Filter(...p.Number) Number
 }
 
-// AsNumber returns a NumberS that selects numbers from given values.
-func AsNumber() NumberS {
+// AsNumber returns a Number that selects numbers from given values.
+func AsNumber() Number {
 	return &numberS{}
 }
 
 type numberS struct {
-	vs InterfaceS
+	vs Interface
 	ip p.Number
 }
 
@@ -67,7 +67,7 @@ func (s *numberS) SelectFrom(values ...interface{}) []float64 {
 	return numbers
 }
 
-func (s *numberS) Filter(predicates ...p.Number) NumberS {
+func (s *numberS) Filter(predicates ...p.Number) Number {
 	if s.ip != nil {
 		predicates = append(predicates, s.ip)
 	}

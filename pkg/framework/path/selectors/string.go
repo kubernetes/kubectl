@@ -20,11 +20,11 @@ import (
 	p "k8s.io/kubectl/pkg/framework/path/predicates"
 )
 
-// StringS is a "string selector". It selects values as strings (if
+// String is a "string selector". It selects values as strings (if
 // possible) and filters those strings based on the "filtered"
 // predicates.
-type StringS interface {
-	// StringS can be used as a Interface predicate. If the selector can't
+type String interface {
+	// String can be used as a Interface predicate. If the selector can't
 	// select any string from the value, then the predicate is
 	// false.
 	p.Interface
@@ -34,18 +34,18 @@ type StringS interface {
 	// depending on the select criterias.
 	SelectFrom(...interface{}) []string
 
-	// Filter will create a new StringS that filters only the values
+	// Filter will create a new String that filters only the values
 	// who match the predicate.
-	Filter(...p.String) StringS
+	Filter(...p.String) String
 }
 
 type stringS struct {
-	vs InterfaceS
+	vs Interface
 	sp p.String
 }
 
-// AsString returns a StringS that selects strings from values.
-func AsString() StringS {
+// AsString returns a String that selects strings from values.
+func AsString() String {
 	return &stringS{}
 }
 
@@ -67,7 +67,7 @@ func (s *stringS) SelectFrom(values ...interface{}) []string {
 	return strings
 }
 
-func (s *stringS) Filter(predicates ...p.String) StringS {
+func (s *stringS) Filter(predicates ...p.String) String {
 	if s.sp != nil {
 		predicates = append(predicates, s.sp)
 	}

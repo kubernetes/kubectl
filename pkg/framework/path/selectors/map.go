@@ -20,11 +20,11 @@ import (
 	p "k8s.io/kubectl/pkg/framework/path/predicates"
 )
 
-// MapS is a "map selector". It selects interfaces as maps (if
+// Map is a "map selector". It selects interfaces as maps (if
 // possible) and filters those maps based on the "filtered"
 // predicates.
-type MapS interface {
-	// MapS can be used as a Interface predicate. If the selector can't
+type Map interface {
+	// Map can be used as a Interface predicate. If the selector can't
 	// select any map from the interface, then the predicate is
 	// false.
 	p.Interface
@@ -34,19 +34,19 @@ type MapS interface {
 	// depending on the select criterias.
 	SelectFrom(...interface{}) []map[string]interface{}
 
-	// Filter will create a new MapS that filters only the values
+	// Filter will create a new Map that filters only the values
 	// who match the predicate.
-	Filter(...p.Map) MapS
+	Filter(...p.Map) Map
 }
 
 // Map creates a selector that takes interfaces and filters them into maps
 // if possible.
-func AsMap() MapS {
+func AsMap() Map {
 	return &mapS{}
 }
 
 type mapS struct {
-	vs InterfaceS
+	vs Interface
 	mp p.Map
 }
 
@@ -70,7 +70,7 @@ func (s *mapS) SelectFrom(interfaces ...interface{}) []map[string]interface{} {
 	return maps
 }
 
-func (s *mapS) Filter(predicates ...p.Map) MapS {
+func (s *mapS) Filter(predicates ...p.Map) Map {
 	return &mapS{vs: s.vs, mp: p.MapAnd(append(predicates, s.mp)...)}
 }
 

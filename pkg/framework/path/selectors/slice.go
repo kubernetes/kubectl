@@ -20,11 +20,11 @@ import (
 	p "k8s.io/kubectl/pkg/framework/path/predicates"
 )
 
-// SliceS is a "slice selector". It selects values as slices (if
+// Slice is a "slice selector". It selects values as slices (if
 // possible) and filters those slices based on the "filtered"
 // predicates.
-type SliceS interface {
-	// SliceS can be used as a Interface predicate. If the selector
+type Slice interface {
+	// Slice can be used as a Interface predicate. If the selector
 	// can't select any slice from the value, then the predicate is
 	// false.
 	p.Interface
@@ -34,19 +34,19 @@ type SliceS interface {
 	// depending on the select criterias.
 	SelectFrom(...interface{}) [][]interface{}
 
-	// Filter will create a new SliceS that filters only the values
+	// Filter will create a new Slice that filters only the values
 	// who match the predicate.
-	Filter(...p.Slice) SliceS
+	Filter(...p.Slice) Slice
 }
 
 // Slice creates a selector that takes values and filters them into
 // slices if possible.
-func AsSlice() SliceS {
+func AsSlice() Slice {
 	return &sliceS{}
 }
 
 type sliceS struct {
-	vs InterfaceS
+	vs Interface
 	sp p.Slice
 }
 
@@ -70,7 +70,7 @@ func (s *sliceS) SelectFrom(interfaces ...interface{}) [][]interface{} {
 	return slices
 }
 
-func (s *sliceS) Filter(sps ...p.Slice) SliceS {
+func (s *sliceS) Filter(sps ...p.Slice) Slice {
 	return &sliceS{vs: s.vs, sp: p.SliceAnd(append(sps, s.sp)...)}
 }
 

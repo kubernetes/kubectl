@@ -24,47 +24,47 @@ import (
 	. "k8s.io/kubectl/pkg/framework/path/selectors"
 )
 
-func TestStringSSelectFrom(t *testing.T) {
-	s := AsString().SelectFrom(
-		"my string",
-		1,
-		"your string",
-		[]int{3, 4})
+func TestNumberSelectFrom(t *testing.T) {
+	s := AsNumber().SelectFrom(
+		1.,
+		"string",
+		2.,
+		[]float64{3, 4})
 
-	if !reflect.DeepEqual(s, []string{"my string", "your string"}) {
+	if !reflect.DeepEqual(s, []float64{1, 2}) {
 		t.Fatal("SelectFrom should select all integers")
 	}
 }
 
-func TestStringSFilter(t *testing.T) {
-	s := AsString().
-		Filter(p.StringLength(p.NumberEqual(4))).
+func TestNumberFilter(t *testing.T) {
+	s := AsNumber().
+		Filter(p.NumberGreaterThan(2), p.NumberEqualOrLessThan(4)).
 		SelectFrom(
-			"one",
-			"two",
-			"three",
-			"four",
-			"five")
+			1.,
+			2.,
+			3.,
+			4.,
+			5.)
 
-	if !reflect.DeepEqual(s, []string{"four", "five"}) {
-		t.Fatal("SelectFrom should filter selected strings")
+	if !reflect.DeepEqual(s, []float64{3, 4}) {
+		t.Fatal("SelectFrom should filter selected numberegers")
 	}
 }
 
-func TestStringSPredicate(t *testing.T) {
-	if !AsString().Filter(p.StringLength(p.NumberEqual(4))).Match("four") {
+func TestNumberPredicate(t *testing.T) {
+	if !AsNumber().Filter(p.NumberGreaterThan(10)).Match(12.) {
 		t.Fatal("SelectFromor matching element should match")
 	}
-	if AsString().Filter(p.StringLength(p.NumberEqual(10))).Match("four") {
+	if AsNumber().Filter(p.NumberGreaterThan(10)).Match(4.) {
 		t.Fatal("SelectFromor not matching element should not match")
 	}
 }
 
-func TestStringSFromInterfaceS(t *testing.T) {
-	if !Children().AsString().Filter(p.StringLength(p.NumberEqual(4))).Match([]interface{}{"four", "five"}) {
+func TestNumberFromInterface(t *testing.T) {
+	if !Children().AsNumber().Filter(p.NumberGreaterThan(10)).Match([]interface{}{1., 2., 5., 12.}) {
 		t.Fatal("SelectFromor should find element that match")
 	}
-	if Children().AsString().Filter(p.StringLength(p.NumberEqual(4))).Match([]interface{}{"one", "two", "three"}) {
+	if Children().AsNumber().Filter(p.NumberGreaterThan(10)).Match([]interface{}{1., 2., 5.}) {
 		t.Fatal("SelectFromor shouldn't find element that match")
 	}
 }

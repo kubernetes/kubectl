@@ -22,8 +22,8 @@ import (
 	p "k8s.io/kubectl/pkg/framework/path/predicates"
 )
 
-// A interfaceFilter allows us to chain InterfaceS to InterfaceS. None of this is
-// public. It's implementing the "SelectFrom" part of a InterfaceS.
+// A interfaceFilter allows us to chain Interface to Interface. None of this is
+// public. It's implementing the "SelectFrom" part of a Interface.
 type interfaceFilter interface {
 	SelectFrom(...interface{}) []interface{}
 }
