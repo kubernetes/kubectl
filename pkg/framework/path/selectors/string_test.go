@@ -14,18 +14,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package unstructpath_test
+package selectors_test
 
 import (
 	"reflect"
 	"testing"
 
-	p "k8s.io/kubectl/pkg/framework/predicates"
-	. "k8s.io/kubectl/pkg/framework/unstructpath"
+	p "k8s.io/kubectl/pkg/framework/path/predicates"
+	. "k8s.io/kubectl/pkg/framework/path/selectors"
 )
 
-func TestStringSSelectFrom(t *testing.T) {
-	s := String().SelectFrom(
+func TestStringSelectFrom(t *testing.T) {
+	s := AsString().SelectFrom(
 		"my string",
 		1,
 		"your string",
@@ -36,8 +36,8 @@ func TestStringSSelectFrom(t *testing.T) {
 	}
 }
 
-func TestStringSFilter(t *testing.T) {
-	s := String().
+func TestStringFilter(t *testing.T) {
+	s := AsString().
 		Filter(p.StringLength(p.NumberEqual(4))).
 		SelectFrom(
 			"one",
@@ -51,20 +51,20 @@ func TestStringSFilter(t *testing.T) {
 	}
 }
 
-func TestStringSPredicate(t *testing.T) {
-	if !String().Filter(p.StringLength(p.NumberEqual(4))).Match("four") {
+func TestStringPredicate(t *testing.T) {
+	if !AsString().Filter(p.StringLength(p.NumberEqual(4))).Match("four") {
 		t.Fatal("SelectFromor matching element should match")
 	}
-	if String().Filter(p.StringLength(p.NumberEqual(10))).Match("four") {
+	if AsString().Filter(p.StringLength(p.NumberEqual(10))).Match("four") {
 		t.Fatal("SelectFromor not matching element should not match")
 	}
 }
 
-func TestStringSFromInterfaceS(t *testing.T) {
-	if !Children().String().Filter(p.StringLength(p.NumberEqual(4))).Match([]interface{}{"four", "five"}) {
+func TestStringFromInterface(t *testing.T) {
+	if !Children().AsString().Filter(p.StringLength(p.NumberEqual(4))).Match([]interface{}{"four", "five"}) {
 		t.Fatal("SelectFromor should find element that match")
 	}
-	if Children().String().Filter(p.StringLength(p.NumberEqual(4))).Match([]interface{}{"one", "two", "three"}) {
+	if Children().AsString().Filter(p.StringLength(p.NumberEqual(4))).Match([]interface{}{"one", "two", "three"}) {
 		t.Fatal("SelectFromor shouldn't find element that match")
 	}
 }

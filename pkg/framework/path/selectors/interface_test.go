@@ -14,13 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package unstructpath_test
+package selectors_test
 
 import (
 	"reflect"
 	"testing"
 
-	"k8s.io/kubectl/pkg/framework/unstructpath"
+	"k8s.io/kubectl/pkg/framework/path/selectors"
 )
 
 func TestAll(t *testing.T) {
@@ -30,7 +30,7 @@ func TestAll(t *testing.T) {
 		"key4": map[string]interface{}{"key5": 5.},
 	}
 
-	numbers := unstructpath.All().Number().SelectFrom(u)
+	numbers := selectors.All().AsNumber().SelectFrom(u)
 	expected := []float64{1., 2., 3., 4., 5.}
 	if !reflect.DeepEqual(expected, numbers) {
 		t.Fatalf("Expected to find all numbers (%v), got: %v", expected, numbers)
@@ -44,7 +44,7 @@ func TestChildren(t *testing.T) {
 		"key4": 5.,
 	}
 
-	numbers := unstructpath.Children().Number().SelectFrom(u)
+	numbers := selectors.Children().AsNumber().SelectFrom(u)
 	expected := []float64{1., 5.}
 	if !reflect.DeepEqual(expected, numbers) {
 		t.Fatalf("Expected to find all numbers (%v), got: %v", expected, numbers)
@@ -60,19 +60,19 @@ func TestFilter(t *testing.T) {
 		"string",
 	}
 	expected := []interface{}{us[1]}
-	actual := unstructpath.Filter(unstructpath.Slice().At(3)).SelectFrom(us...)
+	actual := selectors.Filter(selectors.At(3)).SelectFrom(us...)
 	if !reflect.DeepEqual(expected, actual) {
 		t.Fatalf("Expected to filter (%v), got: %v", expected, actual)
 	}
 }
 
-func TestInterfaceSPredicate(t *testing.T) {
-	if !unstructpath.Slice().Match([]interface{}{}) {
+func TestInterfacePredicate(t *testing.T) {
+	if !selectors.AsSlice().Match([]interface{}{}) {
 		t.Fatal("SelectFroming a slice from a slice should match.")
 	}
 }
 
-func TestInterfaceSMap(t *testing.T) {
+func TestInterfaceMap(t *testing.T) {
 	root := map[string]interface{}{
 		"key1": "value",
 		"key2": 1,
@@ -92,13 +92,13 @@ func TestInterfaceSMap(t *testing.T) {
 		root,
 		root["key4"].(map[string]interface{}),
 	}
-	actual := unstructpath.All().Map().SelectFrom(root)
+	actual := selectors.All().AsMap().SelectFrom(root)
 	if !reflect.DeepEqual(expected, actual) {
-		t.Fatalf("Map should find maps %v, got %v", expected, actual)
+		t.Fatalf("AsMap should find maps %v, got %v", expected, actual)
 	}
 }
 
-func TestInterfaceSSlice(t *testing.T) {
+func TestInterfaceSlice(t *testing.T) {
 	root := map[string]interface{}{
 		"key1": "value",
 		"key2": 1,
@@ -118,13 +118,13 @@ func TestInterfaceSSlice(t *testing.T) {
 		root["key3"].([]interface{}),
 		root["key4"].(map[string]interface{})["subkey"].([]interface{}),
 	}
-	actual := unstructpath.All().Slice().SelectFrom(root)
+	actual := selectors.All().AsSlice().SelectFrom(root)
 	if !reflect.DeepEqual(expected, actual) {
 		t.Fatalf("Slice should find slices %#v, got %#v", expected, actual)
 	}
 }
 
-func TestInterfaceSChildren(t *testing.T) {
+func TestInterfaceChildren(t *testing.T) {
 	root := map[string]interface{}{
 		"key1": "value",
 		"key2": 1,
@@ -144,24 +144,24 @@ func TestInterfaceSChildren(t *testing.T) {
 		root["key3"].([]interface{})[0],
 		root["key3"].([]interface{})[1],
 	}
-	actual := unstructpath.Map().Field("key3").Children().SelectFrom(root)
+	actual := selectors.Field("key3").Children().SelectFrom(root)
 	if !reflect.DeepEqual(expected, actual) {
 		t.Fatalf("Expected %v, got %v", expected, actual)
 	}
 }
 
-func TestInterfaceSNumber(t *testing.T) {
+func TestInterfaceNumber(t *testing.T) {
 	u := []interface{}{1., 2., "three", 4., 5., []interface{}{}}
 
-	numbers := unstructpath.Children().Number().SelectFrom(u)
+	numbers := selectors.Children().AsNumber().SelectFrom(u)
 	expected := []float64{1., 2., 4., 5.}
 	if !reflect.DeepEqual(expected, numbers) {
-		t.Fatalf("Children().Number() should select %v, got %v", expected, numbers)
+		t.Fatalf("Children().AsNumber() should select %v, got %v", expected, numbers)
 
 	}
 }
 
-func TestInterfaceSString(t *testing.T) {
+func TestInterfaceString(t *testing.T) {
 	root := map[string]interface{}{
 		"key1": "value",
 		"key2": 1,
@@ -182,13 +182,13 @@ func TestInterfaceSString(t *testing.T) {
 		"other value",
 		"string",
 	}
-	actual := unstructpath.All().String().SelectFrom(root)
+	actual := selectors.All().AsString().SelectFrom(root)
 	if !reflect.DeepEqual(expected, actual) {
 		t.Fatalf("Expected %v, got %v", expected, actual)
 	}
 }
 
-func TestInterfaceSAll(t *testing.T) {
+func TestInterfaceAll(t *testing.T) {
 	root := map[string]interface{}{
 		"key1": "value",
 		"key2": 1,
@@ -211,7 +211,7 @@ func TestInterfaceSAll(t *testing.T) {
 		root["key4"].(map[string]interface{})["subkey"].([]interface{})[1],
 	}
 
-	actual := unstructpath.Map().Field("key4").All().SelectFrom(root)
+	actual := selectors.Field("key4").All().SelectFrom(root)
 	if !reflect.DeepEqual(expected, actual) {
 		t.Fatalf("Expected %v, got %v", expected, actual)
 	}

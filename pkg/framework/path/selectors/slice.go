@@ -14,17 +14,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package unstructpath
+package selectors
 
 import (
-	p "k8s.io/kubectl/pkg/framework/predicates"
+	p "k8s.io/kubectl/pkg/framework/path/predicates"
 )
 
-// SliceS is a "slice selector". It selects values as slices (if
+// Slice is a "slice selector". It selects values as slices (if
 // possible) and filters those slices based on the "filtered"
 // predicates.
-type SliceS interface {
-	// SliceS can be used as a Interface predicate. If the selector
+type Slice interface {
+	// Slice can be used as a Interface predicate. If the selector
 	// can't select any slice from the value, then the predicate is
 	// false.
 	p.Interface
@@ -34,38 +34,19 @@ type SliceS interface {
 	// depending on the select criterias.
 	SelectFrom(...interface{}) [][]interface{}
 
-	// At returns a selector that select the child at the given
-	// index, if the list has such an index. Otherwise, nothing is
-	// returned.
-	At(index int) InterfaceS
-	// AtP returns a selector that selects all the item whose index
-	// matches the number predicate. More predicates can be given,
-	// they are "and"-ed by this method.
-	AtP(ips ...p.Number) InterfaceS
-	// Last returns a selector that selects the last value of the
-	// list. If the list is empty, then nothing will be selected.
-	Last() InterfaceS
-
-	// All returns a selector that selects all direct and indrect
-	// children of the given values.
-	Children() InterfaceS
-	// All returns a selector that selects all direct and indrect
-	// children of the given values.
-	All() InterfaceS
-
-	// Filter will create a new SliceS that filters only the values
+	// Filter will create a new Slice that filters only the values
 	// who match the predicate.
-	Filter(...p.Slice) SliceS
+	Filter(...p.Slice) Slice
 }
 
 // Slice creates a selector that takes values and filters them into
 // slices if possible.
-func Slice() SliceS {
+func AsSlice() Slice {
 	return &sliceS{}
 }
 
 type sliceS struct {
-	vs InterfaceS
+	vs Interface
 	sp p.Slice
 }
 
@@ -89,28 +70,7 @@ func (s *sliceS) SelectFrom(interfaces ...interface{}) [][]interface{} {
 	return slices
 }
 
-func (s *sliceS) At(index int) InterfaceS {
-	return s.AtP(p.NumberEqual(float64(index)))
-}
-
-func (s *sliceS) AtP(predicates ...p.Number) InterfaceS {
-	return filterSlice(s, sliceAtPFilter{ip: p.NumberAnd(predicates...)})
-}
-
-func (s *sliceS) Last() InterfaceS {
-	return filterSlice(s, sliceLastFilter{})
-}
-
-func (s *sliceS) Children() InterfaceS {
-	// No predicates means select all direct children.
-	return s.AtP()
-}
-
-func (s *sliceS) All() InterfaceS {
-	return filterSlice(s, sliceAllFilter{})
-}
-
-func (s *sliceS) Filter(sps ...p.Slice) SliceS {
+func (s *sliceS) Filter(sps ...p.Slice) Slice {
 	return &sliceS{vs: s.vs, sp: p.SliceAnd(append(sps, s.sp)...)}
 }
 

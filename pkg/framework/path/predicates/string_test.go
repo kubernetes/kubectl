@@ -20,7 +20,7 @@ import (
 	"regexp"
 	"testing"
 
-	. "k8s.io/kubectl/pkg/framework/predicates"
+	. "k8s.io/kubectl/pkg/framework/path/predicates"
 )
 
 func TestStringEqual(t *testing.T) {
