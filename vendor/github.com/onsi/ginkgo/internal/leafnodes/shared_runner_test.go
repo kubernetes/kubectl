@@ -6,6 +6,7 @@ import (
 	. "github.com/onsi/gomega"
 
 	"reflect"
+	"runtime"
 	"time"
 
 	"github.com/onsi/ginkgo/internal/codelocation"
@@ -146,15 +147,17 @@ func AsynchronousSharedRunnerBehaviors(build func(body interface{}, timeout time
 
 		Context("when running", func() {
 			It("should run the function as a goroutine, and block until it's done", func() {
-				proveAsync := make(chan bool)
+				initialNumberOfGoRoutines := runtime.NumGoroutine()
+				numberOfGoRoutines := 0
 
 				build(func(done Done) {
 					didRun = true
-					proveAsync <- true
+					numberOfGoRoutines = runtime.NumGoroutine()
 					close(done)
 				}, timeoutDuration, failer, componentCodeLocation).Run()
 
-				Eventually(proveAsync).Should(Receive(Equal(true)))
+				Ω(didRun).Should(BeTrue())
+				Ω(numberOfGoRoutines).Should(BeNumerically(">=", initialNumberOfGoRoutines+1))
 			})
 		})
 

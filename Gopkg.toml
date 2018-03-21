@@ -22,7 +22,40 @@
 
 
 [[constraint]]
-  branch = "v2"
+  name = "github.com/evanphx/json-patch"
+
+[[constraint]]
+  name = "github.com/ghodss/yaml"
+
+[[constraint]]
+  name = "github.com/go-openapi/spec"
+
+[[constraint]]
+  name = "github.com/gogo/protobuf"
+
+[[constraint]]
+  name = "github.com/googleapis/gnostic"
+
+[[constraint]]
+  name = "github.com/gregjones/httpcache"
+
+[[constraint]]
+  name = "github.com/onsi/ginkgo"
+
+[[constraint]]
+  name = "github.com/onsi/gomega"
+
+[[constraint]]
+  name = "github.com/peterbourgon/diskv"
+  version = "2.0.1"
+
+[[constraint]]
+  name = "github.com/spf13/cobra"
+
+[[constraint]]
+  name = "github.com/spf13/pflag"
+
+[[constraint]]
   name = "gopkg.in/yaml.v2"
 
 [[constraint]]
@@ -39,4 +72,7 @@
 
 [[constraint]]
   branch = "master"
+  name = "k8s.io/kube-openapi"
+
+[[constraint]]
   name = "k8s.io/utils"

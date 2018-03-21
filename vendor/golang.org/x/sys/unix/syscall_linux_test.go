@@ -178,7 +178,7 @@ func TestGetrlimit(t *testing.T) {
 }
 
 func TestSelect(t *testing.T) {
-	_, err := unix.Select(0, nil, nil, nil, &unix.Timeval{Sec: 0, Usec: 0})
+	_, err := unix.Select(0, nil, nil, nil, &unix.Timeval{0, 0})
 	if err != nil {
 		t.Fatalf("Select: %v", err)
 	}
@@ -191,45 +191,8 @@ func TestUname(t *testing.T) {
 		t.Fatalf("Uname: %v", err)
 	}
 
-	t.Logf("OS: %s/%s %s", utsname.Sysname[:], utsname.Machine[:], utsname.Release[:])
-}
-
-func TestFstatat(t *testing.T) {
-	defer chtmpdir(t)()
-
-	touch(t, "file1")
-
-	var st1 unix.Stat_t
-	err := unix.Stat("file1", &st1)
-	if err != nil {
-		t.Fatalf("Stat: %v", err)
-	}
-
-	var st2 unix.Stat_t
-	err = unix.Fstatat(unix.AT_FDCWD, "file1", &st2, 0)
-	if err != nil {
-		t.Fatalf("Fstatat: %v", err)
-	}
-
-	if st1 != st2 {
-		t.Errorf("Fstatat: returned stat does not match Stat")
-	}
-
-	os.Symlink("file1", "symlink1")
-
-	err = unix.Lstat("symlink1", &st1)
-	if err != nil {
-		t.Fatalf("Lstat: %v", err)
-	}
-
-	err = unix.Fstatat(unix.AT_FDCWD, "symlink1", &st2, unix.AT_SYMLINK_NOFOLLOW)
-	if err != nil {
-		t.Fatalf("Fstatat: %v", err)
-	}
-
-	if st1 != st2 {
-		t.Errorf("Fstatat: returned stat does not match Lstat")
-	}
+	// conversion from []byte to string, golang.org/issue/20753
+	t.Logf("OS: %s/%s %s", string(utsname.Sysname[:]), string(utsname.Machine[:]), string(utsname.Release[:]))
 }
 
 // utilities taken from os/os_test.go

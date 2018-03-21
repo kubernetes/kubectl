@@ -6,7 +6,6 @@ package language_test
 
 import (
 	"fmt"
-	"net/http"
 
 	"golang.org/x/text/language"
 )
@@ -275,7 +274,7 @@ func ExampleMatcher() {
 
 	fmt.Println("----")
 
-	// Someone specifying sr-Latn is probably fine with getting Croatian.
+	// Croatian speakers will likely understand Serbian written in Latin script.
 	fmt.Println(m.Match(language.Make("sr-Latn")))
 
 	// We match SimplifiedChinese, but with Low confidence.
@@ -332,27 +331,11 @@ func ExampleMatcher() {
 	// af 3 High
 	// ----
 	// iw 9 Exact
-	// he 10 Exact
+	// iw-IL 8 Exact
 	// ----
 	// fr-u-cu-frf 2 Exact
 	// fr-u-cu-frf 2 High
 	// en-u-co-phonebk 0 No
-
-	// TODO: "he" should be "he-u-rg-IL High"
-}
-
-func ExampleMatchStrings() {
-	// languages supported by this service:
-	matcher := language.NewMatcher([]language.Tag{
-		language.English, language.Dutch, language.German,
-	})
-
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		lang, _ := r.Cookie("lang")
-		tag, _ := language.MatchStrings(matcher, lang.String(), r.Header.Get("Accept-Language"))
-
-		fmt.Println("User language:", tag)
-	})
 }
 
 func ExampleComprehends() {

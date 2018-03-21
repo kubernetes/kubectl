@@ -339,13 +339,13 @@ func TestStringEscaping(t *testing.T) {
 		}
 
 		// Check round-trip.
-		pbStrings := new(pb.Strings)
-		if err := proto.UnmarshalText(s, pbStrings); err != nil {
+		pb := new(pb.Strings)
+		if err := proto.UnmarshalText(s, pb); err != nil {
 			t.Errorf("#%d: UnmarshalText: %v", i, err)
 			continue
 		}
-		if !proto.Equal(pbStrings, tc.in) {
-			t.Errorf("#%d: Round-trip failed:\nstart: %v\n  end: %v", i, tc.in, pbStrings)
+		if !proto.Equal(pb, tc.in) {
+			t.Errorf("#%d: Round-trip failed:\nstart: %v\n  end: %v", i, tc.in, pb)
 		}
 	}
 }

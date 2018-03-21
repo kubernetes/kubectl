@@ -274,7 +274,7 @@ func decoderOfType(cfg *frozenConfig, typ reflect.Type) (ValDecoder, error) {
 	if decoder != nil {
 		return decoder, nil
 	}
-	decoder = getTypeDecoderFromExtension(typ)
+	decoder = getTypeDecoderFromExtension(cfg, typ)
 	if decoder != nil {
 		cfg.addDecoderToCache(cacheKey, decoder)
 		return decoder, nil
@@ -283,6 +283,9 @@ func decoderOfType(cfg *frozenConfig, typ reflect.Type) (ValDecoder, error) {
 	cfg.addDecoderToCache(cacheKey, decoder)
 	decoder, err := createDecoderOfType(cfg, typ)
 	for _, extension := range extensions {
+		decoder = extension.DecorateDecoder(typ, decoder)
+	}
+	for _, extension := range cfg.extensions {
 		decoder = extension.DecorateDecoder(typ, decoder)
 	}
 	cfg.addDecoderToCache(cacheKey, decoder)
@@ -441,7 +444,7 @@ func encoderOfType(cfg *frozenConfig, typ reflect.Type) (ValEncoder, error) {
 	if encoder != nil {
 		return encoder, nil
 	}
-	encoder = getTypeEncoderFromExtension(typ)
+	encoder = getTypeEncoderFromExtension(cfg, typ)
 	if encoder != nil {
 		cfg.addEncoderToCache(cacheKey, encoder)
 		return encoder, nil
@@ -450,6 +453,9 @@ func encoderOfType(cfg *frozenConfig, typ reflect.Type) (ValEncoder, error) {
 	cfg.addEncoderToCache(cacheKey, encoder)
 	encoder, err := createEncoderOfType(cfg, typ)
 	for _, extension := range extensions {
+		encoder = extension.DecorateEncoder(typ, encoder)
+	}
+	for _, extension := range cfg.extensions {
 		encoder = extension.DecorateEncoder(typ, encoder)
 	}
 	cfg.addEncoderToCache(cacheKey, encoder)
@@ -470,7 +476,7 @@ func createEncoderOfType(cfg *frozenConfig, typ reflect.Type) (ValEncoder, error
 		return &jsoniterNumberCodec{}, nil
 	}
 	if typ.Implements(marshalerType) {
-		checkIsEmpty, err := createCheckIsEmpty(typ)
+		checkIsEmpty, err := createCheckIsEmpty(cfg, typ)
 		if err != nil {
 			return nil, err
 		}
@@ -485,7 +491,7 @@ func createEncoderOfType(cfg *frozenConfig, typ reflect.Type) (ValEncoder, error
 		return encoder, nil
 	}
 	if reflect.PtrTo(typ).Implements(marshalerType) {
-		checkIsEmpty, err := createCheckIsEmpty(reflect.PtrTo(typ))
+		checkIsEmpty, err := createCheckIsEmpty(cfg, reflect.PtrTo(typ))
 		if err != nil {
 			return nil, err
 		}
@@ -497,7 +503,7 @@ func createEncoderOfType(cfg *frozenConfig, typ reflect.Type) (ValEncoder, error
 		return encoder, nil
 	}
 	if typ.Implements(textMarshalerType) {
-		checkIsEmpty, err := createCheckIsEmpty(typ)
+		checkIsEmpty, err := createCheckIsEmpty(cfg, typ)
 		if err != nil {
 			return nil, err
 		}
@@ -520,7 +526,7 @@ func createEncoderOfType(cfg *frozenConfig, typ reflect.Type) (ValEncoder, error
 	return createEncoderOfSimpleType(cfg, typ)
 }
 
-func createCheckIsEmpty(typ reflect.Type) (checkIsEmpty, error) {
+func createCheckIsEmpty(cfg *frozenConfig, typ reflect.Type) (checkIsEmpty, error) {
 	kind := typ.Kind()
 	switch kind {
 	case reflect.String:
@@ -565,7 +571,7 @@ func createCheckIsEmpty(typ reflect.Type) (checkIsEmpty, error) {
 	case reflect.Slice:
 		return &sliceEncoder{}, nil
 	case reflect.Map:
-		return &mapEncoder{}, nil
+		return encoderOfMap(cfg, typ)
 	case reflect.Ptr:
 		return &OptionalEncoder{}, nil
 	default:

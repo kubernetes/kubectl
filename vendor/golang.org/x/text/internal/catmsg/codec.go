@@ -99,7 +99,7 @@ func (e *Encoder) EncodeMessageType(h Handle) {
 
 // EncodeMessage serializes the given message inline at the current position.
 func (e *Encoder) EncodeMessage(m Message) error {
-	e = &Encoder{root: e.root, parent: e, tag: e.tag}
+	e = &Encoder{root: e.root, parent: e}
 	err := m.Compile(e)
 	if _, ok := m.(*Var); !ok {
 		e.flushTo(e.parent)
