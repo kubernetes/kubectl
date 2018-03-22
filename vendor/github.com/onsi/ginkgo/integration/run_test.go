@@ -146,29 +146,6 @@ var _ = Describe("Running Specs", func() {
 		})
 	})
 
-	Context("when there are test files but `go test` reports there are no tests to run", func() {
-		BeforeEach(func() {
-			pathToTest = tmpPath("ginkgo")
-			copyIn("no_test_fn", pathToTest)
-		})
-
-		It("suggests running ginkgo bootstrap", func() {
-			session := startGinkgo(tmpDir, "--noColor", "--skipPackage=other,focused", "-r")
-			Eventually(session).Should(gexec.Exit(0))
-			output := string(session.Err.Contents())
-
-			Ω(output).Should(ContainSubstring(`Found no test suites, did you forget to run "ginkgo bootstrap"?`))
-		})
-
-		It("fails if told to requireSuite", func() {
-			session := startGinkgo(tmpDir, "--noColor", "--skipPackage=other,focused", "-r", "-requireSuite")
-			Eventually(session).Should(gexec.Exit(1))
-			output := string(session.Err.Contents())
-
-			Ω(output).Should(ContainSubstring(`Found no test suites, did you forget to run "ginkgo bootstrap"?`))
-		})
-	})
-
 	Context("when told to randomizeSuites", func() {
 		BeforeEach(func() {
 			pathToTest = tmpPath("ginkgo")
@@ -267,7 +244,7 @@ var _ = Describe("Running Specs", func() {
 				if nodes > 4 {
 					nodes = nodes - 1
 				}
-				Ω(output).Should(MatchRegexp(`\[\d+\] Passing_ginkgo_tests Suite - 4 specs - %d nodes [%s]{4} SUCCESS! \d+(\.\d+)?[muµ]?s`, nodes, regexp.QuoteMeta(denoter)))
+				Ω(output).Should(MatchRegexp(`\[\d+\] Passing_ginkgo_tests Suite - 4 specs - %d nodes [%s]{4} SUCCESS! \d+(\.\d+)?[muµ]s`, nodes, regexp.QuoteMeta(denoter)))
 				Ω(output).Should(ContainSubstring("Test Suite Passed"))
 			})
 		})

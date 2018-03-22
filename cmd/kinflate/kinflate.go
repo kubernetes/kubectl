@@ -17,13 +17,24 @@ limitations under the License.
 package main
 
 import (
+	goflag "flag"
 	"os"
 
+	"github.com/spf13/pflag"
+
+	"k8s.io/apiserver/pkg/util/logs"
 	"k8s.io/kubectl/pkg/kinflate/commands"
 )
 
 func main() {
-	if err := commands.NewDefaultCommand().Execute(); err != nil {
+	cmd := commands.NewDefaultCommand()
+
+	pflag.CommandLine.AddGoFlagSet(goflag.CommandLine)
+
+	logs.InitLogs()
+	defer logs.FlushLogs()
+
+	if err := cmd.Execute(); err != nil {
 		os.Exit(1)
 	}
 	os.Exit(0)

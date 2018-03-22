@@ -946,7 +946,7 @@ func TestNonce_add(t *testing.T) {
 	c.addNonce(http.Header{"Replay-Nonce": {}})
 	c.addNonce(http.Header{"Replay-Nonce": {"nonce"}})
 
-	nonces := map[string]struct{}{"nonce": {}}
+	nonces := map[string]struct{}{"nonce": struct{}{}}
 	if !reflect.DeepEqual(c.nonces, nonces) {
 		t.Errorf("c.nonces = %q; want %q", c.nonces, nonces)
 	}
@@ -1186,9 +1186,6 @@ func TestTLSSNI01ChallengeCert(t *testing.T) {
 	if cert.DNSNames[0] != name {
 		t.Errorf("cert.DNSNames[0] != name: %q vs %q", cert.DNSNames[0], name)
 	}
-	if cn := cert.Subject.CommonName; cn != san {
-		t.Errorf("cert.Subject.CommonName = %q; want %q", cn, san)
-	}
 }
 
 func TestTLSSNI02ChallengeCert(t *testing.T) {
@@ -1221,9 +1218,6 @@ func TestTLSSNI02ChallengeCert(t *testing.T) {
 	i := sort.SearchStrings(cert.DNSNames, name)
 	if i >= len(cert.DNSNames) || cert.DNSNames[i] != name {
 		t.Errorf("%v doesn't have %q", cert.DNSNames, name)
-	}
-	if cn := cert.Subject.CommonName; cn != sanA {
-		t.Errorf("CommonName = %q; want %q", cn, sanA)
 	}
 }
 

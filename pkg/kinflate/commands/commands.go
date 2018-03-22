@@ -40,8 +40,11 @@ Find more information at:
 `,
 	}
 
+	f := newFactory()
+	f.bindFlags(c.PersistentFlags())
+
 	c.AddCommand(
-		newCmdInflate(stdOut, stdErr, fsys),
+		newCmdInflate(f, stdOut, stdErr, fsys),
 		newCmdDiff(stdOut, stdErr, fsys),
 		newCmdInit(stdOut, stdErr, fsys),
 		// 'add' sub command

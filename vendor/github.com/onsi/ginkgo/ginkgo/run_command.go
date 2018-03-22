@@ -71,7 +71,7 @@ func (r *SpecRunner) RunSpecs(args []string, additionalArgs []string) {
 
 	runners := []*testrunner.TestRunner{}
 	for _, suite := range suites {
-		runners = append(runners, testrunner.New(suite, r.commandFlags.NumCPU, r.commandFlags.ParallelStream, r.commandFlags.Timeout, r.commandFlags.GoOpts, additionalArgs))
+		runners = append(runners, testrunner.New(suite, r.commandFlags.NumCPU, r.commandFlags.ParallelStream, r.commandFlags.GoOpts, additionalArgs))
 	}
 
 	numSuites := 0
@@ -171,7 +171,7 @@ func orcMessage(iteration int) string {
 			"Still good...",
 			"I think your tests are fine....",
 			"Yep, still passing",
-			"Oh boy, here I go testin' again!",
+			"Here we go again...",
 			"Even the gophers are getting bored",
 			"Did you try -race?",
 			"Maybe you should stop now?",

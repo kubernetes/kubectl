@@ -77,11 +77,7 @@ func relPath(dir string) string {
 	dir, _ = filepath.Abs(dir)
 	cwd, _ := os.Getwd()
 	dir, _ = filepath.Rel(cwd, filepath.Clean(dir))
-
-	if string(dir[0]) != "." {
-		dir = "." + string(filepath.Separator) + dir
-	}
-
+	dir = "." + string(filepath.Separator) + dir
 	return dir
 }
 

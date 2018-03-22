@@ -1944,7 +1944,7 @@ func yaml_parser_scan_tag_handle(parser *yaml_parser_t, directive bool, start_ma
 	} else {
 		// It's either the '!' tag or not really a tag handle.  If it's a %TAG
 		// directive, it's an error.  If it's a tag token, it must be a part of URI.
-		if directive && string(s) != "!" {
+		if directive && !(s[0] == '!' && s[1] == 0) {
 			yaml_parser_set_scanner_tag_error(parser, directive,
 				start_mark, "did not find expected '!'")
 			return false
@@ -1959,12 +1959,12 @@ func yaml_parser_scan_tag_handle(parser *yaml_parser_t, directive bool, start_ma
 func yaml_parser_scan_tag_uri(parser *yaml_parser_t, directive bool, head []byte, start_mark yaml_mark_t, uri *[]byte) bool {
 	//size_t length = head ? strlen((char *)head) : 0
 	var s []byte
-	hasTag := len(head) > 0
+	length := len(head)
 
 	// Copy the head if needed.
 	//
 	// Note that we don't copy the leading '!' character.
-	if len(head) > 1 {
+	if length > 0 {
 		s = append(s, head[1:]...)
 	}
 
@@ -1997,14 +1997,15 @@ func yaml_parser_scan_tag_uri(parser *yaml_parser_t, directive bool, head []byte
 			}
 		} else {
 			s = read(parser, s)
+			length++
 		}
 		if parser.unread < 1 && !yaml_parser_update_buffer(parser, 1) {
 			return false
 		}
-		hasTag = true
 	}
 
-	if !hasTag {
+	// Check if the tag is non-empty.
+	if length == 0 {
 		yaml_parser_set_scanner_tag_error(parser, directive,
 			start_mark, "did not find expected tag URI")
 		return false
