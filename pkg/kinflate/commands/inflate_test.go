@@ -83,7 +83,8 @@ func TestInflate(t *testing.T) {
 				manifestPath: testcase.Filename,
 			}
 			buf := bytes.NewBuffer([]byte{})
-			err = ops.RunInflate(buf, os.Stderr, fs)
+			// TODO: use a fake factory
+			err = ops.RunInflate(newFactory(), buf, os.Stderr, fs)
 			if err != nil {
 				t.Errorf("unexpected error: %v", err)
 			}

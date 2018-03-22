@@ -23,7 +23,6 @@ import (
 	"path/filepath"
 
 	"github.com/spf13/cobra"
-
 	"k8s.io/kubectl/pkg/kinflate/app"
 	kutil "k8s.io/kubectl/pkg/kinflate/util"
 	"k8s.io/kubectl/pkg/kinflate/util/fs"
@@ -35,7 +34,7 @@ type inflateOptions struct {
 }
 
 // newCmdInflate creates a new inflate command.
-func newCmdInflate(out, errOut io.Writer, fs fs.FileSystem) *cobra.Command {
+func newCmdInflate(f *factory, out, errOut io.Writer, fs fs.FileSystem) *cobra.Command {
 	var o inflateOptions
 
 	cmd := &cobra.Command{
@@ -56,7 +55,7 @@ func newCmdInflate(out, errOut io.Writer, fs fs.FileSystem) *cobra.Command {
 				fmt.Fprintf(errOut, "error: %v\n", err)
 				os.Exit(1)
 			}
-			err = o.RunInflate(out, errOut, fs)
+			err = o.RunInflate(f, out, errOut, fs)
 			if err != nil {
 				fmt.Fprintf(errOut, "error: %v\n", err)
 				os.Exit(1)
@@ -80,7 +79,12 @@ func (o *inflateOptions) Complete(cmd *cobra.Command, args []string) error {
 }
 
 // RunInflate runs inflate command (do real work).
-func (o *inflateOptions) RunInflate(out, errOut io.Writer, fs fs.FileSystem) error {
+func (o *inflateOptions) RunInflate(f *factory, out, errOut io.Writer, fs fs.FileSystem) error {
+	_, err := f.openAPISchema()
+	if err != nil {
+		return err
+	}
+
 	l := loader.Init([]loader.SchemeLoader{loader.NewFileLoader(fs)})
 
 	absPath, err := filepath.Abs(o.manifestPath)
