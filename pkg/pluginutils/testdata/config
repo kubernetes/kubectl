@@ -4,11 +4,19 @@ clusters:
     certificate-authority:
     server: https://notreal.com:1234
   name: local
+- cluster:
+    certificate-authority:
+    server: https://notrealincalifornia.com:1234
+  name: california
 contexts:
 - context:
     cluster: local
     user: myself
   name: local
+- context:
+    cluster: california
+    user: myself
+  name: california
 current-context: local
 kind: Config
 preferences: {}

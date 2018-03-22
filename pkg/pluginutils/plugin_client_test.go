@@ -42,12 +42,11 @@ var _ = Describe("InitConfig", func() {
 				os.Setenv("KUBECTL_PLUGINS_GLOBAL_FLAG_USERNAME", "date")
 				os.Setenv("KUBECTL_PLUGINS_GLOBAL_FLAG_PASSWORD", "elderberry")
 
-				os.Setenv("KUBECTL_PLUGINS_GLOBAL_FLAG_CLUSTER", "")
+				os.Setenv("KUBECTL_PLUGINS_GLOBAL_FLAG_CONTEXT", "california")
 			})
 			It("overrides the config settings with the passed in settings", func() {
 				config, err := pluginutils.InitConfig()
 				Expect(err).NotTo(HaveOccurred())
-
 				Expect(config.Impersonate.UserName).To(Equal("apple"))
 				Expect(config.Impersonate.Groups).Should(ConsistOf("banana", "cherry"))
 
@@ -61,6 +60,8 @@ var _ = Describe("InitConfig", func() {
 
 				Expect(config.Username).To(Equal("date"))
 				Expect(config.Password).To(Equal("elderberry"))
+
+				Expect(config.Host).To(Equal("https://notrealincalifornia.com:1234"))
 			})
 		})
 	})

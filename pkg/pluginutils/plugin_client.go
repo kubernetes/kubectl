@@ -82,7 +82,16 @@ func clientFromConfig(path string) (*restclient.Config, string, error) {
 		return nil, "", fmt.Errorf("the provided credentials %q could not be loaded: %v", path, err)
 	}
 
-	cfg := clientcmd.NewDefaultClientConfig(*credentials, &clientcmd.ConfigOverrides{})
+	overrides := &clientcmd.ConfigOverrides{}
+	var cfg clientcmd.ClientConfig
+	context := os.Getenv("KUBECTL_PLUGINS_GLOBAL_FLAG_CONTEXT")
+	if len(context) > 0 {
+		rules := clientcmd.NewDefaultClientConfigLoadingRules()
+		cfg = clientcmd.NewNonInteractiveClientConfig(*credentials, context, overrides, rules)
+	} else {
+		cfg = clientcmd.NewDefaultClientConfig(*credentials, overrides)
+	}
+
 	config, err := cfg.ClientConfig()
 	if err != nil {
 		return nil, "", fmt.Errorf("the provided credentials %q could not be used: %v", path, err)
@@ -129,11 +138,6 @@ func applyGlobalOptionsToConfig(config *restclient.Config) error {
 
 	cluster := os.Getenv("KUBECTL_PLUGINS_GLOBAL_FLAG_CLUSTER")
 	if len(cluster) > 0 {
-		// TODO(jvallejo): figure out how to override kubeconfig options
-	}
-
-	context := os.Getenv("KUBECTL_PLUGINS_GLOBAL_FLAG_CONTEXT")
-	if len(context) > 0 {
 		// TODO(jvallejo): figure out how to override kubeconfig options
 	}
 
