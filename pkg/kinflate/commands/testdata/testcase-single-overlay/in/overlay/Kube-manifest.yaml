@@ -8,7 +8,7 @@ objectLabels:
   env: staging
 patches:
   - deployment.yaml
-packages:
+bases:
   - ../package/
 configmaps:
   - name: configmap-in-overlay

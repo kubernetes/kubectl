@@ -22,7 +22,7 @@ objectLabels:
 objectAnnotations:
   note: Hello, I am staging!
 
-packages:
+bases:
 - ..
 
 patches:

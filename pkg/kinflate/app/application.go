@@ -151,7 +151,7 @@ func (a *applicationImpl) RawResources() (resource.ResourceCollection, error) {
 func (a *applicationImpl) subAppResources() (resource.ResourceCollection, *interror.ManifestErrors) {
 	sliceOfSubAppResources := []resource.ResourceCollection{}
 	errs := &interror.ManifestErrors{}
-	for _, pkgPath := range a.manifest.Packages {
+	for _, pkgPath := range a.manifest.Bases {
 		subloader, err := a.loader.New(pkgPath)
 		if err != nil {
 			errs.Append(err)
