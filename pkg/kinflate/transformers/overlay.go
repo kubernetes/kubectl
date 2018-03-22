@@ -30,13 +30,13 @@ import (
 
 // overlayTransformer contains a map of overlay objects
 type overlayTransformer struct {
-	overlay resource.ResourceCollection
+	overlay []*resource.Resource
 }
 
 var _ Transformer = &overlayTransformer{}
 
 // NewOverlayTransformer constructs a overlayTransformer.
-func NewOverlayTransformer(overlay resource.ResourceCollection) (Transformer, error) {
+func NewOverlayTransformer(overlay []*resource.Resource) (Transformer, error) {
 	if len(overlay) == 0 {
 		return NewNoOpTransformer(), nil
 	}
@@ -46,8 +46,9 @@ func NewOverlayTransformer(overlay resource.ResourceCollection) (Transformer, er
 // Transform apply the overlay on top of the base resources.
 func (o *overlayTransformer) Transform(baseResourceMap resource.ResourceCollection) error {
 	// Strategic merge the resources exist in both base and overlay.
-	for gvkn, overlay := range o.overlay {
+	for _, overlay := range o.overlay {
 		// Merge overlay with base resource.
+		gvkn := overlay.GVKN()
 		base, found := baseResourceMap[gvkn]
 		if !found {
 			return fmt.Errorf("failed to find an object with %#v to apply the patch", gvkn.GVK)

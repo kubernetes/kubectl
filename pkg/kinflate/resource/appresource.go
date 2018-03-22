@@ -20,24 +20,38 @@ import (
 	"k8s.io/kubectl/pkg/loader"
 )
 
-func resourcesFromPath(loader loader.Loader, path string) (ResourceCollection, error) {
-	content, err := loader.Load(path)
-	if err != nil {
-		return nil, err
-	}
-
-	return decodeToResourceCollection(content)
-}
-
-//  NewFromPaths returns a slice of Resources given a resource path slice from manifest file.
-func NewFromPaths(loader loader.Loader, paths []string) (ResourceCollection, error) {
+//  NewFromResources returns a ResourceCollection given a resource path slice from manifest file.
+func NewFromResources(loader loader.Loader, paths []string) (ResourceCollection, error) {
 	allResources := []ResourceCollection{}
 	for _, path := range paths {
-		res, err := resourcesFromPath(loader, path)
+		content, err := loader.Load(path)
+		if err != nil {
+			return nil, err
+		}
+
+		res, err := decodeToResourceCollection(content)
 		if err != nil {
 			return nil, err
 		}
 		allResources = append(allResources, res)
 	}
 	return Merge(allResources...)
+}
+
+//  NewFromPatches returns a slice of Resources given a patch path slice from manifest file.
+func NewFromPatches(loader loader.Loader, paths []string) ([]*Resource, error) {
+	allResources := []*Resource{}
+	for _, path := range paths {
+		content, err := loader.Load(path)
+		if err != nil {
+			return nil, err
+		}
+
+		res, err := decode(content)
+		if err != nil {
+			return nil, err
+		}
+		allResources = append(allResources, res...)
+	}
+	return allResources, nil
 }

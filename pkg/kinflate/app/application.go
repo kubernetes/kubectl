@@ -86,7 +86,7 @@ func (a *applicationImpl) Resources() (resource.ResourceCollection, error) {
 		return nil, err
 	}
 
-	patches, err := resource.NewFromPaths(a.loader, a.manifest.Patches)
+	patches, err := resource.NewFromPatches(a.loader, a.manifest.Patches)
 	if err != nil {
 		errs.Append(err)
 	}
@@ -121,7 +121,7 @@ func (a *applicationImpl) Resources() (resource.ResourceCollection, error) {
 		return nil, err
 	}
 
-	t, err := a.getTransformer(patches)
+	t, err := a.getTransformer()
 	if err != nil {
 		return nil, err
 	}
@@ -136,7 +136,7 @@ func (a *applicationImpl) Resources() (resource.ResourceCollection, error) {
 // RawResources computes and returns the raw resources from the manifest.
 func (a *applicationImpl) RawResources() (resource.ResourceCollection, error) {
 	subAppResources, errs := a.subAppResources()
-	resources, err := resource.NewFromPaths(a.loader, a.manifest.Resources)
+	resources, err := resource.NewFromResources(a.loader, a.manifest.Resources)
 	if err != nil {
 		errs.Append(err)
 	}
@@ -182,7 +182,7 @@ func (a *applicationImpl) subAppResources() (resource.ResourceCollection, *inter
 // 2) apply labels
 // 3) apply annotations
 // 4) update name reference
-func (a *applicationImpl) getTransformer(patches resource.ResourceCollection) (transformers.Transformer, error) {
+func (a *applicationImpl) getTransformer() (transformers.Transformer, error) {
 	ts := []transformers.Transformer{}
 
 	npt, err := transformers.NewDefaultingNamePrefixTransformer(string(a.manifest.NamePrefix))
