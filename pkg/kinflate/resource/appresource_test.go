@@ -75,7 +75,7 @@ metadata:
 		},
 	}
 
-	resources, _ := NewFromPaths(l, []string{"/home/seans/project/deployment.yaml"})
+	resources, _ := NewFromResources(l, []string{"/home/seans/project/deployment.yaml"})
 	if len(resources) != 2 {
 		t.Fatalf("%#v should contain 2 appResource, but got %d", resources, len(resources))
 	}

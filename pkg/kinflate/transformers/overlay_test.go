@@ -59,11 +59,8 @@ func TestOverlayRun(t *testing.T) {
 			},
 		},
 	}
-	overlay := resource.ResourceCollection{
+	overlay := []*resource.Resource{
 		{
-			GVK:  schema.GroupVersionKind{Group: "apps", Version: "v1", Kind: "Deployment"},
-			Name: "deploy1",
-		}: &resource.Resource{
 			Data: &unstructured.Unstructured{
 				Object: map[string]interface{}{
 					"apiVersion": "apps/v1",
@@ -175,11 +172,8 @@ func TestNoSchemaOverlayRun(t *testing.T) {
 			},
 		},
 	}
-	overlay := resource.ResourceCollection{
+	overlay := []*resource.Resource{
 		{
-			GVK:  schema.GroupVersionKind{Group: "example.com", Version: "v1", Kind: "Foo"},
-			Name: "my-foo",
-		}: &resource.Resource{
 			Data: &unstructured.Unstructured{
 				Object: map[string]interface{}{
 					"apiVersion": "example.com/v1",

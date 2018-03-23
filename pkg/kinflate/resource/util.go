@@ -23,13 +23,12 @@ import (
 
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	k8syaml "k8s.io/apimachinery/pkg/util/yaml"
-	"k8s.io/kubectl/pkg/kinflate/types"
 )
 
 // decode decodes a list of objects in byte array format
-func decode(in []byte) ([]*unstructured.Unstructured, error) {
+func decode(in []byte) ([]*Resource, error) {
 	decoder := k8syaml.NewYAMLOrJSONDecoder(bytes.NewReader(in), 1024)
-	objs := []*unstructured.Unstructured{}
+	resources := []*Resource{}
 
 	var err error
 	for {
@@ -38,32 +37,29 @@ func decode(in []byte) ([]*unstructured.Unstructured, error) {
 		if err != nil {
 			break
 		}
-		objs = append(objs, &out)
+		resources = append(resources, &Resource{Data: &out})
 	}
 	if err != io.EOF {
 		return nil, err
 	}
-	return objs, nil
+	return resources, nil
 }
 
 // decodeToResourceCollection decodes a list of objects in byte array format.
 // it will return a ResourceCollection.
 func decodeToResourceCollection(in []byte) (ResourceCollection, error) {
-	objs, err := decode(in)
+	resources, err := decode(in)
 	if err != nil {
 		return nil, err
 	}
 
 	into := ResourceCollection{}
-	for i, obj := range objs {
-		gvkn := types.GroupVersionKindName{
-			GVK:  obj.GroupVersionKind(),
-			Name: obj.GetName(),
-		}
+	for _, res := range resources {
+		gvkn := res.GVKN()
 		if _, found := into[gvkn]; found {
 			return into, fmt.Errorf("GroupVersionKindName: %#v already exists in the map", gvkn)
 		}
-		into[gvkn] = &Resource{Data: objs[i]}
+		into[gvkn] = res
 	}
 	return into, nil
 }
