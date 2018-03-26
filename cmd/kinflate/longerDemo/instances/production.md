@@ -22,7 +22,7 @@ objectLabels:
 objectAnnotations:
   note: Hello, I am production!
 
-packages:
+bases:
 - ..
 
 patches:
