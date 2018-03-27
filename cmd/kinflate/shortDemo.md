@@ -1,4 +1,4 @@
-# Short Demo
+# Demo: hello world
 
 Prerequisites: [Go](https://golang.org/), [git](https://git-scm.com),
 a `PATH` containing `$GOPATH/bin`, [kubectl] set up
@@ -6,28 +6,31 @@ to talk to a cluster.
 
 [kubectl]: https://kubernetes.io/docs/user-guide/kubectl-overview/
 
-The following clones an app, customizes the resources in
-the app with a name prefix, then pipes the resulting
-YAML directly to a cluster via [kubectl].
+Steps:
 
-<!-- @makeWorkDir @test -->
-```
-TUT_DIR=$HOME/kinflate_demo
-/bin/rm -rf $TUT_DIR
-mkdir -p $TUT_DIR
-```
+ 1. Clone an off-the-shelf example configuration.
+ 1. Customizes the resources in it with a name prefix.
+ 1. Apply the result to a cluster via [kubectl].
 
-Download the app:
+First make a place to work:
 
-<!-- @downloadTutorialHelloApp @test -->
+<!-- @makeDemoDir @test -->
 ```
-cd $TUT_DIR
-git clone https://github.com/kinflate/tuthello
-cd tuthello
+DEMO_HOME=$(mktemp -d)
 ```
 
-Customize the base application by specifying a prefix that will be applied to
-all resource names:
+[example-hello]: https://github.com/kinflate/example-hello
+Clone an example configuration ([example-hello]):
+
+<!-- @cloneExample @test -->
+```
+cd $DEMO_HOME
+git clone https://github.com/kinflate/example-hello
+cd example-hello
+```
+
+Customize the base application by specifying a prefix
+that will be applied to all resource names:
 
 <!-- @customizeApp @test -->
 ```
@@ -48,16 +51,16 @@ Confirm that the prefix appears in the output:
 kinflate inflate -f . | grep --context=3 acme-
 ```
 
-Optionally apply to a cluster:
+Optionally apply the modified configuration to a cluster:
 
 <!-- @applyToCluster -->
 ```
 kinflate inflate -f . | kubectl apply -f -
 ```
 
-This fork of the app repository could be committed to a private repo.  Rebase as
-desired.
+This fork of [example-hello] could be commited to a
+private repo, and evolve independently of its upstream.
 
-## Longer demo / tutorial
+One could rebase from upstream as desired.
 
-See [longerDemo](longerDemo/README.md).
+__Next:__ [hello world (with instances)](longerDemo/README.md).

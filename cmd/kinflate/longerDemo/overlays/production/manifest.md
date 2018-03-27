@@ -24,4 +24,4 @@ patches:
 EOF
 ```
 
-__Next:__ [Production Patch](patch)
+__Next:__ [Production Patch](patch.md)

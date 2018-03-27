@@ -23,4 +23,4 @@ patches:
 - map.yaml
 EOF
 ```
-__Next:__ [Staging Patch](patch)
+__Next:__ [Staging Patch](patch.md)

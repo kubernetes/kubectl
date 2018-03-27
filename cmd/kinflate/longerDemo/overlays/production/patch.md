@@ -15,4 +15,4 @@ spec:
 EOF
 ```
 
-__Next:__ [Compare](../compare)
+__Next:__ [Compare](../compare.md)
