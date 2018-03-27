@@ -7,6 +7,7 @@ go_import_path: k8s.io/kubectl
 
 before_install:
   - source ./bin/consider-early-travis-exit.sh
+  - sudo apt-get install tree
   - go get -u github.com/golang/lint/golint
   - go get -u golang.org/x/tools/cmd/goimports
   - go get -u github.com/onsi/ginkgo/ginkgo
