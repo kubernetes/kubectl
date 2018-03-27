@@ -1,3 +1,4 @@
 staging
 production
 compare
+deploy

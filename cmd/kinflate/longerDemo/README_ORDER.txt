@@ -1,8 +1,5 @@
-resources
-base
+clone
 manifest
-identity
-customization
-instances
-lifecycle
+customize
+overlays
 editor

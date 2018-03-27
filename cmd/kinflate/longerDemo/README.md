@@ -1,27 +1,28 @@
-# Longer Demo
+# Kinflate Demo
 
- * Create a raw set of resources: deployment, service, configMap
+Goal:
 
- * Run them on a cluster
+ 1. Clone a simple off-the-shelf example as a base configuration.
+ 1. Customize it.
+ 1. Create two different instances based on the customization.
 
- * Create a manifest referring to them
+First install the tool, and define a place to work locally:
 
- * Simple customizations
-
- * Instances
-
- * Git flow
-
- * Editor
-
-<!-- @makeWorkDir @test -->
+<!-- @install @test -->
 ```
-TUT_DIR=$HOME/kinflate_demo
-/bin/rm -rf $TUT_DIR
-mkdir -p $TUT_DIR
-
-TUT_TMP=$TUT_DIR/tmp
-mkdir -p $TUT_TMP
+go get k8s.io/kubectl/cmd/kinflate
+```
+<!-- @makeWorkplace @test -->
+```
+DEMO_HOME=$(mktemp -d)
 ```
 
-__Next:__ [Make some resources](resources.md)
+Alternatively, use
+
+> ```
+> DEMO_HOME=~/hello
+> ```
+
+
+
+__Next:__ [Clone an Example](clone)

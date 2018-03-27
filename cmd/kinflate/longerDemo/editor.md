@@ -1,19 +1,17 @@
 # Edit tool
 
-> _kinflate is a text editor / linter!_
-
 Kinflate's basic function is to read manifests and resources to create new YAML.
 
-It also offers some basic manifest file operations.
+It also offers some basic manifest file operations, to let one
+change a manifest file safely without using a general editor.
 
 Make a new workspace:
 
 <!-- @workspace @test -->
 ```
-TUT_EDITS=$TUT_TMP/edits
-/bin/rm -rf $TUT_EDITS
-mkdir -p $TUT_EDITS
-pushd $TUT_EDITS
+rm -rf $DEMO_HOME/edits
+mkdir -p $DEMO_HOME/edits
+pushd $DEMO_HOME/edits
 ```
 
 Create a manifest:
@@ -37,7 +35,7 @@ cat <<EOF >configMap.yaml
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: tut-map
+  name: the-map
 data:
   altGreeting: "Good Morning!"
   enableRisky: "false"
