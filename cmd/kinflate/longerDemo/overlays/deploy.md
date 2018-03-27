@@ -23,3 +23,5 @@ To deploy, pipe the above commands to kubectl apply:
 > kinflate inflate -f $OVERLAYS/production |\
 >    kubectl apply -f -
 > ```
+
+__Next:__ [Editting](../editor.md)

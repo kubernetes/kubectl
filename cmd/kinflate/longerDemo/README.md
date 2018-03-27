@@ -1,4 +1,4 @@
-# Kinflate Demo
+# Demo: hello world with instances
 
 Goal:
 
@@ -25,4 +25,4 @@ Alternatively, use
 
 
 
-__Next:__ [Clone an Example](clone)
+__Next:__ [Clone an Example](clone.md)

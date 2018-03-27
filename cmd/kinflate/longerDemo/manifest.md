@@ -16,4 +16,4 @@ to `stdout`:
 kinflate inflate -f $BASE
 ```
 
-__Next:__ [Customize it](customize)
+__Next:__ [Customize it](customize.md)

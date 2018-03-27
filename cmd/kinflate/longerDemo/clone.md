@@ -30,4 +30,4 @@ cluster:
 
 to instantiate the _hello_ service in off-the-shelf form.
 
-__Next:__ [The Base Manifest](manifest)
+__Next:__ [The Base Manifest](manifest.md)

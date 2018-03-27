@@ -13,4 +13,4 @@ mkdir -p $OVERLAYS/staging
 mkdir -p $OVERLAYS/production
 ```
 
-__Next:__ [Staging](staging)
+__Next:__ [Staging](staging/manifest.md)
