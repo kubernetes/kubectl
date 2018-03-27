@@ -17,6 +17,9 @@ limitations under the License.
 package app
 
 import (
+	"bytes"
+	"encoding/json"
+
 	"github.com/ghodss/yaml"
 
 	manifest "k8s.io/kubectl/pkg/apis/manifest/v1alpha1"
@@ -52,7 +55,7 @@ func New(loader loader.Loader) (Application, error) {
 	}
 
 	var m manifest.Manifest
-	err = yaml.Unmarshal(manifestBytes, &m)
+	err = unmarshal(manifestBytes, &m)
 	if err != nil {
 		return nil, err
 	}
@@ -220,4 +223,15 @@ func reindexResourceCollection(rc resource.ResourceCollection) resource.Resource
 		result[gvkn] = res
 	}
 	return result
+}
+
+func unmarshal(y []byte, o interface{}) error {
+	j, err := yaml.YAMLToJSON(y)
+	if err != nil {
+		return err
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(j))
+	dec.DisallowUnknownFields()
+	return dec.Decode(o)
 }

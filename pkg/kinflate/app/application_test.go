@@ -36,7 +36,6 @@ func setupTest(t *testing.T) loader.Loader {
 kind: Manifest
 metadata:
   name: nginx-app
-description: nginx app
 namePrefix: foo-
 objectLabels:
   app: nginx
