@@ -10,7 +10,7 @@ apiVersion: manifest.k8s.io/v1alpha1
 kind: Package
 metadata:
   name: makes-staging-hello
-description: hello configured for staging
+# description: hello configured for staging
 namePrefix: staging-
 objectLabels:
   instance: staging
