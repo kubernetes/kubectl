@@ -6,8 +6,8 @@ production scenario.
 
 In the production environment we want:
 
-- MySQL resource names to be prefixed by 'prod-' to make them distinguishable.
-- MySQL resources to have 'env: prod' labels so that we can use label selector to query these.
+- MySQL resource names to be prefixed by 'prod-'.
+- MySQL resources to have 'env: prod' labels.
 - MySQL to use persistent disk for storing data.
 
 ### Download resources
@@ -18,8 +18,7 @@ could add to a k8s cluster to run MySql.
 
 <!-- @makeMySQLDir @test -->
 ```
-DEMO_HOME=$HOME/kinflate_demo/mysql
-rm -rf $DEMO_HOME && mkdir -p $DEMO_HOME
+DEMO_HOME=$(mktemp -d)
 cd $DEMO_HOME
 
 # Get MySQL configs
@@ -30,14 +29,13 @@ done
 
 ### Initialize a manifest
 
-A manifest is needed to group these resources together.
+A _manifest_ groups these resources together.
 
 Create one:
 
 <!-- @initApp @test -->
 ```
-mkdir -p $DEMO_HOME/prod
-cd $DEMO_HOME/prod
+cd $DEMO_HOME
 kinflate init
 ```
 
@@ -45,7 +43,7 @@ You should now have a file called `Kube-manifest.yaml`:
 
 <!-- @catMan @test -->
 ```
-cat $DEMO_HOME/prod/Kube-manifest.yaml
+cat $DEMO_HOME/Kube-manifest.yaml
 ```
 
 containing something like:
@@ -76,17 +74,15 @@ containing something like:
 > ```
 
 
-### Add resources
-
-Add the resources to the manifest
+### Add the resources to the manifest
 
 <!-- @addResources @test -->
 ```
-cd $DEMO_HOME/prod
+cd $DEMO_HOME
 
-kinflate add resource ../secret.yaml
-kinflate add resource ../service.yaml
-kinflate add resource ../deployment.yaml
+kinflate add resource secret.yaml
+kinflate add resource service.yaml
+kinflate add resource deployment.yaml
 
 cat Kube-manifest.yaml
 ```
@@ -97,14 +93,12 @@ cat Kube-manifest.yaml
 > apiVersion: manifest.k8s.io/v1alpha1
 > ....
 > resources:
-> - ../secret.yaml
-> - ../service.yaml
-> - ../deployment.yaml
+> - secret.yaml
+> - service.yaml
+> - deployment.yaml
 > ```
 
-Now we are ready to apply our first customization.
-
-### NamePrefix Customization
+### Name Customization
 
 Arrange for the MySQL resources to begin with prefix
 _prod-_ (since they are meant for the _production_
@@ -112,7 +106,7 @@ environment):
 
 <!-- @customizeLabel @test -->
 ```
-cd $DEMO_HOME/prod
+cd $DEMO_HOME
 
 kinflate set nameprefix 'prod-'
 
@@ -127,16 +121,14 @@ cat Kube-manifest.yaml
 > namePrefix: prod-
 > objectAnnotations:
 >  note: This is a example annotation
+> ```
 
 This `namePrefix` directive adds _prod-_ to all
 resource names.
 
-Run kinflate:
-
 <!-- @genNamePrefixConfig @test -->
 ```
-cd $DEMO_HOME/prod
-kinflate inflate -f .
+kinflate inflate -f $DEMO_HOME
 ```
 
 The output should contain:
@@ -180,8 +172,8 @@ label, but we can edit `Kube-manifest.yaml` file under
 
 <!-- @customizeLabels @test -->
 ```
-cd $DEMO_HOME/prod
-sed -i 's/app: helloworld/app: prod/' Kube-manifest.yaml
+sed -i 's/app: helloworld/app: prod/' \
+    $DEMO_HOME/Kube-manifest.yaml
 ```
 
 At this point, running `kinflate inflate -f .` will
@@ -197,12 +189,9 @@ environment. So we want to use Persistent Disk in
 production. Kinflate lets you apply `patches` to the
 resources.
 
-<!-- @customizeOverlay @test -->
+<!-- @createPatchFile @test -->
 ```
-cd $DEMO_HOME/prod
-
-# Create a patch for persistent-disk.yaml
-cat <<'EOF' > persistent-disk.yaml
+cat <<'EOF' > $DEMO_HOME/persistent-disk.yaml
 apiVersion: apps/v1beta2 # for versions before 1.9.0 use apps/v1beta2
 kind: Deployment
 metadata:
@@ -216,9 +205,13 @@ spec:
         gcePersistentDisk:
           pdName: mysql-persistent-storage
 EOF
+```
 
-# Edit the manifest file to add the above patch:
-cat <<'EOF' >> $DEMO_HOME/prod/Kube-manifest.yaml
+Specify the patch file in the manifest:
+
+<!-- @specifyPatch @test -->
+```
+cat <<'EOF' >> $DEMO_HOME/Kube-manifest.yaml
 patches:
 - persistent-disk.yaml
 EOF
@@ -242,5 +235,5 @@ create the production environment.
 
 <!-- @finalInflation @test -->
 ```
-kinflate inflate -f $DEMO_HOME/prod  # | kubectl apply -f -
+kinflate inflate -f $DEMO_HOME  # | kubectl apply -f -
 ```

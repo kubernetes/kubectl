@@ -39,6 +39,6 @@ go get k8s.io/kubectl/cmd/kinflate
 
 ## Demos
 
- * [hello world one-pager](shortDemo.md)
- * [hello world detailed, with instances](longerDemo/README.md)
- * [mysql](getting_started.md)
+ * [hello world one-pager](demoHelloWorldShort.md)
+ * [hello world detailed, with instances](demoHelloWorldLong/README.md)
+ * [mysql](demoMySql.md)
