@@ -1,9 +1,5 @@
 # Demo: hello world
 
-Prerequisites: [Go](https://golang.org/), [git](https://git-scm.com),
-a `PATH` containing `$GOPATH/bin`, [kubectl] set up
-to talk to a cluster.
-
 [kubectl]: https://kubernetes.io/docs/user-guide/kubectl-overview/
 
 Steps:
@@ -51,7 +47,7 @@ Confirm that the prefix appears in the output:
 kinflate inflate -f . | grep --context=3 acme-
 ```
 
-Optionally apply the modified configuration to a cluster:
+Optionally apply the modified configuration to a cluster
 
 <!-- @applyToCluster -->
 ```
@@ -63,4 +59,4 @@ private repo, and evolve independently of its upstream.
 
 One could rebase from upstream as desired.
 
-__Next:__ [hello world (with instances)](longerDemo/README.md).
+__Next:__ [hello world (with instances)](demoHelloWorldLong/README.md).
