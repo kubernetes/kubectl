@@ -57,6 +57,5 @@ kinflate inflate -f . | kubectl apply -f -
 This fork of [example-hello] could be commited to a
 private repo, and evolve independently of its upstream.
 
-One could rebase from upstream as desired.
-
-__Next:__ [hello world (with instances)](demoHelloWorldLong/README.md).
+As desired, one could occasionally rebase from upstream
+to capture updated base configuration.
