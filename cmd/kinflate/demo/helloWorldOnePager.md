@@ -4,8 +4,8 @@
 
 Steps:
 
- 1. Clone an off-the-shelf example configuration.
- 1. Customizes the resources in it with a name prefix.
+ 1. Clone an off-the-shelf configuration.
+ 1. Customize its resources with a name prefix.
  1. Apply the result to a cluster via [kubectl].
 
 First make a place to work:

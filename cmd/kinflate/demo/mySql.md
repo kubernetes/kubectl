@@ -1,4 +1,4 @@
-# MySql Example
+# Demo: MySql
 
 This example takes some off-the-shelf k8s resources
 designed for MySQL, and customizes them to suit a
