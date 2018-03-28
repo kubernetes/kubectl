@@ -1,10 +1,11 @@
 # Demo: hello world with instances
 
-Goal:
+Steps:
 
- 1. Clone a simple off-the-shelf example as a base configuration.
+ 1. Clone an off-the-shelf configuration as your base.
  1. Customize it.
- 1. Create two different instances based on the customization.
+ 1. Create two different instances (_staging_ and _production_)
+    from your customized base.
 
 First define a place to work:
 
