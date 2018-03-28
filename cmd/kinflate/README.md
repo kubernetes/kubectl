@@ -32,6 +32,9 @@ Grant's [Declarative Application Management] proposal.
 
 ## Installation
 
+Assumes [Go](https://golang.org/) is installed
+and your `PATH` contains `$GOPATH/bin`:
+
 <!-- @installKinflate @test -->
 ```
 go get k8s.io/kubectl/cmd/kinflate
@@ -40,5 +43,5 @@ go get k8s.io/kubectl/cmd/kinflate
 ## Demos
 
  * [hello world one-pager](demoHelloWorldShort.md)
- * [hello world detailed, with instances](demoHelloWorldLong/README.md)
- * [mysql](demoMySql.md)
+ * [hello world, with instances, slide format](demoHelloWorldLong/README.md)
+ * [mysql one-pager](demoMySql.md)
