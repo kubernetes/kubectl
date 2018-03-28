@@ -4,7 +4,6 @@ apiVersion: manifest.k8s.io/v1alpha1
 kind: Manifest
 metadata:
   name: test-infra-mungebot
-description: Mungebot config for test-infra repo
 namePrefix: test-infra-
 # Labels to add to all objects and selectors.
 # These labels would also be used to form the selector for apply --prune
@@ -34,5 +33,4 @@ secretGenerators:
     tls.crt: "cat secret/tls.cert"
     tls.key: "cat secret/tls.key"
   type: "kubernetes.io/tls"
-recursive: false
 prune: true # I’d make this the default

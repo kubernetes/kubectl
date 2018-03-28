@@ -2,7 +2,6 @@ apiVersion: manifest.k8s.io/v1alpha1
 kind: Manifest
 metadata:
   name: nginx-app
-description: nginx app for team foo
 namePrefix: team-foo-
 objectLabels:
   app: mynginx

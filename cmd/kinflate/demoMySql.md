@@ -54,7 +54,7 @@ containing something like:
 > kind: Manifest
 > metadata:
 >   name: helloworld
-> description: helloworld does useful stuff.
+> # description: helloworld does useful stuff.
 > namePrefix: some-prefix
 > # Labels to add to all objects and selectors.
 > # These labels would also be used to form the selector for apply --prune
