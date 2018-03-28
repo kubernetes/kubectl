@@ -10,20 +10,25 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("InitConfig", func() {
+var _ = Describe("plugin client", func() {
 	BeforeEach(func() {
 		os.Setenv("KUBECTL_PLUGINS_GLOBAL_FLAG_KUBECONFIG", "testdata/config")
 	})
 
-	Describe("InitConfig", func() {
+	Describe("InitClientAndConfig", func() {
 		Context("When nothing is overridden by the calling framework", func() {
 			It("finds and parses the preexisting config", func() {
-				config, err := pluginutils.InitConfig()
+				client, config, err := pluginutils.InitClientAndConfig()
 				Expect(err).NotTo(HaveOccurred())
 
-				Expect(config.Host).To(Equal("https://notreal.com:1234"))
-				Expect(config.Username).To(Equal("foo"))
-				Expect(config.Password).To(Equal("bar"))
+				Expect(client.Host).To(Equal("https://notreal.com:1234"))
+				Expect(client.Username).To(Equal("foo"))
+				Expect(client.Password).To(Equal("bar"))
+
+				namespace, overridden, err := config.Namespace()
+				Expect(err).NotTo(HaveOccurred())
+				Expect(namespace).To(Equal("default"))
+				Expect(overridden).To(BeFalse())
 			})
 		})
 
@@ -43,25 +48,31 @@ var _ = Describe("InitConfig", func() {
 				os.Setenv("KUBECTL_PLUGINS_GLOBAL_FLAG_PASSWORD", "elderberry")
 
 				os.Setenv("KUBECTL_PLUGINS_GLOBAL_FLAG_CONTEXT", "california")
+				os.Setenv("KUBECTL_PLUGINS_GLOBAL_FLAG_NAMESPACE", "catalog")
 			})
 			It("overrides the config settings with the passed in settings", func() {
-				config, err := pluginutils.InitConfig()
+				client, config, err := pluginutils.InitClientAndConfig()
 				Expect(err).NotTo(HaveOccurred())
-				Expect(config.Impersonate.UserName).To(Equal("apple"))
-				Expect(config.Impersonate.Groups).Should(ConsistOf("banana", "cherry"))
+				Expect(client.Impersonate.UserName).To(Equal("apple"))
+				Expect(client.Impersonate.Groups).Should(ConsistOf("banana", "cherry"))
 
-				Expect(config.CertFile).To(Equal("testdata/client.crt"))
-				Expect(config.KeyFile).To(Equal("testdata/client.key"))
-				Expect(config.CAFile).To(Equal("testdata/apiserver_ca.crt"))
+				Expect(client.CertFile).To(Equal("testdata/client.crt"))
+				Expect(client.KeyFile).To(Equal("testdata/client.key"))
+				Expect(client.CAFile).To(Equal("testdata/apiserver_ca.crt"))
 
-				Expect(config.Timeout).To(Equal(45 * time.Second))
-				Expect(config.ServerName).To(Equal("some-other-server.com"))
-				Expect(config.BearerToken).To(Equal("bearer notreal"))
+				Expect(client.Timeout).To(Equal(45 * time.Second))
+				Expect(client.ServerName).To(Equal("some-other-server.com"))
+				Expect(client.BearerToken).To(Equal("bearer notreal"))
 
-				Expect(config.Username).To(Equal("date"))
-				Expect(config.Password).To(Equal("elderberry"))
+				Expect(client.Username).To(Equal("date"))
+				Expect(client.Password).To(Equal("elderberry"))
 
-				Expect(config.Host).To(Equal("https://notrealincalifornia.com:1234"))
+				Expect(client.Host).To(Equal("https://notrealincalifornia.com:1234"))
+
+				namespace, overridden, err := config.Namespace()
+				Expect(err).NotTo(HaveOccurred())
+				Expect(namespace).To(Equal("catalog"))
+				Expect(overridden).To(BeTrue())
 			})
 		})
 	})
