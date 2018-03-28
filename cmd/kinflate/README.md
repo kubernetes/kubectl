@@ -40,6 +40,8 @@ and your `PATH` contains `$GOPATH/bin`:
 go get k8s.io/kubectl/cmd/kinflate
 ```
 
+Note: golang 1.10 or newer is required.
+
 ## Demos
 
  * [hello world one-pager](demoHelloWorldShort.md)
