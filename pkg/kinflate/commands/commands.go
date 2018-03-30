@@ -17,6 +17,7 @@ limitations under the License.
 package commands
 
 import (
+	"flag"
 	"io"
 	"os"
 
@@ -49,6 +50,13 @@ Find more information at:
 		// 'set' sub command
 		newCmdSet(stdOut, stdErr, fsys),
 	)
+
+	// add the glog flags
+	c.PersistentFlags().AddGoFlagSet(flag.CommandLine)
+
+	// Workaround for this issue:
+	// https://github.com/kubernetes/kubernetes/issues/17162
+	flag.CommandLine.Parse([]string{})
 
 	return c
 }
