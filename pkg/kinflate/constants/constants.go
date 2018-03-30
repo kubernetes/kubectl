@@ -19,3 +19,8 @@ package constants
 // KubeManifestFileName is the Well-Known File Name for a kubernetes app manifest.
 const KubeManifestSuffix = ".yaml"
 const KubeManifestFileName = "Kube-manifest" + KubeManifestSuffix
+
+// Configmap behaviors
+const CreateBehavior = "create"
+const ReplaceBehavior = "replace"
+const MergeBehavior = "merge"

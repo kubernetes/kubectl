@@ -27,7 +27,8 @@ import (
 // Resource represents a Kubernetes Resource Object for ex. Deployment, Server
 // ConfigMap etc.
 type Resource struct {
-	Data *unstructured.Unstructured
+	Data     *unstructured.Unstructured
+	Behavior string
 }
 
 // GVKN returns Group/Version/Kind/Name for the resource.
