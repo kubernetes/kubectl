@@ -19,10 +19,14 @@ package main
 import (
 	"os"
 
+	"github.com/golang/glog"
+
 	"k8s.io/kubectl/pkg/kinflate/commands"
 )
 
 func main() {
+	defer glog.Flush()
+
 	if err := commands.NewDefaultCommand().Execute(); err != nil {
 		os.Exit(1)
 	}
