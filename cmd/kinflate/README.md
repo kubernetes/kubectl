@@ -11,6 +11,11 @@ configuration targetted to kubernetes.
 It's an implementation of ideas described in Brian
 Grant's [Declarative Application Management] proposal.
 
+## Workflows
+
+_TODO_
+
+See also the [glossary](glossary.md).
 
 ## Design tenets
 
