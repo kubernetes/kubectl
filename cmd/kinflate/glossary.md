@@ -3,7 +3,6 @@
 [DAM]: #declarative-application-management
 [JSON]: https://www.json.org/
 [Resource]: #resource
-[TypeMeta]: https://github.com/kubernetes/kubernetes/blob/master/pkg/api/unversioned/types.go
 [YAML]: http://www.yaml.org/start.html
 [application]: #application
 [apply]: #apply
@@ -115,8 +114,11 @@ of k8s clusters.
 An _instance_ is the outcome, in a cluster, of applying
 an [overlay] to a [base].
 
-> E.g. a _staging_ and _production_ overlay both modify
-> some common base to create distinct instances.
+Roughly synonymous with [overlay].
+
+> For example, a _staging_ and _production_ overlay
+> both modify some common base to create distinct
+> instances.
 >
 > The _staging_ instance is the set of resources
 > exposed to quality assurance testing, or to some
@@ -127,12 +129,6 @@ an [overlay] to a [base].
 > exposed to production traffic, and thus may employ
 > deployments with a large number of replicas and higher
 > cpu and memory requests.
-
-In a best practices end-user target layout, a directory
-called _overlays_ (or _instances_) contains overlays in
-its sub-directories.
-
-Roughly synonymous with [overlay].
 
 
 ## kinflate
@@ -155,16 +151,18 @@ describes a configuration consumable by [kinflate].
 
 A manifest contains fields falling into these categories:
 
- * (_TBD_) Standard k8s API kind-version fields, e.g. [TypeMeta].
- * Immediate customization instructions - _nameprefix_, _labelprefix_, etc.
+ * Immediate customization instructions -
+   _nameprefix_, _labelprefix_, etc.
  * Resource _generators_ for configmaps and secrets.
  * Cargo - _names of external files_ in these categories:
    * [resources] - completely specified k8s API objects,
       e.g. `deployment.yaml`, `configmap.yaml`, etc.
    * [patches] - _partial_ resources that modify full
-     resources defined in a [base] (only meaningful in an [overlay]).
-   * [bases] - path to a directory containing a [manifest]
-      (only meaningful in an [overlay]).
+     resources defined in a [base]
+     (only meaningful in an [overlay]).
+   * [bases] - path to a directory containing
+     a [manifest] (only meaningful in an [overlay]).
+ * (_TBD_) Standard k8s API kind-version fields.
 
 ## off-the-shelf configuration
 
@@ -212,10 +210,8 @@ One configures the cluser like this:
 >  kinflate inflate -f ldap/overlays/production | kubectl apply -f -
 > ```
 
-etc.
-
-Usage of the base is implicit (one would need to
-examine the manifests to see it).
+Usage of the base is implicit (the overlay's manifest
+points to the base).
 
 An overlay may act as a base to another overlay.
 

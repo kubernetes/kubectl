@@ -1,7 +1,7 @@
 # kinflate
 
-[_kubectl apply_]: https://goo.gl/UbCRuf
-[DAM]: glossary#delcarative-application-management
+[_kubectl apply_]: glossary.md#apply
+[DAM]: glossary.md#declarative-application-management
 [workflows]: workflows.md
 
 `kinflate` is a command line tool supporting
