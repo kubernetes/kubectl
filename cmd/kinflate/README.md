@@ -1,8 +1,8 @@
 # kinflate
 
-[_kubectl apply_]: glossary.md#apply
-[DAM]: glossary.md#declarative-application-management
-[workflows]: workflows.md
+[_kubectl apply_]: docs/glossary.md#apply
+[DAM]: docs/glossary.md#declarative-application-management
+[workflows]: docs/workflows.md
 
 `kinflate` is a command line tool supporting
 template-free customization of declarative
