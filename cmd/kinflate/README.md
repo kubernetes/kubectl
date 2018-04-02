@@ -1,16 +1,17 @@
 # kinflate
 
-[_kubectl apply_]: https://goo.gl/UbCRuf
-[Declarative Application Management]: https://goo.gl/T66ZcD
-
+[_kubectl apply_]: glossary.md#apply
+[DAM]: glossary.md#declarative-application-management
+[workflows]: workflows.md
 
 `kinflate` is a command line tool supporting
 template-free customization of declarative
-configuration targetted to kubernetes.
+configuration targetted to kubernetes.  It's an
+implementation of ideas described in Brian Grant's
+[DAM] proposal.
 
-It's an implementation of ideas described in Brian
-Grant's [Declarative Application Management] proposal.
-
+kinflate plays a role in various configuration
+management [workflows].
 
 ## Design tenets
 
