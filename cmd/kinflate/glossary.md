@@ -27,9 +27,9 @@
 
 ## application
 
-An _application_ is a group of k8s resources that
-server some common purpose, e.g.  a webserver backed by
-a database.
+An _application_ is a group of k8s resources related by
+some common purpose, e.g.  a load balancer in front of a
+webserver backed by a database.
 
 [Resource] labelling, naming and metadata schemes have
 historically served to group resources together for
