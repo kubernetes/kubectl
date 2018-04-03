@@ -27,12 +27,13 @@ import (
 
 	restclient "k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
+	clientcmdapi "k8s.io/client-go/tools/clientcmd/api"
 )
 
-// InitConfig uses the KUBECONFIG environment variable to create a new config
-// object based on the existing kubectl config and options passed from the
-// calling plugin framework
-func InitConfig() (*restclient.Config, error) {
+// InitClientAndConfig uses the KUBECONFIG environment variable to create
+// a new rest client and config object based on the existing kubectl config
+// and options passed from the plugin framework via environment variables
+func InitClientAndConfig() (*restclient.Config, clientcmd.ClientConfig, error) {
 	// resolve kubeconfig location, prioritizing the --config global flag,
 	// then the value of the KUBECONFIG env var (if any), and defaulting
 	// to ~/.kube/config as a last resort.
@@ -59,30 +60,39 @@ func InitConfig() (*restclient.Config, error) {
 	}
 
 	if len(kubeconfig) == 0 {
-		return nil, fmt.Errorf("error initializing config. The KUBECONFIG environment variable must be defined.")
+		return nil, nil, fmt.Errorf("error initializing config. The KUBECONFIG environment variable must be defined.")
 	}
 
-	clientConfig, _, err := clientFromConfig(kubeconfig)
+	config, err := configFromPath(kubeconfig)
 	if err != nil {
-		return nil, fmt.Errorf("error obtaining kubectl config: %v", err)
+		return nil, nil, fmt.Errorf("error obtaining kubectl config: %v", err)
 	}
-
-	err = applyGlobalOptionsToConfig(clientConfig)
+	client, err := config.ClientConfig()
 	if err != nil {
-		return nil, fmt.Errorf("error processing global plugin options: %v", err)
+		return nil, nil, fmt.Errorf("the provided credentials %q could not be used: %v", kubeconfig, err)
 	}
 
-	return clientConfig, nil
+	err = applyGlobalOptionsToConfig(client)
+	if err != nil {
+		return nil, nil, fmt.Errorf("error processing global plugin options: %v", err)
+	}
+
+	return client, config, nil
 }
 
-func clientFromConfig(path string) (*restclient.Config, string, error) {
+func configFromPath(path string) (clientcmd.ClientConfig, error) {
 	rules := &clientcmd.ClientConfigLoadingRules{ExplicitPath: path}
 	credentials, err := rules.Load()
 	if err != nil {
-		return nil, "", fmt.Errorf("the provided credentials %q could not be loaded: %v", path, err)
+		return nil, fmt.Errorf("the provided credentials %q could not be loaded: %v", path, err)
 	}
 
-	overrides := &clientcmd.ConfigOverrides{}
+	overrides := &clientcmd.ConfigOverrides{
+		Context: clientcmdapi.Context{
+			Namespace: os.Getenv("KUBECTL_PLUGINS_GLOBAL_FLAG_NAMESPACE"),
+		},
+	}
+
 	var cfg clientcmd.ClientConfig
 	context := os.Getenv("KUBECTL_PLUGINS_GLOBAL_FLAG_CONTEXT")
 	if len(context) > 0 {
@@ -92,13 +102,7 @@ func clientFromConfig(path string) (*restclient.Config, string, error) {
 		cfg = clientcmd.NewDefaultClientConfig(*credentials, overrides)
 	}
 
-	config, err := cfg.ClientConfig()
-	if err != nil {
-		return nil, "", fmt.Errorf("the provided credentials %q could not be used: %v", path, err)
-	}
-
-	namespace, _, _ := cfg.Namespace()
-	return config, namespace, nil
+	return cfg, nil
 }
 
 func applyGlobalOptionsToConfig(config *restclient.Config) error {
