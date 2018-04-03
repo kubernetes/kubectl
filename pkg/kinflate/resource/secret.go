@@ -52,7 +52,7 @@ func newFromSecretGenerator(p string, s manifest.SecretGenerator) (*Resource, er
 		return nil, err
 	}
 
-	return &Resource{Data: obj}, nil
+	return &Resource{Data: obj, Behavior: s.Behavior}, nil
 }
 
 func createSecretKey(wd string, command string) ([]byte, error) {
