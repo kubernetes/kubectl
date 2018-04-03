@@ -33,6 +33,8 @@ import (
 type Application interface {
 	// Resources computes and returns the resources for the app.
 	Resources() (resource.ResourceCollection, error)
+	// SemiResources computes and returns the resources without name hash and name reference for the app
+	SemiResources() (resource.ResourceCollection, error)
 	// RawResources computes and returns the raw resources from the manifest.
 	// It contains resources from 1) untransformed resources from current manifest 2) transformed resources from sub packages
 	RawResources() (resource.ResourceCollection, error)
@@ -63,9 +65,28 @@ func New(loader loader.Loader) (Application, error) {
 }
 
 // Resources computes and returns the resources from the manifest.
+// The namehashing for configmap/secrets and resolving name reference is only done
+// in the most top overlay once at the end of getting resources.
 func (a *applicationImpl) Resources() (resource.ResourceCollection, error) {
+	res, err := a.SemiResources()
+	if err != nil {
+		return nil, err
+	}
+	t, err := a.getHashAndReferenceTransformer()
+	if err != nil {
+		return nil, err
+	}
+	err = t.Transform(res)
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+// SemiResources computes and returns the resources without name hash and name reference for the app
+func (a *applicationImpl) SemiResources() (resource.ResourceCollection, error) {
 	errs := &interror.ManifestErrors{}
-	raw, err := a.RawResources()
+	raw, err := a.rawResources()
 	if err != nil {
 		errs.Append(err)
 	}
@@ -82,9 +103,8 @@ func (a *applicationImpl) Resources() (resource.ResourceCollection, error) {
 	if err != nil {
 		return nil, err
 	}
-	// Only append hash for generated configmaps and secrets.
-	nht := transformers.NewNameHashTransformer()
-	err = nht.Transform(res)
+
+	allRes, err := resource.MergeWithOverride(raw, res)
 	if err != nil {
 		return nil, err
 	}
@@ -98,37 +118,11 @@ func (a *applicationImpl) Resources() (resource.ResourceCollection, error) {
 		return nil, errs
 	}
 
-	// Reindex the Raw Resources (resources from sub package and resources field of this package).
-	// raw is a ResourceCollection (map) from <GVK, original name> to object with the transformed name.
-	// transRaw is a ResourceCollection (map) from <GVK, transformed name> to object with the transformed name.
-	transRaw := reindexResourceCollection(raw)
-	// allRes contains the resources that are indexed by the original names (old names).
-	// allTransRes contains the resources that are indexed by the transformed names (new names).
-	// allRes and allTransRes point to the same set of objects with new names.
-	allTransRes, err := resource.Merge(res, transRaw)
+	t, err := a.getTransformer(patches)
 	if err != nil {
 		return nil, err
 	}
-	allRes, err := resource.Merge(res, raw)
-	if err != nil {
-		return nil, err
-	}
-
-	ot, err := transformers.NewOverlayTransformer(patches)
-	if err != nil {
-		return nil, err
-	}
-	// Overlay transformer uses the ResourceCollection indexed by the original names.
-	err = ot.Transform(allRes)
-	if err != nil {
-		return nil, err
-	}
-
-	t, err := a.getTransformer()
-	if err != nil {
-		return nil, err
-	}
-	err = t.Transform(allTransRes)
+	err = t.Transform(allRes)
 	if err != nil {
 		return nil, err
 	}
@@ -137,7 +131,25 @@ func (a *applicationImpl) Resources() (resource.ResourceCollection, error) {
 }
 
 // RawResources computes and returns the raw resources from the manifest.
+// The namehashing for configmap/secrets and resolving name reference is only done
+// in the most top overlay once at the end of getting resources.
 func (a *applicationImpl) RawResources() (resource.ResourceCollection, error) {
+	res, err := a.rawResources()
+	if err != nil {
+		return nil, err
+	}
+	t, err := a.getHashAndReferenceTransformer()
+	if err != nil {
+		return nil, err
+	}
+	err = t.Transform(res)
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+func (a *applicationImpl) rawResources() (resource.ResourceCollection, error) {
 	subAppResources, errs := a.subAppResources()
 	resources, err := resource.NewFromResources(a.loader, a.manifest.Resources)
 	if err != nil {
@@ -166,7 +178,7 @@ func (a *applicationImpl) subAppResources() (resource.ResourceCollection, *inter
 			continue
 		}
 		// Gather all transformed resources from subpackages.
-		subAppResources, err := subapp.Resources()
+		subAppResources, err := subapp.SemiResources()
 		if err != nil {
 			errs.Append(err)
 			continue
@@ -181,12 +193,18 @@ func (a *applicationImpl) subAppResources() (resource.ResourceCollection, *inter
 }
 
 // getTransformer generates the following transformers:
-// 1) name prefix
-// 2) apply labels
-// 3) apply annotations
-// 4) update name reference
-func (a *applicationImpl) getTransformer() (transformers.Transformer, error) {
+// 1) apply overlay
+// 2) name prefix
+// 3) apply labels
+// 4) apply annotations
+func (a *applicationImpl) getTransformer(patches []*resource.Resource) (transformers.Transformer, error) {
 	ts := []transformers.Transformer{}
+
+	ot, err := transformers.NewOverlayTransformer(patches)
+	if err != nil {
+		return nil, err
+	}
+	ts = append(ts, ot)
 
 	npt, err := transformers.NewDefaultingNamePrefixTransformer(string(a.manifest.NamePrefix))
 	if err != nil {
@@ -206,23 +224,23 @@ func (a *applicationImpl) getTransformer() (transformers.Transformer, error) {
 	}
 	ts = append(ts, at)
 
+	return transformers.NewMultiTransformer(ts), nil
+}
+
+// getHashAndReferenceTransformer generates the following transformers:
+// 1) name hash for configmap and secrests
+// 2) apply name reference
+func (a *applicationImpl) getHashAndReferenceTransformer() (transformers.Transformer, error) {
+	ts := []transformers.Transformer{}
+	nht := transformers.NewNameHashTransformer()
+	ts = append(ts, nht)
+
 	nrt, err := transformers.NewDefaultingNameReferenceTransformer()
 	if err != nil {
 		return nil, err
 	}
 	ts = append(ts, nrt)
 	return transformers.NewMultiTransformer(ts), nil
-}
-
-// reindexResourceCollection returns a new instance of ResourceCollection which
-// is indexed using the new name in the object.
-func reindexResourceCollection(rc resource.ResourceCollection) resource.ResourceCollection {
-	result := resource.ResourceCollection{}
-	for gvkn, res := range rc {
-		gvkn.Name = res.Data.GetName()
-		result[gvkn] = res
-	}
-	return result
 }
 
 func unmarshal(y []byte, o interface{}) error {

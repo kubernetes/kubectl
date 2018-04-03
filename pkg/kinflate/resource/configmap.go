@@ -37,7 +37,7 @@ func newFromConfigMap(l loader.Loader, cm manifest.ConfigMap) (*Resource, error)
 	if err != nil {
 		return nil, err
 	}
-	return &Resource{Data: data}, nil
+	return &Resource{Data: data, Behavior: cm.Behavior}, nil
 }
 
 func makeConfigMap(l loader.Loader, cm manifest.ConfigMap) (*corev1.ConfigMap, error) {

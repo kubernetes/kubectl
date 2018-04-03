@@ -121,7 +121,7 @@ func TestResources(t *testing.T) {
 					"apiVersion": "v1",
 					"kind":       "ConfigMap",
 					"metadata": map[string]interface{}{
-						"name": "foo-literalConfigMap-h25f8c59t4",
+						"name": "foo-literalConfigMap-mc92bgcbh5",
 						"labels": map[string]interface{}{
 							"app": "nginx",
 						},
@@ -146,7 +146,7 @@ func TestResources(t *testing.T) {
 					"apiVersion": "v1",
 					"kind":       "Secret",
 					"metadata": map[string]interface{}{
-						"name": "foo-secret-2c9kh7fh8t",
+						"name": "foo-secret-877fcfhgt5",
 						"labels": map[string]interface{}{
 							"app": "nginx",
 						},

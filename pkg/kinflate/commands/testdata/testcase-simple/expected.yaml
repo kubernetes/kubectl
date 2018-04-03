@@ -12,7 +12,7 @@ metadata:
     app: mungebot
     org: kubernetes
     repo: test-infra
-  name: test-infra-app-config-ht8ck65bcg
+  name: test-infra-app-config-hf5424hg8g
 ---
 apiVersion: v1
 data:
@@ -27,7 +27,7 @@ metadata:
     app: mungebot
     org: kubernetes
     repo: test-infra
-  name: test-infra-app-env-hf26mf2f2f
+  name: test-infra-app-env-bh449c299k
 ---
 apiVersion: v1
 data:
@@ -42,7 +42,7 @@ metadata:
     app: mungebot
     org: kubernetes
     repo: test-infra
-  name: test-infra-app-tls-4d47hbbh9m
+  name: test-infra-app-tls-6hkmhf2224
 type: kubernetes.io/tls
 ---
 apiVersion: v1
@@ -103,12 +103,12 @@ spec:
           valueFrom:
             configMapKeyRef:
               key: somekey
-              name: test-infra-app-env-hf26mf2f2f
+              name: test-infra-app-env-bh449c299k
         - name: BAR
           valueFrom:
             secretKeyRef:
               key: somekey
-              name: test-infra-app-tls-4d47hbbh9m
+              name: test-infra-app-tls-6hkmhf2224
         - name: foo
           value: bar
         image: nginx:1.7.9
@@ -119,9 +119,9 @@ spec:
         - configMapRef:
             name: someConfigMap
         - configMapRef:
-            name: test-infra-app-env-hf26mf2f2f
+            name: test-infra-app-env-bh449c299k
         - secretRef:
-            name: test-infra-app-tls-4d47hbbh9m
+            name: test-infra-app-tls-6hkmhf2224
         image: busybox
         name: busybox
         volumeMounts:
@@ -131,8 +131,8 @@ spec:
           name: app-tls
       volumes:
       - configMap:
-          name: test-infra-app-env-hf26mf2f2f
+          name: test-infra-app-env-bh449c299k
         name: app-env
       - name: app-tls
         secret:
-          secretName: test-infra-app-tls-4d47hbbh9m
+          secretName: test-infra-app-tls-6hkmhf2224

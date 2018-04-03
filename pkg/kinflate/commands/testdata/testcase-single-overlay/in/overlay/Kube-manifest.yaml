@@ -5,6 +5,7 @@ metadata:
 namePrefix: staging-
 objectLabels:
   env: staging
+  team: override-foo
 patches:
   - deployment.yaml
 bases:
@@ -13,3 +14,7 @@ configmaps:
   - name: configmap-in-overlay
     literals:
       - hello=world
+  - name: configmap-in-base
+    behavior: replace
+    literals:
+      - foo=override-bar

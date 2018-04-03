@@ -39,12 +39,12 @@ diff -u -N /tmp/noop/extensions_v1beta1_Deployment_mungebot.yaml /tmp/transforme
 +          valueFrom:
 +            configMapKeyRef:
 +              key: somekey
-+              name: test-infra-app-env-hf26mf2f2f
++              name: test-infra-app-env-bh449c299k
 +        - name: BAR
 +          valueFrom:
 +            secretKeyRef:
 +              key: somekey
-+              name: test-infra-app-tls-4d47hbbh9m
++              name: test-infra-app-tls-6hkmhf2224
          - name: foo
            value: bar
 -        image: nginx
@@ -56,9 +56,9 @@ diff -u -N /tmp/noop/extensions_v1beta1_Deployment_mungebot.yaml /tmp/transforme
 +        - configMapRef:
 +            name: someConfigMap
 +        - configMapRef:
-+            name: test-infra-app-env-hf26mf2f2f
++            name: test-infra-app-env-bh449c299k
 +        - secretRef:
-+            name: test-infra-app-tls-4d47hbbh9m
++            name: test-infra-app-tls-6hkmhf2224
 +        image: busybox
 +        name: busybox
 +        volumeMounts:
@@ -68,11 +68,11 @@ diff -u -N /tmp/noop/extensions_v1beta1_Deployment_mungebot.yaml /tmp/transforme
 +          name: app-tls
 +      volumes:
 +      - configMap:
-+          name: test-infra-app-env-hf26mf2f2f
++          name: test-infra-app-env-bh449c299k
 +        name: app-env
 +      - name: app-tls
 +        secret:
-+          secretName: test-infra-app-tls-4d47hbbh9m
++          secretName: test-infra-app-tls-6hkmhf2224
 diff -u -N /tmp/noop/v1_ConfigMap_app-config.yaml /tmp/transformed/v1_ConfigMap_app-config.yaml
 --- /tmp/noop/v1_ConfigMap_app-config.yaml	YYYY-MM-DD HH:MM:SS
 +++ /tmp/transformed/v1_ConfigMap_app-config.yaml	YYYY-MM-DD HH:MM:SS
@@ -91,7 +91,7 @@ diff -u -N /tmp/noop/v1_ConfigMap_app-config.yaml /tmp/transformed/v1_ConfigMap_
 +    app: mungebot
 +    org: kubernetes
 +    repo: test-infra
-+  name: test-infra-app-config-ht8ck65bcg
++  name: test-infra-app-config-hf5424hg8g
 diff -u -N /tmp/noop/v1_ConfigMap_app-env.yaml /tmp/transformed/v1_ConfigMap_app-env.yaml
 --- /tmp/noop/v1_ConfigMap_app-env.yaml	YYYY-MM-DD HH:MM:SS
 +++ /tmp/transformed/v1_ConfigMap_app-env.yaml	YYYY-MM-DD HH:MM:SS
@@ -109,7 +109,7 @@ diff -u -N /tmp/noop/v1_ConfigMap_app-env.yaml /tmp/transformed/v1_ConfigMap_app
 +    app: mungebot
 +    org: kubernetes
 +    repo: test-infra
-+  name: test-infra-app-env-hf26mf2f2f
++  name: test-infra-app-env-bh449c299k
 diff -u -N /tmp/noop/v1_Secret_app-tls.yaml /tmp/transformed/v1_Secret_app-tls.yaml
 --- /tmp/noop/v1_Secret_app-tls.yaml	YYYY-MM-DD HH:MM:SS
 +++ /tmp/transformed/v1_Secret_app-tls.yaml	YYYY-MM-DD HH:MM:SS
@@ -127,7 +127,7 @@ diff -u -N /tmp/noop/v1_Secret_app-tls.yaml /tmp/transformed/v1_Secret_app-tls.y
 +    app: mungebot
 +    org: kubernetes
 +    repo: test-infra
-+  name: test-infra-app-tls-4d47hbbh9m
++  name: test-infra-app-tls-6hkmhf2224
 +type: kubernetes.io/tls
 diff -u -N /tmp/noop/v1_Service_mungebot-service.yaml /tmp/transformed/v1_Service_mungebot-service.yaml
 --- /tmp/noop/v1_Service_mungebot-service.yaml	YYYY-MM-DD HH:MM:SS

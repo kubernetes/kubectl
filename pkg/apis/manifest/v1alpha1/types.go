@@ -132,6 +132,12 @@ type ConfigMap struct {
 	// hash(content of configmap).
 	Name string `json:"name,omitempty" yaml:"name,omitempty"`
 
+	// Behavior of the configmap, must be one of create, merge and replace
+	// 'create': create a new one;
+	// 'replace': replace the existing one;
+	// 'merge': merge the existing one.
+	Behavior string `json:"behavior,omitempty" yaml:"behavior,omitempty"`
+
 	// DataSources for configmap.
 	DataSources `json:",inline,omitempty" yaml:",inline,omitempty"`
 }
