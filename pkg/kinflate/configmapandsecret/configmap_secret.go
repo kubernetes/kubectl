@@ -36,7 +36,7 @@ import (
 )
 
 // MakeConfigmapAndGenerateName makes a configmap and returns the configmap and the name appended with a hash.
-func MakeConfigmapAndGenerateName(cm manifest.ConfigMap) (*unstructured.Unstructured, string, error) {
+func MakeConfigmapAndGenerateName(cm manifest.ConfigMapArgs) (*unstructured.Unstructured, string, error) {
 	corev1CM, err := makeConfigMap(cm)
 	if err != nil {
 		return nil, "", err
@@ -75,7 +75,7 @@ func objectToUnstructured(in runtime.Object) (*unstructured.Unstructured, error)
 	return &out, err
 }
 
-func makeConfigMap(cm manifest.ConfigMap) (*corev1.ConfigMap, error) {
+func makeConfigMap(cm manifest.ConfigMapArgs) (*corev1.ConfigMap, error) {
 	corev1cm := &corev1.ConfigMap{}
 	corev1cm.APIVersion = "v1"
 	corev1cm.Kind = "ConfigMap"
@@ -137,7 +137,7 @@ func populateMap(m resource.ResourceCollection, obj *unstructured.Unstructured, 
 }
 
 // MakeConfigMapsResourceCollection returns a map of <GVK, oldName> -> unstructured object.
-func MakeConfigMapsResourceCollection(maps []manifest.ConfigMap) (resource.ResourceCollection, error) {
+func MakeConfigMapsResourceCollection(maps []manifest.ConfigMapArgs) (resource.ResourceCollection, error) {
 	m := resource.ResourceCollection{}
 	for _, cm := range maps {
 		unstructuredConfigMap, nameWithHash, err := MakeConfigmapAndGenerateName(cm)

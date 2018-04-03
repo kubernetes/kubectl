@@ -91,7 +91,7 @@ func (a *applicationImpl) SemiResources() (resource.ResourceCollection, error) {
 		errs.Append(err)
 	}
 
-	cms, err := resource.NewFromConfigMaps(a.loader, a.manifest.Configmaps)
+	cms, err := resource.NewFromConfigMaps(a.loader, a.manifest.ConfigMapGenerator)
 	if err != nil {
 		errs.Append(err)
 	}

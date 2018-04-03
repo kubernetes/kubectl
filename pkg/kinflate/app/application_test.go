@@ -43,7 +43,7 @@ objectAnnotations:
   note: This is a test annotation
 resources:
   - deployment.yaml
-configmaps:
+configMapGenerator:
 - name: literalConfigMap
   literals:
   - DB_USERNAME=admin

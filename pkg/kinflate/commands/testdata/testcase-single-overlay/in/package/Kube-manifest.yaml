@@ -12,7 +12,7 @@ objectAnnotations:
 resources:
   - deployment.yaml
   - service.yaml
-configmaps:
+configMapGenerator:
   - name: configmap-in-base
     literals:
       - foo=bar

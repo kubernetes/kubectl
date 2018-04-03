@@ -103,7 +103,7 @@ type Manifest struct {
 	// Base/overlay concept doesn't apply to this field.
 	// If a configmap want to have a base and an overlay, it should go to Bases
 	// and Overlays fields.
-	Configmaps []ConfigMap `json:"configmaps,omitempty" yaml:"configmaps,omitempty"`
+	ConfigMapGenerator []ConfigMapArgs `json:"configMapGenerator,omitempty" yaml:"configMapGenerator,omitempty"`
 
 	// List of secrets to generate from secret commands.
 	// Base/overlay concept doesn't apply to this field.
@@ -112,14 +112,14 @@ type Manifest struct {
 	SecretGenerators []SecretGenerator `json:"secretGenerators,omitempty" yaml:"secretGenerators,omitempty"`
 }
 
-// ConfigMap contains the metadata of how to generate a configmap.
-type ConfigMap struct {
+// ConfigMapArg contains the metadata of how to generate a configmap.
+type ConfigMapArgs struct {
 	// Name of the configmap.
 	// The full name should be Manifest.NamePrefix + Configmap.Name +
 	// hash(content of configmap).
 	Name string `json:"name,omitempty" yaml:"name,omitempty"`
 
-	// Behavior of the configmap, must be one of create, merge and replace
+	// Behavior of configmap, must be one of create, merge and replace
 	// 'create': create a new one;
 	// 'replace': replace the existing one;
 	// 'merge': merge the existing one.

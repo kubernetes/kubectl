@@ -20,7 +20,7 @@ bases:
 patches:
 - deployment/deployment.yaml
 #There could also be configmaps in Base, which would make these overlays
-configmaps:
+configMapGenerator:
 - name: app-env
   env: configmap/app.env
 - name: app-config

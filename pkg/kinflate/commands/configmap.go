@@ -99,16 +99,16 @@ func addConfigMap(m *manifest.Manifest, config dataConfig) error {
 	return nil
 }
 
-func getOrCreateConfigMap(m *manifest.Manifest, name string) *manifest.ConfigMap {
-	for i, v := range m.Configmaps {
+func getOrCreateConfigMap(m *manifest.Manifest, name string) *manifest.ConfigMapArgs {
+	for i, v := range m.ConfigMapGenerator {
 		if name == v.Name {
-			return &m.Configmaps[i]
+			return &m.ConfigMapGenerator[i]
 		}
 	}
 	// config map not found, create new one and add it to the manifest.
-	cm := &manifest.ConfigMap{Name: name}
-	m.Configmaps = append(m.Configmaps, *cm)
-	return &m.Configmaps[len(m.Configmaps)-1]
+	cm := &manifest.ConfigMapArgs{Name: name}
+	m.ConfigMapGenerator = append(m.ConfigMapGenerator, *cm)
+	return &m.ConfigMapGenerator[len(m.ConfigMapGenerator)-1]
 }
 
 func mergeData(src *manifest.DataSources, config dataConfig) error {
