@@ -22,6 +22,7 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
+	"k8s.io/kubectl/cmd/kinflate/version"
 	"k8s.io/kubectl/pkg/kinflate/util/fs"
 )
 
@@ -49,6 +50,8 @@ Find more information at:
 		newCmdAdd(stdOut, stdErr, fsys),
 		// 'set' sub command
 		newCmdSet(stdOut, stdErr, fsys),
+		// version command
+		version.NewCmdVersion(stdOut),
 	)
 
 	// add the glog flags
