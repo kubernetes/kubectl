@@ -149,6 +149,12 @@ type SecretGenerator struct {
 	// hash(content of secret).
 	Name string `json:"name,omitempty" yaml:"name,omitempty"`
 
+	// Behavior of secretGenerator, must be one of create, merge and replace
+	// 'create': create a new one;
+	// 'replace': replace the existing one;
+	// 'merge': merge the existing one.
+	Behavior string `json:"behavior,omitempty" yaml:"behavior,omitempty"`
+
 	// Type of the secret.
 	//
 	// This is the same field as the secret type field in v1/Secret:

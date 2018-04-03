@@ -18,3 +18,8 @@ configmaps:
     behavior: replace
     literals:
       - foo=override-bar
+secretGenerators:
+- name: secret-in-base
+  behavior: merge
+  commands:
+    proxy: "printf haproxy"

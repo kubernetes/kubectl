@@ -16,3 +16,8 @@ configmaps:
   - name: configmap-in-base
     literals:
       - foo=bar
+secretGenerators:
+- name: secret-in-base
+  commands:
+    username: "printf admin"
+    password: "printf somepw"
