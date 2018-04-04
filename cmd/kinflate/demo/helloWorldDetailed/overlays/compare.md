@@ -20,8 +20,8 @@ tree $DEMO_HOME
 <!-- @compareOutput -->
 ```
 diff \
-  <(kinflate inflate -f $OVERLAYS/staging) \
-  <(kinflate inflate -f $OVERLAYS/production) |\
+  <(kinflate inflate $OVERLAYS/staging) \
+  <(kinflate inflate $OVERLAYS/production) |\
   more
 ```
 
