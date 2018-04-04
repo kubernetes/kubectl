@@ -110,19 +110,6 @@ type Manifest struct {
 	// If a secret want to have a base and an overlay, it should go to Bases and
 	// Overlays fields.
 	SecretGenerators []SecretGenerator `json:"secretGenerators,omitempty" yaml:"secretGenerators,omitempty"`
-
-	// Whether prune resources not defined in Kube-manifest.yaml, similar to
-	// `kubectl apply --prune` behavior.
-	Prune bool `json:"prune,omitempty" yaml:"prune,omitempty"`
-
-	// TODO: figure out what the behavior details should be.
-	// Whether PersistentVolumeClaims should be deleted with the other resources.
-	// OwnPersistentVolumeClaims bool `json:"ownPersistentVolumeClaims,omitempty" yaml:"ownPersistentVolumeClaims,omitempty"`
-
-	// TODO: figure out what the behavior details should be.
-	// Whether recursive look for Kube-manifest.yaml, similar to
-	// `kubectl --recursive` behavior.
-	// Recursive bool `json:"recursive,omitempty" yaml:"recursive,omitempty"`
 }
 
 // ConfigMap contains the metadata of how to generate a configmap.

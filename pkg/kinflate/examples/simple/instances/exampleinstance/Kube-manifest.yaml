@@ -33,4 +33,3 @@ secretGenerators:
     tls.crt: "cat secret/tls.cert"
     tls.key: "cat secret/tls.key"
   type: "kubernetes.io/tls"
-prune: true # I’d make this the default

@@ -48,7 +48,6 @@ resources: []
 configmaps: []
 # There could be secrets in Base, if just using a fork/rebase workflow
 secrets: []
-recursive: true
 `
 
 type initOptions struct {
