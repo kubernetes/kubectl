@@ -128,7 +128,7 @@ resource names.
 
 <!-- @genNamePrefixConfig @test -->
 ```
-kinflate inflate -f $DEMO_HOME
+kinflate inflate $DEMO_HOME
 ```
 
 The output should contain:
@@ -176,7 +176,7 @@ sed -i 's/app: helloworld/app: prod/' \
     $DEMO_HOME/Kube-manifest.yaml
 ```
 
-At this point, running `kinflate inflate -f .` will
+At this point, running `kinflate inflate` will
 generate MySQL configs with name-prefix 'prod-' and
 labels `env:prod`.
 
@@ -235,5 +235,5 @@ create the production environment.
 
 <!-- @finalInflation @test -->
 ```
-kinflate inflate -f $DEMO_HOME  # | kubectl apply -f -
+kinflate inflate $DEMO_HOME  # | kubectl apply -f -
 ```

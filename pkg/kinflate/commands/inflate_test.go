@@ -39,6 +39,40 @@ type InflateTestCase struct {
 	ExpectedStdout string `yaml:"expectedStdout"`
 }
 
+func TestInflateValidate(t *testing.T) {
+	var cases = []struct {
+		name  string
+		args  []string
+		path  string
+		erMsg string
+	}{
+		{"noargs", []string{}, "./", ""},
+		{"file", []string{"beans"}, "beans", ""},
+		{"path", []string{"a/b/c"}, "a/b/c", ""},
+		{"path", []string{"too", "many"}, "", "specify one path to manifest"},
+	}
+	for _, mycase := range cases {
+		opts := inflateOptions{}
+		e := opts.Validate(mycase.args)
+		if len(mycase.erMsg) > 0 {
+			if e == nil {
+				t.Errorf("%s: Expected an error %v", mycase.name, mycase.erMsg)
+			}
+			if e.Error() != mycase.erMsg {
+				t.Errorf("%s: Expected error %s, but got %v", mycase.name, mycase.erMsg, e)
+			}
+			continue
+		}
+		if e != nil {
+			t.Errorf("%s: unknown error %v", mycase.name, e)
+			continue
+		}
+		if opts.manifestPath != mycase.path {
+			t.Errorf("%s: expected path '%s', got '%s'", mycase.name, mycase.path, opts.manifestPath)
+		}
+	}
+}
+
 func TestInflate(t *testing.T) {
 	const updateEnvVar = "UPDATE_KINFLATE_EXPECTED_DATA"
 	updateKinflateExpected := os.Getenv(updateEnvVar) == "true"

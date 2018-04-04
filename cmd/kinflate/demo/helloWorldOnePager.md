@@ -44,14 +44,14 @@ Confirm that the prefix appears in the output:
 
 <!-- @confirmResourceNames @test -->
 ```
-kinflate inflate -f . | grep --context=3 acme-
+kinflate inflate | grep --context=3 acme-
 ```
 
 Optionally apply the modified configuration to a cluster
 
 <!-- @applyToCluster -->
 ```
-kinflate inflate -f . | kubectl apply -f -
+kinflate inflate | kubectl apply -f -
 ```
 
 This fork of [example-hello] could be commited to a
