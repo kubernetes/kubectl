@@ -18,7 +18,7 @@ configMapGenerator:
     behavior: replace
     literals:
       - foo=override-bar
-secretGenerators:
+secretGenerator:
 - name: secret-in-base
   behavior: merge
   commands:

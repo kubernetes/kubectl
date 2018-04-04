@@ -95,7 +95,7 @@ func (a *applicationImpl) SemiResources() (resource.ResourceCollection, error) {
 	if err != nil {
 		errs.Append(err)
 	}
-	secrets, err := resource.NewFromSecretGenerators(a.loader.Root(), a.manifest.SecretGenerators)
+	secrets, err := resource.NewFromSecretGenerators(a.loader.Root(), a.manifest.SecretGenerator)
 	if err != nil {
 		errs.Append(err)
 	}

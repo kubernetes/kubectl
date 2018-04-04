@@ -109,7 +109,7 @@ type Manifest struct {
 	// Base/overlay concept doesn't apply to this field.
 	// If a secret want to have a base and an overlay, it should go to Bases and
 	// Overlays fields.
-	SecretGenerators []SecretGenerator `json:"secretGenerators,omitempty" yaml:"secretGenerators,omitempty"`
+	SecretGenerator []SecretArgs `json:"secretGenerator,omitempty" yaml:"secretGenerator,omitempty"`
 }
 
 // ConfigMapArg contains the metadata of how to generate a configmap.
@@ -130,7 +130,7 @@ type ConfigMapArgs struct {
 }
 
 // SecretGenerator contains the metadata of how to generate a secret.
-type SecretGenerator struct {
+type SecretArgs struct {
 	// Name of the secret.
 	// The full name should be Manifest.NamePrefix + SecretGenerator.Name +
 	// hash(content of secret).

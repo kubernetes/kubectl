@@ -47,7 +47,7 @@ resources: []
 # There could also be configmaps in Base, which would make these overlays
 configMapGenerator: []
 # There could be secrets in Base, if just using a fork/rebase workflow
-secrets: []
+secretGenerator: []
 `
 
 type initOptions struct {

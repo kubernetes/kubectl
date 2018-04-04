@@ -48,7 +48,7 @@ configMapGenerator:
   literals:
   - DB_USERNAME=admin
   - DB_PASSWORD=somepw
-secretGenerators:
+secretGenerator:
 - name: secret
   commands:
     DB_USERNAME: "printf admin"

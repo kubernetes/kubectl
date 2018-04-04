@@ -27,7 +27,7 @@ configMapGenerator:
   files:
   - configmap/app-init.ini
 #There could be secrets in Base, if just using a fork/rebase workflow
-secretGenerators:
+secretGenerator:
 - name: app-tls
   commands:
     tls.crt: "cat secret/tls.cert"
