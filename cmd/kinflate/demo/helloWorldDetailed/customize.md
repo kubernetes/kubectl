@@ -12,7 +12,7 @@ sed -i 's/app: hello/app: my-hello/' \
 See the effect:
 <!-- @manifest @test -->
 ```
-kinflate inflate -f $BASE | grep -C 3 app:
+kinflate inflate $BASE | grep -C 3 app:
 ```
 
 __Next:__ [Overlays](overlays)

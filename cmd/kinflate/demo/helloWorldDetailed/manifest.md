@@ -13,7 +13,7 @@ to `stdout`:
 
 <!-- @manifest @test -->
 ```
-kinflate inflate -f $BASE
+kinflate inflate $BASE
 ```
 
 __Next:__ [Customize it](customize.md)

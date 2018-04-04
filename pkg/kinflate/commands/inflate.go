@@ -24,6 +24,8 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"errors"
+
 	"k8s.io/kubectl/pkg/kinflate/app"
 	kutil "k8s.io/kubectl/pkg/kinflate/util"
 	"k8s.io/kubectl/pkg/kinflate/util/fs"
@@ -39,19 +41,14 @@ func newCmdInflate(out, errOut io.Writer, fs fs.FileSystem) *cobra.Command {
 	var o inflateOptions
 
 	cmd := &cobra.Command{
-		Use:   "inflate -f [path]",
+		Use:   "inflate [path]",
 		Short: "Use a Manifest file to generate a set of api resources",
 		Long:  "Use a Manifest file to generate a set of api resources",
 		Example: `
 		# Use the Kube-manifest.yaml file under somedir/ to generate a set of api resources.
-		inflate -f somedir/`,
+		inflate somedir/`,
 		Run: func(cmd *cobra.Command, args []string) {
-			err := o.Validate(cmd, args)
-			if err != nil {
-				fmt.Fprintf(errOut, "error: %v\n", err)
-				os.Exit(1)
-			}
-			err = o.Complete(cmd, args)
+			err := o.Validate(args)
 			if err != nil {
 				fmt.Fprintf(errOut, "error: %v\n", err)
 				os.Exit(1)
@@ -63,19 +60,19 @@ func newCmdInflate(out, errOut io.Writer, fs fs.FileSystem) *cobra.Command {
 			}
 		},
 	}
-
-	cmd.Flags().StringVarP(&o.manifestPath, "filename", "f", "", "Pass in a Kube-manifest.yaml file or a directory that contains the file.")
-	cmd.MarkFlagRequired("filename")
 	return cmd
 }
 
 // Validate validates inflate command.
-func (o *inflateOptions) Validate(cmd *cobra.Command, args []string) error {
-	return nil
-}
-
-// Complete completes inflate command.
-func (o *inflateOptions) Complete(cmd *cobra.Command, args []string) error {
+func (o *inflateOptions) Validate(args []string) error {
+	if len(args) > 1 {
+		return errors.New("specify one path to manifest")
+	}
+	if len(args) == 0 {
+		o.manifestPath = "./"
+		return nil
+	}
+	o.manifestPath = args[0]
 	return nil
 }
 
