@@ -28,7 +28,7 @@ import (
 )
 
 func TestNewFromSecretGenerators(t *testing.T) {
-	secrets := []manifest.SecretGenerator{
+	secrets := []manifest.SecretArgs{
 		{
 			Name: "secret",
 			Commands: map[string]string{

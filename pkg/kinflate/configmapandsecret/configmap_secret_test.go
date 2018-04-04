@@ -131,14 +131,14 @@ func makeUnstructuredSecret(name string) *unstructured.Unstructured {
 func TestConstructConfigMap(t *testing.T) {
 	type testCase struct {
 		description string
-		input       manifest.ConfigMap
+		input       manifest.ConfigMapArgs
 		expected    *corev1.ConfigMap
 	}
 
 	testCases := []testCase{
 		{
 			description: "construct config map from env",
-			input: manifest.ConfigMap{
+			input: manifest.ConfigMapArgs{
 				Name: "envConfigMap",
 				DataSources: manifest.DataSources{
 					EnvSource: "../examples/simple/instances/exampleinstance/configmap/app.env",
@@ -148,7 +148,7 @@ func TestConstructConfigMap(t *testing.T) {
 		},
 		{
 			description: "construct config map from file",
-			input: manifest.ConfigMap{
+			input: manifest.ConfigMapArgs{
 				Name: "fileConfigMap",
 				DataSources: manifest.DataSources{
 					FileSources: []string{"../examples/simple/instances/exampleinstance/configmap/app-init.ini"},
@@ -158,7 +158,7 @@ func TestConstructConfigMap(t *testing.T) {
 		},
 		{
 			description: "construct config map from literal",
-			input: manifest.ConfigMap{
+			input: manifest.ConfigMapArgs{
 				Name: "literalConfigMap",
 				DataSources: manifest.DataSources{
 					LiteralSources: []string{"a=x", "b=y"},
@@ -180,7 +180,7 @@ func TestConstructConfigMap(t *testing.T) {
 }
 
 func TestConstructSecret(t *testing.T) {
-	secret := manifest.SecretGenerator{
+	secret := manifest.SecretArgs{
 		Name: "secret",
 		Commands: map[string]string{
 			"DB_USERNAME": "printf admin",
@@ -199,7 +199,7 @@ func TestConstructSecret(t *testing.T) {
 }
 
 func TestFailConstructSecret(t *testing.T) {
-	secret := manifest.SecretGenerator{
+	secret := manifest.SecretArgs{
 		Name: "secret",
 		Commands: map[string]string{
 			"FAILURE": "false", // This will fail.

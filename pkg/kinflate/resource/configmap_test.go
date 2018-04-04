@@ -30,7 +30,7 @@ import (
 func TestNewFromConfigMaps(t *testing.T) {
 	type testCase struct {
 		description string
-		input       []manifest.ConfigMap
+		input       []manifest.ConfigMapArgs
 		filepath    string
 		content     string
 		expected    resource.ResourceCollection
@@ -40,7 +40,7 @@ func TestNewFromConfigMaps(t *testing.T) {
 	testCases := []testCase{
 		{
 			description: "construct config map from env",
-			input: []manifest.ConfigMap{
+			input: []manifest.ConfigMapArgs{
 				{
 					Name: "envConfigMap",
 					DataSources: manifest.DataSources{
@@ -74,7 +74,7 @@ func TestNewFromConfigMaps(t *testing.T) {
 		},
 		{
 			description: "construct config map from file",
-			input: []manifest.ConfigMap{{
+			input: []manifest.ConfigMapArgs{{
 				Name: "fileConfigMap",
 				DataSources: manifest.DataSources{
 					FileSources: []string{"app-init.ini"},
@@ -108,7 +108,7 @@ BAR=baz
 		},
 		{
 			description: "construct config map from literal",
-			input: []manifest.ConfigMap{
+			input: []manifest.ConfigMapArgs{
 				{
 					Name: "literalConfigMap",
 					DataSources: manifest.DataSources{

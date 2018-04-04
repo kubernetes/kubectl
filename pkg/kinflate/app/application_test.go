@@ -43,12 +43,12 @@ objectAnnotations:
   note: This is a test annotation
 resources:
   - deployment.yaml
-configmaps:
+configMapGenerator:
 - name: literalConfigMap
   literals:
   - DB_USERNAME=admin
   - DB_PASSWORD=somepw
-secretGenerators:
+secretGenerator:
 - name: secret
   commands:
     DB_USERNAME: "printf admin"

@@ -36,7 +36,7 @@ func TestGetOrCreateConfigMap(t *testing.T) {
 		NamePrefix: "test-name-prefix",
 	}
 
-	if len(manifest.Configmaps) != 0 {
+	if len(manifest.ConfigMapGenerator) != 0 {
 		t.Fatal("Initial manifest should not have any configmaps")
 	}
 	cm := getOrCreateConfigMap(manifest, cmName)
@@ -45,11 +45,11 @@ func TestGetOrCreateConfigMap(t *testing.T) {
 		t.Fatalf("ConfigMap should always be non-nil")
 	}
 
-	if len(manifest.Configmaps) != 1 {
+	if len(manifest.ConfigMapGenerator) != 1 {
 		t.Fatalf("Manifest should have newly created configmap")
 	}
 
-	if &manifest.Configmaps[len(manifest.Configmaps)-1] != cm {
+	if &manifest.ConfigMapGenerator[len(manifest.ConfigMapGenerator)-1] != cm {
 		t.Fatalf("Pointer address for newly inserted configmap should be same")
 	}
 
@@ -59,7 +59,7 @@ func TestGetOrCreateConfigMap(t *testing.T) {
 		t.Fatalf("should have returned an existing cm with name: %v", cmName)
 	}
 
-	if len(manifest.Configmaps) != 1 {
+	if len(manifest.ConfigMapGenerator) != 1 {
 		t.Fatalf("Should not insert configmap for an existing name: %v", cmName)
 	}
 }

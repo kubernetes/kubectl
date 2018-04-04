@@ -91,11 +91,11 @@ func (a *applicationImpl) SemiResources() (resource.ResourceCollection, error) {
 		errs.Append(err)
 	}
 
-	cms, err := resource.NewFromConfigMaps(a.loader, a.manifest.Configmaps)
+	cms, err := resource.NewFromConfigMaps(a.loader, a.manifest.ConfigMapGenerator)
 	if err != nil {
 		errs.Append(err)
 	}
-	secrets, err := resource.NewFromSecretGenerators(a.loader.Root(), a.manifest.SecretGenerators)
+	secrets, err := resource.NewFromSecretGenerators(a.loader.Root(), a.manifest.SecretGenerator)
 	if err != nil {
 		errs.Append(err)
 	}

@@ -10,7 +10,7 @@ patches:
   - deployment.yaml
 bases:
   - ../package/
-configmaps:
+configMapGenerator:
   - name: configmap-in-overlay
     literals:
       - hello=world
@@ -18,7 +18,7 @@ configmaps:
     behavior: replace
     literals:
       - foo=override-bar
-secretGenerators:
+secretGenerator:
 - name: secret-in-base
   behavior: merge
   commands:
