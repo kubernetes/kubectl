@@ -3,6 +3,7 @@
 [applying]: glossary.md#apply
 [base]: glossary.md#base
 [fork]: https://guides.github.com/activities/forking/
+[instances]: glossary.md#instance
 [manifest]: glossary.md#manifest
 [off-the-shelf]: glossary.md#off-the-shelf
 [overlays]: glossary.md#overlay
@@ -20,8 +21,9 @@ use and maintain a configuration.
 
 ## Bespoke configuration
 
-In this workflow, all files are owner by the user and
-maintained in a repository under their control.
+In this workflow, all configuration files are owned by
+the user.  No content is incorporated from version
+control repositories owned by others.
 
 ![bespoke config workflow image][workflowBespoke]
 
@@ -31,7 +33,7 @@ maintained in a repository under their control.
 > git init ~/ldap
 > ```
 
-#### 2) create a base
+#### 2) create a [base]
 
 > ```
 > mkdir -p ~/ldap/base
@@ -40,7 +42,7 @@ maintained in a repository under their control.
 In this directory, create and commit a [manifest]
 and a set of [resources].
 
-#### 3) create overlays
+#### 3) create [overlays]
 
 > ```
 > mkdir -p ~/ldap/overlays/staging
@@ -57,7 +59,7 @@ The _production_ directory might get a patch
 that increases the replica count in a deployment
 specified in the base.
 
-#### 4) bring up instances
+#### 4) bring up [instances]
 
 Run kinflate, and pipe the output to [apply].
 
@@ -69,17 +71,17 @@ Run kinflate, and pipe the output to [apply].
 
 ## Off-the-shelf configuration
 
-Another complete workflow, with all files owner by the
-user and maintained in a repository under their
-control, but based on an [off-the-shelf] configuration
-that is periodically consulted for updates.
+In this workflow, all files are owned by the user and
+maintained in a repository under their control, but
+they are based on an [off-the-shelf] configuration that
+is periodically consulted for updates.
 
 
 ![off-the-shelf config workflow image][workflowOts]
 
 #### 1) find and [fork] an [OTS] config
 
-#### 2) clone it as your base
+#### 2) clone it as your [base]
 
 The [base] directory is maintained in a repo whose
 upstream is an [OTS] configuration, in this case
@@ -92,7 +94,7 @@ https://github.com/kinflate/ldap.
 > git remote add upstream git@github.com:kinflate/ldap
 > ```
 
-#### 3) create overlays
+#### 3) create [overlays]
 
 As in the bespoke case above, create and populate
 an _overlays_ directory.
