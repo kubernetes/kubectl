@@ -21,6 +21,8 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/golang/glog"
+
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	k8syaml "k8s.io/apimachinery/pkg/util/yaml"
 	"k8s.io/kubectl/pkg/kinflate/constants"
@@ -107,11 +109,14 @@ func MergeWithOverride(rcs ...ResourceCollection) (ResourceCollection, error) {
 				case "", constants.CreateBehavior:
 					return nil, fmt.Errorf("Create an existing gvkn %#v is not allowed", gvkn)
 				case constants.ReplaceBehavior:
+					glog.V(4).Infof("Replace object %v by %v", all[gvkn].Data.Object, obj.Data.Object)
 					obj.replace(all[gvkn])
 					all[gvkn] = obj
 				case constants.MergeBehavior:
+					glog.V(4).Infof("Merge object %v with %v", all[gvkn].Data.Object, obj.Data.Object)
 					obj.merge(all[gvkn])
 					all[gvkn] = obj
+					glog.V(4).Infof("The merged object is %v", all[gvkn].Data.Object)
 				default:
 					return nil, fmt.Errorf("The behavior of %#v must be one of merge and replace since it already exists in the base", gvkn)
 				}
