@@ -1,0 +1,10 @@
+# Demos
+
+These demos are covered by presubmit tests.
+
+ * [hello world](helloWorld.md) - Deploy multiple
+   (differently configured) instances of a simple Hello
+   World server.
+
+ * [mysql](mySql.md) - Create a mySql production
+   configuration from scratch.

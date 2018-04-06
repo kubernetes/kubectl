@@ -1,8 +1,9 @@
 # kinflate
 
-[_kubectl apply_]: docs/glossary.md#apply
+[applied]: docs/glossary.md#apply
 [base]: docs/glossary.md#base
 [declarative configuration]: docs/glossary.md#declarative-application-management
+[demo]: demos/README.md
 [imageBase]: docs/base.jpg
 [imageOverlay]: docs/overlay.jpg
 [manifest]: docs/glossary.md#manifest
@@ -13,6 +14,16 @@
 `kinflate` is a command line tool supporting
 template-free customization of declarative
 configuration targetted to kubernetes.
+
+## Installation
+
+Assumes [Go](https://golang.org/) is installed
+and your `PATH` contains `$GOPATH/bin`:
+
+<!-- @installKinflate @test -->
+```
+go get k8s.io/kubectl/cmd/kinflate
+```
 
 ## Usage
 
@@ -28,27 +39,14 @@ secrets that serve some common purpose.
 
 An [overlay] customizes your base along different dimensions
 for different purposes or different teams, e.g. for
-_development, staging, production_.
+_development, staging and production_.
 
 ![overlay image][imageOverlay]
 
 #### 3) Run kinflate
 
-Run kinflate on your overlay.  The result, a set of
-complete resources, is printed to stdout, suitable for
-sending to your cluster.
+Run kinflate on your overlay.  The result
+is printed to `stdout` as a set of complete
+resources, ready to be [applied] to a cluster.
 
-## Installation
-
-Assumes [Go](https://golang.org/) is installed
-and your `PATH` contains `$GOPATH/bin`:
-
-<!-- @installKinflate @test -->
-```
-go get k8s.io/kubectl/cmd/kinflate
-```
-
-## Demos
-
- * [hello world](demo/helloWorld.md)
- * [mysql](demo/mySql.md)
+For more details, try a [demo].
