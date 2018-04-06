@@ -27,33 +27,33 @@ import (
 	"errors"
 
 	"k8s.io/kubectl/pkg/kinflate/app"
+	"k8s.io/kubectl/pkg/kinflate/constants"
 	kutil "k8s.io/kubectl/pkg/kinflate/util"
 	"k8s.io/kubectl/pkg/kinflate/util/fs"
 	"k8s.io/kubectl/pkg/loader"
 )
 
-type inflateOptions struct {
+type buildOptions struct {
 	manifestPath string
 }
 
-// newCmdInflate creates a new inflate command.
-func newCmdInflate(out, errOut io.Writer, fs fs.FileSystem) *cobra.Command {
-	var o inflateOptions
+// newCmdBuild creates a new build command.
+func newCmdBuild(out, errOut io.Writer, fs fs.FileSystem) *cobra.Command {
+	var o buildOptions
 
 	cmd := &cobra.Command{
-		Use:   "inflate [path]",
-		Short: "Use a Manifest file to generate a set of api resources",
-		Long:  "Use a Manifest file to generate a set of api resources",
+		Use:   "build [path]",
+		Short: "Print current configuration per contents of " + constants.KubeManifestFileName,
 		Example: `
 		# Use the Kube-manifest.yaml file under somedir/ to generate a set of api resources.
-		inflate somedir/`,
+		build somedir/`,
 		Run: func(cmd *cobra.Command, args []string) {
 			err := o.Validate(args)
 			if err != nil {
 				fmt.Fprintf(errOut, "error: %v\n", err)
 				os.Exit(1)
 			}
-			err = o.RunInflate(out, errOut, fs)
+			err = o.RunBuild(out, errOut, fs)
 			if err != nil {
 				fmt.Fprintf(errOut, "error: %v\n", err)
 				os.Exit(1)
@@ -63,8 +63,8 @@ func newCmdInflate(out, errOut io.Writer, fs fs.FileSystem) *cobra.Command {
 	return cmd
 }
 
-// Validate validates inflate command.
-func (o *inflateOptions) Validate(args []string) error {
+// Validate validates build command.
+func (o *buildOptions) Validate(args []string) error {
 	if len(args) > 1 {
 		return errors.New("specify one path to manifest")
 	}
@@ -76,8 +76,8 @@ func (o *inflateOptions) Validate(args []string) error {
 	return nil
 }
 
-// RunInflate runs inflate command (do real work).
-func (o *inflateOptions) RunInflate(out, errOut io.Writer, fs fs.FileSystem) error {
+// RunBuild runs build command.
+func (o *buildOptions) RunBuild(out, errOut io.Writer, fs fs.FileSystem) error {
 	l := loader.Init([]loader.SchemeLoader{loader.NewFileLoader(fs)})
 
 	absPath, err := filepath.Abs(o.manifestPath)

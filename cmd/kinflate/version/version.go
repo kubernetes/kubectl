@@ -58,8 +58,7 @@ func (v Version) Print(w io.Writer) {
 func NewCmdVersion(w io.Writer) *cobra.Command {
 	return &cobra.Command{
 		Use:     "version",
-		Short:   "Prints the kinflate version.",
-		Long:    `Prints the kinflate version.`,
+		Short:   "Prints the kinflate version",
 		Example: `kinflate version`,
 		Run: func(cmd *cobra.Command, args []string) {
 			GetVersion().Print(w)

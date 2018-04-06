@@ -88,7 +88,7 @@ to `stdout`:
 
 <!-- @manifest @test -->
 ```
-kinflate inflate $BASE
+kinflate build $BASE
 ```
 
 ## Customize the base
@@ -105,7 +105,7 @@ sed -i 's/app: hello/app: my-hello/' \
 See the effect:
 <!-- @manifest @test -->
 ```
-kinflate inflate $BASE | grep -C 3 app:
+kinflate build $BASE | grep -C 3 app:
 ```
 
 ## Create Overlays
@@ -253,8 +253,8 @@ Expecting something like:
 <!-- @compareOutput -->
 ```
 diff \
-  <(kinflate inflate $OVERLAYS/staging) \
-  <(kinflate inflate $OVERLAYS/production) |\
+  <(kinflate build $OVERLAYS/staging) \
+  <(kinflate build $OVERLAYS/production) |\
   more
 ```
 
@@ -263,25 +263,25 @@ diff \
 
 The individual resource sets are:
 
-<!-- @runKinflateStaging @test -->
+<!-- @buildStaging @test -->
 ```
-kinflate inflate $OVERLAYS/staging
+kinflate build $OVERLAYS/staging
 ```
 
-<!-- @runKinflateProduction @test -->
+<!-- @buildProduction @test -->
 ```
-kinflate inflate $OVERLAYS/production
+kinflate build $OVERLAYS/production
 ```
 
 To deploy, pipe the above commands to kubectl apply:
 
 > ```
-> kinflate inflate $OVERLAYS/staging |\
+> kinflate build $OVERLAYS/staging |\
 >     kubectl apply -f -
 > ```
 
 > ```
-> kinflate inflate $OVERLAYS/production |\
+> kinflate build $OVERLAYS/production |\
 >    kubectl apply -f -
 > ```
 

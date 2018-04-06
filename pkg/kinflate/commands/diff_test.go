@@ -68,7 +68,7 @@ func TestDiff(t *testing.T) {
 	})
 	// sanity check that we found the right folder
 	if !testcases.Has("simple") {
-		t.Fatalf("Error locating kinflate inflate testcases")
+		t.Fatalf("Error locating testcases")
 	}
 
 	for _, testcaseName := range testcases.List() {

@@ -31,7 +31,7 @@ import (
 	"k8s.io/kubectl/pkg/kinflate/util/fs"
 )
 
-type InflateTestCase struct {
+type buildTestCase struct {
 	Description string   `yaml:"description"`
 	Args        []string `yaml:"args"`
 	Filename    string   `yaml:"filename"`
@@ -39,7 +39,7 @@ type InflateTestCase struct {
 	ExpectedStdout string `yaml:"expectedStdout"`
 }
 
-func TestInflateValidate(t *testing.T) {
+func TestBuildValidate(t *testing.T) {
 	var cases = []struct {
 		name  string
 		args  []string
@@ -52,7 +52,7 @@ func TestInflateValidate(t *testing.T) {
 		{"path", []string{"too", "many"}, "", "specify one path to manifest"},
 	}
 	for _, mycase := range cases {
-		opts := inflateOptions{}
+		opts := buildOptions{}
 		e := opts.Validate(mycase.args)
 		if len(mycase.erMsg) > 0 {
 			if e == nil {
@@ -73,7 +73,7 @@ func TestInflateValidate(t *testing.T) {
 	}
 }
 
-func TestInflate(t *testing.T) {
+func TestBuild(t *testing.T) {
 	const updateEnvVar = "UPDATE_KINFLATE_EXPECTED_DATA"
 	updateKinflateExpected := os.Getenv(updateEnvVar) == "true"
 	fs := fs.MakeRealFS()
@@ -97,13 +97,13 @@ func TestInflate(t *testing.T) {
 	})
 	// sanity check that we found the right folder
 	if !testcases.Has("simple") {
-		t.Fatalf("Error locating kinflate inflate testcases")
+		t.Fatalf("Error locating testcases")
 	}
 
 	for _, testcaseName := range testcases.List() {
 		t.Run(testcaseName, func(t *testing.T) {
 			name := testcaseName
-			testcase := InflateTestCase{}
+			testcase := buildTestCase{}
 			testcaseDir := filepath.Join("testdata", "testcase-"+name)
 			testcaseData, err := ioutil.ReadFile(filepath.Join(testcaseDir, "test.yaml"))
 			if err != nil {
@@ -113,11 +113,11 @@ func TestInflate(t *testing.T) {
 				t.Fatalf("%s: %v", name, err)
 			}
 
-			ops := &inflateOptions{
+			ops := &buildOptions{
 				manifestPath: testcase.Filename,
 			}
 			buf := bytes.NewBuffer([]byte{})
-			err = ops.RunInflate(buf, os.Stderr, fs)
+			err = ops.RunBuild(buf, os.Stderr, fs)
 			if err != nil {
 				t.Errorf("unexpected error: %v", err)
 			}

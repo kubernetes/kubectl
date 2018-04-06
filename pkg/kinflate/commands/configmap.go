@@ -36,13 +36,13 @@ func newCmdAddConfigMap(errOut io.Writer, fsys fs.FileSystem) *cobra.Command {
 		Long:  "",
 		Example: `
 	# Adds a configmap to the Manifest (with a specified key)
-	kinflate add configmap my-configmap --from-file=my-key=file/path --from-literal=my-literal=12345
+	kinflate edit add configmap my-configmap --from-file=my-key=file/path --from-literal=my-literal=12345
 
 	# Adds a configmap to the Manifest (key is the filename)
-	kinflate add configmap my-configmap --from-file=file/path
+	kinflate edit add configmap my-configmap --from-file=file/path
 
 	# Adds a configmap from env-file
-	kinflate add configmap my-configmap --from-env-file=env/path.env
+	kinflate edit add configmap my-configmap --from-env-file=env/path.env
 `,
 		RunE: func(_ *cobra.Command, args []string) error {
 			err := config.Validate(args)
