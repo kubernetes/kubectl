@@ -30,7 +30,6 @@
 An _application_ is a group of k8s resources related by
 some common purpose, e.g.  a load balancer in front of a
 webserver backed by a database.
-
 [Resource] labelling, naming and metadata schemes have
 historically served to group resources together for
 collective operations like _list_ and _remove_.
@@ -41,14 +40,7 @@ provide support for application-level operations and
 dashboards.
 
 [kinflate] configures k8s resources, and the proposed
-application resource is just another resource.  There's
-some conceptual overlap between the proposal’s
-application resource and the kinflate [manifest].  The
-application resource has a `Components` field that
-serves a purpose similar to the `resources` field in
-the kinflate manifest.  This overlap can be resolved in
-various ways, the simplest being that kinflate does
-nothing special with the application resource.
+application resource is just another resource.
 
 
 ## apply
@@ -59,12 +51,13 @@ endpoint](https://goo.gl/UbCRuf) for mutating a
 cluster.
 
 One _applies_ a statement of what one wants to a
-cluster (in the form of a complete resource list), and
-the cluster merges this with the previously applied
+cluster in the form of a complete resource list.
+
+The cluster merges this with the previously applied
 state and the actual state to arrive at a new desired
 state, which the cluster's reconcilation loop attempts
-to create.  This is the foundation of level-based
-state management in k8s.
+to create.  This is the foundation of level-based state
+management in k8s.
 
 ## base
 
@@ -75,7 +68,7 @@ another target.
 
 A base has no knowledge of the overlays that refer to it.
 
-A base should be usable in isolation, i.e. one should
+A base is usable in isolation, i.e. one should
 be able to [apply] a base to a cluster directly.
 
 ## bespoke configuration
@@ -114,11 +107,8 @@ of k8s clusters.
 An _instance_ is the outcome, in a cluster, of applying
 an [overlay] to a [base].
 
-Roughly synonymous with [overlay].
-
-> For example, a _staging_ and _production_ overlay
-> both modify some common base to create distinct
-> instances.
+> E.g., a _staging_ and _production_ overlay both modify some
+> common base to create distinct instances.
 >
 > The _staging_ instance is the set of resources
 > exposed to quality assurance testing, or to some
@@ -154,7 +144,7 @@ A manifest contains fields falling into these categories:
  * Immediate customization instructions -
    _nameprefix_, _labelprefix_, etc.
  * Resource _generators_ for configmaps and secrets.
- * Cargo - _names of external files_ in these categories:
+ * References to _external files_ in these categories:
    * [resources] - completely specified k8s API objects,
       e.g. `deployment.yaml`, `configmap.yaml`, etc.
    * [patches] - _partial_ resources that modify full
@@ -173,7 +163,7 @@ to use.
 E.g. one might create a github repository like this:
 
 > ```
-> github.com/kinflate/ldap/
+> github.com/username/someapp/
 >   Kube-manifest.yaml
 >   deployment.yaml
 >   configmap.yaml
@@ -194,7 +184,9 @@ depends on) another target.
 
 The [manifest] in an overlay refers to (via file path,
 URI or other method) to _some other manifest_, known as
-its [base].  An overlay is unusable without its base.
+its [base].
+
+An overlay is unusable without its base.
 
 An overlay supports the typical notion of a
 _development_, _QA_, _staging_ and _production_
@@ -206,8 +198,11 @@ refer to a common base that holds common configuration.
 One configures the cluser like this:
 
 > ```
->  kinflate inflate -f ldap/overlays/staging | kubectl apply -f -
->  kinflate inflate -f ldap/overlays/production | kubectl apply -f -
+>  kinflate inflate someapp/overlays/staging |\
+>      kubectl apply -f -
+>
+>  kinflate inflate someapp/overlays/production |\
+>      kubectl apply -f -
 > ```
 
 Usage of the base is implicit (the overlay's manifest
@@ -250,17 +245,14 @@ A _sub-whatever_ is not a thing. There are only [bases] and [overlays].
 The _target_ is the argument to `inflate`, e.g.:
 
 > ```
->  kinflate inflate -f $target | kubectl apply -f -
+>  kinflate inflate $target
 > ```
 
-`$target` must be
+`$target` must be a path to a directory that
+immediately contains a file called
+`Kube-manifest.yaml` (i.e. a [manifest]).
 
- * a file path ending with `Kube-manifest.yaml` (i.e. a [manifest]),
- * a directory that immediately contains a file with that name,
- * a URI that resolves to some file or directory on the web
-   (e.g. a github repo) meeting the aforemention conditions.
-
-The target contains, or points to, all the information
+The target contains, or refers to, all the information
 needed to create customized resources to send to the
 [apply] operation.
 

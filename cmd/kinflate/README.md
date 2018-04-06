@@ -1,35 +1,42 @@
 # kinflate
 
 [_kubectl apply_]: docs/glossary.md#apply
-[DAM]: docs/glossary.md#declarative-application-management
+[base]: docs/glossary.md#base
+[declarative configuration]: docs/glossary.md#declarative-application-management
+[imageBase]: docs/base.jpg
+[imageOverlay]: docs/overlay.jpg
+[manifest]: docs/glossary.md#manifest
+[overlay]: docs/glossary.md#overlay
+[resources]: docs/glossary.md#resource
 [workflows]: docs/workflows.md
 
 `kinflate` is a command line tool supporting
 template-free customization of declarative
-configuration targetted to kubernetes.  It's an
-implementation of ideas described in Brian Grant's
-[DAM] proposal.
+configuration targetted to kubernetes.
 
-kinflate plays a role in various configuration
-management [workflows].
+## Usage
 
-## Design tenets
+#### 1) Make a base
 
- * __composable__: do one thing, use plain text, work
-   with pipes, usable in other tools (e.g. helm,
-   kubernetes-deploy, etc.).
+A [base] configuration is a [manifest] listing a set of
+k8s [resources] - deployments, services, configmaps,
+secrets that serve some common purpose.
 
- * __simple__: no templating, no logic, no inheritance,
-   no new API obscuring the k8s API.
+![base image][imageBase]
 
- * __accountable__: gitops friendly, diff against
-   declaration in version control, diff against
-   cluster.
+#### 2) Customize it with overlays
 
- * __k8s style__: recognizable k8s resources,
-   extensible (openAPI, CRDs),
-   patching, intended for [_kubectl apply_].
+An [overlay] customizes your base along different dimensions
+for different purposes or different teams, e.g. for
+_development, staging, production_.
 
+![overlay image][imageOverlay]
+
+#### 3) Run kinflate
+
+Run kinflate on your overlay.  The result, a set of
+complete resources, is printed to stdout, suitable for
+sending to your cluster.
 
 ## Installation
 
