@@ -50,6 +50,5 @@ go get k8s.io/kubectl/cmd/kinflate
 
 ## Demos
 
- * [hello world one-pager](demo/helloWorldOnePager.md)
- * [hello world detailed](demo/helloWorldDetailed/README.md) (with instances, in slide format)
- * [mysql one-pager](demo/mySql.md)
+ * [hello world](demo/helloWorld.md)
+ * [mysql](demo/mySql.md)
