@@ -1,4 +1,0 @@
-staging
-production
-compare
-deploy
