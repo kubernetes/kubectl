@@ -40,7 +40,6 @@ objectLabels:
   app: helloworld
 objectAnnotations:
   note: This is an example annotation
-# Add Resources to inflate below. List of directories/file-paths to add.
 resources: []
 #- service.yaml
 #- ../some-dir/

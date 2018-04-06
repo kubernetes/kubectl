@@ -80,9 +80,9 @@ containing something like:
 ```
 cd $DEMO_HOME
 
-kinflate add resource secret.yaml
-kinflate add resource service.yaml
-kinflate add resource deployment.yaml
+kinflate edit add resource secret.yaml
+kinflate edit add resource service.yaml
+kinflate edit add resource deployment.yaml
 
 cat Kube-manifest.yaml
 ```
@@ -108,7 +108,7 @@ environment):
 ```
 cd $DEMO_HOME
 
-kinflate set nameprefix 'prod-'
+kinflate edit set nameprefix 'prod-'
 
 cat Kube-manifest.yaml
 ```
@@ -128,7 +128,7 @@ resource names.
 
 <!-- @genNamePrefixConfig @test -->
 ```
-kinflate inflate $DEMO_HOME
+kinflate build $DEMO_HOME
 ```
 
 The output should contain:
@@ -176,7 +176,7 @@ sed -i 's/app: helloworld/app: prod/' \
     $DEMO_HOME/Kube-manifest.yaml
 ```
 
-At this point, running `kinflate inflate` will
+At this point, running `kinflate build` will
 generate MySQL configs with name-prefix 'prod-' and
 labels `env:prod`.
 
@@ -224,7 +224,7 @@ Lets break this down:
   in deployment.yaml
 
 - Then we added `persistent-disk.yaml` to list of
-  `patches` in `Kube-manifest.yaml`. `kinflate inflate`
+  `patches` in `Kube-manifest.yaml`. `kinflate build`
   will apply this patch to the deployment resource with
   the name `mysql` as defined in the patch.
 
@@ -235,5 +235,5 @@ create the production environment.
 
 <!-- @finalInflation @test -->
 ```
-kinflate inflate $DEMO_HOME  # | kubectl apply -f -
+kinflate build $DEMO_HOME  # | kubectl apply -f -
 ```

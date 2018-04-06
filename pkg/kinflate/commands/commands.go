@@ -33,34 +33,48 @@ func NewDefaultCommand() *cobra.Command {
 
 	c := &cobra.Command{
 		Use:   "kinflate",
-		Short: "kinflate manages Kubernetes application configuration.",
+		Short: "kinflate manages declarative configuration of Kubernetes",
 		Long: `
-kinflate manages Kubernetes application configuration.
+kinflate manages declarative configuration of Kubernetes.
 
-Find more information at:
-	https://github.com/kubernetes/kubectl/tree/master/cmd/kinflate
+More info at https://github.com/kubernetes/kubectl/tree/master/cmd/kinflate
 `,
 	}
 
 	c.AddCommand(
-		newCmdInflate(stdOut, stdErr, fsys),
+		newCmdBuild(stdOut, stdErr, fsys),
 		newCmdDiff(stdOut, stdErr, fsys),
 		newCmdInit(stdOut, stdErr, fsys),
-		// 'add' sub command
-		newCmdAdd(stdOut, stdErr, fsys),
-		// 'set' sub command
-		newCmdSet(stdOut, stdErr, fsys),
-		// version command
+		newCmdEdit(stdOut, stdErr, fsys),
 		version.NewCmdVersion(stdOut),
 	)
-
-	// add the glog flags
 	c.PersistentFlags().AddGoFlagSet(flag.CommandLine)
 
 	// Workaround for this issue:
 	// https://github.com/kubernetes/kubernetes/issues/17162
 	flag.CommandLine.Parse([]string{})
+	return c
+}
 
+// newCmdEdit returns an instance of 'edit' subcommand.
+func newCmdEdit(stdOut, stdErr io.Writer, fsys fs.FileSystem) *cobra.Command {
+	c := &cobra.Command{
+		Use:   "edit",
+		Short: "Edits a manifest file",
+		Long:  "",
+		Example: `
+	# Adds a configmap to the manifest
+	kinflate edit add configmap NAME --from-literal=k=v
+
+	# Sets the nameprefix field
+	kinflate edit set nameprefix <prefix-value>
+`,
+		Args: cobra.MinimumNArgs(1),
+	}
+	c.AddCommand(
+		newCmdAdd(stdOut, stdErr, fsys),
+		newCmdSet(stdOut, stdErr, fsys),
+	)
 	return c
 }
 
@@ -72,13 +86,13 @@ func newCmdAdd(stdOut, stdErr io.Writer, fsys fs.FileSystem) *cobra.Command {
 		Long:  "",
 		Example: `
 	# Adds a configmap to the manifest
-	kinflate add configmap NAME --from-literal=k=v
+	kinflate edit add configmap NAME --from-literal=k=v
 
 	# Adds a secret to the manifest
-	kinflate add secret NAME --from-literal=k=v
+	kinflate edit add secret NAME --from-literal=k=v
 
 	# Adds a resource to the manifest
-	kinflate add resource <filepath>
+	kinflate edit add resource <filepath>
 `,
 		Args: cobra.MinimumNArgs(1),
 	}
@@ -97,7 +111,7 @@ func newCmdSet(stdOut, stdErr io.Writer, fsys fs.FileSystem) *cobra.Command {
 		Long:  "",
 		Example: `
 	# Sets the nameprefix field
-	kinflate set nameprefix <prefix-value>
+	kinflate edit set nameprefix <prefix-value>
 `,
 		Args: cobra.MinimumNArgs(1),
 	}
