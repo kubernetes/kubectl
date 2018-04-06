@@ -5,7 +5,7 @@
 [instance]: ../docs/glossary.md#instance
 [instances]: ../docs/glossary.md#instance
 [hello]: https://github.com/monopole/hello
-[off-the-shelf config]: https://github.com/kinflate/example-hello
+[config]: https://github.com/kinflate/example-hello
 [original]: https://github.com/kinflate/example-hello
 
 # Demo: hello world with instances
@@ -34,10 +34,9 @@ Alternatively, use
 ## Clone an example
 
 Let's run the [hello] service.
+Here's an existing [config] for it.
 
-Here's an [off-the-shelf config] for it.
-
-Clone it to a directory called `base`:
+Clone this config to a directory called `base`:
 
 <!-- @cloneIt @test -->
 ```
@@ -51,6 +50,19 @@ git clone \
 tree $DEMO_HOME
 ```
 
+Expecting something like:
+> ```
+> /tmp/tmp.IyYQQlHaJP
+> └── base
+>     ├── configMap.yaml
+>     ├── deployment.yaml
+>     ├── Kube-manifest.yaml
+>     ├── LICENSE
+>     ├── README.md
+>     └── service.yaml
+> ```
+
+
 One could immediately apply these resources to a
 cluster:
 
@@ -58,8 +70,8 @@ cluster:
 > kubectl apply -f $DEMO_HOME/base
 > ```
 
-to instantiate the _hello_ service.  This ignores
-the [manifest], and just uses the raw resources.
+to instantiate the _hello_ service.  `kubectl`
+would only recognize the resource files.
 
 ## The Manifest
 
@@ -102,8 +114,8 @@ Create a _staging_ and _production_ [overlay]:
 
  * _Staging_ enables a risky feature not enabled in production.
  * _Production_ has a higher replica count.
- * Greetings from these cluster [instances] will differ
-   from each other.
+ * Web server greetings from these cluster
+   [instances] will differ from each other.
 
 <!-- @overlayDirectories @test -->
 ```
@@ -210,7 +222,7 @@ EOF
 
  - an _overlays_ directory, containing the manifests
    and patches required to create distinct _staging_
-   and _production_ instance in a cluster.
+   and _production_ instances in a cluster.
 
 Review the directory structure and differences:
 
@@ -218,6 +230,25 @@ Review the directory structure and differences:
 ```
 tree $DEMO_HOME
 ```
+
+Expecting something like:
+> ```
+> /tmp/tmp.IyYQQlHaJP1<
+> ├── base
+> │   ├── configMap.yaml
+> │   ├── deployment.yaml
+> │   ├── Kube-manifest.yaml
+> │   ├── LICENSE
+> │   ├── README.md
+> │   └── service.yaml
+> └── overlays
+>     ├── production
+>     │   ├── deployment.yaml
+>     │   └── Kube-manifest.yaml
+>     └── staging
+>         ├── Kube-manifest.yaml
+>         └── map.yaml
+> ```
 
 <!-- @compareOutput -->
 ```
