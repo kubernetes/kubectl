@@ -22,6 +22,7 @@ import (
 
 	jsonpatch "github.com/evanphx/json-patch"
 
+	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/util/strategicpatch"
 	"k8s.io/kubectl/pkg/kinflate/resource"
@@ -45,8 +46,14 @@ func NewOverlayTransformer(overlay []*resource.Resource) (Transformer, error) {
 
 // Transform apply the overlay on top of the base resources.
 func (o *overlayTransformer) Transform(baseResourceMap resource.ResourceCollection) error {
+	// Merge and then index the patches by GVKN.
+	overlays, err := o.mergePatches()
+	if err != nil {
+		return err
+	}
+
 	// Strategic merge the resources exist in both base and overlay.
-	for _, overlay := range o.overlay {
+	for _, overlay := range overlays {
 		// Merge overlay with base resource.
 		gvkn := overlay.GVKN()
 		base, found := baseResourceMap[gvkn]
@@ -82,10 +89,14 @@ func (o *overlayTransformer) Transform(baseResourceMap resource.ResourceCollecti
 			// TODO: Change this to use the new Merge package.
 			// Store the name of the base object, because this name may have been munged.
 			// Apply this name to the StrategicMergePatched object.
-			merged, err = strategicpatch.StrategicMergeMapPatch(
-				base.Data.UnstructuredContent(),
-				overlay.Data.UnstructuredContent(),
-				versionedObj)
+			lookupPatchMeta, err := strategicpatch.NewPatchMetaFromStruct(versionedObj)
+			if err != nil {
+				return err
+			}
+			merged, err = strategicpatch.StrategicMergeMapPatchUsingLookupPatchMeta(
+				base.Data.Object,
+				overlay.Data.Object,
+				lookupPatchMeta)
 			if err != nil {
 				return err
 			}
@@ -94,4 +105,60 @@ func (o *overlayTransformer) Transform(baseResourceMap resource.ResourceCollecti
 		baseResourceMap[gvkn].Data.Object = merged
 	}
 	return nil
+}
+
+// mergePatches merge and index patches by GVKN.
+// It errors out if there is conflict between patches.
+func (o *overlayTransformer) mergePatches() (resource.ResourceCollection, error) {
+	rc := resource.ResourceCollection{}
+	patches := resourcesToObjects(o.overlay)
+	for ix, patch := range o.overlay {
+		gvkn := patch.GVKN()
+		existing, found := rc[gvkn]
+		if !found {
+			rc[gvkn] = patch
+			continue
+		}
+
+		versionedObj, err := scheme.Scheme.New(gvkn.GVK)
+		if err != nil && !runtime.IsNotRegisteredError(err) {
+			return nil, err
+		}
+		var cd conflictDetector
+		if err != nil {
+			cd = newJMPConflictDetector()
+		} else {
+			cd, err = newSMPConflictDetector(versionedObj)
+			if err != nil {
+				return nil, err
+			}
+		}
+
+		conflict, err := cd.hasConflict(existing.Data, patch.Data)
+		if err != nil {
+			return nil, err
+		}
+		if conflict {
+			conflictingPatch, err := cd.findConflict(ix, patches)
+			if err != nil {
+				return nil, err
+			}
+			return nil, fmt.Errorf("there is conflict between %#v and %#v", conflictingPatch.Object, patch.Data.Object)
+		} else {
+			merged, err := cd.mergePatches(existing.Data, patch.Data)
+			if err != nil {
+				return nil, err
+			}
+			existing.Data = merged
+		}
+	}
+	return rc, nil
+}
+
+func resourcesToObjects(rs []*resource.Resource) []*unstructured.Unstructured {
+	objectList := make([]*unstructured.Unstructured, len(rs))
+	for i := range rs {
+		objectList[i] = rs[i].Data
+	}
+	return objectList
 }
