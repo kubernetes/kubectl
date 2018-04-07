@@ -36,7 +36,8 @@ type DiffTestCase struct {
 	Args        []string `yaml:"args"`
 	Filename    string   `yaml:"filename"`
 	// path to the file that contains the expected output
-	ExpectedDiff string `yaml:"expectedDiff"`
+	ExpectedDiff  string `yaml:"expectedDiff"`
+	ExpectedError string `yaml:"expectedError"`
 }
 
 func TestDiff(t *testing.T) {
@@ -89,9 +90,18 @@ func TestDiff(t *testing.T) {
 			}
 			buf := bytes.NewBuffer([]byte{})
 			err = diffOps.RunDiff(buf, os.Stderr, fs)
-			if err != nil {
+			switch {
+			case err != nil && len(testcase.ExpectedError) == 0:
 				t.Errorf("unexpected error: %v", err)
+			case err != nil && len(testcase.ExpectedError) != 0:
+				if !strings.Contains(err.Error(), testcase.ExpectedError) {
+					t.Errorf("expected error to contain %q but got: %v", testcase.ExpectedError, err)
+				}
+				return
+			case err == nil && len(testcase.ExpectedError) != 0:
+				t.Errorf("unexpected no error")
 			}
+
 			actualString := string(buf.Bytes())
 			actualString = noopDir.ReplaceAllString(actualString, "/tmp/noop/")
 			actualString = transformedDir.ReplaceAllString(actualString, "/tmp/transformed/")

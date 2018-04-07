@@ -37,6 +37,7 @@ type buildTestCase struct {
 	Filename    string   `yaml:"filename"`
 	// path to the file that contains the expected output
 	ExpectedStdout string `yaml:"expectedStdout"`
+	ExpectedError  string `yaml:"expectedError"`
 }
 
 func TestBuildValidate(t *testing.T) {
@@ -118,9 +119,18 @@ func TestBuild(t *testing.T) {
 			}
 			buf := bytes.NewBuffer([]byte{})
 			err = ops.RunBuild(buf, os.Stderr, fs)
-			if err != nil {
+			switch {
+			case err != nil && len(testcase.ExpectedError) == 0:
 				t.Errorf("unexpected error: %v", err)
+			case err != nil && len(testcase.ExpectedError) != 0:
+				if !strings.Contains(err.Error(), testcase.ExpectedError) {
+					t.Errorf("expected error to contain %q but got: %v", testcase.ExpectedError, err)
+				}
+				return
+			case err == nil && len(testcase.ExpectedError) != 0:
+				t.Errorf("unexpected no error")
 			}
+
 			actualBytes := buf.Bytes()
 			if !updateKinflateExpected {
 				expectedBytes, err := ioutil.ReadFile(testcase.ExpectedStdout)
