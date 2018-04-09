@@ -8,3 +8,6 @@ These demos are covered by presubmit tests.
 
  * [mysql](mySql.md) - Create a mySql production
    configuration from scratch.
+   
+ * [springboot](springboot.md) - Create a Spring Boot application production
+   configuration from scratch.
