@@ -34,7 +34,7 @@ func TestInitHappyPath(t *testing.T) {
 		t.Fatalf("unexpected error: %v", err)
 	}
 
-	f, err := fakeFS.Open(constants.KubeManifestFileName)
+	f, err := fakeFS.Open(constants.KustomizeFileName)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -48,7 +48,7 @@ func TestInitHappyPath(t *testing.T) {
 func TestInitFileAlreadyExist(t *testing.T) {
 	content := "hey there"
 	fakeFS := fs.MakeFakeFS()
-	fakeFS.WriteFile(constants.KubeManifestFileName, []byte(content))
+	fakeFS.WriteFile(constants.KustomizeFileName, []byte(content))
 
 	buf := bytes.NewBuffer([]byte{})
 	cmd := newCmdInit(buf, os.Stderr, fakeFS)
@@ -56,7 +56,7 @@ func TestInitFileAlreadyExist(t *testing.T) {
 	if err == nil {
 		t.Fatalf("expected error")
 	}
-	if err.Error() != `"`+constants.KubeManifestFileName+`" already exists` {
+	if err.Error() != `"`+constants.KustomizeFileName+`" already exists` {
 		t.Fatalf("unexpected error: %v", err)
 	}
 }

@@ -31,8 +31,8 @@ func TestWriteAndRead(t *testing.T) {
 	}
 
 	fsys := fs.MakeFakeFS()
-	fsys.Create("Kube-manifest.yaml")
-	mf, err := newManifestFile("Kube-manifest.yaml", fsys)
+	fsys.Create("kustomize.yaml")
+	mf, err := newManifestFile("kustomize.yaml", fsys)
 	if err != nil {
 		t.Fatalf("Unexpected Error: %v", err)
 	}
@@ -63,14 +63,14 @@ func TestNewNotExist(t *testing.T) {
 	fakeFS := fs.MakeFakeFS()
 	fakeFS.Mkdir(".", 0644)
 	fakeFS.Create(badSuffix)
-	_, err := newManifestFile("Kube-manifest.yaml", fakeFS)
+	_, err := newManifestFile("kustomize.yaml", fakeFS)
 	if err == nil {
 		t.Fatalf("expect an error")
 	}
 	if !strings.Contains(err.Error(), "Run `kinflate init` first") {
 		t.Fatalf("expect an error contains %q, but got %v", "does not exist", err)
 	}
-	_, err = newManifestFile("Kube-manifest.yaml", fakeFS)
+	_, err = newManifestFile("kustomize.yaml", fakeFS)
 	if err == nil {
 		t.Fatalf("expect an error")
 	}

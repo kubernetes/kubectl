@@ -16,9 +16,9 @@ limitations under the License.
 
 package constants
 
-// KubeManifestFileName is the Well-Known File Name for a kubernetes app manifest.
-const KubeManifestSuffix = ".yaml"
-const KubeManifestFileName = "Kube-manifest" + KubeManifestSuffix
+// KustomizeFileName is the Well-Known File Name for a kubernetes app manifest.
+const KustomizeSuffix = ".yaml"
+const KustomizeFileName = "kustomize" + KustomizeSuffix
 
 // Configmap behaviors
 const CreateBehavior = "create"

@@ -22,7 +22,7 @@ import (
 )
 
 func TestResourceError_Error(t *testing.T) {
-	filepath := "/path/to/Kube-manifest.yaml"
+	filepath := "/path/to/kustomize.yaml"
 	resourcefilepath := "/path/to/resource/deployment.yaml"
 	errorMsg := "file not found"
 	me := ResourceError{ManifestFilepath: filepath, ResourceFilepath: resourcefilepath, ErrorMsg: errorMsg}

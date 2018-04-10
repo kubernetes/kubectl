@@ -56,7 +56,7 @@ func newCmdDiff(out, errOut io.Writer, fs fs.FileSystem) *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVarP(&o.manifestPath, "filename", "f", "", "Pass in a Kube-manifest.yaml file or a directory that contains the file.")
+	cmd.Flags().StringVarP(&o.manifestPath, "filename", "f", "", "Pass in a kustomize.yaml file or a directory that contains the file.")
 	cmd.MarkFlagRequired("filename")
 	return cmd
 }

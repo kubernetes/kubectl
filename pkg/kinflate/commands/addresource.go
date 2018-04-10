@@ -86,7 +86,7 @@ func (o *addResourceOptions) RunAddResource(out, errOut io.Writer, fsys fs.FileS
 		return err
 	}
 
-	mf, err := newManifestFile(constants.KubeManifestFileName, fsys)
+	mf, err := newManifestFile(constants.KustomizeFileName, fsys)
 	if err != nil {
 		return err
 	}

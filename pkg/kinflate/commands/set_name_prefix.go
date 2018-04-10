@@ -77,7 +77,7 @@ func (o *setNamePrefixOptions) Complete(cmd *cobra.Command, args []string) error
 
 // RunSetNamePrefix runs setNamePrefix command (does real work).
 func (o *setNamePrefixOptions) RunSetNamePrefix(out, errOut io.Writer, fsys fs.FileSystem) error {
-	mf, err := newManifestFile(constants.KubeManifestFileName, fsys)
+	mf, err := newManifestFile(constants.KustomizeFileName, fsys)
 	if err != nil {
 		return err
 	}

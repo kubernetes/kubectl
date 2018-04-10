@@ -56,7 +56,7 @@ Expecting something like:
 > └── base
 >     ├── configMap.yaml
 >     ├── deployment.yaml
->     ├── Kube-manifest.yaml
+>     ├── kustomize.yaml
 >     ├── LICENSE
 >     ├── README.md
 >     └── service.yaml
@@ -80,7 +80,7 @@ The `base` directory has a [manifest] file:
 <!-- @manifest @test -->
 ```
 BASE=$DEMO_HOME/base
-more $BASE/Kube-manifest.yaml
+more $BASE/kustomize.yaml
 ```
 
 Run `kinflate` on the base to emit customized resources
@@ -99,7 +99,7 @@ label_ applied to all resources:
 <!-- @manifest @test -->
 ```
 sed -i 's/app: hello/app: my-hello/' \
-    $BASE/Kube-manifest.yaml
+    $BASE/kustomize.yaml
 ```
 
 See the effect:
@@ -131,7 +131,7 @@ defining a new name prefix, and some different labels.
 
 <!-- @makeStagingManifest @test -->
 ```
-cat <<'EOF' >$OVERLAYS/staging/Kube-manifest.yaml
+cat <<'EOF' >$OVERLAYS/staging/kustomize.yaml
 apiVersion: manifest.k8s.io/v1alpha1
 kind: Package
 metadata:
@@ -176,7 +176,7 @@ with a different name prefix and labels.
 
 <!-- @makeProductionManifest @test -->
 ```
-cat <<EOF >$OVERLAYS/production/Kube-manifest.yaml
+cat <<EOF >$OVERLAYS/production/kustomize.yaml
 apiVersion: manifest.k8s.io/v1alpha1
 kind: Package
 metadata:
@@ -237,16 +237,16 @@ Expecting something like:
 > ├── base
 > │   ├── configMap.yaml
 > │   ├── deployment.yaml
-> │   ├── Kube-manifest.yaml
+> │   ├── kustomize.yaml
 > │   ├── LICENSE
 > │   ├── README.md
 > │   └── service.yaml
 > └── overlays
 >     ├── production
 >     │   ├── deployment.yaml
->     │   └── Kube-manifest.yaml
+>     │   └── kustomize.yaml
 >     └── staging
->         ├── Kube-manifest.yaml
+>         ├── kustomize.yaml
 >         └── map.yaml
 > ```
 

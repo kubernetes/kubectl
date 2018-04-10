@@ -22,7 +22,7 @@ import (
 )
 
 func TestPatchError_Error(t *testing.T) {
-	filepath := "/path/to/Kube-manifest.yaml"
+	filepath := "/path/to/kustomize.yaml"
 	patchfilepath := "/path/to/patch/patch.yaml"
 	errorMsg := "file not found"
 	me := PatchError{ManifestFilepath: filepath, PatchFilepath: patchfilepath, ErrorMsg: errorMsg}

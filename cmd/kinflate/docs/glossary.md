@@ -136,7 +136,7 @@ kinflate is an implementation of [DAM].
 
 ## manifest
 
-A _manifest_ is a file called `Kube-manifest.yaml` that
+A _manifest_ is a file called `kustomize.yaml` that
 describes a configuration consumable by [kinflate].
 
 Here's an [example](Kube-manifest.yaml).
@@ -166,7 +166,7 @@ E.g. one might create a github repository like this:
 
 > ```
 > github.com/username/someapp/
->   Kube-manifest.yaml
+>   kustomize.yaml
 >   deployment.yaml
 >   configmap.yaml
 >   README.md
@@ -252,7 +252,7 @@ The _target_ is the argument to `inflate`, e.g.:
 
 `$target` must be a path to a directory that
 immediately contains a file called
-`Kube-manifest.yaml` (i.e. a [manifest]).
+`kustomize.yaml` (i.e. a [manifest]).
 
 The target contains, or refers to, all the information
 needed to create customized resources to send to the

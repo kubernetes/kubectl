@@ -40,11 +40,11 @@ cd $DEMO_HOME
 kinflate init
 ```
 
-The above step will create a `kinflate` configuration file called `Kube-manifest.yaml` in current directory.
+The above step will create a `kinflate` configuration file called `kustomize.yaml` in current directory.
 
 <!-- @catMan @test -->
 ```
-cat $DEMO_HOME/Kube-manifest.yaml
+cat $DEMO_HOME/kustomize.yaml
 ```
 
 containing something like:
@@ -83,10 +83,10 @@ cd $DEMO_HOME
 kinflate edit add resource service.yaml
 kinflate edit add resource deployment.yaml
 
-cat Kube-manifest.yaml
+cat kustomize.yaml
 ```
 
-`Kube-manifest.yaml`'s resources section should contain:
+`kustomize.yaml`'s resources section should contain:
 
 > ```
 > apiVersion: manifest.k8s.io/v1alpha1
@@ -103,9 +103,9 @@ cd $DEMO_HOME
 wget https://raw.githubusercontent.com/kinflate/example-springboot/master/application.properties
 kinflate edit add configmap demo-configmap --from-file application.properties
 
-cat Kube-manifest.yaml
+cat kustomize.yaml
 ```
-`Kube-manifest.yaml`'s configMapGenerator section should contain:
+`kustomize.yaml`'s configMapGenerator section should contain:
 > ```
 > configMapGenerator:
 > - files:
@@ -141,7 +141,7 @@ spec:
             value: prod
 EOF
 
-cat <<EOF >>$DEMO_HOME/Kube-manifest.yaml
+cat <<EOF >>$DEMO_HOME/kustomize.yaml
 patches:
 - patch.yaml
 EOF
@@ -155,9 +155,9 @@ EOF
 
 kinflate edit add configmap demo-configmap --from-file application-prod.properties
 
-cat Kube-manifest.yaml
+cat kustomize.yaml
 ```
-`Kube-manifest.yaml`'s configMapGenerator section should contain:
+`kustomize.yaml`'s configMapGenerator section should contain:
 > ```
 > configMapGenerator:
 > - files:
@@ -179,10 +179,10 @@ cd $DEMO_HOME
 
 kinflate edit set nameprefix 'prod-'
 
-cat Kube-manifest.yaml
+cat kustomize.yaml
 ```
 
-`Kube-manifest.yaml` should have updated value of namePrefix field:
+`kustomize.yaml` should have updated value of namePrefix field:
 
 > ```
 > apiVersion: manifest.k8s.io/v1alpha1
@@ -235,14 +235,14 @@ certain labels so that we can query them by label
 selector.
 
 `kinflate` does not have `edit set label` command to add
-label, but we can edit `Kube-manifest.yaml` file under
+label, but we can edit `kustomize.yaml` file under
 `prod` directory and add the production labels under
 `objectLabels` fields as highlighted below.
 
 <!-- @customizeLabels @test -->
 ```
 sed -i 's/app: helloworld/app: prod/' \
-    $DEMO_HOME/Kube-manifest.yaml
+    $DEMO_HOME/kustomize.yaml
 ```
 
 At this point, running `kinflate build` will
@@ -325,14 +325,14 @@ The output contains
 > ```
 
 ### Add patch to Manifest
-Currently `kinflate` doesn't provide a command to add a file as a patch, but we can edit the file `Kube-manifest.yaml` to 
+Currently `kinflate` doesn't provide a command to add a file as a patch, but we can edit the file `kustomize.yaml` to 
 include this patch.
 <!-- @addPatch @test -->
 ```
-mv $DEMO_HOME/Kube-manifest.yaml $DEMO_HOME/tmp.yaml
-sed '/patches:$/{N;s/- patch.yaml/- patch.yaml\n- memorylimit_patch.yaml\n- healthcheck_patch.yaml/}' $DEMO_HOME/tmp.yaml >& $DEMO_HOME/Kube-manifest.yaml
+mv $DEMO_HOME/kustomize.yaml $DEMO_HOME/tmp.yaml
+sed '/patches:$/{N;s/- patch.yaml/- patch.yaml\n- memorylimit_patch.yaml\n- healthcheck_patch.yaml/}' $DEMO_HOME/tmp.yaml >& $DEMO_HOME/kustomize.yaml
 ```
-`Kube-manifest.yaml` should have patches field:
+`kustomize.yaml` should have patches field:
 > ```
 > patches
 > - patch.yaml

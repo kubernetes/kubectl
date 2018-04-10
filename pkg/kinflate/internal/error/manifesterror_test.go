@@ -23,7 +23,7 @@ import (
 )
 
 func TestManifestError_Error(t *testing.T) {
-	filepath := "/path/to/Kube-manifest.yaml"
+	filepath := "/path/to/kustomize.yaml"
 	errorMsg := "Manifest not found"
 
 	me := ManifestError{ManifestFilepath: filepath, ErrorMsg: errorMsg}
@@ -41,7 +41,7 @@ func TestManifestError_Error(t *testing.T) {
 }
 
 func TestManifestErrors_Error(t *testing.T) {
-	filepath := "/path/to/Kube-manifest.yaml"
+	filepath := "/path/to/kustomize"
 	me := ManifestError{ManifestFilepath: filepath, ErrorMsg: "Manifest not found"}
 	ce := ConfigmapError{ManifestFilepath: filepath, ErrorMsg: "can't find configmap name"}
 	pe := PatchError{ManifestFilepath: filepath, PatchFilepath: filepath, ErrorMsg: "can't find patch file"}

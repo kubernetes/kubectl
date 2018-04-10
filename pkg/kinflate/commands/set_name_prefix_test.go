@@ -34,7 +34,7 @@ const (
 func TestSetNamePrefixHappyPath(t *testing.T) {
 	buf := bytes.NewBuffer([]byte{})
 	fakeFS := fs.MakeFakeFS()
-	fakeFS.WriteFile(constants.KubeManifestFileName, []byte(manifestTemplate))
+	fakeFS.WriteFile(constants.KustomizeFileName, []byte(manifestTemplate))
 
 	cmd := newCmdSetNamePrefix(buf, os.Stderr, fakeFS)
 	args := []string{goodPrefixValue}
@@ -42,7 +42,7 @@ func TestSetNamePrefixHappyPath(t *testing.T) {
 	if err != nil {
 		t.Errorf("unexpected cmd error: %v", err)
 	}
-	content, err := fakeFS.ReadFile(constants.KubeManifestFileName)
+	content, err := fakeFS.ReadFile(constants.KustomizeFileName)
 	if err != nil {
 		t.Errorf("unexpected read error: %v", err)
 	}
