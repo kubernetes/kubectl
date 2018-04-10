@@ -1,12 +1,12 @@
-[manifest]: ../docs/glossary.md#manifest
 [base]: ../docs/glossary.md#base
-[overlay]: ../docs/glossary.md#overlay
-[overlays]: ../docs/glossary.md#overlay
+[config]: https://github.com/kinflate/example-hello
+[hello]: https://github.com/monopole/hello
 [instance]: ../docs/glossary.md#instance
 [instances]: ../docs/glossary.md#instance
-[hello]: https://github.com/monopole/hello
-[config]: https://github.com/kinflate/example-hello
+[manifest]: ../docs/glossary.md#manifest
 [original]: https://github.com/kinflate/example-hello
+[overlay]: ../docs/glossary.md#overlay
+[overlays]: ../docs/glossary.md#overlay
 
 # Demo: hello world with instances
 
@@ -51,6 +51,7 @@ tree $DEMO_HOME
 ```
 
 Expecting something like:
+
 > ```
 > /tmp/tmp.IyYQQlHaJP
 > └── base
@@ -73,11 +74,11 @@ cluster:
 to instantiate the _hello_ service.  `kubectl`
 would only recognize the resource files.
 
-## The Manifest
+## The Base Manifest
 
 The `base` directory has a [manifest] file:
 
-<!-- @manifest @test -->
+<!-- @showManifest @test -->
 ```
 BASE=$DEMO_HOME/base
 more $BASE/kustomize.yaml
@@ -86,7 +87,7 @@ more $BASE/kustomize.yaml
 Run `kinflate` on the base to emit customized resources
 to `stdout`:
 
-<!-- @manifest @test -->
+<!-- @buildBase @test -->
 ```
 kinflate build $BASE
 ```
@@ -96,14 +97,14 @@ kinflate build $BASE
 A first customization step could be to change the _app
 label_ applied to all resources:
 
-<!-- @manifest @test -->
+<!-- @addLabel @test -->
 ```
 sed -i 's/app: hello/app: my-hello/' \
     $BASE/kustomize.yaml
 ```
 
 See the effect:
-<!-- @manifest @test -->
+<!-- @checkLabel @test -->
 ```
 kinflate build $BASE | grep -C 3 app:
 ```
@@ -151,7 +152,7 @@ EOF
 
 #### Staging Patch
 
-Add a configmap customization to change the server
+Add a configMap customization to change the server
 greeting from _Good Morning!_ to _Have a pineapple!_
 
 Also, enable the _risky_ flag.
@@ -232,8 +233,9 @@ tree $DEMO_HOME
 ```
 
 Expecting something like:
+
 > ```
-> /tmp/tmp.IyYQQlHaJP1<
+> /tmp/tmp.IyYQQlHaJP1
 > ├── base
 > │   ├── configMap.yaml
 > │   ├── deployment.yaml
@@ -250,6 +252,9 @@ Expecting something like:
 >         └── map.yaml
 > ```
 
+Compare the output directly
+to see how _staging_ and _production_ differ:
+
 <!-- @compareOutput -->
 ```
 diff \
@@ -257,6 +262,27 @@ diff \
   <(kinflate build $OVERLAYS/production) |\
   more
 ```
+
+The first part of the difference output should look
+something like
+
+> ```diff
+> <   altGreeting: Have a pineapple!
+> <   enableRisky: "true"
+> ---
+> >   altGreeting: Good Morning!
+> >   enableRisky: "false"
+> 8c8
+> <     note: Hello, I am staging!
+> ---
+> >     note: Hello, I am production!
+> 11c11
+> <     instance: staging
+> ---
+> >     instance: production
+> 13c13
+> (...truncated)
+> ```
 
 
 ## Deploy
@@ -284,6 +310,119 @@ To deploy, pipe the above commands to kubectl apply:
 > kinflate build $OVERLAYS/production |\
 >    kubectl apply -f -
 > ```
+
+## Rolling updates
+
+### Review
+
+The _hello-world_ deployment running in this cluster is
+configured with data from a configMap.
+
+The deployment refers to this map by name:
+
+
+<!-- @showDeployment @test -->
+```
+grep -C 2 configMapKeyRef $DEMO_HOME/base/deployment.yaml
+```
+
+Changing the data held by a live configMap in a cluster
+is considered bad practice. Deployments have no means
+to know that the configMaps they refer to have
+changed, so such updates have no effect.
+
+The recommended way to change a deployment's
+configuration is to
+
+ 1. create a new configMap with a new name,
+ 1. patch the _deployment_, modifying the name value of
+    the appropriate `configMapKeyRef` field.
+
+This latter change initiates rolling update to the pods
+in the deployment.  The older configMap, when no longer
+referenced by any other resource, is eventually garbage
+collected.
+
+### How this works with kinflate
+
+[patch]: ../docs/glossary.md#patch
+
+The _staging_ instance here has a configMap [patch]:
+
+<!-- @showMapPatch @test -->
+```
+cat $OVERLAYS/staging/map.yaml
+```
+
+This patch is by definition a named but not necessarily
+complete resource spec intended to modify a complete
+resource spec.
+
+The resource it modifies is here:
+
+<!-- @showMapBase @test -->
+```
+cat $DEMO_HOME/base/configMap.yaml
+```
+
+For a patch to work, the names in the `metadata/name`
+fields must match.
+
+However, the name values specified in the file are
+_not_ what gets used in the cluster.  By design,
+kinflate modifies these names.  To see the names
+ultimately used in the cluster, just run kinflate:
+
+<!-- @grepStagingName @test -->
+```
+kinflate build $OVERLAYS/staging |\
+    grep -B 8 -A 1 staging-the-map
+```
+
+The configMap name is prefixed by _staging-_, per the
+`namePrefix` field in
+`$OVERLAYS/staging/kustomize.yaml`.
+
+The suffix to the configMap name is generated from a
+hash of the maps content - in this case the name suffix
+is _hhhhkfmgmk_:
+
+<!-- @grepStagingHash @test -->
+```
+kinflate build $OVERLAYS/staging | grep hhhhkfmgmk
+```
+
+Now modify the map patch, to change the greeting
+the server will use:
+
+<!-- @changeMap @test -->
+```
+sed -i 's/pineapple/kiwi/' $OVERLAYS/staging/map.yaml
+```
+
+Run kinflate again to see the new names:
+
+<!-- @grepStagingName @test -->
+```
+kinflate build $OVERLAYS/staging |\
+    grep -B 8 -A 1 staging-the-map
+```
+
+Confirm that the change in configMap content resulted
+in three new names ending in _khk45ktkd9_ - one in the
+configMap name itself, and two in the deployment that
+uses the map:
+
+<!-- @countHashes @test -->
+```
+test 3 == $(kinflate build $OVERLAYS/staging | grep khk45ktkd9 | wc -l)
+```
+
+Applying these resources to the cluster will result in
+a rolling update of the deployments pods, retargetting
+them from the _hhhhkfmgmk_ maps to the _khk45ktkd9_
+maps.  The system will later garbage collect the
+unused maps.
 
 ## Rollback
 
