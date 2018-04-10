@@ -52,7 +52,7 @@ func (mf *manifestFile) validate() error {
 		return merr
 	}
 	if f.IsDir() {
-		mf.mPath = path.Join(mf.mPath, constants.KubeManifestFileName)
+		mf.mPath = path.Join(mf.mPath, constants.KustomizeFileName)
 		_, err = mf.fsys.Stat(mf.mPath)
 		if err != nil {
 			errorMsg := fmt.Sprintf("Manifest (%s) missing\nRun `kinflate init` first", mf.mPath)
@@ -60,8 +60,8 @@ func (mf *manifestFile) validate() error {
 			return merr
 		}
 	} else {
-		if !strings.HasSuffix(mf.mPath, constants.KubeManifestFileName) {
-			errorMsg := fmt.Sprintf("Manifest file (%s) should have %s suffix\n", mf.mPath, constants.KubeManifestSuffix)
+		if !strings.HasSuffix(mf.mPath, constants.KustomizeFileName) {
+			errorMsg := fmt.Sprintf("Manifest file (%s) should have %s suffix\n", mf.mPath, constants.KustomizeSuffix)
 			merr := interror.ManifestError{ManifestFilepath: mf.mPath, ErrorMsg: errorMsg}
 			return merr
 		}

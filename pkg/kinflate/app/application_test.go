@@ -62,7 +62,7 @@ metadata:
 `)
 
 	loader := loadertest.NewFakeLoader("/testpath")
-	err := loader.AddFile("/testpath/Kube-manifest.yaml", manifestContent)
+	err := loader.AddFile("/testpath/kustomize.yaml", manifestContent)
 	if err != nil {
 		t.Fatalf("Failed to setup fake loader.")
 	}

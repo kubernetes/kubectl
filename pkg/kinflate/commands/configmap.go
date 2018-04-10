@@ -51,7 +51,7 @@ func newCmdAddConfigMap(errOut io.Writer, fsys fs.FileSystem) *cobra.Command {
 			}
 
 			// Load in the manifest file.
-			mf, err := newManifestFile(constants.KubeManifestFileName, fsys)
+			mf, err := newManifestFile(constants.KustomizeFileName, fsys)
 			if err != nil {
 				return err
 			}

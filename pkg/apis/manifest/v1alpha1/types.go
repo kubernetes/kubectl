@@ -83,8 +83,8 @@ type Manifest struct {
 	ObjectAnnotations map[string]string `json:"objectAnnotations,omitempty" yaml:"objectAnnotations,omitempty"`
 
 	// Bases contain the paths to other packages that this manifest depends on.
-	// Each path should be either a path to a Kube-manifest.yaml or a path of
-	// a directory that contains a Kube-manifest.yaml file.
+	// Each path should be either a path to a kustomize.yaml or a path of
+	// a directory that contains a kustomize.yaml file.
 	Bases []string `json:"bases,omitempty" yaml:"bases,omitempty"`
 
 	// Resources specifies the relative paths within the package.

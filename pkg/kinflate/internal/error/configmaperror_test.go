@@ -22,7 +22,7 @@ import (
 )
 
 func TestConfigmapError_Error(t *testing.T) {
-	filepath := "/path/to/Kube-manifest.yaml"
+	filepath := "/path/to/kustomize.yaml"
 	errorMsg := "configmap name is missing"
 	me := ConfigmapError{ManifestFilepath: filepath, ErrorMsg: errorMsg}
 

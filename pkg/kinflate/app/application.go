@@ -51,7 +51,7 @@ type applicationImpl struct {
 // NewApp parses the manifest at the path using the loader.
 func New(loader loader.Loader) (Application, error) {
 	// load the manifest using the loader
-	manifestBytes, err := loader.Load(constants.KubeManifestFileName)
+	manifestBytes, err := loader.Load(constants.KustomizeFileName)
 	if err != nil {
 		return nil, err
 	}

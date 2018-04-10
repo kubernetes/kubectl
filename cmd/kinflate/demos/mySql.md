@@ -39,11 +39,11 @@ cd $DEMO_HOME
 kinflate init
 ```
 
-You should now have a file called `Kube-manifest.yaml`:
+You should now have a file called `kustomize.yaml`:
 
 <!-- @catMan @test -->
 ```
-cat $DEMO_HOME/Kube-manifest.yaml
+cat $DEMO_HOME/kustomize.yaml
 ```
 
 containing something like:
@@ -84,10 +84,10 @@ kinflate edit add resource secret.yaml
 kinflate edit add resource service.yaml
 kinflate edit add resource deployment.yaml
 
-cat Kube-manifest.yaml
+cat kustomize.yaml
 ```
 
-`Kube-manifest.yaml`'s resources section should contain:
+`kustomize.yaml`'s resources section should contain:
 
 > ```
 > apiVersion: manifest.k8s.io/v1alpha1
@@ -110,10 +110,10 @@ cd $DEMO_HOME
 
 kinflate edit set nameprefix 'prod-'
 
-cat Kube-manifest.yaml
+cat kustomize.yaml
 ```
 
-`Kube-manifest.yaml` should have updated value of namePrefix field:
+`kustomize.yaml` should have updated value of namePrefix field:
 
 > ```
 > apiVersion: manifest.k8s.io/v1alpha1
@@ -166,14 +166,14 @@ certain labels so that we can query them by label
 selector.
 
 `kinflate` does not have `set label` command to add
-label, but we can edit `Kube-manifest.yaml` file under
+label, but we can edit `kustomize.yaml` file under
 `prod` directory and add the production labels under
 `objectLabels` fields as highlighted below.
 
 <!-- @customizeLabels @test -->
 ```
 sed -i 's/app: helloworld/app: prod/' \
-    $DEMO_HOME/Kube-manifest.yaml
+    $DEMO_HOME/kustomize.yaml
 ```
 
 At this point, running `kinflate build` will
@@ -211,7 +211,7 @@ Specify the patch file in the manifest:
 
 <!-- @specifyPatch @test -->
 ```
-cat <<'EOF' >> $DEMO_HOME/Kube-manifest.yaml
+cat <<'EOF' >> $DEMO_HOME/kustomize.yaml
 patches:
 - persistent-disk.yaml
 EOF
@@ -224,7 +224,7 @@ Lets break this down:
   in deployment.yaml
 
 - Then we added `persistent-disk.yaml` to list of
-  `patches` in `Kube-manifest.yaml`. `kinflate build`
+  `patches` in `kustomize.yaml`. `kinflate build`
   will apply this patch to the deployment resource with
   the name `mysql` as defined in the patch.
 

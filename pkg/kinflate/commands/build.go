@@ -43,9 +43,9 @@ func newCmdBuild(out, errOut io.Writer, fs fs.FileSystem) *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "build [path]",
-		Short: "Print current configuration per contents of " + constants.KubeManifestFileName,
+		Short: "Print current configuration per contents of " + constants.KustomizeFileName,
 		Example: `
-		# Use the Kube-manifest.yaml file under somedir/ to generate a set of api resources.
+		# Use the kustomize.yaml file under somedir/ to generate a set of api resources.
 		build somedir/`,
 		Run: func(cmd *cobra.Command, args []string) {
 			err := o.Validate(args)
