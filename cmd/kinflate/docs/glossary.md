@@ -139,6 +139,8 @@ kinflate is an implementation of [DAM].
 A _manifest_ is a file called `Kube-manifest.yaml` that
 describes a configuration consumable by [kinflate].
 
+Here's an [example](Kube-manifest.yaml).
+
 A manifest contains fields falling into these categories:
 
  * Immediate customization instructions -
