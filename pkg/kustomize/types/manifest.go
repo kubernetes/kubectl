@@ -14,60 +14,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package v1alpha1
-
-import (
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-)
-
-// Descriptor contains all the metadata of the package and drives package
-// searching and browsing, and support the fork/rebase upgrade workflow.
-// It can be used by something like an app registry.
-type Descriptor struct {
-	metav1.TypeMeta `json:",inline" yaml:",inline"`
-	// Standard object's metadata.
-	// More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#metadata
-	metav1.ObjectMeta `json:"metadata,omitempty" yaml:"metadata,omitempty"`
-
-	// The name of the package.
-	// The name of an individual instance should live in metadata.name.
-	Name string `json:"name,omitempty" yaml:"name,omitempty"`
-
-	// Description of the package.
-	Description string `json:"description,omitempty" yaml:"description,omitempty"`
-
-	// An pointer to the icon.
-	Icon string `json:"icon,omitempty" yaml:"icon,omitempty"`
-
-	// Search keywords for the package.
-	Keywords []string `json:"keywords,omitempty" yaml:"keywords,omitempty"`
-
-	// Homepage of the application package.
-	Home string `json:"home,omitempty" yaml:"home,omitempty"`
-
-	// Source specifies the upstream URL, e.g. https://github.com/foo/bar.git,
-	// file://host/path, etc.
-	// hosting the resource files specified in Base and Overlays.
-	// This is useful in the fork/rebase workflow.
-	Source string `json:"source,omitempty" yaml:"source,omitempty"`
-
-	// Version of the package.
-	PackageVersion string `json:"packageVersion,omitempty" yaml:"packageVersion,omitempty"`
-}
+package types
 
 // Manifest has all the information to expand of generate the k8s api resources.
 // It can be used by kubectl or some other tooling.
 // A manifest could be either a Base or an Overlay.
+// TODO: rename Manifest to Kustomization
 type Manifest struct {
-	metav1.TypeMeta `json:",inline" yaml:",inline"`
-	// Standard object's metadata.
-	// More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#metadata
-	metav1.ObjectMeta `json:"metadata,omitempty" yaml:"metadata,omitempty"`
-
-	// TODO: figure out if we need field ManifestVersion.
-	// See: https://github.com/kubernetes/kubernetes/pull/52570/files/3eea91793dfbc3fdb0799589fac3790c4cde58a4#r140391019
-	// Version of the manifest.
-	// ManifestVersion string `json:"manifestVersion,omitempty" yaml:"manifestVersion,omitempty"`
+	// KustomizationName is a documentation field - a name for the customizations
+	// in a marshalled version of this struct, that survives YAML unmarshalling
+	// that discards comments.
+	KustomizationName string `json:"kustomizationName,omitempty" yaml:"kustomizationName,omitempty"`
 
 	// NamePrefix will prefix the names of all resources mentioned in the manifest
 	// including generated configmaps and secrets.
