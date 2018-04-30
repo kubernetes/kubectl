@@ -207,7 +207,7 @@ An _overlay_ is a [target] that modifies (and thus
 depends on) another target.
 
 The [kustomization] in an overlay refers to (via file path,
-URI or other method) to _some other kustomization_, known as
+URI or other method) _some other kustomization_, known as
 its [base].
 
 An overlay is unusable without its base.
