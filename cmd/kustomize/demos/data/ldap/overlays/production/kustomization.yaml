@@ -1,5 +1,0 @@
-bases:
-  - ../../base
-patches:
-  - deployment.yaml
-namePrefix: production-
