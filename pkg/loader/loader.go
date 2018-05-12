@@ -29,7 +29,7 @@ type Loader interface {
 	Load(location string) ([]byte, error)
 }
 
-// Private implmentation of Loader interface.
+// Private implementation of Loader interface.
 type loaderImpl struct {
 	root    string
 	schemes []SchemeLoader
