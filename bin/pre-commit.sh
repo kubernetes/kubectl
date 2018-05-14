@@ -43,14 +43,9 @@ function testGoTest {
   go test -v ./...
 }
 
-function testTutorial {
-  mdrip --mode test --label test ./cmd/kustomize
-}
-
 runTest testGoFmt
 runTest testGoImports
 runTest testGoVet
 runTest testGoTest
-runTest testTutorial
 
 exit $rc
