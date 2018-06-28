@@ -39,7 +39,7 @@ type Interface interface {
 	// AsSlice returns a selector that selects Slices from the given
 	// values.
 	AsSlice() Slice
-	// Number returns a selector taht selects Numbers from the given values.
+	// Number returns a selector that selects Numbers from the given values.
 	AsNumber() Number
 	// String returns a selector that selects strings from the given values.
 	AsString() String
