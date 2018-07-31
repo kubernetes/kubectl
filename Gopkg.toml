@@ -20,23 +20,54 @@
 #  name = "github.com/x/y"
 #  version = "2.4.0"
 
+[prune]
+  go-tests = true
+
+# Necessary to fix panic ... ""
+[[override]]
+name = "gopkg.in/fsnotify.v1"
+source = "https://github.com/fsnotify/fsnotify.git"
 
 [[constraint]]
-  branch = "v2"
-  name = "gopkg.in/yaml.v2"
+name="sigs.k8s.io/controller-runtime"
+branch="master"
 
 [[constraint]]
-  branch = "master"
-  name = "k8s.io/api"
+name="k8s.io/kubernetes"
+branch="master"
 
-[[constraint]]
-  branch = "master"
-  name = "k8s.io/apimachinery"
+[[override]]
+name="k8s.io/api"
+branch="master"
 
-[[constraint]]
-  branch = "master"
-  name = "k8s.io/client-go"
+[[override]]
+name="k8s.io/apiextensions-apiserver"
+branch="master"
 
-[[constraint]]
-  branch = "master"
-  name = "k8s.io/utils"
+[[override]]
+name="k8s.io/apimachinery"
+branch="master"
+
+[[override]]
+name="k8s.io/client-go"
+branch="master"
+
+[[override]]
+name="k8s.io/kube-aggregator"
+branch="master"
+
+[[override]]
+name="k8s.io/kube-openapi"
+branch="master"
+
+[[override]]
+name="github.com/russross/blackfriday"
+revision="300106c228d52c8941d4b3de6054a6062a86dda3"
+
+[[override]]
+name="github.com/docker/distribution"
+revision="edc3ab29cdff8694dd6feb85cfeb4b5f1b38ed9c"
+
+[[override]]
+name="github.com/imdario/mergo"
+revision="6633656539c1639d9d78127b7d47c622b5d7b6dc"

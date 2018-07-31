@@ -18,60 +18,74 @@ import (
 	"math"
 	"reflect"
 	"regexp"
-	"sort"
 	"strings"
+	"sync"
 	"unicode"
 )
 
-// Taken from https://github.com/golang/lint/blob/3390df4df2787994aea98de825b964ac7944b817/lint.go#L732-L769
-var commonInitialisms = map[string]bool{
-	"ACL":   true,
-	"API":   true,
-	"ASCII": true,
-	"CPU":   true,
-	"CSS":   true,
-	"DNS":   true,
-	"EOF":   true,
-	"GUID":  true,
-	"HTML":  true,
-	"HTTPS": true,
-	"HTTP":  true,
-	"ID":    true,
-	"IP":    true,
-	"JSON":  true,
-	"LHS":   true,
-	"OAI":   true,
-	"QPS":   true,
-	"RAM":   true,
-	"RHS":   true,
-	"RPC":   true,
-	"SLA":   true,
-	"SMTP":  true,
-	"SQL":   true,
-	"SSH":   true,
-	"TCP":   true,
-	"TLS":   true,
-	"TTL":   true,
-	"UDP":   true,
-	"UI":    true,
-	"UID":   true,
-	"UUID":  true,
-	"URI":   true,
-	"URL":   true,
-	"UTF8":  true,
-	"VM":    true,
-	"XML":   true,
-	"XMPP":  true,
-	"XSRF":  true,
-	"XSS":   true,
-}
+// commonInitialisms are common acronyms that are kept as whole uppercased words.
+var commonInitialisms *indexOfInitialisms
+
+// initialisms is a slice of sorted initialisms
 var initialisms []string
 
+var once sync.Once
+
+var isInitialism func(string) bool
+
 func init() {
-	for k := range commonInitialisms {
-		initialisms = append(initialisms, k)
+	// Taken from https://github.com/golang/lint/blob/3390df4df2787994aea98de825b964ac7944b817/lint.go#L732-L769
+	var configuredInitialisms = map[string]bool{
+		"ACL":   true,
+		"API":   true,
+		"ASCII": true,
+		"CPU":   true,
+		"CSS":   true,
+		"DNS":   true,
+		"EOF":   true,
+		"GUID":  true,
+		"HTML":  true,
+		"HTTPS": true,
+		"HTTP":  true,
+		"ID":    true,
+		"IP":    true,
+		"JSON":  true,
+		"LHS":   true,
+		"OAI":   true,
+		"QPS":   true,
+		"RAM":   true,
+		"RHS":   true,
+		"RPC":   true,
+		"SLA":   true,
+		"SMTP":  true,
+		"SQL":   true,
+		"SSH":   true,
+		"TCP":   true,
+		"TLS":   true,
+		"TTL":   true,
+		"UDP":   true,
+		"UI":    true,
+		"UID":   true,
+		"UUID":  true,
+		"URI":   true,
+		"URL":   true,
+		"UTF8":  true,
+		"VM":    true,
+		"XML":   true,
+		"XMPP":  true,
+		"XSRF":  true,
+		"XSS":   true,
 	}
-	sort.Sort(sort.Reverse(byLength(initialisms)))
+
+	// a thread-safe index of initialisms
+	commonInitialisms = newIndexOfInitialisms().load(configuredInitialisms)
+
+	// a test function
+	isInitialism = commonInitialisms.isInitialism
+}
+
+func ensureSorted() {
+	initialisms = commonInitialisms.sorted()
 }
 
 // JoinByFormat joins a string array by a known format:
@@ -166,6 +180,7 @@ func split(str string) (words []string) {
 	str = rex1.ReplaceAllString(str, " $1")
 
 	// check if consecutive single char things make up an initialism
+	once.Do(ensureSorted)
 	for _, k := range initialisms {
 		str = strings.Replace(str, rex1.ReplaceAllString(k, " $1"), " "+k, -1)
 	}
@@ -205,34 +220,11 @@ func Camelize(word string) (camelized string) {
 // ToFileName lowercases and underscores a go type name
 func ToFileName(name string) string {
 	var out []string
-	cml := trim(name)
 
-	// Camelize any capital word preceding a reserved keyword ("initialism")
-	// thus, upper-cased words preceding a common initialism will get separated
-	// e.g: ELBHTTPLoadBalancer becomes elb_http_load_balancer
-	rexPrevious := regexp.MustCompile(`(?P<word>\p{Lu}{2,})(?:HTTP|OAI)`)
-	cml = rexPrevious.ReplaceAllStringFunc(cml, func(match string) (replaceInMatch string) {
-		for _, m := range rexPrevious.FindAllStringSubmatch(match, -1) { // [ match submatch ]
-			if m[1] != "" {
-				replaceInMatch = strings.Replace(m[0], m[1], Camelize(m[1]), -1)
-			}
-		}
-		return
-	})
-
-	// Pre-camelize reserved keywords ("initialisms") to avoid unnecessary hyphenization
-	for _, k := range initialisms {
-		cml = strings.Replace(cml, k, Camelize(k), -1)
-	}
-
-	// Camelize other capital words to avoid unnecessary hyphenization
-	rexCase := regexp.MustCompile(`(\p{Lu}{2,})`)
-	cml = rexCase.ReplaceAllStringFunc(cml, Camelize)
-
-	// Final split with hyphens
-	for _, w := range split(cml) {
+	for _, w := range split(name) {
 		out = append(out, lower(w))
 	}
+
 	return strings.Join(out, "_")
 }
 
@@ -249,7 +241,7 @@ func ToCommandName(name string) string {
 func ToHumanNameLower(name string) string {
 	var out []string
 	for _, w := range split(name) {
-		if !commonInitialisms[upper(w)] {
+		if !isInitialism(upper(w)) {
 			out = append(out, lower(w))
 		} else {
 			out = append(out, w)
@@ -263,7 +255,7 @@ func ToHumanNameTitle(name string) string {
 	var out []string
 	for _, w := range split(name) {
 		uw := upper(w)
-		if !commonInitialisms[uw] {
+		if !isInitialism(uw) {
 			out = append(out, upper(w[:1])+lower(w[1:]))
 		} else {
 			out = append(out, w)
@@ -288,7 +280,7 @@ func ToJSONName(name string) string {
 // ToVarName camelcases a name which can be underscored or pascal cased
 func ToVarName(name string) string {
 	res := ToGoName(name)
-	if _, ok := commonInitialisms[res]; ok {
+	if isInitialism(res) {
 		return lower(res)
 	}
 	if len(res) <= 1 {
@@ -303,7 +295,7 @@ func ToGoName(name string) string {
 	for _, w := range split(name) {
 		uw := upper(w)
 		mod := int(math.Min(float64(len(uw)), 2))
-		if !commonInitialisms[uw] && !commonInitialisms[uw[:len(uw)-mod]] {
+		if !isInitialism(uw) && !isInitialism(uw[:len(uw)-mod]) {
 			uw = upper(w[:1]) + lower(w[1:])
 		}
 		out = append(out, uw)
@@ -364,6 +356,16 @@ func IsZero(data interface{}) bool {
 		return true
 	}
 	return false
+}
+
+// AddInitialisms add additional initialisms
+func AddInitialisms(words ...string) {
+	for _, word := range words {
+		//commonInitialisms[upper(word)] = true
+		commonInitialisms.add(upper(word))
+	}
+	// sort again
+	initialisms = commonInitialisms.sorted()
 }
 
 // CommandLineOptionsGroup represents a group of user-defined command line options
