@@ -3,6 +3,8 @@
 ## Running Locally
 
 - Install [GitBook Toolchain](https://toolchain.gitbook.com/setup.html)
+- From `docs/book` run `gitbook install`  to install node_modules locally
+  - Retry if this fails, it is flaky
 - From `docs/book` run `gitbook serve`
 - Go to `http://localhost:4000` in a browser
 
