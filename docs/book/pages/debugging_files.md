@@ -1,0 +1,82 @@
+{% panel style="danger", title="Proposal Only" %}
+Many of the features and workflows.  The features that must be implemented
+are tracked [here](https://github.com/kubernetes/kubectl/projects/7)
+{% endpanel %}
+
+{% panel style="info", title="TL;DR" %}
+- Copy files to and from Containers in a cluster
+{% endpanel %}
+
+# Copying Container Files
+
+## Motivation
+
+- Copying files from Containers in a cluster to a local filesystem
+- Copying files from a local filesystem to Containers in a cluster
+
+{% panel style="warning", title="Install Tar" %}
+Copy requires that *tar* be installed on the local filesystem and is on the user's
+PATH.
+{% endpanel %}
+
+{% method %}
+## Local to Remote
+
+Copy a local file to a remote Pod in a cluster.
+
+- Local file format is `<path>`
+- Remote file format is `<pod-name>:<path>`
+
+{% sample lang="yaml" %}
+
+```bash
+$ kubectl cp /tmp/foo_dir <some-pod>:/tmp/bar_dir
+```
+
+{% endmethod %}
+
+{% method %}
+## Remote to Local
+
+Copy a remote file from a Pod to a local file.
+
+- Local file format is `<path>`
+- Remote file format is `<pod-name>:<path>`
+
+{% sample lang="yaml" %}
+
+```bash
+$ kubectl cp /tmp/foo <some-pod>:/tmp/bar
+```
+
+{% endmethod %}
+
+{% method %}
+## Specify the Conainer
+
+Specify the Container within a Pod running multiple containers.
+
+- `-c <container-name>`
+
+{% sample lang="yaml" %}
+
+```bash
+$ kubectl cp /tmp/foo <some-pod>:/tmp/bar -c <specific-container>
+```
+
+{% endmethod %}
+  
+{% method %}
+## Namespaces
+
+Set the Pod namespace by prefixing the Pod name with `<namespace>/` .
+
+- `<pod-namespace>/<pod-name>:<path>`
+
+{% sample lang="yaml" %}
+
+```bash
+$ kubectl cp /tmp/foo <some-namespace>/<some-pod>:/tmp/bar
+```
+
+{% endmethod %}

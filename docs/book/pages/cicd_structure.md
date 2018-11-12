@@ -1,66 +1,177 @@
+{% panel style="danger", title="Proposal Only" %}
+Many of the features and workflows.  The features that must be implemented
+are tracked [here](https://github.com/kubernetes/kubectl/projects/7)
+{% endpanel %}
+
+{% panel style="info", title="TL;DR" %}
+- Structure Resource Config directories using a hierarchy that matches your environments, zones, versions, etc.
+{% endpanel %}
+
 # Project Structure
+
+When creating a Kubernetes Project for your Application, there many possible was to structure it.  This
+Chapter provides direction and common conventions for directory structure.
 
 ## Definitions
 
-- **Project:** TODO: Define this
-- **Application:** TODO: Define this
-- **Bespoke:** TODO: Define this
-- **Ready-Made:** TODO: Define this
+- **Application:** Collection of containerized Workloads that are run together.
+- **Project:** One or more bundles of Resource Config that configure an Application for Kubernetes.
+- **Bespoke:** Written by an end-user for themselves (e.g. run by the author).
+- **Ready-Made:** Published for consumption by other users (e.g. run by users besides the author).
 
-## Application with Bespoke Components
+## Directory Structure
 
-**Example:** An application whose images and Resource Config are owned by user.
+{% method %}
 
-### Organizing Components
+### Bespoke Projects
 
-### Use of Namespaces
+Bespoke Resource Config is for Projects that are run by the same organization that develops them.
 
-## Application with Ready-Made Components
+Bespoke Resource Config must be structured so that it can be rolled out across multiple environments and availability
+zones.
 
-**Example:** An application built from components whose images and Resource Config are owned by a different group.
+**Organizing Resource Config:** While the convention show here is purely optional, it is recommended for
+across Kubernetes Projects consistency.
 
-### Referencing Ready-Made Bases
+- Resource Configs `<project-name>/<environment>/<zone>/<component>/<resource-type>.yaml`
+- Apply targets under `<project-name>/<environment>/<cluster>/kustomization.yaml`
+- Reusable bases should be put under `<project-name>/bases/<component>` and
+  `<project-name>/<environment>/bases/<component>`
 
-### Organizing Components
+**Best Practices:**
+ 
+- Each *Base* should add a `namePrefix` and `commonLabels` to build up well structured Resources.
+- Each *Environment Base* should set a `namespace` unique to that Project + Environment 
 
-## Multi Application
+{% sample lang="yaml" %}
 
-**Example:** Multiple applications owned and operated by the same group.
+```bash
+$ tree
+.
+├── bases # Shared Across all Environments
+│   ├── kustomization.yaml # Used as a Base by Environment Bases
+│   ├── backend # Backend Resource Config
+│   │   ├── deployment.yaml
+│   │   └── service.yaml
+│   ├── frontend # Frontend Resource Config
+│   │   ├── deployment.yaml
+│   │   ├── ingress.yaml
+│   │   └── service.yaml
+│   └── storage # Storage Resource Config
+│       ├── service.yaml
+│       └── statefulset.yaml
+├── prod # Production Resource Config
+│   ├── bases # Production specfic configuration
+│   │   ├── kustomization.yaml # Used as a Base by Zones
+│   │   ├── backend
+│   │   │   └── deployment-patch.yaml
+│   │   ├── frontend
+│   │   │   └── deployment-patch.yaml
+│   │   └── storage
+│   │       └── statefulset-patch.yaml
+│   ├── us-central # us-central specific configuration
+│   │   ├── kustomization.yaml
+│   │   ├── configmap-patch.yaml
+│   │   └── backend
+│   │       └── deployment-patch.yaml
+│   ├── us-east # us-east specific configuration
+│   │   └── kustomization.yaml 
+│   └── us-west # us-west specific configuration
+│       └── kustomization.yaml
+├── staging
+│   ├── bases # Staging specific configuration
+│   │   ├── kustomization.yaml # Used as a Base by Zones
+│   │   ├── backend
+│   │   │   └── deployment-patch.yaml
+│   │   ├── frontend
+│   │   │   └── deployment-patch.yaml
+│   │   └── storage
+│   │       └── statefulset-patch.yaml
+│   └── us-west
+│       └── kustomization.yaml
+└── test
+    ├── bases # Test specific configuration
+    │   ├── kustomization.yaml
+    │   ├── configmap-patch.yaml
+    └── us-west
+        └── kustomization.yaml
+```
 
-### Organizing Applications
+{% endmethod %}
 
-### Use of Namespaces
+{% panel style="success", title="Applying Environment + Cluster" %}
+While the directory structure contains the cluster, Apply won't read use this to determine the kubeconfig
+context.  To Apply a specific cluster, add that cluster to the `kubectl config`, and
+specify the corresponding context when running Apply.
 
-## Multi Environment
+```bash
+$ kubectl apply -f myproject/prod/us-west --context us-west --wait
+```
 
-**Example:** Multiple applications owned and operated by the same group rolledout across multiple environments -
-e.g. dev, test, staging, canary, production.
+{% endpanel %}
 
-### Organizing Environments
+{% method %}
 
-### Use of Namespaces
+### Ready-Made Projects
 
-### Organizing Bespoke Bases + Variants
+Ready-Made Resource Config is for Projects that are run by a different organization than develops them.
 
-## Multi Cluster
+Ready-Made Config should be structured to support multiple concurrent versions / stability releases of a Project.
+This structure may take the form of directories or branches (if using git).
 
-**Example:** An application that is rolledout to multiple Kubernetes clusters sequentially or in parallel.
+**Organizing Resource Config:** While the convention show here is purely optional, it is recommended for
+across Kubernetes Projects consistency.
 
-### Organizing Bespoke Bases + Variants
+- Resource Configs `<project-name>/<version | stability>/<resource-type>.yaml`
+- Resource Configs `<project-name>/<version | stability>/kustomization.yaml`
+- Reusable bases should be put under `<project-name>/bases/<component>` and
+  `<project-name>/<version>/bases/<component>`
 
-### Use of KubeConfigs
+{% sample lang="yaml" %}
 
-## Multi Project
+```bash
+$ tree
+.
+├── bases
+│   ├── kustomization.yaml
+│   ├── backend
+│   │   ├── deployment.yaml
+│   │   └── service.yaml
+│   ├── frontend
+│   │   ├── deployment.yaml
+│   │   ├── ingress.yaml
+│   │   └── service.yaml
+│   └── storage
+│       ├── service.yaml
+│       └── statefulset.yaml
+├── v1.0
+│   ├── kustomization.yaml
+│   └── bases
+│       ├── kustomization.yaml
+│       ├── backend
+│       │   └── deployment-patch.yaml
+│       ├── frontend
+│       │   └── deployment-patch.yaml
+│       └── storage
+│           └── statefulset-patch.yaml
+└── v1.1
+    ├── kustomization.yaml
+    └── bases
+        ├── kustomization.yaml
+        ├── backend
+        │   └── deployment-patch.yaml
+        ├── frontend
+        │   └── deployment-patch.yaml
+        └── storage
+            └── statefulset-patch.yaml
+```
 
-**Example:** Multiple projects developed by separate teams whose Resource Config lives in the same repository or
-in multiple repositories.
+{% endmethod %}
 
-### Organizing Groups
+### Forking and Consuming Ready-Made Projects
 
-### Publishing Shared Bases
+Bespoke Projects may consume Ready-Made Projects by referencing them as bases.  These Projects may either
+directly reference the Ready-Made Projects using their URLs, or may fork/clone them (e.g. using git).
 
-## Resource Config and Source Code Repositories
-
-### Separate Repositories
-
-### Shared  Repository
+When forking/cloning a Ready-Made Project, it may be put in the Bespoke Project bases, or in a location
+shared by multiple Bespoke Projects.

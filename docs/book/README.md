@@ -1,9 +1,14 @@
-# Introduction
+{% panel style="danger", title="Proposal Only" %}
+Many of the features and workflows.  The features that must be implemented
+are tracked [here](https://github.com/kubernetes/kubectl/projects/7)
+{% endpanel %}
 
 {% panel style="info", title="TL;DR" %}
 - Kubernetes runs Containerized Workloads in a cluster
 - The Kubectl Book explains Kubernetes tools and workflows
 {% endpanel %}
+
+# Introduction
 
 The goal of this book is to document how users should configure, deploy and manage their 
 containerized Workloads in Kubernetes.
@@ -36,7 +41,7 @@ Pods provide the following a Pod running a *single instance* of an Application:
 - Network (IP address shared by containers in the Pod)
 - Mounting Shared Configuration and Secrets
 
-{% panel style="info", title="Multi Container Pods" %}
+{% panel style="warning", title="Multi Container Pods" %}
 Multiple identical instances of an Application should be run by creating multiple copies of
 the same Pod using a Workload API.
 

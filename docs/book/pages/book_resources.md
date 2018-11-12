@@ -1,10 +1,15 @@
-# The Kubernetes Resource Model
+{% panel style="danger", title="Proposal Only" %}
+Many of the features and workflows.  The features that must be implemented
+are tracked [here](https://github.com/kubernetes/kubectl/projects/7)
+{% endpanel %}
 
 {% panel style="info", title="TL;DR" %}
 - A Kubernetes API has 2 parts - a Resource Type and a Controller
 - Resources are object declared as json or yaml and written to a cluster
 - Controllers asynchronously actuate Resources after they are stored
 {% endpanel %}
+
+# The Kubernetes Resource Model
 
 ## Resources
 
@@ -13,24 +18,21 @@ Instances of Kubernetes objects such as
 [StatefulSets](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/),
 [Jobs](https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/),
 [CronJobs](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/) and
-[DaemonSets](https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/) are called Resources.
+[DaemonSets](https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/) are called **Resources**.
 
-It is important to understand the structure of Resources, as Resources are how users interact
-with Kubernetes.
-
-Users work with Resource APIs by declaring the desired state of Kubernetes Resources in
-files called Resource Config.  *After* Resource Config is Applied to a cluster and the
-request completes, a Controller actuates the API.
+Users work with Resource APIs by declaring them in files called Resource Config.  Resource Config is
+*Applied* (declarative Create/Update/Delete) to a Kubernetes cluster, and actuated by a **Controller**.
 
 Resources are keyed by:
 
-- **apiVersion**
-- **kind**
-- (metadata) **namespace**
-- (metadata) **name**
+- **apiVersion** // API Version
+- **kind** // API Type
+- (metadata) **namespace** // Instance namespace
+- (metadata) **name** // Instance name
 
-{% panel style="info", title="Default Namespace" %}
-If namespace is omitted from the Resource Config, the *default* namespace is used.
+{% panel style="warning", title="Default Namespace" %}
+If namespace is omitted from the Resource Config, the *default* namespace is used, users
+should also explicitly specify the namespace in an `kustomization.yaml` or directly on Resources.
 {% endpanel %}
 
 {% method %}
@@ -88,7 +90,7 @@ changes either to desired state of Resources (create, update, delete) or the sys
 Controllers then make changes to the cluster to fulfill the intent specified by the user
 (e.g. in Resource Config) or automation (e.g. changes from Autoscalers).
 
-{% panel style="info", title="Asynchronous Actuation" %}
+{% panel style="warning", title="Asynchronous Actuation" %}
 Because Controllers run asynchronously, issues such as a bad
 Container Image or unschedulable Pods will not be present in the CRUD response.
 Tools must facilitate watching the state of the system until changes are

@@ -1,9 +1,14 @@
-# Creating Bases and Variations
+{% panel style="danger", title="Proposal Only" %}
+Many of the features and workflows.  The features that must be implemented
+are tracked [here](https://github.com/kubernetes/kubectl/projects/7)
+{% endpanel %}
 
 {% panel style="info", title="TL;DR" %}
 - Create Variants of a Project for different Environments.
 - Customize Resource Config shared across multiple Projects.
 {% endpanel %}
+
+# Creating Bases and Variations
 
 ## Motivation
 
@@ -27,13 +32,13 @@ Examples of changes between variants:
 
 ## Referring to a Base
 
-A project can refer by adding a path (relative to the `apply.yaml`) to `base` that
-points to a directory containing another `apply.yaml` file.  This will automatically
+A project can refer by adding a path (relative to the `kustomization.yaml`) to `base` that
+points to a directory containing another `kustomization.yaml` file.  This will automatically
 add all of the Resources from the base project to the current project.
 
 Bases can be:
 
-- Relative paths from the `apply.yaml` - e.g. `../base`
+- Relative paths from the `kustomization.yaml` - e.g. `../base`
 - Urls - e.g. `github.com/kubernetes-sigs/kustomize/examples/multibases?ref=v1.0.6`
 
 {% panel style="info", title="URL Syntax" %}
@@ -45,14 +50,14 @@ The Base URLs should follow
 **Example:** Add the Resource Config from a base.
 
 {% sample lang="yaml" %}
-**Input:** The apply.yaml file
+**Input:** The kustomization.yaml file
 
 ```yaml
-# apply.yaml
+# kustomization.yaml
 bases:
 - ../base
 
-# ../base/apply.yaml
+# ../base/kustomization.yaml
 configMapGenerator:
 - name: myJavaServerEnvVars
   literals:	
@@ -130,12 +135,7 @@ spec:
 ```
 {% endmethod %}
 
-## Customizing Each Variant
-
-When users have multiple similar projects with a shared base, they will want
-to create variants that customize the original base.
-
-### Customizing Pod Environment Variables
+## Customizing Pod Environment Variables
 
 {% method %}
 Customizing Pod Command arguments may be performed by generating different ConfigMaps
@@ -148,10 +148,10 @@ in each Variant and using the ConfigMap values in the Pod Environment Variables.
 Variables to a Pod.
 
 {% sample lang="yaml" %}
-**Input:** The apply.yaml file
+**Input:** The kustomization.yaml file
 
 ```yaml
-# apply.yaml
+# kustomization.yaml
 bases:
 - ../base
 configMapGenerator:
@@ -160,7 +160,7 @@ configMapGenerator:
   - special.how=very
   - special.type=charm
 
-# ../base/apply.yaml
+# ../base/kustomization.yaml
 resources:
 - deployment.yaml
 
@@ -234,7 +234,7 @@ spec:
 See [ConfigMaps and Secrets](dam_generators.md).
 
 
-### Customizing Pod Command Arguments
+## Customizing Pod Command Arguments
 
 {% method %}
 Customizing Pod Command arguments may be performed by generating different ConfigMaps
@@ -247,10 +247,10 @@ in each Variant and using the ConfigMap values in the Pod Command Arguments.
 Arguments to a Pod.
 
 {% sample lang="yaml" %}
-**Input:** The apply.yaml file
+**Input:** The kustomization.yaml file
 
 ```yaml
-# apply.yaml
+# kustomization.yaml
 bases:
 - ../base
 configMapGenerator:
@@ -259,7 +259,7 @@ configMapGenerator:
   - special.how=very
   - special.type=charm
 
-# ../base/apply.yaml
+# ../base/kustomization.yaml
 resources:
 - deployment.yaml
 
@@ -349,26 +349,26 @@ spec:
 {% endmethod %}
 See [ConfigMaps and Secrets](dam_generators.md).
 
-### Customizing Image Tags
+## Customizing Image Tags
 
 {% method %}
 Customizing the Image Tag run in each Variant can be performed by specifying `imageTags`
-in each Variant `apply.yaml`.
+in each Variant `kustomization.yaml`.
 
 **Use Case:** Different Environments (test, dev, staging, canary, prod) can use images with different tags.
 
 {% sample lang="yaml" %}
-**Input:** The apply.yaml file
+**Input:** The kustomization.yaml file
 
 ```yaml
-# apply.yaml
+# kustomization.yaml
 bases:
 - ../base
 imageTags:
   - name: nginx
     newTag: 1.8.0
 
-# ../base/apply.yaml
+# ../base/kustomization.yaml
 resources:
 - deployment.yaml
 
@@ -421,24 +421,24 @@ spec:
 
 See [Image Tags](dam_images.md).
 
-### Customizing Namespace
+## Customizing Namespace
 
 {% method %}
 Customizing the Namespace in each Variant can be performed by specifying `namespace` in each
-Variant `apply.yaml`.
+Variant `kustomization.yaml`.
 
 **Use Case:** Different Environments (test, dev, staging, canary, prod) run in different Namespaces.
 
 {% sample lang="yaml" %}
-**Input:** The apply.yaml file
+**Input:** The kustomization.yaml file
 
 ```yaml
-# apply.yaml
+# kustomization.yaml
 bases:
 - ../base
 namespace: test
 
-# ../base/apply.yaml
+# ../base/kustomization.yaml
 resources:
 - deployment.yaml
 
@@ -493,24 +493,24 @@ spec:
 
 See [Namespaces and Names](dam_namespaces.md).
 
-### Customizing Resource Name Prefixes
+## Customizing Resource Name Prefixes
 
 {% method %}
 Customizing the Name by adding a prefix in each Variant can be performed by specifying `namePrefix` in each
-Variant `apply.yaml`.
+Variant `kustomization.yaml`.
 
 **Use Case:** Different Environments (test, dev, staging, canary, prod) have different Naming conventions.
 
 {% sample lang="yaml" %}
-**Input:** The apply.yaml file
+**Input:** The kustomization.yaml file
 
 ```yaml
-# apply.yaml
+# kustomization.yaml
 bases:
 - ../base
 namePrefix: test-
 
-# ../base/apply.yaml
+# ../base/kustomization.yaml
 resources:
 - deployment.yaml
 
@@ -563,7 +563,7 @@ spec:
 
 See [Namespaces and Names](dam_namespaces.md).
 
-### Customizing Arbitrary Fields with Overlays
+## Customizing Arbitrary Fields with Overlays
 
 {% method %}
 Arbitrary fields may be added, changed, or deleted by supplying *Overlays* against the
@@ -579,13 +579,13 @@ well as any fields that should be set on the base Resource.  Overlays are applie
 replicas or resources to be overridden.
 
 {% sample lang="yaml" %}
-**Input:** The apply.yaml file
+**Input:** The kustomization.yaml file
 
 ```yaml
-# apply.yaml
+# kustomization.yaml
 bases:
 - ../base
-patchesStrategicMerge:
+patches:
 - overlay.yaml
 
 # overlay.yaml
@@ -607,7 +607,7 @@ spec:
           requests:
             cpu: "0.5"
 
-# ../base/apply.yaml
+# ../base/kustomization.yaml
 resources:
 - deployment.yaml
 
@@ -670,13 +670,18 @@ spec:
 ```
 {% endmethod %}
 
+{% panel style="info", title="Merge Semantics for Overlays" %}
+Overlays use the same [merge semantics](dam_merge.md) as Applying Resource Config to cluster.  One difference
+is that there is no *Last Applied Resource Config* when merging overlays, so fields may only be deleted
+explicitly.
+{% endpanel %}
+
 {% panel style="info", title="Overlay URLs" %}
 Like Bases, Overlays may also be URLs and should follow the
 [hashicorp/go-getter URL format](https://github.com/hashicorp/go-getter#url-format).
 {% endpanel %}
 
-
-### Customizing Arbitrary Fields with JsonPatch
+## Customizing Arbitrary Fields with JsonPatch
 
 {% method %}
 Arbitrary fields may be added, changed, or deleted by supplying *Json 6902 Patches* against the
@@ -691,10 +696,10 @@ specified in addition to the Patch.  Patches offer a number of powerful imperati
 for modifying the base Resources.
 
 {% sample lang="yaml" %}
-**Input:** The apply.yaml file
+**Input:** The kustomization.yaml file
 
 ```yaml
-# apply.yaml
+# kustomization.yaml
 bases:
 - ../base
 patchesJson6902:
@@ -710,7 +715,7 @@ patchesJson6902:
   path: /spec/replicas
   value: 3
 
-# ../base/apply.yaml
+# ../base/kustomization.yaml
 resources:
 - deployment.yaml
 
@@ -762,7 +767,7 @@ spec:
 ```
 {% endmethod %}
 
-### Adding Resources to a Base
+## Adding Resources to a Base
 
 Additional Resources not specified in the Base may be added to Variants by
-Variants specifying them as `resources` in their `apply.yaml`.
+Variants specifying them as `resources` in their `kustomization.yaml`.
