@@ -38,7 +38,7 @@ func (*filterLetterP) SubResource(*SubResource) bool {
 	return true
 }
 
-// ExampleFilter demonstrates how to create and then apply a resource
+// Example_filter demonstrates how to create and then apply a resource
 // filter. This (admittedly ludicrous) example should have the same
 // output as the Resources example, but it excludes all resources that
 // do not start with the letter "p".

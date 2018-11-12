@@ -78,7 +78,7 @@ func (d *document) LookupResource(gvk schema.GroupVersionKind) proto.Schema {
 	return d.models.LookupModel(modelName)
 }
 
-// Get and parse GroupVersionKind from the extension. Returns empty if it doesn't have one.
+// parseGroupVersionKind gets and parses GroupVersionKind from the extension. Returns empty if it doesn't have one.
 func parseGroupVersionKind(s proto.Schema) []schema.GroupVersionKind {
 	extensions := s.GetExtensions()
 
