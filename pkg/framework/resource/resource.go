@@ -55,7 +55,7 @@ func (r *Resource) ResourceGroupVersionKind() schema.GroupVersionKind {
 	return schema.GroupVersionKind{Group: r.Resource.Group, Version: r.Resource.Version, Kind: r.Resource.Kind}
 }
 
-// ResourceGroupVersionKind returns a GVK based on the request object.
+// RequestGroupVersionKind returns a GVK based on the request object.
 func (sr *SubResource) RequestGroupVersionKind() schema.GroupVersionKind {
 	return schema.GroupVersionKind{Group: sr.Resource.Group, Version: sr.Resource.Version, Kind: sr.Resource.Kind}
 }
