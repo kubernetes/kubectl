@@ -1,9 +1,14 @@
-# Customizing White Box Bases
+{% panel style="danger", title="Proposal Only" %}
+Many of the features and workflows.  The features that must be implemented
+are tracked [here](https://github.com/kubernetes/kubectl/projects/7)
+{% endpanel %}
 
 {% panel style="info", title="TL;DR" %}
 - Run a White Box Application as a Base
 - Customize a White Box Application
 {% endpanel %}
+
+# Customizing White Box Bases
 
 ## Motivation
 
@@ -18,15 +23,15 @@ their specific needs.
 ## Consuming a White Box Base
 
 {% method %}
-White Box Applications may be published to a URL and consumed as Bases in an `apply.yaml`
+White Box Applications may be published to a URL and consumed as Bases in an `kustomization.yaml`
 
 **Use Case:** Run a White Box Application published to GitHub.
 
 {% sample lang="yaml" %}
-**Input:** The apply.yaml file
+**Input:** The kustomization.yaml file
 
 ```yaml
-# apply.yaml
+# kustomization.yaml
 bases:
 # GitHub URL
 - github.com/kubernetes-sigs/kustomize/examples/multibases/dev/?ref=v1.0.6

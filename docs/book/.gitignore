@@ -1,1 +1,3 @@
 node_modules
+.firebase*
+_book

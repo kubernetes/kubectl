@@ -1,8 +1,13 @@
-# Composing Bases
+{% panel style="danger", title="Proposal Only" %}
+Many of the features and workflows.  The features that must be implemented
+are tracked [here](https://github.com/kubernetes/kubectl/projects/7)
+{% endpanel %}
 
 {% panel style="info", title="TL;DR" %}
 - The same Base may be used multiple times for different Applications within the same project.
 {% endpanel %}
+
+# Composing Bases
 
 ## Motivation
 
@@ -23,7 +28,7 @@ structure to compose multiple Variants of the base.
 
 Each layer may add customizations and resources to the preceding layers.
 
-**apply.yaml**
+**kustomization.yaml**
 
 - compose the 2 apps as bases
 - set the namespace for Resources in the project
@@ -45,14 +50,14 @@ Each layer may add customizations and resources to the preceding layers.
 **Input:**
 
 ```yaml
-# apply.yaml
+# kustomization.yaml
 namePrefix: app-
 namespace: app
 bases:
 - app1
 - app2
 
-# app1/apply.yaml
+# app1/kustomization.yaml
 namePrefix: 1-
 commonLabels:
   app: app1
@@ -76,7 +81,7 @@ spec:
       - image: myapp2
         name: java
 
-# ../app2/apply.yaml
+# ../app2/kustomization.yaml
 namePrefix: 2-
 commonLabels:
   app: app2
@@ -100,7 +105,7 @@ spec:
       - image: myapp1
         name: java
 
-# base/java/apply.yaml
+# base/java/kustomization.yaml
 resources:
 - deployment.yaml
 - service.yaml
@@ -185,11 +190,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  # name has both app1 and project apply.yaml namePrefixes
+  # name has both app1 and project kustomization.yaml namePrefixes
   name: app-1-java
-  # namespace updated by namespace in project apply.yaml
+  # namespace updated by namespace in project kustomization.yaml
   namespace: app
-  # labels updated by commonLabels in app1 apply.yaml
+  # labels updated by commonLabels in app1 kustomization.yaml
   labels:
     app: app1
 spec:
@@ -197,18 +202,18 @@ spec:
   - port: 8080
     protocol: TCP
     targetPort: 8080
-  # selector updated by commonLabels in app1 apply.yaml
+  # selector updated by commonLabels in app1 kustomization.yaml
   selector:
     app: app1
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  # name has both app2 and project apply.yaml namePrefixes
+  # name has both app2 and project kustomization.yaml namePrefixes
   name: app-2-java
-  # namespace updated by namespace in project apply.yaml
+  # namespace updated by namespace in project kustomization.yaml
   namespace: app
-  # labels updated by commonLabels in app2 apply.yaml
+  # labels updated by commonLabels in app2 kustomization.yaml
   labels:
     app: app2
 spec:
@@ -216,34 +221,34 @@ spec:
   - port: 8080
     protocol: TCP
     targetPort: 8080
-  # selector updated by commonLabels in app2 apply.yaml
+  # selector updated by commonLabels in app2 kustomization.yaml
   selector:
     app: app2
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  # namespace updated by namespace in project apply.yaml
+  # namespace updated by namespace in project kustomization.yaml
   namespace: app
-  # name has both app1 and project apply.yaml namePrefixes
+  # name has both app1 and project kustomization.yaml namePrefixes
   name: app-1-java
-  # labels updated by commonLabels in app1 apply.yaml
+  # labels updated by commonLabels in app1 kustomization.yaml
   labels:
     app: app1
 spec:
-  # selector updated by commonLabels in app1 apply.yaml
+  # selector updated by commonLabels in app1 kustomization.yaml
   selector:
     matchLabels:
       app: app1
   template:
     metadata:
-      # labels updated by commonLabels in app1 apply.yaml
+      # labels updated by commonLabels in app1 kustomization.yaml
       labels:
         app: app1
     spec:
       containers:
       # Image is updated by Overlay
-      # ImageTag is updated by imageTag in app1 apply.yaml
+      # ImageTag is updated by imageTag in app1 kustomization.yaml
       - image: myapp2:v2
         name: java
         # ports and probes inherited from the base
@@ -265,27 +270,27 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  # namespace updated by namespace in project apply.yaml
+  # namespace updated by namespace in project kustomization.yaml
   namespace: app
-  # name has both app2 and project apply.yaml namePrefixes
+  # name has both app2 and project kustomization.yaml namePrefixes
   name: app-2-java
-  # labels updated by commonLabels in app2 apply.yaml
+  # labels updated by commonLabels in app2 kustomization.yaml
   labels:
     app: app2
 spec:
-  # selector updated by commonLabels in app2 apply.yaml
+  # selector updated by commonLabels in app2 kustomization.yaml
   selector:
     matchLabels:
       app: app2
   template:
     metadata:
-      # labels updated by commonLabels in app2 apply.yaml
+      # labels updated by commonLabels in app2 kustomization.yaml
       labels:
         app: app2
     spec:
       containers:
       # Image is updated by Overlay
-      # ImageTag is updated by imageTag in app2 apply.yaml
+      # ImageTag is updated by imageTag in app2 kustomization.yaml
       - image: myapp1:v1
         name: java
         # ports and probes inherited from the base

@@ -1,8 +1,13 @@
-# Config Reflection
+{% panel style="danger", title="Proposal Only" %}
+Many of the features and workflows.  The features that must be implemented
+are tracked [here](https://github.com/kubernetes/kubectl/projects/7)
+{% endpanel %}
 
 {% panel style="info", title="TL;DR" %}
-- Inject the values of other Resource Config fields into Pod Env Vars and Command Args.
+- Inject the values of other Resource Config fields into Pod Env Vars and Command Args with `vars`.
 {% endpanel %}
+
+# Config Reflection
 
 ## Motivation
 
@@ -10,7 +15,7 @@ Pods may need to refer to the values of Resource Config fields.  For example
 a Pod may take the name of Service defined in the Project as a command argument.
 Instead of hard coding the value directly into the PodSpec, it is preferable
 to use a `vars` entry to reference the value by path.  This will ensure
-if the value is updated or transformed by the `apply.yaml` file, the
+if the value is updated or transformed by the `kustomization.yaml` file, the
 value will be propagated to where it is referenced in the PodSpec. 
 
 ## Vars
@@ -31,10 +36,10 @@ Apply will set the resolve $(BACKEND_SERVICE_NAME) to a value using the path
 specified in `vars`.
 
 {% sample lang="yaml" %}
-**Input:** The apply.yaml, deployment.yaml and service.yaml files
+**Input:** The kustomization.yaml, deployment.yaml and service.yaml files
 
 ```yaml
-# apply.yaml
+# kustomization.yaml
 vars:
 - name: BACKEND_SERVICE_NAME
   objref:

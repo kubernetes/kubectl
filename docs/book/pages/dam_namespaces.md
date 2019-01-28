@@ -1,9 +1,15 @@
-# Setting Namespaces and Names
+{% panel style="danger", title="Proposal Only" %}
+Many of the features and workflows.  The features that must be implemented
+are tracked [here](https://github.com/kubernetes/kubectl/projects/7)
+{% endpanel %}
 
 {% panel style="info", title="TL;DR" %}
-- Set the Namespace for all Resources within a Project
-- Prefix the Names of all Resources within a Project
+- Set the Namespace for all Resources within a Project with `namespace`
+- Prefix the Names of all Resources within a Project with `namePrefix`
+- Suffix the Names of all Resources within a Project with `nameSuffix`
 {% endpanel %}
+
+# Setting Namespaces and Names
 
 ## Motivation
 
@@ -23,13 +29,15 @@ This sets the namespace for both generated Resources (e.g. ConfigMaps and Secret
 Resources.
 
 {% method %}
-**Example:** Set the `namespace` specified in the `apply.yaml` on the namespaced Resources.
+**Example:** Set the `namespace` specified in the `kustomization.yaml` on the namespaced Resources.
 
 {% sample lang="yaml" %}
-**Input:** The apply.yaml and deployment.yaml files
+**Input:** The kustomization.yaml and deployment.yaml files
 
 ```yaml
-# apply.yaml
+# kustomization.yaml
+apiVersion: v1beta1
+kind: Kustomization
 namespace: my-namespace
 resources:
 - deployment.yaml
@@ -82,16 +90,21 @@ spec:
 
 {% endmethod %}
 
-## Setting a Name prefix for all Resources
+## Setting a Name prefix or suffix for all Resources
+
+A name prefix or suffix can be set for all resources using `namePrefix` or
+`nameSuffix`.
 
 {% method %}
 **Example:** Prefix the names of all Resources.
 
 {% sample lang="yaml" %}
-**Input:** The apply.yaml and deployment.yaml files
+**Input:** The kustomization.yaml and deployment.yaml files
 
 ```yaml
-# apply.yaml
+# kustomization.yaml
+apiVersion: v1beta1
+kind: Kustomization
 namePrefix: foo-
 resources:
 - deployment.yaml
@@ -146,10 +159,11 @@ spec:
 Resources such as Deployments and StatefulSets may reference other Resources such as
 ConfigMaps and Secrets in the Pod Spec.
 
-This sets a name prefix for both generated Resources (e.g. ConfigMaps and Secrets) and non-generated
-Resources.
+This sets a name prefix or suffix for both generated Resources (e.g. ConfigMaps 
+and Secrets) and non-generated Resources.
 
-The namePrefix that is applied is propagated to references within the Project.
+The namePrefix or nameSuffix that is applied is propagated to references within 
+the Project.
 {% endpanel %}
 
 {% method %}
@@ -158,10 +172,12 @@ The namePrefix that is applied is propagated to references within the Project.
 This will update the ConfigMap reference in the Deployment to have the `foo` prefix.
 
 {% sample lang="yaml" %}
-**Input:** The apply.yaml and deployment.yaml files
+**Input:** The kustomization.yaml and deployment.yaml files
 
 ```yaml
-# apply.yaml
+# kustomization.yaml
+apiVersion: v1beta1
+kind: Kustomization
 namePrefix: foo-
 configMapGenerator:
 - name: props

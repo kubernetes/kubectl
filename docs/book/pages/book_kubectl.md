@@ -1,9 +1,14 @@
-# Kubectl
+{% panel style="danger", title="Proposal Only" %}
+Many of the features and workflows.  The features that must be implemented
+are tracked [here](https://github.com/kubernetes/kubectl/projects/7)
+{% endpanel %}
 
 {% panel style="info", title="TL;DR" %}
 - Kubectl is the Kubernetes CLI.
 - Kubectl has different command groups for different types of user workflows.
 {% endpanel %}
+
+# Kubectl
 
 Kubectl is the Kubernetes CLI and used to manage Resources.
 
@@ -52,7 +57,7 @@ generating and modifying Resources.
 - setting fields on Resources
 - editing (live) Resources in a text editor
 
-{% panel style="info", title="Porcelain For Dev Only" %}
+{% panel style="danger", title="Porcelain For Dev Only" %}
 Porcelain commands are time saving for experimenting with workloads in a dev cluster, but
 shouldn't be used for production.
 {% endpanel %}

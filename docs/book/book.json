@@ -1,5 +1,5 @@
 {
-  "plugins": ["theme-api", "panel", "sequence-diagrams", "ga"],
+  "plugins": ["theme-api", "panel", "sequence-diagrams", "ga", "toc", "page-toc"],
   "pluginsConfig": {
     "theme-api": {
       "split": true
@@ -10,7 +10,14 @@
     },
     "ga": {
             "token": "UA-119864590-1"
-        }
+        },
+    "toc": {
+            "addClass": true,
+            "className": "toc"
+        },
+     "selector": ".markdown-section h1, .markdown-section h2, .markdown-section h3, .markdown-section h4",
+     "position": "before-first",
+     "showByDefault": true
   },
   "gitbook": ">= 3.0.0",
   "author": "Phillip Wittrock",

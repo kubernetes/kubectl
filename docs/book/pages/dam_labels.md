@@ -1,9 +1,14 @@
-# Setting Labels and Annotations
+{% panel style="danger", title="Proposal Only" %}
+Many of the features and workflows.  The features that must be implemented
+are tracked [here](https://github.com/kubernetes/kubectl/projects/7)
+{% endpanel %}
 
 {% panel style="info", title="TL;DR" %}
-- Set Labels for all Resources declared within a Project
-- Set Annotations for all Resources declared within a Project
+- Set Labels for all Resources declared within a Project with `commonLables`
+- Set Annotations for all Resources declared within a Project with `commonAnnotations`
 {% endpanel %}
+
+# Setting Labels and Annotations
 
 ## Motivation
 
@@ -21,10 +26,12 @@ See [Bases and Variations](project_variants.md) for more details on Copying Proj
 **Example:** Add the labels declared in `commonLabels` to all Resources in the project.
 
 {% sample lang="yaml" %}
-**Input:** The apply.yaml and deployment.yaml files
+**Input:** The kustomization.yaml and deployment.yaml files
 
 ```yaml
-# apply.yaml
+# kustomization.yaml
+apiVersion: v1beta1
+kind: Kustomization
 commonLabels:
   app: foo
   environment: test
@@ -98,10 +105,12 @@ labels.  e.g. the selectors for Services in the project will be updated to inclu
 **Example:** Add the annotations declared in `commonAnnotations` to all Resources in the project.
 
 {% sample lang="yaml" %}
-**Input:** The apply.yaml and deployment.yaml files
+**Input:** The kustomization.yaml and deployment.yaml files
 
 ```yaml
-# apply.yaml
+# kustomization.yaml
+apiVersion: v1beta1
+kind: Kustomization
 commonAnnotations:
   oncallPager: 800-555-1212
 resources:
