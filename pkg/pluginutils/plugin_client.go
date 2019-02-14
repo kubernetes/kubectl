@@ -17,12 +17,14 @@ limitations under the License.
 package pluginutils
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
 	"runtime"
+	"strings"
 	"time"
 
 	restclient "k8s.io/client-go/rest"
@@ -63,7 +65,7 @@ func InitClientAndConfig() (*restclient.Config, clientcmd.ClientConfig, error) {
 		return nil, nil, fmt.Errorf("error initializing config. The KUBECONFIG environment variable must be defined.")
 	}
 
-	config, err := configFromPath(kubeconfig)
+	config, err := getConfig(kubeconfig)
 	if err != nil {
 		return nil, nil, fmt.Errorf("error obtaining kubectl config: %v", err)
 	}
@@ -80,11 +82,10 @@ func InitClientAndConfig() (*restclient.Config, clientcmd.ClientConfig, error) {
 	return client, config, nil
 }
 
-func configFromPath(path string) (clientcmd.ClientConfig, error) {
-	rules := &clientcmd.ClientConfigLoadingRules{ExplicitPath: path}
-	credentials, err := rules.Load()
+func getConfig(resource string) (clientcmd.ClientConfig, error) {
+	credentials, err := configFrom(resource)
 	if err != nil {
-		return nil, fmt.Errorf("the provided credentials %q could not be loaded: %v", path, err)
+		return nil, fmt.Errorf("the provided credentials %q could not be loaded: %v", resource, err)
 	}
 
 	overrides := &clientcmd.ConfigOverrides{
@@ -103,6 +104,28 @@ func configFromPath(path string) (clientcmd.ClientConfig, error) {
 	}
 
 	return cfg, nil
+}
+
+func configFrom(resource string) (*clientcmdapi.Config, error) {
+	if strings.HasPrefix(resource, "base64:") {
+		return configFromBase64(resource[7:])
+	} else {
+		return configFromPath(resource)
+	}
+}
+
+func configFromBase64(base64Config string) (*clientcmdapi.Config, error) {
+	config, err := base64.StdEncoding.DecodeString(base64Config)
+	if err != nil {
+		return nil, err
+	}
+
+	return clientcmd.Parse([]byte(config), "base64")
+}
+
+func configFromPath(path string) (*clientcmdapi.Config, error) {
+	rules := &clientcmd.ClientConfigLoadingRules{ExplicitPath: path}
+	return rules.Load()
 }
 
 func applyGlobalOptionsToConfig(config *restclient.Config) error {

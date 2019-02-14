@@ -352,37 +352,8 @@ func LoadFromFile(filename string) (*clientcmdapi.Config, error) {
 	if err != nil {
 		return nil, err
 	}
-	config, err := Load(kubeconfigBytes)
-	if err != nil {
-		return nil, err
-	}
-	glog.V(6).Infoln("Config loaded from file", filename)
 
-	// set LocationOfOrigin on every Cluster, User, and Context
-	for key, obj := range config.AuthInfos {
-		obj.LocationOfOrigin = filename
-		config.AuthInfos[key] = obj
-	}
-	for key, obj := range config.Clusters {
-		obj.LocationOfOrigin = filename
-		config.Clusters[key] = obj
-	}
-	for key, obj := range config.Contexts {
-		obj.LocationOfOrigin = filename
-		config.Contexts[key] = obj
-	}
-
-	if config.AuthInfos == nil {
-		config.AuthInfos = map[string]*clientcmdapi.AuthInfo{}
-	}
-	if config.Clusters == nil {
-		config.Clusters = map[string]*clientcmdapi.Cluster{}
-	}
-	if config.Contexts == nil {
-		config.Contexts = map[string]*clientcmdapi.Context{}
-	}
-
-	return config, nil
+	return Parse(kubeconfigBytes, filename)
 }
 
 // Load takes a byte slice and deserializes the contents into Config object.
@@ -398,6 +369,41 @@ func Load(data []byte) (*clientcmdapi.Config, error) {
 		return nil, err
 	}
 	return decoded.(*clientcmdapi.Config), nil
+}
+
+// Parses the kubeconfigBytes
+func Parse(kubeconfigBytes []byte, locationOfOrigin string) (*clientcmdapi.Config, error) {
+	config, err := Load(kubeconfigBytes)
+	if err != nil {
+		return nil, err
+	}
+	glog.V(6).Infoln("Config loaded from", locationOfOrigin)
+
+	// set LocationOfOrigin on every Cluster, User, and Context
+	for key, obj := range config.AuthInfos {
+		obj.LocationOfOrigin = locationOfOrigin
+		config.AuthInfos[key] = obj
+	}
+	for key, obj := range config.Clusters {
+		obj.LocationOfOrigin = locationOfOrigin
+		config.Clusters[key] = obj
+	}
+	for key, obj := range config.Contexts {
+		obj.LocationOfOrigin = locationOfOrigin
+		config.Contexts[key] = obj
+	}
+
+	if config.AuthInfos == nil {
+		config.AuthInfos = map[string]*clientcmdapi.AuthInfo{}
+	}
+	if config.Clusters == nil {
+		config.Clusters = map[string]*clientcmdapi.Cluster{}
+	}
+	if config.Contexts == nil {
+		config.Contexts = map[string]*clientcmdapi.Context{}
+	}
+
+	return config, nil
 }
 
 // WriteToFile serializes the config to yaml and writes it out to a file.  If not present, it creates the file with the mode 0600.  If it is present

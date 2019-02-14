@@ -1,6 +1,8 @@
 package pluginutils_test
 
 import (
+	"encoding/base64"
+	"io/ioutil"
 	"os"
 	"time"
 
@@ -73,6 +75,26 @@ var _ = Describe("plugin client", func() {
 				Expect(err).NotTo(HaveOccurred())
 				Expect(namespace).To(Equal("catalog"))
 				Expect(overridden).To(BeTrue())
+			})
+		})
+	})
+
+	Describe("InitClientAndConfig in Base64", func() {
+		Context("When nothing is overridden by the calling framework", func() {
+			BeforeEach(func() {
+				path := os.Getenv("KUBECTL_PLUGINS_GLOBAL_FLAG_KUBECONFIG")
+				b, _ := ioutil.ReadFile(path)
+				sEnc := base64.StdEncoding.EncodeToString(b)
+				os.Setenv("KUBECTL_PLUGINS_GLOBAL_FLAG_KUBECONFIG", "base64:"+sEnc)
+			})
+
+			It("just makes sure that the base64 config works", func() {
+				client, _, err := pluginutils.InitClientAndConfig()
+				Expect(err).NotTo(HaveOccurred())
+
+				Expect(client.Host).To(Equal("https://notrealincalifornia.com:1234"))
+				Expect(client.Username).To(Equal("date"))
+				Expect(client.Password).To(Equal("elderberry"))
 			})
 		})
 	})
