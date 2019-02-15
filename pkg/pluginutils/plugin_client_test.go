@@ -89,12 +89,17 @@ var _ = Describe("plugin client", func() {
 			})
 
 			It("just makes sure that the base64 config works", func() {
-				client, _, err := pluginutils.InitClientAndConfig()
+				client, config, err := pluginutils.InitClientAndConfig()
 				Expect(err).NotTo(HaveOccurred())
 
 				Expect(client.Host).To(Equal("https://notrealincalifornia.com:1234"))
 				Expect(client.Username).To(Equal("date"))
 				Expect(client.Password).To(Equal("elderberry"))
+
+				namespace, overridden, err := config.Namespace()
+				Expect(err).NotTo(HaveOccurred())
+				Expect(namespace).To(Equal("catalog"))
+				Expect(overridden).To(BeTrue())
 			})
 		})
 	})
