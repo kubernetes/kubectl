@@ -3,8 +3,8 @@
 ## Running Locally
 
 - Install [GitBook Toolchain](https://toolchain.gitbook.com/setup.html)
-- From `docs/book` run `gitbook install`  to install node_modules locally
-  - Retry if this fails, it is flaky
+- From `docs/book` run `npm ci`  to install node_modules locally (don't run install, it updates the shrinkwrap.json)
+- From `docs/book` run `npm audit` to make sure there are no vulnerabilities
 - From `docs/book` run `gitbook serve`
 - Go to `http://localhost:4000` in a browser
 
@@ -50,4 +50,13 @@ Notes may have the following styles:
 ## Adding GitBook plugins
 
 - Update `book.json` with the plugin
-- Run `gitbook install`
+- Run `npm i <npm-plugin-name>`
+- Run `npm strinkwrap`
+- Run `npm audit` - fix issues by hand updating `npm-shrinkwrap.json` libraries with the fixed versions
+- Run `npm ci` - install the new version
+- Run `npm audit` - verify the fixes
+- Commit `npm-shrinkwrap.json` and `package.json`
+
+### Cool plugins
+
+See https://github.com/swapagarwal/awesome-gitbook-plugins for more plugins.

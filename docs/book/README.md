@@ -1,47 +1,50 @@
-# Introduction
-
 {% panel style="info", title="TL;DR" %}
 - Kubernetes runs Containerized Workloads in a cluster
 - The Kubectl Book explains Kubernetes tools and workflows
 {% endpanel %}
 
-The goal of this book is to document how users should configure, deploy and manage their 
-containerized Workloads in Kubernetes.
+# Introduction
 
-It is broken into the following sections:
+The goal of this book is to document how to configure, deploy and manage their containerized
+Workloads in Kubernetes using Kubectl.
 
-- Introduction to Kubernetes & Kubectl
-- How to configure Applications through Resource Config
-- How to debug Applications using Kubectl
-- How to configure Projects composed of multiple Applications
-- How to rollout changes with CICD
-- How to perform cluster maintenance operations using Kubectl
+It covers the following topics:
 
-## Background
+- Introduction to Kubernetes Workload APIs & Kubectl
+- Declarative Configuration
+- Deployment Techniques
+- Printing information about Workloads
+- Debugging Workloads
+- Imperative Porcelain Commands
+
+## Overview
 
 Kubernetes is a set of APIs to run containerized Workloads in a cluster.
 
-Users define API objects (i.e. Resources) in files checked into source control, and use kubectl
-to Apply (i.e. create, update, delete) configuration files to cluster Resources.
+Users define API objects (i.e. Resources) in files which are typically checked into source control.
+They then use kubectl to Apply (i.e. create, update, delete) to update cluster state.
 
 ### Pods
  
-Containers are run in [*Pods*](https://kubernetes.io/docs/concepts/workloads/pods/pod-overview/) which are scheduled to *Nodes* (i.e. worker machines) in a cluster.
+Containers are run in [*Pods*](https://kubernetes.io/docs/concepts/workloads/pods/pod-overview/) which are
+scheduled to run on *Nodes* (i.e. worker machines) in a cluster.
 
-Pods provide the following a Pod running a *single instance* of an Application:
+Pods run a *single replica* of an Application and provide:
 
 - Compute Resources (cpu, memory, disk)
 - Environment Variables
 - Readiness and Health Checking
 - Network (IP address shared by containers in the Pod)
 - Mounting Shared Configuration and Secrets
+- Mounting Storage Volumes
+- Initialization
 
-{% panel style="info", title="Multi Container Pods" %}
-Multiple identical instances of an Application should be run by creating multiple copies of
-the same Pod using a Workload API.
+{% panel style="warning", title="Multi Container Pods" %}
+Multiple replicas of an Application should be created using a Workload API to manage
+creation and deletion of Pod replicas using a PodTemplate.
 
-A Pod may contain multiple Containers which are a single instance of an Application.  These
-containers may coordinate with one another through shared network (IP) and files.
+In some cases a Pod may contain multiple Containers forming a single instance of an Application.  These
+containers may coordinate with one another through shared network (IP) and storage.
 {% endpanel %}
 
 ### Workloads
@@ -62,15 +65,15 @@ The most common out-of-the-box Workload APIs (manage Pods) are:
 - [DaemonSets](https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/) (Per-Machine)
   - per-Node scheduling
 
-{% panel style="info", title="Abstraction Layers" %}
+{% panel style="success", title="API Abstraction Layers" %}
 High-level Workload APIs may manage lower-level Workload APIs instead of directly managing Pods
 (e.g. Deployments manage ReplicaSets).
 {% endpanel %}
 
 ### Service Discovery and Load Balancing
 
-Service discovery and Load Balancing is managed by a *Service* object.  Services provide a single
-IP address and dns name to talk to a collection of Pods.
+Service discovery and Load Balancing may be managed by a *Service* object.  Services provide a single
+virtual IP address and dns name load balanced to a collection of Pods matching Labels.
 
 {% panel style="info", title="Internal vs External Services" %}
 - [Services Resources](https://kubernetes.io/docs/concepts/services-networking/service/)
@@ -81,9 +84,9 @@ IP address and dns name to talk to a collection of Pods.
 
 ### Configuration and Secrets
 
-Shared Configuration and Secret data may be provided by Secrets and ConfigMaps.  This allows
-Environment Variables, Commandline Arguments and Files to be setup and decoupled from
-the Pods and Containers.
+Shared Configuration and Secret data may be provided by ConfigMaps and Secrets.  This allows
+Environment Variables, Commandline Arguments and Files to be loosely injected into
+the Pods and Containers that consume them.
 
 {% panel style="info", title="ConfigMaps vs Secrets" %}
 - [ConfigMaps](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/)
