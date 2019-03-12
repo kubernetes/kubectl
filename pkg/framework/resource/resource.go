@@ -17,7 +17,7 @@ limitations under the License.
 package resource
 
 import (
-	"k8s.io/apimachinery/pkg/apis/meta/v1"
+	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	openapi "k8s.io/kube-openapi/pkg/util/proto"
 )
