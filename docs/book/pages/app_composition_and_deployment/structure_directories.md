@@ -1,7 +1,13 @@
 {% panel style="warning", title="Warning: Alpha Recommendations" %}
-This chapter contains recommendations that are still being actively evaluated, and may
-be changed in the future.
+This chapter contains recommendations that are **still being actively evaluated, and are
+expected to evolve.**
+
+The intent of this chapter is to share the way kubectl developers are thinking about solving
+this problem as they develop more solutions.
+
+Before using these recommendations, carefully evaluate if they are right for your organization.
 {% endpanel %}
+
 
 {% panel style="info", title="TL;DR" %}
 - Use **directory hierarchy to structure Resource Config**
@@ -15,7 +21,7 @@ The are several techniques for users to structure their Resource Config files.
 | Type                                   | Summary               | Benefits                                           |
 |----------------------------------------|-----------------------|----------------------------------------------------|
 | **[Directories](structure_directories.md)**   | **Simplest approach**   | **Easy to get started and understand**               |
-| [Branches](structure_branches.md)   | *More flexible*       | Loose coupling between release specific and operation changes |
+| [Branches](structure_branches.md)   | *More flexible*       | Loose coupling between version specific and live operational changes |
 | [Repositories](structure_repositories.md) | *Fine grain control*  | Isolated permissions model                         |
 
 ## Motivation
@@ -120,4 +126,9 @@ Apply to determine the cluster context.  To Apply a specific cluster, add that c
 kubectl config`, and specify the corresponding context when running Apply.
 
 For more information see [Multi-Cluster](accessing_multiple_clusters.md).
+{% endpanel %}
+
+{% panel style="success", title="Code Owners" %}
+Some git hosting services provide the concept of *Code Owners* for providing a finer grain permissions model.
+*Code Owners* may be used to provide separate permissions for separate environments - e.g. dev, test, prod.
 {% endpanel %}

@@ -1,7 +1,13 @@
 {% panel style="warning", title="Warning: Alpha Recommendations" %}
-This chapter contains recommendations that are still being actively evaluated, and may
-be changed in the future.
+This chapter contains recommendations that are **still being actively evaluated, and are
+expected to evolve.**
+
+The intent of this chapter is to share the way kubectl developers are thinking about solving
+this problem as they develop more solutions.
+
+Before using these recommendations, carefully evaluate if they are right for your organization.
 {% endpanel %}
+
 
 {% panel style="info", title="TL;DR" %}
 - The same Base may be used multiple times for different Applications within the same project.

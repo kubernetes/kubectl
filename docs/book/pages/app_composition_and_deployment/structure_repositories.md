@@ -1,7 +1,13 @@
 {% panel style="warning", title="Warning: Alpha Recommendations" %}
-This chapter contains recommendations that are still being actively evaluated, and may
-be changed in the future.
+This chapter contains recommendations that are **still being actively evaluated, and are
+expected to evolve.**
+
+The intent of this chapter is to share the way kubectl developers are thinking about solving
+this problem as they develop more solutions.
+
+Before using these recommendations, carefully evaluate if they are right for your organization.
 {% endpanel %}
+
 
 {% panel style="info", title="TL;DR" %}
 - Finer grain management using separate repos for separate Team 
@@ -16,7 +22,7 @@ The are several techniques for users to structure their Resource Config files.
 | Type                                        | Summary               | Benefits                                           |
 |---------------------------------------------|-----------------------|----------------------------------------------------|
 | [Directories](structure_directories.md)        | *Simplest approach*   | Easy to get started and understand               |
-| [Branches](structure_branches.md)        | *More flexible*       | Loose coupling between release specific and operation changes |
+| [Branches](structure_branches.md)   | *More flexible*       | Loose coupling between version specific and live operational changes |
 | **[Repositories](structure_repositories.md)** | **Fine grain control**  | **Isolated permissions model**                         |
 
 ## Motivation
@@ -48,12 +54,18 @@ This chapter describes conventions for using **Repositories** with Directories.
 
 The convention shown here should be changed and adapted as needed.
 
+| Repo Type Name                                   | Purpose               | Examples |
+|----------------------------------------|-----------------------|----|
+| Base   | Contains shared Bases for all deploy environments and version dependent configuration.  When new code is added that requires additional configuration, this repository is updated.  **This Resource Config is never deployed directly.** | `app-name` |
+| Deploy   | Does not contain Config from the Base, rather refers to the Base Config remotely through the git url.  Deploy repositories contain directories with similar structure to the Base directories, but instead contain customizations overlayed on the remote Bases. **Resource Config only ever gets deployed from these Repositories.** | `app-name-test`, `app-name-staging`, `app-name-prod` |
+
+
 Structure:
 
-- Create a base Repository for shared configuration
+- Create a Base Repository for shared configuration
   - Looks like [Directories](structure_directories.md) approach
-- For each **separate Team, create a separate Repository**
-  - References the base Repository in Bases
+- For each **separate Environment, create a separate Deploy Repository**
+  - Remotely reference the Base Repository in from the Deploy Repository
 
 Techniques:
 

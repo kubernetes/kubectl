@@ -1,6 +1,8 @@
-{% panel style="warning", title="Alpha Recommendations" %}
-This chapter contains recommendations that are still being actively evaluated, and may
-be changed in the future.
+{% panel style="warning", title="Warning: Alpha Recommendations" %}
+This chapter contains recommendations that are still being actively evaluated, and are
+expected to evolve.
+
+Before using these recommendations, carefully evaluate if they are right for your environment.
 {% endpanel %}
 
 {% panel style="info", title="TL;DR" %}

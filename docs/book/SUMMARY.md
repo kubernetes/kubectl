@@ -27,10 +27,10 @@
 * [Diffing Local and Remote State](pages/app_composition_and_deployment/diffing_local_and_remote_resources.md)
 * [Accessing Multiple Clusters](pages/app_composition_and_deployment/accessing_multiple_clusters.md)
 * [Structure: Multi-Tier Apps](pages/app_composition_and_deployment/structure_multi_tier_apps.md)
-* [Structure: Directories](pages/app_composition_and_deployment/structure_directories.md)
-* [Structure: Branches](pages/app_composition_and_deployment/structure_branches.md)
-* [Structure: Repositories](pages/app_composition_and_deployment/structure_repositories.md)
-* [Publishing Bases](pages/app_composition_and_deployment/publishing_bases.md)
+* [(Alpha) Structure: Directories](pages/app_composition_and_deployment/structure_directories.md)
+* [(Alpha) Structure: Branches](pages/app_composition_and_deployment/structure_branches.md)
+* [(Alpha) Structure: Repositories](pages/app_composition_and_deployment/structure_repositories.md)
+* [(Alpha) Publishing Bases](pages/app_composition_and_deployment/publishing_bases.md)
 
 ## Resource Printing
 
