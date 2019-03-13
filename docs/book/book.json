@@ -1,6 +1,7 @@
 {
-  "plugins": ["sequence-diagrams","theme-api", "panel", "copy-code-button", "insert-logo", "ga"],
+  "plugins": ["sequence-diagrams","theme-api", "panel", "copy-code-button", "insert-logo", "ga", "custom-favicon"],
   "pluginsConfig": {
+    "favicon": "favicon.ico",
     "ga": {
       "token": "UA-136142416-1"
     },
