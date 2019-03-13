@@ -1,9 +1,6 @@
-{% panel style="warning", title="Warning: Alpha Recommendations" %}
+{% panel style="warning", title="Warning: Beta Recommendations" %}
 This chapter contains recommendations that are **still being actively evaluated, and are
 expected to evolve.**
-
-The intent of this chapter is to share the way kubectl developers are thinking about solving
-this problem as they develop more solutions.
 
 Before using these recommendations, carefully evaluate if they are right for your organization.
 {% endpanel %}
