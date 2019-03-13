@@ -1,6 +1,6 @@
 {% panel style="info", title="TL;DR" %}
-- Kubectl is the Kubernetes CLI and Tooling
-- Kubectl provides a swiss army knife of functionality for working with Kubernetes
+- Kubectl is the Kubernetes cli
+- Kubectl provides a swiss army knife of functionality for working with Kubernetes clusters
 - Kubectl may be used to deploy and manage applications on Kubernetes
 - Kubectl may be used for scripting and building higher-level frameworks
 {% endpanel %}
