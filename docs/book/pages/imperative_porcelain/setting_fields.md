@@ -6,13 +6,13 @@
 
 ## Motivation
 
-Set fields on Resources directly from the commandline for the purposes of development or debugging.
+Set fields on Resources directly from the command line for the purposes of development or debugging.
 Not for production Application Management.
 
 {% method %}
 ## Scale
 
-The Replicas field on a Resource can be set using the `kubectl scale` command
+The Replicas field on a Resource can be set using the `kubectl scale` command.
 
 
 {% sample lang="yaml" %}

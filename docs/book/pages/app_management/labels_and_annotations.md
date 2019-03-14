@@ -10,8 +10,8 @@
 Users may want to define a common set of labels or annotations for all the Resource in a project.
 
 - Identify the Resources within a project by querying their labels.
-- Set metadata for all Resources within a project (e.g. environment=test)
-- Copy or Fork an existing Project and add or change labels and annotations
+- Set metadata for all Resources within a project (e.g. environment=test).
+- Copy or Fork an existing Project and add or change labels and annotations.
 
 See [Bases and Variations](../app_customization/bases_and_variants.md) for more details on Copying Projects.
 

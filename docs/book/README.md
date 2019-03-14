@@ -25,7 +25,7 @@ Users define API objects (i.e. Resources) in files which are typically checked i
 They then use kubectl to Apply (i.e. create, update, delete) to update cluster state.
 
 ### Pods
- 
+
 Containers are run in [*Pods*](https://kubernetes.io/docs/concepts/workloads/pods/pod-overview/) which are
 scheduled to run on *Nodes* (i.e. worker machines) in a cluster.
 
@@ -55,9 +55,9 @@ replication, identity, persistent storage, custom scheduling, rolling updates, e
 The most common out-of-the-box Workload APIs (manage Pods) are:
 
 - [Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) (Stateless Applications)
-  - replication + roll outs
+  - replication + rollouts
 - [StatefulSets](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/) (Stateful Applications)
-  - replication + roll outs + persistent storage + identity
+  - replication + rollouts + persistent storage + identity
 - [Jobs](https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/) (Batch Work)
   - run to completion
 - [CronJobs](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/) (Scheduled Batch Work)
@@ -85,7 +85,7 @@ virtual IP address and dns name load balanced to a collection of Pods matching L
 ### Configuration and Secrets
 
 Shared Configuration and Secret data may be provided by ConfigMaps and Secrets.  This allows
-Environment Variables, Commandline Arguments and Files to be loosely injected into
+Environment Variables, Command Line Arguments and Files to be loosely injected into
 the Pods and Containers that consume them.
 
 {% panel style="info", title="ConfigMaps vs Secrets" %}

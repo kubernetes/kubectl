@@ -6,27 +6,18 @@
 
 ## Motivation
 
-Create Resources directly from the commandline for the purposes of development or debugging.
+Create Resources directly from the command line for the purposes of development or debugging.
 Not for production Application Management.
 
 {% method %}
 ## Deployment
 
-A Deployment can be created by either the `create deployment` command or the `run` command.
-While `run` may also create other types of resources, `create deployment` will only create
-Deployments.
-
-While `run` has a variety of flags and options, `create deployment` is intended to stay
-very simple.
+A Deployment can be created with the `create deployment` command.
 
 {% sample lang="yaml" %}
 
 ```bash
 kubectl create deployment my-dep --image=busybox
-```
-
-```bash
-kubectl run my-dep --image=busybox
 ```
 
 {% endmethod %}
@@ -39,12 +30,12 @@ It is possible to run a container and immediately attach to it using the `-i -t`
 {% method %}
 ## ConfigMap
 
-Create a configmap based on a file, directory, or specified literal value. 
+Create a configmap based on a file, directory, or specified literal value.
 
-A single configmap may package one or more key/value pairs. 
+A single configmap may package one or more key/value pairs.
 
 When creating a configmap based on a file, the key will default to the basename of the file, and the value will default
-to the file content.  If the basename is an invalid key, you may specify an alternate key. 
+to the file content.  If the basename is an invalid key, you may specify an alternate key.
 
 When creating a configmap based on a directory, each file whose basename is a valid key in the directory will be
 packaged into the configmap.  Any directory entries except regular files are ignored (e.g. subdirectories, symlinks,
@@ -136,7 +127,7 @@ kubectl create clusterrolebinding <choose-a-name> --clusterrole=cluster-admin --
 {% panel style="info", title="Required Admin Permissions" %}
 The cluster-admin role maybe required for creating new RBAC bindings.
 {% endpanel %}
-  
+
 {% method %}
 ### Role
 

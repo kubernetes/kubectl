@@ -11,7 +11,7 @@ Before using these recommendations, carefully evaluate if they are right for you
 
 
 {% panel style="info", title="TL;DR" %}
-- Use separate branches for separate Environments to 
+- Use separate branches for separate Environments to
   - **Decouple version specific and live operational specific changes** to Resource Config
   - Clean audit log of changes to the Environment
   - Facilitate Rollbacks to an Environment by reverting commits
@@ -64,19 +64,19 @@ Structure:
 
 - Create (e.g. `master`, `app-version`, etc) a Base branch for version dependent Config changes which
   will be used as a Base for deployment dependent Config.
-  - May have a similar structure to [Directories](structure_directories.md) approach
-- Create separate Deploy branches for separate deployment Environments
-  - Create a **new Directory in each branch containing only the deployment specific overlays** - e.g. `deploy-<env>`
-  - Create `kustomization.yaml`'s and refer to the version dependent
+  - May have a similar structure to [Directories](structure_directories.md) approach.
+- Create separate Deploy branches for separate deployment Environments.
+  - Create a **new Directory in each branch containing only the deployment specific overlays** - e.g. `deploy-<env>`.
+  - Create `kustomization.yaml`'s and refer to the version dependent.
 
 Techniques:
 
 - Add new required flags and environment variables to the Resource Config in the Base branch at the
   time they are added to the code.
   - Will be rolled out when the code is rolled out.
-- Adjust flags and configuration to the Resource Config in the Deploy branch in the deploy directory
-  - Will be rolled out immediately independent of versions
-- Merge code from the Base branch to the Deploy branches to perform a Rollout
+- Adjust flags and configuration to the Resource Config in the Deploy branch in the deploy directory.
+  - Will be rolled out immediately independent of versions.
+- Merge code from the Base branch to the Deploy branches to perform a Rollout.
 
 {% sample lang="yaml" %}
 
@@ -88,25 +88,25 @@ $ tree
 ├── bases
 │   ├── ...
 ├── prod
-│   ├── bases 
+│   ├── bases
 │   │   ├── ...
 │   ├── us-central
 │   │   ├── kustomization.yaml
 │   │   └── backend
 │   │       └── deployment-patch.yaml
-│   ├── us-east 
+│   ├── us-east
 │   │   └── kustomization.yaml
-│   └── us-west 
+│   └── us-west
 │       └── kustomization.yaml
 ├── staging
-│   ├── bases 
+│   ├── bases
 │   │   ├── ...
-│   └── us-west 
+│   └── us-west
 │       └── kustomization.yaml
 └── test
-    ├── bases 
+    ├── bases
     │   ├── ...
-    └── us-west 
+    └── us-west
         └── kustomization.yaml
 ```
 
@@ -118,13 +118,13 @@ $ tree
 ├── bases # From Base Branch
 │   ├── ...
 ├── prod # From Base Branch
-│   ├── ... 
+│   ├── ...
 └── deploy-prod # Prod deploy folder
     ├── us-central
     │   ├── kustomization.yaml # Uses bases: ["../../prod/us-central"]
-    ├── us-east 
+    ├── us-east
     │   └── kustomization.yaml # Uses bases: ["../../prod/us-east"]
-    └── us-west 
+    └── us-west
         └── kustomization.yaml # Uses bases: ["../../prod/us-west"]
 ```
 
@@ -134,7 +134,7 @@ $ tree
 ├── bases # From Base Branch
 │   ├── ...
 ├── deploy-staging # Staging deploy folder
-│   └── us-west 
+│   └── us-west
 │       └── kustomization.yaml # Uses bases: ["../../staging/us-west"]
 └── staging # From Base Branch
     └── ...
@@ -146,7 +146,7 @@ $ tree
 ├── bases # From Base Branch
 │   ├── ...
 ├──deploy-test # Test deploy folder
-│   └── us-west 
+│   └── us-west
 │       └── kustomization.yaml # Uses bases: ["../../test/us-west"]
 └── test # From Base Branch
     └── ...
@@ -159,7 +159,7 @@ $ tree
 - If a user's application source code and Resource Config are both in the Base branch, user's may want
   to only merge the Resource Config.  This could be done using `git checkout` - e.g.
   `git checkout <base-branch> bases/ prod/`
-  
+
 - Instead of merging from the Base branch directly, users can create Deploy branches of the Base.
   Alternatively, users can tag the Base branch commits as deploys and check these out.
 
@@ -175,10 +175,10 @@ functions - where code is not merged between branches and is similar to having a
 This approach looks very similar to the [Repository Based Structure](structure_repositories.md), but
 using branches instead of Repositories.
 
-- Use a Base (e.g. master, deploy-version, etc) branch for configuration tightly coupled to releasing new code
-  - Looks like [Directories](structure_directories.md) approach
-- Create separate branches for deploying to different Environments
-  - Create a **new Directory for the Deploy overlays** - e.g. `deploy-<env>`
+- Use a Base (e.g. master, deploy-version, etc) branch for configuration tightly coupled to releasing new code.
+  - Looks like [Directories](structure_directories.md) approach.
+- Create separate branches for deploying to different Environments.
+  - Create a **new Directory for the Deploy overlays** - e.g. `deploy-<env>`.
   - Base Branch is never merge.  Deploy overlays refer to Bases as remote urls.
 
 Techniques:
@@ -186,10 +186,10 @@ Techniques:
 - Add new required flags and environment variables to the Resource Config in the base branch at the
   time they are added to the code.
   - Will be rolled out when the code is rolled out.
-- Adjust flags and configuration to the Resource Config in the Deploy branch in the deploy directory
-  - Will be rolled out immediately independent of deploys
-- Tag the base branch with deploys
-  - Deploy branches use tagged references as their bases
+- Adjust flags and configuration to the Resource Config in the Deploy branch in the deploy directory.
+  - Will be rolled out immediately independent of deploys.
+- Tag the base branch with deploys.
+  - Deploy branches use tagged references as their bases.
 
 {% sample lang="yaml" %}
 
@@ -201,25 +201,25 @@ $ tree
 ├── bases
 │   ├── ...
 ├── prod
-│   ├── bases 
+│   ├── bases
 │   │   ├── ...
 │   ├── us-central
 │   │   ├── kustomization.yaml
 │   │   └── backend
 │   │       └── deployment-patch.yaml
-│   ├── us-east 
+│   ├── us-east
 │   │   └── kustomization.yaml
-│   └── us-west 
+│   └── us-west
 │       └── kustomization.yaml
 ├── staging
-│   ├── bases 
+│   ├── bases
 │   │   ├── ...
-│   └── us-west 
+│   └── us-west
 │       └── kustomization.yaml
 └── test
-    ├── bases 
+    ├── bases
     │   ├── ...
-    └── us-west 
+    └── us-west
         └── kustomization.yaml
 ```
 
@@ -231,9 +231,9 @@ $ tree
 └── deploy-prod
     ├── us-central
     │   ├── kustomization.yaml
-    ├── us-east 
+    ├── us-east
     │   └── kustomization.yaml
-    └── us-west 
+    └── us-west
         └── kustomization.yaml
 ```
 
@@ -241,7 +241,7 @@ $ tree
 $ tree
 .
 └── deploy-staging
-    └── us-west 
+    └── us-west
         └── kustomization.yaml
 ```
 
@@ -249,7 +249,7 @@ $ tree
 $ tree
 .
 └── deploy-test
-    └── us-west 
+    └── us-west
         └── kustomization.yaml
 ```
 

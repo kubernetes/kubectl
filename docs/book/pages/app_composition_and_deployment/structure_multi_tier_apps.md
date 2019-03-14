@@ -29,7 +29,7 @@ It is possible to reuse the same base multiple times within the same project by 
 structure to compose multiple Variants of the base.
 
 1. Generic Base in a `kustomization.yaml`.
-1. Variants of the Generic Base in multiple `kustomization.yaml`s.
+1. Variants of the Generic Base in multiple `kustomization.yaml`'s.
 1. Compose Variants as Bases to a single `kustomization.yaml`.
 
 Each layer may add customizations and resources to the preceding layers.
@@ -90,13 +90,13 @@ spec:
             path: /health
             port: 8010
           initialDelaySeconds: 30
-          timeoutSeconds: 1        
+          timeoutSeconds: 1
         readinessProbe:
           httpGet:
             path: /ready
             port: 8010
           initialDelaySeconds: 30
-          timeoutSeconds: 1        
+          timeoutSeconds: 1
 ```
 
 ```yaml
