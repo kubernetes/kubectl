@@ -77,7 +77,7 @@ Techniques:
 **Base Repository:**
 
 ```bash
-$ tree
+deploytree
 .
 ├── bases # Used as a Base only
 │   ├── kustomization.yaml
@@ -124,7 +124,7 @@ $ tree
 
 ```bash
 # sre team
-$ tree
+deploytree
 .
 ├── prod
 │   ├── us-central
@@ -137,7 +137,7 @@ $ tree
 
 ```bash
 # qa team
-$ tree
+deploytree
 .
 ├── staging # Staging
 │   └── us-west 
@@ -146,7 +146,7 @@ $ tree
 
 ```bash
 # dev team
-$ tree
+deploytree
 .
 └── test # Test
     └── us-west 

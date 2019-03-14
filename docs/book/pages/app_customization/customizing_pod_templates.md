@@ -1,5 +1,5 @@
 {% panel style="info", title="TL;DR" %}
-- Override Base Pod and PodTemplate Image Tags
+- Override Base Pod and PodTemplate Image **Names** and **Tags**
 - Override Base Pod and PodTemplate Environment Variables and Arguments
 {% endpanel %}
 
@@ -21,9 +21,14 @@ Common examples include:
 {% method %}
 **Use Case:** Different Environments (test, dev, staging, canary, prod) use images with different tags.
 
-Override the tag for an `image` field from a [Pod Template](https://kubernetes.io/docs/concepts/workloads/pods/pod-overview/#pod-templates)
-in a base by specifying the `images` field in the `kustomization.yaml`.  The `newTag` may
-be specified to override the image tag for images whose image name matches `name`.
+Override the name or tag for an `image` field from a [Pod Template](https://kubernetes.io/docs/concepts/workloads/pods/pod-overview/#pod-templates)
+in a base by specifying the `images` field in the `kustomization.yaml`.
+
+| Field     | Description                                                              | Example Field | Example Result |
+|-----------|--------------------------------------------------------------------------|----------| --- |
+| `name`    | Match images with this image name| `name: nginx`| |
+| `newTag`  | Override the image **tag** or **digest** for images whose image name matches `name`    | `newTag: new` | `nginx:old` -> `nginx:new` |
+| `newName` | Override the image **name** for images whose image name matches `name`   | `newImage: nginx-special` | `nginx:old` -> `nginx-special:old` |
 
 {% sample lang="yaml" %}
 **Input:** The `kustomization.yaml` file
@@ -35,6 +40,7 @@ bases:
 images:
   - name: nginx-pod
     newTag: 1.15
+    newName: nginx-pod-2
 ```
 
 **Base:** Resources to be modified by the `kustomization.yaml`
@@ -89,7 +95,7 @@ spec:
       containers:
       # The image image tag has been changed for the container
       - name: nginx
-        image: nginx-pod:1.15
+        image: nginx-pod-2:1.15
 ```
 {% endmethod %}
 

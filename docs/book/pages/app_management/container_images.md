@@ -1,5 +1,5 @@
 {% panel style="info", title="TL;DR" %}
-- Override or set the Tag for Container Images
+- Override or set the Name and Tag for Container Images
 {% endpanel %}
 
 # Container Images
@@ -9,7 +9,7 @@
 It may be useful to define the tags of container images which are
 used across many Workloads.
 
-- Update the container image tag for multiple Workloads at once
+- Update the container image name or tag for multiple Workloads at once
 - Increase visibility of the versions of container images being used within
   the project
 - Set the image tag from external sources - such as environment variables
@@ -25,13 +25,21 @@ the `kustomization.yaml` using the `images` field.  When `images` are
 specified, Apply will override the images whose image name matches `name` with a new
 tag.
 
+
+| Field     | Description                                                              | Example Field | Example Result |
+|-----------|--------------------------------------------------------------------------|----------| --- |
+| `name`    | Match images with this image name| `name: nginx`| |
+| `newTag`  | Override the image **tag** or **digest** for images whose image name matches `name`    | `newTag: new` | `nginx:old` -> `nginx:new` |
+| `newName` | Override the image **name** for images whose image name matches `name`   | `newImage: nginx-special` | `nginx:old` -> `nginx-special:old` |
+
 {% method %}
 
 **Example:** Use `images` in the `kustomization.yaml` to update the container
 images in `deployment.yaml`
 
-Apply will set the `nginx` image to have the tag `1.8.0` - e.g. `nginx:1.8.0`.
-This will set the tag for *all* images matching the *name*.
+Apply will set the `nginx` image to have the tag `1.8.0` - e.g. `nginx:1.8.0` and
+change the image name to `nginx-special`.
+This will set the name and tag for *all* images matching the *name*.
 
 {% sample lang="yaml" %}
 **Input:** The kustomization.yaml and deployment.yaml files
@@ -43,6 +51,7 @@ kind: Kustomization
 images:
   - name: nginx # match images with this name
     newTag: 1.8.0 # override the tag
+    newName: nginx-special # override the name
 resources:
 - deployment.yaml
 ```
@@ -88,12 +97,27 @@ spec:
         app: nginx
     spec:
       containers:
-      # The image has been changed to include the tag
-      - image: nginx:1.8.0
+      # The image has been changed
+      - image: nginx-special:1.8.0
         name: nginx
 ```
 {% endmethod %}
 
+
+## Setting a Name
+
+{% method %}
+The name for an image may be set by specifying `newName` and the name of the old container image.
+{% sample lang="yaml" %}
+```yaml
+# kustomization.yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+images:
+  - name: mycontainerregistry/myimage
+    newName: differentregistry/myimage
+```
+{% endmethod %}
 
 ## Setting a Tag
 
@@ -141,8 +165,8 @@ download the [kustomize standalone](https://github.com/kubernetes-sigs/kustomize
 
 {% sample lang="yaml" %}
 ```bash
-$ kustomize edit set imagetag foo:$(git log -n 1 --pretty=format:"%H")
-$ kubectl apply -f .
+deploykustomize edit set imagetag foo:$(git log -n 1 --pretty=format:"%H")
+deploykubectl apply -f .
 ```
 {% endmethod %}
 
@@ -155,8 +179,8 @@ It is also possible to set a Tag from an environment variable using the same tec
 
 {% sample lang="yaml" %}
 ```bash
-$ kustomize edit set image foo:$FOO_IMAGE_TAG
-$ kubectl apply -f .
+deploykustomize edit set image foo:$FOO_IMAGE_TAG
+deploykubectl apply -f .
 ```
 {% endmethod %}
 

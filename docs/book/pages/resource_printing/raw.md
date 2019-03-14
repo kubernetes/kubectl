@@ -32,7 +32,7 @@ Print the Raw Resource formatting it as YAML.
 {% sample lang="yaml" %}
 
 ```bash
-$ kubectl get deployments -o yaml
+deploykubectl get deployments -o yaml
 ```
 
 ```yaml
@@ -120,7 +120,7 @@ Print the Raw Resource formatting it as JSON.
 {% sample lang="yaml" %}
 
 ```bash
-$ kubectl get deployments -o json
+deploykubectl get deployments -o json
 ```
 
 ```json
