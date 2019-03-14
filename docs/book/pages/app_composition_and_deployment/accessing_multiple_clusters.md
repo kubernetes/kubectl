@@ -27,7 +27,7 @@ List the contexts in the kubeconfig file
 
 {% sample lang="yaml" %}
 ```sh
-$ kubectl config get-contexts
+deploykubectl config get-contexts
 ```
 
 ```sh
@@ -47,7 +47,7 @@ Print information about the current context
 
 {% sample lang="yaml" %}
 ```sh
-$ kubectl config --kubeconfig=config-demo view --minify
+deploykubectl config --kubeconfig=config-demo view --minify
 ```
 
 ```yaml
@@ -87,7 +87,7 @@ the name of the context.
 {% sample lang="yaml" %}
 
 ```sh
-$ export CLUSTER=us-west2-c; kubectl apply -k ${CLUSTER} --context=${CLUSTER}
+deployexport CLUSTER=us-west2-c; kubectl apply -k ${CLUSTER} --context=${CLUSTER}
 ```
 
 {% endmethod %}
@@ -105,9 +105,9 @@ the name of the context.
 
 ```sh
 # change the context to us-west2-c
-$ kubectl config use-context us-west2-c
+deploykubectl config use-context us-west2-c
 # deploy Resources from the ./us-west2-c/kustomization.yaml
-$ kubectl apply -k ./us-west2-c
+deploykubectl apply -k ./us-west2-c
 ```
 
 {% endmethod %}
@@ -125,7 +125,7 @@ the name of the directory containing the kubeconfig.
 {% sample lang="yaml" %}
 
 ```sh
-$ kubectl apply -k ./us-west2-c --kubeconfig /path/to/us-west2-c/config
+deploykubectl apply -k ./us-west2-c --kubeconfig /path/to/us-west2-c/config
 ```
 
 {% endmethod %}

@@ -28,13 +28,13 @@ To visit the nginx service go to the Proxy URL at
 {% sample lang="yaml" %}
 
 ```bash
-$ kubectl proxy
+deploykubectl proxy
 
 Starting to serve on 127.0.0.1:8001
 ```
 
 ```bash
-$ curl http://127.0.0.1:8001/api/v1/namespaces/default/services/nginx/proxy/
+deploycurl http://127.0.0.1:8001/api/v1/namespaces/default/services/nginx/proxy/
 ```
 
 {% endmethod %}
@@ -56,7 +56,7 @@ A common usecase is to connect to Services running as part of the cluster itself
 Services and their Proxy Urls with `kubectl cluster-info`.
 
 ```bash
-$ kubectl cluster-info
+deploykubectl cluster-info
 
 Kubernetes master is running at https://104.197.5.247
 GLBCDefaultBackend is running at https://104.197.5.247/api/v1/namespaces/kube-system/services/default-http-backend:http/proxy

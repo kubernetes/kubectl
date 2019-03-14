@@ -68,7 +68,7 @@ Print the JSON representation of the first Deployment in the list on a single li
 {% sample lang="yaml" %}
 
 ```bash
-$ kubectl get deployment.v1.apps -o=jsonpath='{.items[0]}{"\n"}'
+deploykubectl get deployment.v1.apps -o=jsonpath='{.items[0]}{"\n"}'
 
 ```
 
@@ -86,7 +86,7 @@ Print the `metadata.name` field for the first Deployment in the list.
 {% sample lang="yaml" %}
 
 ```bash
-$ kubectl get deployment.v1.apps -o=jsonpath='{.items[0].metadata.name}{"\n"}'
+deploykubectl get deployment.v1.apps -o=jsonpath='{.items[0].metadata.name}{"\n"}'
 ```
 
 ```bash
@@ -104,7 +104,7 @@ For each Deployment, print its `metadata.name` field and a newline afterward.
 {% sample lang="yaml" %}
 
 ```bash
-$ kubectl get deployment.v1.apps -o=jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}'
+deploykubectl get deployment.v1.apps -o=jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}'
 ```
 
 ```bash
@@ -123,7 +123,7 @@ For each Deployment, print its `metadata.name` and `.status.availableReplicas`.
 {% sample lang="yaml" %}
 
 ```bash
-$ kubectl get deployment.v1.apps -o=jsonpath='{range .items[*]}{.metadata.name}{"\t"}{.status.availableReplicas}{"\n"}{end}'
+deploykubectl get deployment.v1.apps -o=jsonpath='{range .items[*]}{.metadata.name}{"\t"}{.status.availableReplicas}{"\n"}{end}'
 ```
 ```bash
 nginx	1
@@ -141,7 +141,7 @@ Print the list of Deployments as single line.
 {% sample lang="yaml" %}
 
 ```bash
-$ kubectl get deployment.v1.apps -o=jsonpath='{@}{"\n"}'
+deploykubectl get deployment.v1.apps -o=jsonpath='{@}{"\n"}'
 ```
 
 ```bash
@@ -159,7 +159,7 @@ Print each Deployment on a new line.
 {% sample lang="yaml" %}
 
 ```bash
-$ kubectl get deployment.v1.apps -o=jsonpath='{range .items[*]}{@}{"\n"}{end}'
+deploykubectl get deployment.v1.apps -o=jsonpath='{range .items[*]}{@}{"\n"}{end}'
 ```
 
 ```bash

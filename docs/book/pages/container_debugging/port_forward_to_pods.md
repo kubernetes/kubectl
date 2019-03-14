@@ -15,7 +15,7 @@ Listen on ports 5000 and 6000 locally, forwarding data to/from ports 5000 and 60
 {% sample lang="yaml" %}
 
 ```bash
-$ kubectl port-forward pod/mypod 5000 6000
+deploykubectl port-forward pod/mypod 5000 6000
 ```
 
 {% endmethod %}
@@ -30,7 +30,7 @@ deployment
 {% sample lang="yaml" %}
 
 ```bash
-$ kubectl port-forward deployment/mydeployment 5000 6000
+deploykubectl port-forward deployment/mydeployment 5000 6000
 ```
 
 {% endmethod %}
@@ -44,7 +44,7 @@ Listen on port 8888 locally, forwarding to 5000 in the pod
 {% sample lang="yaml" %}
 
 ```bash
-$ kubectl port-forward pod/mypod 8888:5000
+deploykubectl port-forward pod/mypod 8888:5000
 ```
 
 {% endmethod %}
@@ -58,7 +58,7 @@ Listen on a random port locally, forwarding to 5000 in the pod
 {% sample lang="yaml" %}
 
 ```bash
-$ kubectl port-forward pod/mypod :5000
+deploykubectl port-forward pod/mypod :5000
 ```
 
 {% endmethod %}
@@ -74,7 +74,7 @@ Specify the Container within a Pod running multiple containers.
 {% sample lang="yaml" %}
 
 ```bash
-$ kubectl cp /tmp/foo <some-pod>:/tmp/bar -c <specific-container>
+deploykubectl cp /tmp/foo <some-pod>:/tmp/bar -c <specific-container>
 ```
 
 {% endmethod %}
@@ -90,7 +90,7 @@ Set the Pod namespace by prefixing the Pod name with `<namespace>/` .
 {% sample lang="yaml" %}
 
 ```bash
-$ kubectl cp /tmp/foo <some-namespace>/<some-pod>:/tmp/bar
+deploykubectl cp /tmp/foo <some-namespace>/<some-pod>:/tmp/bar
 ```
 
 {% endmethod %}
