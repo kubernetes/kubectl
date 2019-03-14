@@ -9,7 +9,7 @@
 It is often necessary for users to want to **modify arbitrary fields** from a Base, such
 as resource reservations for Pods, replicas on Deployments, etc.  Overlays and patches can
 be used by Variants to specify fields values which will override the Base field values.
- 
+
 ## Customizing Arbitrary Fields with Overlays
 
 {% method %}
@@ -89,7 +89,7 @@ spec:
           limits:
             cpu: "0.2"
           requests:
-            cpu: "0.1"        
+            cpu: "0.1"
 ```
 
 **Applied:** The Resource that is Applied to the cluster
@@ -131,17 +131,17 @@ Overlays use the same [merge semantics](../app_management/field_merge_semantics.
 is that there is no *Last Applied Resource Config* when merging overlays, so fields may only be deleted
 if they are explicitly set to nil.
 {% endpanel %}
-    
+
 ## Customizing Arbitrary Fields with JsonPatch
 
 {% method %}
-Arbitrary fields may be added, changed, or deleted by supplying *Json 6902 Patches* against the
+Arbitrary fields may be added, changed, or deleted by supplying *JSON Patches* against the
 Resources provided by the base.
 
 **Use Case:** Different Environments (test, dev, staging, canary, prod) require fields such as
 replicas or resources to be overridden.
 
-Json 6902 Patches are [rfc6902](https://tools.ietf.org/html/rfc6902) patches that are applied
+JSON Patches are [RFC 6902](https://tools.ietf.org/html/rfc6902) patches that are applied
 to resources.  Patches require the *Group, Version, Kind* and *Name* of the Resource to be
 specified in addition to the Patch.  Patches offer a number of powerful imperative operations
 for modifying the base Resources.

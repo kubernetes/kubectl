@@ -22,7 +22,7 @@ accessed without the need for a Proxy.
 
 Connect to a internal Service using the Proxy command, and the Service Proxy url.
 
-To visit the nginx service go to the Proxy URL at 
+To visit the nginx service go to the Proxy URL at
 `http://127.0.0.1:8001/api/v1/namespaces/default/services/nginx/proxy/`
 
 {% sample lang="yaml" %}
@@ -49,7 +49,7 @@ To connect to a Service through a proxy the user must build the Proxy URL.  The 
 - The Protocol is optional if you are using `http`
 
 {% endpanel %}
-  
+
 ## Builtin Cluster Services
 
 A common usecase is to connect to Services running as part of the cluster itself.  A user can print out these
@@ -66,9 +66,8 @@ Metrics-server is running at https://104.197.5.247/api/v1/namespaces/kube-system
 ```
 
 {% panel style="info", title="More Info" %}
-For more information on connecting to a cluster, see the
-[Accessing Clusters](https://kubernetes.io/docs/tasks/access-application-cluster/access-cluster/)
-k8s.io doc.
+For more information on connecting to a cluster, see
+[Accessing Clusters](https://kubernetes.io/docs/tasks/access-application-cluster/access-cluster/).
 {% endpanel %}
 
 

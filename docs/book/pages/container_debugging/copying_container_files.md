@@ -10,8 +10,7 @@
 - Copying files from a local filesystem to Containers in a cluster
 
 {% panel style="warning", title="Install Tar" %}
-Copy requires that *tar* be installed on the local filesystem and is on the user's
-PATH.
+Copy requires that *tar* be installed in the container image.
 {% endpanel %}
 
 {% method %}
@@ -60,7 +59,7 @@ $ kubectl cp /tmp/foo <some-pod>:/tmp/bar -c <specific-container>
 ```
 
 {% endmethod %}
-  
+
 {% method %}
 ## Namespaces
 

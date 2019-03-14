@@ -32,19 +32,19 @@ Failure to do this may result in the different API group / version being used af
 this group / version may have changed the representation of fields.
 {% endpanel %}
 
-### Json Path
+### JSON Path
 
-Print the fields from the Json Path
+Print the fields from the JSON Path
 
-**Note:**  Json Path can also be read from a file using `-o custom-columns-file`.
+**Note:**  JSON Path can also be read from a file using `-o custom-columns-file`.
 
-- Json Path template is composed of JSONPath expressions enclosed by {}. In addition to the original JSONPath syntax, several capabilities are added:
+- JSON Path template is composed of JSONPath expressions enclosed by {}. In addition to the original JSONPath syntax, several capabilities are added:
   - The `$` operator is optional (the expression starts from the root object by default).
   - Use "" to quote text inside JSONPath expressions.
   - Use range operator to iterate lists.
   - Use negative slice indices to step backwards through a list. Negative indices do not “wrap around” a list. They are valid as long as -index + listLength >= 0.
 
-### Json Path Symbols Table
+### JSON Path Symbols Table
 
 | Function	| Description	| Example	| Result |
 |---|---|---|---|
@@ -63,7 +63,7 @@ Print the fields from the Json Path
 
 {% method %}
 
-Print the Json representation of the first Deployment in the list on a single line.
+Print the JSON representation of the first Deployment in the list on a single line.
 
 {% sample lang="yaml" %}
 

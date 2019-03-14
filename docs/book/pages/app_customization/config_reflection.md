@@ -11,7 +11,7 @@ For example, a **Pod may take the name of Service defined in the Project as a co
 Instead of hard coding the value of the Service directly into the PodSpec, users can **reference
 the Service value using a `vars` entry**.  If the value is updated or transformed by the
 `kustomization.yaml` file (e.g. by setting a `namePrefix`), the value will be propagated
-to where it is referenced in the PodSpec. 
+to where it is referenced in the PodSpec.
 
 ## Vars
 
@@ -27,7 +27,7 @@ the following to be defined:
 
 **Example:** Set the Pod command argument to the value of a Service name.
 
-Apply will set the resolve $(BACKEND_SERVICE_NAME) to a value using the path
+Apply will resolve `$(BACKEND_SERVICE_NAME)` to a value using the object reference
 specified in `vars`.
 
 {% sample lang="yaml" %}

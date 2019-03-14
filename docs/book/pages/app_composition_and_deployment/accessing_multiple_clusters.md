@@ -12,7 +12,7 @@ This can be done by configuring the different Variants using different `kustomiz
 and targeting each variant using the `--context` or `--kubeconfig` flag.
 
 **Note:** The examples shown in this chapter store the Resource Config in a directory
-matching the name of the cluster (i.e. as it is referred to be context)
+matching the name of the cluster (i.e. as it is referred to be context).
 
 
 ## Targeting a Cluster via Context
@@ -32,9 +32,9 @@ $ kubectl config get-contexts
 
 ```sh
 CURRENT   NAME   CLUSTER   AUTHINFO   NAMESPACE
-          us-central1-c  us-central1-c  us-central1-c  
-*         us-east1-c  us-east1-c  us-east1-c  
-          us-west2-c   us-west2-c   us-west2-c   
+          us-central1-c  us-central1-c  us-central1-c
+*         us-east1-c  us-east1-c  us-east1-c
+          us-west2-c   us-west2-c   us-west2-c
 ```
 
 {% endmethod %}
@@ -70,7 +70,7 @@ users:
 - name: developer
   user:
     client-certificate: fake-cert-file
-    client-key: fake-key-file  
+    client-key: fake-key-file
 ```
 
 {% endmethod %}

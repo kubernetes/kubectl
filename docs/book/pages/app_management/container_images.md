@@ -20,8 +20,8 @@ See [Bases and Variations](../app_customization/bases_and_variants.md) for more 
 
 ## images
 
-It is possible to set image image tags for container images through 
-the `kustomization.yaml` using the `images` field.  When `images` are 
+It is possible to set image tags for container images through
+the `kustomization.yaml` using the `images` field.  When `images` are
 specified, Apply will override the images whose image name matches `name` with a new
 tag.
 
@@ -129,7 +129,7 @@ images:
 ## Setting a Tag from the latest commit SHA
 
 {% method %}
-A common CICD pattern is to tag container images with the git commit SHA of source code.  e.g. if
+A common CI/CD pattern is to tag container images with the git commit SHA of source code.  e.g. if
 the image name is `foo` and an image was built for the source code at commit `1bb359ccce344ca5d263cd257958ea035c978fd3`
 then the conatiner image would be `foo:1bb359ccce344ca5d263cd257958ea035c978fd3`.
 
@@ -162,7 +162,7 @@ $ kubectl apply -f .
 
 {% panel style="info", title="Committing Image Tag Updates" %}
 The `kustomization.yaml` changes *may* be committed back to git so that they
-can be audited.  When committing the image tag updates that have already 
-been pushed by a CICD system, be careful not to trigger new builds + 
+can be audited.  When committing the image tag updates that have already
+been pushed by a CI/CD system, be careful not to trigger new builds +
 deployments for these changes.
 {% endpanel %}

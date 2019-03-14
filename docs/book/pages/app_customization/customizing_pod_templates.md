@@ -15,15 +15,15 @@ Common examples include:
 
 - Running **different versions of an Image** for dev, test, canary, production
 - Configuring **different Pod Environment Variables and Arguments** for dev, test, canary, production
- 
+
 ## Customizing Images
 
 {% method %}
 **Use Case:** Different Environments (test, dev, staging, canary, prod) use images with different tags.
 
-Override the tag for an `image` field from a Pod Template in a base by specifying the `images` field in the
-`kustomization.yaml`.  The `newTag` may be specified to override the image tag for images whose image
-name matches `name`.
+Override the tag for an `image` field from a [Pod Template](https://kubernetes.io/docs/concepts/workloads/pods/pod-overview/#pod-templates)
+in a base by specifying the `images` field in the `kustomization.yaml`.  The `newTag` may
+be specified to override the image tag for images whose image name matches `name`.
 
 {% sample lang="yaml" %}
 **Input:** The `kustomization.yaml` file

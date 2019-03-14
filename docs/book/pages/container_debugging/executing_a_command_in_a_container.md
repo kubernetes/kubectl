@@ -22,25 +22,7 @@ kubectl exec nginx-78f5d695bd-czm8z ls
 ```
 
 ```bash
-bin
-boot
-dev
-etc
-home
-lib
-lib64
-media
-mnt
-opt
-proc
-root
-run
-sbin
-srv
-sys
-tmp
-usr
-var
+bin  boot  dev	etc  home  lib	lib64  media  mnt  opt	proc  root  run  sbin  srv  sys  tmp  usr  var
 ```
 
 {% endmethod %}
@@ -64,5 +46,5 @@ bin  boot  dev	etc  home  lib	lib64  media  mnt  opt	proc  root  run  sbin  srv 
 {% endmethod %}
 
 {% panel style="info", title="Specifying the Container" %}
-For Pods running multiple Containers, the Container should be specified with `-c <container-name>`
+For Pods running multiple Containers, the Container should be specified with `-c <container-name>`.
 {% endpanel %}

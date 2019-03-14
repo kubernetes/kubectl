@@ -26,7 +26,7 @@ $ kubectl diff -k ./dir/
 ## Setting the Diff Program
 
 The `KUBECTL_EXTERNAL_DIFF` environment variable can be used to select your own diff command.
-By default, the "diff" command available in your path will be run with "-u" (unicode) and "-N"
+By default, the "diff" command available in your path will be run with "-u" (unified) and "-N"
 (treat new files as empty) options.
 
 

@@ -59,7 +59,7 @@ spec:
 ## Customizing White Box Bases
 
 The White Box Application may be customized using the same techniques described in
-[Bases and Variations](../app_customization/bases_and_variants.md)
+[Bases and Variations](../app_customization/bases_and_variants.md).
 
 ## Versioning White Box Bases
 
@@ -67,19 +67,19 @@ White Box Bases may be versioned using the well known versioning techniques prov
 
 **Tag:**
 
-Bases may be versioned by applying a tag to the repo and modifying the url to point to the tag: 
-`github.com/kubernetes-sigs/kustomize//examples/multibases?ref=v1.0.6`
+Bases may be versioned by applying a tag to the repo and modifying the url to point to the tag:
+`github.com/kubernetes-sigs/kustomize/examples/multibases?ref=v1.0.6`
 
 **Branch:**
 
-Bases may be versioned by creating a branch and modifying the url to point to the branch: 
-`github.com/Liujingfang1/kustomize//examples/helloWorld?ref=repoUrl2`
+Bases may be versioned by creating a branch and modifying the url to point to the branch:
+`github.com/Liujingfang1/kustomize/examples/helloWorld?ref=repoUrl2`
 
 **Commit:**
 
 If the White Box Base has not been explicitly versioned by the maintainer, users may pin the
-base to a specific commit: 
-`github.com/Liujingfang1/kustomize//examples/helloWorld?ref=7050a45134e9848fca214ad7e7007e96e5042c03`
+base to a specific commit:
+`github.com/Liujingfang1/kustomize/examples/helloWorld?ref=7050a45134e9848fca214ad7e7007e96e5042c03`
 
 ## Forking a White Box Base
 
