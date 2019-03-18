@@ -11,7 +11,7 @@ Before using these recommendations, carefully evaluate if they are right for you
   - Separate directories for separate Environment and Cluster [Config Variants](../app_customization/bases_and_variants.md)
 {% endpanel %}
 
-# Directory Structure Based Composition
+# Directory Structure Based Layout
 
 The are several techniques for users to structure their Resource Config files.
 
