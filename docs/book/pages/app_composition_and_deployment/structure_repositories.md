@@ -15,7 +15,7 @@ Before using these recommendations, carefully evaluate if they are right for you
   - Separate Issue, Project and PR tracking
 {% endpanel %}
 
-# Repository Structure Based Composition
+# Repository Structure Based Layout
 
 The are several techniques for users to structure their Resource Config files.
 

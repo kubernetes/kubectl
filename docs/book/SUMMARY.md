@@ -22,15 +22,18 @@
 * [Customizing Arbitrary Fields](pages/app_customization/customizing_arbitrary_fields.md)
 * [Config Reflection](pages/app_customization/config_reflection.md)
 
-## App Composition and Deployment
+## App Structure
+
+* [Layout With Directories (Beta)](pages/app_composition_and_deployment/structure_directories.md)
+* [Layout With Branches (Alpha)](pages/app_composition_and_deployment/structure_branches.md)
+* [Layout With Repositories (Alpha)](pages/app_composition_and_deployment/structure_repositories.md)
+* [Multi-Tier](pages/app_composition_and_deployment/structure_multi_tier_apps.md)
+
+## App Deployment
 
 * [Diffing Local and Remote State](pages/app_composition_and_deployment/diffing_local_and_remote_resources.md)
 * [Accessing Multiple Clusters](pages/app_composition_and_deployment/accessing_multiple_clusters.md)
-* [Structure: Multi-Tier Apps](pages/app_composition_and_deployment/structure_multi_tier_apps.md)
-* [(Beta) Structure: Directories](pages/app_composition_and_deployment/structure_directories.md)
-* [(Alpha) Structure: Branches](pages/app_composition_and_deployment/structure_branches.md)
-* [(Alpha) Structure: Repositories](pages/app_composition_and_deployment/structure_repositories.md)
-* [(Alpha) Publishing Bases](pages/app_composition_and_deployment/publishing_bases.md)
+* [Publishing Config as Bases (Alpha)](pages/app_composition_and_deployment/publishing_bases.md)
 
 ## Resource Printing
 
