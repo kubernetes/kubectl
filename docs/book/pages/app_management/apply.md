@@ -72,10 +72,10 @@ ResourceConfig files using `-f`.
 {% sample lang="yaml" %}
 ```bash
 # Apply the Resource Config
-deploykubectl apply -k .
+kubectl apply -k .
 
 # View the Resources
-deploykubectl get -k .
+kubectl get -k .
 ```
 {% endmethod %}
 

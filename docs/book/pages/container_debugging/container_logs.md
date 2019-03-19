@@ -15,7 +15,7 @@ Print the logs for a Pod running a single Container
 {% sample lang="yaml" %}
 
 ```bash
-deploykubectl logs echo-c6bc8ccff-nnj52
+kubectl logs echo-c6bc8ccff-nnj52
 ```
 
 ```bash
@@ -42,7 +42,7 @@ Print the logs for all Pods for a Workload
 
 ```bash
 # Print logs from all containers matching label
-deploykubectl logs -l app=nginx
+kubectl logs -l app=nginx
 ```
 
 {% endmethod %}
@@ -65,7 +65,7 @@ Stream logs from a container.
 
 ```bash
 # Follow logs from container
-deploykubectl logs nginx-78f5d695bd-czm8z -f
+kubectl logs nginx-78f5d695bd-czm8z -f
 ```
 
 {% endmethod %}
@@ -81,7 +81,7 @@ crashed or are crash looping.
 
 ```bash
 # Print logs from exited container
-deploykubectl logs nginx-78f5d695bd-czm8z -p
+kubectl logs nginx-78f5d695bd-czm8z -p
 ```
 
 {% endmethod %}
@@ -97,7 +97,7 @@ containers.
 
 ```bash
 # Print logs from the nginx container in the nginx-78f5d695bd-czm8z Pod
-deploykubectl logs nginx-78f5d695bd-czm8z -c nginx
+kubectl logs nginx-78f5d695bd-czm8z -c nginx
 ```
 
 {% endmethod %}
@@ -112,7 +112,7 @@ Print the logs that occurred after an absolute time.
 
 ```bash
 # Print logs since a date
-deploykubectl logs nginx-78f5d695bd-czm8z --since-time=2018-11-01T15:00:00Z
+kubectl logs nginx-78f5d695bd-czm8z --since-time=2018-11-01T15:00:00Z
 ```
 
 {% endmethod %}
@@ -134,7 +134,7 @@ Examples:
 
 ```bash
 # Print logs for the past hour
-deploykubectl logs nginx-78f5d695bd-czm8z --since=1h
+kubectl logs nginx-78f5d695bd-czm8z --since=1h
 ```
 
 {% endmethod %}
@@ -150,7 +150,7 @@ Include timestamps in the log lines
 
 ```bash
 # Print logs with timestamps
-deploykubectl logs -l app=echo --timestamps
+kubectl logs -l app=echo --timestamps
 ```
 
 ```bash
