@@ -17,7 +17,7 @@ made by Apply.
 {% sample lang="yaml" %}
 
 ```sh
-deploykubectl diff -k ./dir/
+$ kubectl diff -k ./dir/
 ```
 
 {% endmethod %}
@@ -33,7 +33,7 @@ By default, the "diff" command available in your path will be run with "-u" (uni
 {% sample lang="yaml" %}
 
 ```sh
-deployexport KUBECTL_EXTERNAL_DIFF=meld; kubectl diff -k ./dir/
+$ export KUBECTL_EXTERNAL_DIFF=meld; kubectl diff -k ./dir/
 ```
 
 {% endmethod %}

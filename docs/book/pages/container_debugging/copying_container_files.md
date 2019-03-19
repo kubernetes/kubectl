@@ -24,7 +24,7 @@ Copy a local file to a remote Pod in a cluster.
 {% sample lang="yaml" %}
 
 ```bash
-deploykubectl cp /tmp/foo_dir <some-pod>:/tmp/bar_dir
+$ kubectl cp /tmp/foo_dir <some-pod>:/tmp/bar_dir
 ```
 
 {% endmethod %}
@@ -40,7 +40,7 @@ Copy a remote file from a Pod to a local file.
 {% sample lang="yaml" %}
 
 ```bash
-deploykubectl cp /tmp/foo <some-pod>:/tmp/bar
+$ kubectl cp /tmp/foo <some-pod>:/tmp/bar
 ```
 
 {% endmethod %}
@@ -55,7 +55,7 @@ Specify the Container within a Pod running multiple containers.
 {% sample lang="yaml" %}
 
 ```bash
-deploykubectl cp /tmp/foo <some-pod>:/tmp/bar -c <specific-container>
+$ kubectl cp /tmp/foo <some-pod>:/tmp/bar -c <specific-container>
 ```
 
 {% endmethod %}
@@ -70,7 +70,7 @@ Set the Pod namespace by prefixing the Pod name with `<namespace>/` .
 {% sample lang="yaml" %}
 
 ```bash
-deploykubectl cp /tmp/foo <some-namespace>/<some-pod>:/tmp/bar
+$ kubectl cp /tmp/foo <some-namespace>/<some-pod>:/tmp/bar
 ```
 
 {% endmethod %}

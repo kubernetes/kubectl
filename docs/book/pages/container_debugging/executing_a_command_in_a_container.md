@@ -35,7 +35,7 @@ To get a Shell in a Container, use the `-t -i` options to get a tty and attach S
 {% sample lang="yaml" %}
 
 ```bash
-deploykubectl exec -t -i nginx-78f5d695bd-czm8z bash
+$ kubectl exec -t -i nginx-78f5d695bd-czm8z bash
 ```
 
 ```bash

@@ -29,7 +29,7 @@ be a summary of fields.
 {% sample lang="yaml" %}
 
 ```bash
-deploykubectl get deployments nginx
+$ kubectl get deployments nginx
 ```
 
 ```bash
@@ -52,7 +52,7 @@ be a summary of fields.
 {% sample lang="yaml" %}
 
 ```bash
-deploykubectl get -o=wide deployments nginx
+$ kubectl get -o=wide deployments nginx
 ```
 
 ```bash
@@ -74,7 +74,7 @@ Print out specific fields as Columns.
 {% sample lang="yaml" %}
 
 ```bash
-deploykubectl get deployments -o custom-columns="Name:metadata.name,Replicas:spec.replicas,Strategy:spec.strategy.type"
+$ kubectl get deployments -o custom-columns="Name:metadata.name,Replicas:spec.replicas,Strategy:spec.strategy.type"
 ```
 
 ```bash
@@ -112,7 +112,7 @@ Print out all labels on each Resource in a single column (last).
 {% sample lang="yaml" %}
 
 ```bash
-deploykubectl get deployment --show-labels
+$ kubectl get deployment --show-labels
 ```
 
 ```bash
@@ -135,7 +135,7 @@ they want to know which API is being used.
 {% sample lang="yaml" %}
 
 ```bash
-deploykubectl get deployments --show-kind
+$ kubectl get deployments --show-kind
 ```
 
 ```bash

@@ -19,7 +19,7 @@ Resources, and formats and prints this information on multiple lines.
 {% sample lang="yaml" %}
 
 ```bash
-deploykubectl describe deployments
+$ kubectl describe deployments
 ```
 
 ```bash
