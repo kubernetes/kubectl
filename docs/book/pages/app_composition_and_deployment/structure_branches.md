@@ -1,11 +1,5 @@
-{% panel style="warning", title="Warning: Alpha Recommendations" %}
-This chapter contains recommendations that are **still being actively evaluated, and are
-expected to evolve.**
-
-The intent of this chapter is to share the way kubectl developers are thinking about solving
-this problem as they develop more solutions.
-
-Before using these recommendations, carefully evaluate if they are right for your organization.
+{% panel style="warning", title="Experimental" %}
+This chapter contains some recommendations that are actively being explored, and may evolve.
 {% endpanel %}
 
 
@@ -19,17 +13,9 @@ Before using these recommendations, carefully evaluate if they are right for you
 
 # Branch Structure Based Layout
 
-The are several techniques for users to structure their Resource Config files.
-
-| Type                                   | Summary               | Benefits                                           |
-|----------------------------------------|-----------------------|----------------------------------------------------|
-| [Directories](structure_directories.md)   | *Simplest approach*   | Easy to get started and understand               |
-| **[Branches](structure_branches.md)**   | **More flexible**       | **Loose coupling between version specific and live operational changes** |
-| [Repositories](structure_repositories.md) | *Fine grain control*  | Isolated permissions model                         |
-
 ## Motivation
 
-This chapter describes conventions for using **Branches** with Directories.
+This chapter describes *conventions* for using **Branches** with Directories.
 
 **Advantages:**
 

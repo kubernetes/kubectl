@@ -1,11 +1,3 @@
-{% panel style="warning", title="Warning: Beta Recommendations" %}
-This chapter contains recommendations that are **still being actively evaluated, and are
-expected to evolve.**
-
-Before using these recommendations, carefully evaluate if they are right for your organization.
-{% endpanel %}
-
-
 {% panel style="info", title="TL;DR" %}
 - Use **directory hierarchy to structure Resource Config**
   - Separate directories for separate Environment and Cluster [Config Variants](../app_customization/bases_and_variants.md)
@@ -13,17 +5,19 @@ Before using these recommendations, carefully evaluate if they are right for you
 
 # Directory Structure Based Layout
 
-The are several techniques for users to structure their Resource Config files.
-
-| Type                                   | Summary               | Benefits                                           |
-|----------------------------------------|-----------------------|----------------------------------------------------|
-| **[Directories](structure_directories.md)**   | **Simplest approach**   | **Easy to get started and understand**               |
-| [Branches](structure_branches.md)   | *More flexible*       | Loose coupling between version specific and live operational changes |
-| [Repositories](structure_repositories.md) | *Fine grain control*  | Isolated permissions model                         |
-
 ## Motivation
 
-This chapter describes conventions for using **Directories** alone.
+This chapter describes *conventions* when using **Directories** alone - without Branches or Repositories.
+
+{% panel style="success", title="Which is right for my organization?" %}
+While this chapter is focussed on conventions when using Directories alone, these same conventions should
+also be used with Branches or Repositories.
+
+For complex deployment environments where responsibility over Config spans responsibilities or abstraction
+layers owned by separate teams - modularization and isolation between teams may be necessary -
+(which may include using Branches and Repositories, or other techniques).
+{% endpanel %}
+
 
 **Advantages:**
 
@@ -65,6 +59,7 @@ Structure:
 Techniques:
  
 - Each Layer adds a [namePrefix](../app_management/namespaces_and_names.md#setting-a-name-prefix-or-suffix-for-all-resources) and [commonLabels](../app_management/labels_and_annotations.md#setting-labels-for-all-resources).
+- Each Layer adds labels and annotations.
 - Each deployable target sets a [namespace](../app_management/namespaces_and_names.md#setting-the-namespace-for-all-resources).
 - Override [Pod Environment Variables and Arguments](../app_customization/customizing_pod_templates.md) using `configMapGenerator`s with `behavior: merge`.
 - Perform Last-mile customizations with [patches / overlays](../app_customization/customizing_arbitrary_fields.md)

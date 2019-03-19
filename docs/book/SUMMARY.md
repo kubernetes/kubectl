@@ -24,16 +24,17 @@
 
 ## App Structure
 
-* [Layout With Directories (Beta)](pages/app_composition_and_deployment/structure_directories.md)
-* [Layout With Branches (Alpha)](pages/app_composition_and_deployment/structure_branches.md)
-* [Layout With Repositories (Alpha)](pages/app_composition_and_deployment/structure_repositories.md)
+* [Introduction](pages/app_composition_and_deployment/structure_introduction.md)
+* [Layout With Directories](pages/app_composition_and_deployment/structure_directories.md)
+* [Layout With Branches (Experimental)](pages/app_composition_and_deployment/structure_branches.md)
+* [Layout With Repositories (Experimental)](pages/app_composition_and_deployment/structure_repositories.md)
 * [Multi-Tier](pages/app_composition_and_deployment/structure_multi_tier_apps.md)
 
 ## App Deployment
 
 * [Diffing Local and Remote State](pages/app_composition_and_deployment/diffing_local_and_remote_resources.md)
 * [Accessing Multiple Clusters](pages/app_composition_and_deployment/accessing_multiple_clusters.md)
-* [Publishing Config as Bases (Alpha)](pages/app_composition_and_deployment/publishing_bases.md)
+* [Publishing Config as Bases (Experimental)](pages/app_composition_and_deployment/publishing_bases.md)
 
 ## Resource Printing
 
