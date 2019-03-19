@@ -165,8 +165,8 @@ download the [kustomize standalone](https://github.com/kubernetes-sigs/kustomize
 
 {% sample lang="yaml" %}
 ```bash
-$ kustomize edit set imagetag foo:$(git log -n 1 --pretty=format:"%H")
-$ kubectl apply -f .
+kustomize edit set imagetag foo:$(git log -n 1 --pretty=format:"%H")
+kubectl apply -f .
 ```
 {% endmethod %}
 
@@ -179,8 +179,8 @@ It is also possible to set a Tag from an environment variable using the same tec
 
 {% sample lang="yaml" %}
 ```bash
-$ kustomize edit set image foo:$FOO_IMAGE_TAG
-$ kubectl apply -f .
+kustomize edit set image foo:$FOO_IMAGE_TAG
+kubectl apply -f .
 ```
 {% endmethod %}
 

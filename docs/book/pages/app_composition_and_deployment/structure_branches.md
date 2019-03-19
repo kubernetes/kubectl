@@ -83,7 +83,7 @@ Techniques:
 **Base Branch:**
 
 ```bash
-$ tree
+tree
 .
 ├── bases
 │   ├── ...
@@ -113,7 +113,7 @@ $ tree
 **Deploy Branches:**
 
 ```bash
-$ tree
+tree
 .
 ├── bases # From Base Branch
 │   ├── ...
@@ -129,7 +129,7 @@ $ tree
 ```
 
 ```bash
-$ tree
+tree
 .
 ├── bases # From Base Branch
 │   ├── ...
@@ -141,7 +141,7 @@ $ tree
 ```
 
 ```bash
-$ tree
+tree
 .
 ├── bases # From Base Branch
 │   ├── ...
@@ -196,7 +196,7 @@ Techniques:
 **Base Branch:**
 
 ```bash
-$ tree
+tree
 .
 ├── bases
 │   ├── ...
@@ -226,7 +226,7 @@ $ tree
 **Deploy Branches:**
 
 ```bash
-$ tree
+tree
 .
 └── deploy-prod
     ├── us-central
@@ -238,7 +238,7 @@ $ tree
 ```
 
 ```bash
-$ tree
+tree
 .
 └── deploy-staging
     └── us-west
@@ -246,7 +246,7 @@ $ tree
 ```
 
 ```bash
-$ tree
+tree
 .
 └── deploy-test
     └── us-west

@@ -72,7 +72,7 @@ Techniques:
 {% sample lang="yaml" %}
 
 ```bash
-$ tree
+tree
 .
 ├── bases # Used as a Base only
 │   ├── kustomization.yaml

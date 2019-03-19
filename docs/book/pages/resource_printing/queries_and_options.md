@@ -15,7 +15,7 @@ Get all Resources provided by the `kustomization.yaml` in project/.
 {% sample lang="yaml" %}
 
 ```bash
-$ kubectl get -k project/
+kubectl get -k project/
 ```
 
 {% endmethod %}
@@ -27,7 +27,7 @@ Get all Resources present in the Resource Config for a directory.
 {% sample lang="yaml" %}
 
 ```bash
-$ kubectl get -f configs/
+kubectl get -f configs/
 ```
 
 {% endmethod %}
@@ -44,17 +44,17 @@ The Singular, Plural, Short Name also apply to *Types with Name* and *Types with
 
 ```bash
 # Plural
-$ kubectl get deployments
+kubectl get deployments
 ```
 
 ```bash
 # Singular
-$ kubectl get deployment
+kubectl get deployment
 ```
 
 ```bash
 # Short name
-$ kubectl get deploy
+kubectl get deploy
 ```
 
 {% endmethod %}
@@ -69,11 +69,11 @@ The Group and Version for the Resource are explicit.
 {% sample lang="yaml" %}
 
 ```bash
-$ kubectl get deployments.apps
+kubectl get deployments.apps
 ```
 
 ```bash
-$ kubectl get deployments.v1.apps
+kubectl get deployments.v1.apps
 ```
 
 {% endmethod %}
@@ -86,7 +86,7 @@ Get named Resources in a namespace for a given type.
 {% sample lang="yaml" %}
 
 ```bash
-$ kubectl get deployment nginx
+kubectl get deployment nginx
 ```
 
 {% endmethod %}
@@ -98,7 +98,7 @@ Get **all** Resources in a namespace **matching a label select** for a given typ
 {% sample lang="yaml" %}
 
 ```bash
-$ kubectl get deployments -l app=nginx
+kubectl get deployments -l app=nginx
 ```
 
 {% endmethod %}
@@ -114,7 +114,7 @@ The `---all-namespaces` flag will **fetch Resources from all namespaces**.
 {% sample lang="yaml" %}
 
 ```bash
-$ kubectl get deployments --all-namespaces
+kubectl get deployments --all-namespaces
 ```
 
 {% endmethod %}
@@ -128,7 +128,7 @@ Get and Describe can accept **multiple Resource types**, and it will print them 
 {% sample lang="yaml" %}
 
 ```bash
-$ kubectl get deployments,services
+kubectl get deployments,services
 ```
 
 {% endmethod %}
@@ -142,7 +142,7 @@ Get and Describe can accept **multiple Resource types and names**.
 {% sample lang="yaml" %}
 
 ```bash
-$ kubectl get kubectl get rc/web service/frontend pods/web-pod-13je7
+kubectl get kubectl get rc/web service/frontend pods/web-pod-13je7
 ```
 
 {% endmethod %}
@@ -156,7 +156,7 @@ These Resources can be view with the `--include-uninitialized` flag.
 {% sample lang="yaml" %}
 
 ```bash
-$ kubectl get deployments --include-uninitialized
+kubectl get deployments --include-uninitialized
 ```
 
 {% endmethod %}
@@ -170,7 +170,7 @@ The `--ignore-not-found` flag will cause kubectl to exit 0 if the Resource is no
 {% sample lang="yaml" %}
 
 ```bash
-$ kubectl get deployment nginx --ignore-not-found
+kubectl get deployment nginx --ignore-not-found
 ```
 
 {% endmethod %}

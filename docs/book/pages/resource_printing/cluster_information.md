@@ -24,7 +24,7 @@ source.
 {% sample lang="yaml" %}
 
 ```bash
-$ kubectl version
+kubectl version
 ```
 
 ```bash
@@ -49,7 +49,7 @@ add-ons.
 {% sample lang="yaml" %}
 
 ```bash
-$ kubectl cluster-info
+kubectl cluster-info
 ```
 
 ```bash
@@ -78,7 +78,7 @@ top nodes and pods.
 {% sample lang="yaml" %}
 
 ```bash
-$ kubectl top node
+kubectl top node
 ```
 
 ```bash
@@ -104,7 +104,7 @@ Print the Resource Types available in the cluster.
 {% sample lang="yaml" %}
 
 ```bash
-$ kubectl api-resources
+kubectl api-resources
 ```
 
 ```bash
@@ -127,7 +127,7 @@ Print the API versions available in the cluster.
 {% sample lang="yaml" %}
 
 ```bash
-$ kubectl api-versions
+kubectl api-versions
 ```
 
 ```bash
@@ -159,7 +159,7 @@ Resource types.  This is useful for learning about the type.
 {% sample lang="yaml" %}
 
 ```bash
-$ kubectl explain deployment --api-version apps/v1
+kubectl explain deployment --api-version apps/v1
 ```
 
 ```bash
