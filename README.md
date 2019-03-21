@@ -1,5 +1,7 @@
 # Kubectl
 
+![kubectl logo](./images/kubectl-logo-medium.png)
+
 [![Build Status](https://travis-ci.org/kubernetes/kubectl.svg?branch=master)](https://travis-ci.org/kubernetes/kubectl) [![GoDoc](https://godoc.org/k8s.io/kubectl?status.svg)](https://godoc.org/k8s.io/kubectl)
 
 The `k8s.io/kubectl` repo is used to track issues for the kubectl cli distributed
