@@ -1,7 +1,9 @@
-## Kubectl Book
+# Resource Management With Kubectl
 
-* [Resources and Controllers](pages/kubectl_book/resources_and_controllers.md)
-* [Kubectl](pages/kubectl_book/kubectl.md)
+## Background Information
+
+* [Getting Started with Kubectl](pages/kubectl_book/getting_started.md)
+* [Resources + Controllers Overview](pages/kubectl_book/resources_and_controllers.md)
 
 ## App Management
 
@@ -12,29 +14,6 @@
 * [Namespaces and Names](pages/app_management/namespaces_and_names.md)
 * [Labels and Annotations](pages/app_management/labels_and_annotations.md)
 * [Field Merge Semantics](pages/app_management/field_merge_semantics.md)
-
-## App Customization
-
-* [Introduction](pages/app_customization/introduction.md)
-* [Bases and Variations](pages/app_customization/bases_and_variants.md)
-* [Customizing Pod Templates](pages/app_customization/customizing_pod_templates.md)
-* [Customizing Metadata](pages/app_customization/customizing_metadata.md)
-* [Customizing Arbitrary Fields](pages/app_customization/customizing_arbitrary_fields.md)
-* [Config Reflection](pages/app_customization/config_reflection.md)
-
-## App Structure
-
-* [Introduction](pages/app_composition_and_deployment/structure_introduction.md)
-* [Layout With Directories](pages/app_composition_and_deployment/structure_directories.md)
-* [Layout With Branches (Experimental)](pages/app_composition_and_deployment/structure_branches.md)
-* [Layout With Repositories (Experimental)](pages/app_composition_and_deployment/structure_repositories.md)
-* [Multi-Tier](pages/app_composition_and_deployment/structure_multi_tier_apps.md)
-
-## App Deployment
-
-* [Diffing Local and Remote State](pages/app_composition_and_deployment/diffing_local_and_remote_resources.md)
-* [Accessing Multiple Clusters](pages/app_composition_and_deployment/accessing_multiple_clusters.md)
-* [Publishing Config as Bases (Experimental)](pages/app_composition_and_deployment/publishing_bases.md)
 
 ## Resource Printing
 
@@ -53,6 +32,28 @@
 * [Executing a Command in a Container](pages/container_debugging/executing_a_command_in_a_container.md)
 * [Port Forward to Pods](pages/container_debugging/port_forward_to_pods.md)
 * [Proxying Traffic to Services](pages/container_debugging/proxying_traffic_to_services.md)
+
+## App Customization
+
+* [Introduction](pages/app_customization/introduction.md)
+* [Bases and Variations](pages/app_customization/bases_and_variants.md)
+* [Customizing Pod Templates](pages/app_customization/customizing_pod_templates.md)
+* [Customizing Arbitrary Fields](pages/app_customization/customizing_arbitrary_fields.md)
+* [Config Reflection](pages/app_customization/config_reflection.md)
+
+## App Structure
+
+* [Introduction](pages/app_composition_and_deployment/structure_introduction.md)
+* [Directory Layout](pages/app_composition_and_deployment/structure_directories.md)
+* [Branches Layout](pages/app_composition_and_deployment/structure_branches.md)
+* [Repository Layout](pages/app_composition_and_deployment/structure_repositories.md)
+* [Multi-Tier Layout](pages/app_composition_and_deployment/structure_multi_tier_apps.md)
+
+## App Deployment
+
+* [Diffing Local and Remote State](pages/app_composition_and_deployment/diffing_local_and_remote_resources.md)
+* [Accessing Multiple Clusters](pages/app_composition_and_deployment/accessing_multiple_clusters.md)
+* [Publishing Config](pages/app_composition_and_deployment/publishing_bases.md)
 
 ## Imperative Porcelain
 

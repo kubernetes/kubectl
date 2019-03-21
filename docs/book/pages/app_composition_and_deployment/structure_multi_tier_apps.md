@@ -14,6 +14,15 @@ Users may want to reuse the **same base multiple times within the same Apply Pro
 
 ## 3-Tier Composition
 
+```mermaid
+graph TD;
+  B("Generic Base ")---|base|A1("App 1 ");
+  B("Generic Base ")---|base|A2("App 2 ");
+  A1("App 1 ")---|base|C("Composite App ");
+  A2("App 2 ")---|base|C("Composite App ");
+```
+
+
 {% method %}
 It is possible to reuse the same base multiple times within the same project by using a 3-tier
 structure to compose multiple Variants of the base.

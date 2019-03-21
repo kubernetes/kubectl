@@ -6,6 +6,10 @@
 
 # Merging Fields
 
+{% panel style="warning", title="Advanced Section" %}
+This chapter contains advanced material that readers may want to skip and come back to later.
+{% endpanel %}
+
 ## When are fields merged?
 
 This page describes how Resource Config is merged with Resources or other Resource Config.  This

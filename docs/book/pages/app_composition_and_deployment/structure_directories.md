@@ -7,34 +7,10 @@
 
 ## Motivation
 
-This chapter describes *conventions* when using **Directories** alone - without Branches or Repositories.
-
 {% panel style="success", title="Which is right for my organization?" %}
-While this chapter is focussed on conventions when using Directories alone, these same conventions should
-also be used with Branches or Repositories.
-
-For complex deployment environments where responsibility over Config spans responsibilities or abstraction
-layers owned by separate teams - modularization and isolation between teams may be necessary -
-(which may include using Branches and Repositories, or other techniques).
+While this chapter is focused on conventions when using Directories, Branches and
+Repositories should be used with Directories as needed.
 {% endpanel %}
-
-
-**Advantages:**
-
-- Simplicity
-  - Simple to learn
-  - Simple to navigate using conventional tools
-  - Simple to audit
-
-**Drawbacks:**
-
-- Limited permissions and ownership models
-  - Read/Write access typically given at a per-repo model
-- Less granular event triggers
-  - Webhooks triggered for repo+branch can't be focused on a specific environment + cluster
-- Harder to decouple release related changes from operational related changes
-  - Changes to scale or cpu should be rolled out immediately
-  - Changes to image or flags should be rolled out with the release
 
 {% panel style="info", title="Config Repo or Mono Repo?" %}
 The techniques and conventions in this Chapter work regardless of whether or not the Resource Config
@@ -43,18 +19,56 @@ exists in the same Repository as the source code that is being deployed.
 
 ## Directory Structure
 
+| Dir Type       | Deployed to a Cluster            | Contains | Example Names |
+|----------------|----------------------------------|----------|---------------|
+| Base           | **No** - Used as base | Shared Config. | `base/` |
+| Env            | **No** - Contains other dirs | Base and Cluster dirs.  | `test/`, `staging/`, `prod/` |
+| Cluster        | **Yes** - Manually or Continuously  | Deployable Config. | `us-west1`, `us-east1`, `us-central1` |
+
+## Workflow Example
+
+- Changes made to *env/cluster/* roll out to **only that specific env-cluster**
+- Changes made to *env>/bases/* roll out to **all clusters for that env**
+- Changes made to *bases/* roll out to **all clusters in all envs**
+
+## Diagram
+
+```mermaid
+graph TD;
+  B("bases/ ")---|base|P("prod/bases/ ");
+  B("bases/ ")---|base|S("staging/bases/ ");
+  B("bases/ ")---|base|T("test/bases/ ");
+  P("prod/bases/ ")---|base|PUW("prod/us-west/ ");
+  P("prod/bases/ ")---|base|PUE("prod/us-east/ ");
+  P("prod/bases/ ")---|base|PUC("prod/us-central/ ");
+  S("staging/bases/ ")---|base|SUW("staging/us-west/ ");
+  T("test/bases/ ")---|base|TUW("test/us-west/ ");
+```
+
+{% sequence width=1000 %}
+
+participant Config in Git as B
+participant Test Cluster as TC
+participant Staging Cluster as SC
+participant US West Prod Cluster as WC
+participant US East Prod Cluster as EC
+
+Note over B: Alice modifies prod/us-west1 with change A
+B-->WC: A deployed
+
+Note over B: Alice modifies prod/bases with change B
+B-->EC: B deployed
+B-->WC: B deployed
+
+Note over B: Alice modifies bases/ with change C
+B-->EC: C deployed
+B-->TC: C deployed
+B-->WC: C deployed
+B-->SC: C deployed
+
+{% endsequence %}
+
 {% method %}
-
-### Resource Config
-
-The convention shown here should be changed and adapted as needed.
-
-Structure:
-
-- Put reusable bases under `*/bases/`
-  - `<project-name>/bases/`
-  - `<project-name>/<environment>/bases/`
-- Put deployable targets under `<project-name>/<environment>/<cluster>/`
 
 Techniques:
  
@@ -63,6 +77,13 @@ Techniques:
 - Each deployable target sets a [namespace](../app_management/namespaces_and_names.md#setting-the-namespace-for-all-resources).
 - Override [Pod Environment Variables and Arguments](../app_customization/customizing_pod_templates.md) using `configMapGenerator`s with `behavior: merge`.
 - Perform Last-mile customizations with [patches / overlays](../app_customization/customizing_arbitrary_fields.md)
+
+Structure:
+
+- Put reusable bases under `*/bases/`
+  - `<project-name>/bases/`
+  - `<project-name>/<environment>/bases/`
+- Put deployable targets under `<project-name>/<environment>/<cluster>/`
 
 {% sample lang="yaml" %}
 
@@ -124,3 +145,29 @@ For more information see [Multi-Cluster](accessing_multiple_clusters.md).
 Some git hosting services provide the concept of *Code Owners* for providing a finer grain permissions model.
 *Code Owners* may be used to provide separate permissions for separate environments - e.g. dev, test, prod.
 {% endpanel %}
+
+## Rollback Diagram
+
+{% sequence width=1000 %}
+
+participant Config in Git as B
+participant Test Cluster as TC
+participant Staging Cluster as SC
+participant US West Prod Cluster as WC
+participant US East Prod Cluster as EC
+
+Note over B: Bob modifies bases/ with change B
+B-->EC: B deployed
+B-->SC: B deployed
+B-->WC: B deployed
+Note over B,EC: Prod Outage caused by B
+B-->TC: B deployed
+Note over B: Bob rolls back bases/ to A
+B-->WC: A deployed
+B-->TC: A deployed
+B-->EC: A deployed
+Note over B,EC: Prod Outage resolved
+B-->SC: A deployed
+
+
+{% endsequence %}

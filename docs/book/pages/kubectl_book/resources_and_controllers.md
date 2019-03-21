@@ -4,21 +4,36 @@
 - Controllers asynchronously actuate Resources after they are stored
 {% endpanel %}
 
-# The Kubernetes Resource Model
+# Kubernetes Resources and Controllers Overview
+
+This section provides background on the Kubernetes Resource model.  This information
+is also available at the [kubernetes.io](https://kubernetes.io/docs/home/) docs site.
+
+For more information on Kubernetes Resources see: [kubernetes.io Concepts](https://kubernetes.io/docs/concepts/).
 
 ## Resources
 
-Instances of Kubernetes objects such as
-[Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/),
-[StatefulSets](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/),
-[Jobs](https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/),
-[CronJobs](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/) and
-[DaemonSets](https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/) are called **Resources**.
+Instances of Kubernetes objects (e.g. Deployment, Services, Namespaces, etc)
+are called **Resources**.
 
-**Users work with Resource APIs by declaring them in files called Resource Config.**  Resource Config is
-*Applied* (declarative Create/Update/Delete) to a Kubernetes cluster, and actuated by a *Controller*.
+Resources which run containers are referred to as **Workloads**.
 
-Resources are keyed by:
+Examples of Workloads:
+
+- [Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/)
+- [StatefulSets](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/)
+- [Jobs](https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/)
+- [CronJobs](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/)
+- [DaemonSets](https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/) 
+
+
+**Users work with Resource APIs by declaring them in files which are then Applied to a Kubernetes
+cluster.  These declarative files are called Resource Config.**
+
+Resource Config is *Applied* (declarative Create/Update/Delete) to a Kubernetes cluster using
+tools such as Kubectl, and then actuated by a *Controller*.
+
+Resources are uniquely identified:
 
 - **apiVersion** (API Type Group and Version)
 - **kind** (API Type Name)
@@ -133,4 +148,77 @@ Because Controllers don't respond to individual Events, but instead Reconcile th
 of the system at the time that Reconcile is run, **changes from several different events may be observed
 and Reconciled together.**  This is referred to as a *Level Based* system, whereas a system that
 responds to each event individually would be referred to as an *Edge Based* system.
+{% endpanel %}
+
+## Overview of Kubernetes Resource APIs
+
+### Pods
+
+Containers are run in [*Pods*](https://kubernetes.io/docs/concepts/workloads/pods/pod-overview/) which are
+scheduled to run on *Nodes* (i.e. worker machines) in a cluster.
+
+Pods run a *single replica* of an Application and provide:
+
+- Compute Resources (cpu, memory, disk)
+- Environment Variables
+- Readiness and Health Checking
+- Network (IP address shared by containers in the Pod)
+- Mounting Shared Configuration and Secrets
+- Mounting Storage Volumes
+- Initialization
+
+{% panel style="warning", title="Multi Container Pods" %}
+Multiple replicas of an Application should be created using a Workload API to manage
+creation and deletion of Pod replicas using a PodTemplate.
+
+In some cases a Pod may contain multiple Containers forming a single instance of an Application.  These
+containers may coordinate with one another through shared network (IP) and storage.
+{% endpanel %}
+
+### Workloads
+
+Pods are typically managed by higher level abstractions that handle concerns such as
+replication, identity, persistent storage, custom scheduling, rolling updates, etc.
+
+The most common out-of-the-box Workload APIs (manage Pods) are:
+
+- [Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) (Stateless Applications)
+  - replication + rollouts
+- [StatefulSets](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/) (Stateful Applications)
+  - replication + rollouts + persistent storage + identity
+- [Jobs](https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/) (Batch Work)
+  - run to completion
+- [CronJobs](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/) (Scheduled Batch Work)
+  - scheduled run to completion
+- [DaemonSets](https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/) (Per-Machine)
+  - per-Node scheduling
+
+{% panel style="success", title="API Abstraction Layers" %}
+High-level Workload APIs may manage lower-level Workload APIs instead of directly managing Pods
+(e.g. Deployments manage ReplicaSets).
+{% endpanel %}
+
+### Service Discovery and Load Balancing
+
+Service discovery and Load Balancing may be managed by a *Service* object.  Services provide a single
+virtual IP address and dns name load balanced to a collection of Pods matching Labels.
+
+{% panel style="info", title="Internal vs External Services" %}
+- [Services Resources](https://kubernetes.io/docs/concepts/services-networking/service/)
+  (L4) may expose Pods internally within a cluster or externally through an HA proxy.
+- [Ingress Resources](https://kubernetes.io/docs/concepts/services-networking/ingress/) (L7)
+  may expose URI endpoints and route them to Services.
+{% endpanel %}
+
+### Configuration and Secrets
+
+Shared Configuration and Secret data may be provided by ConfigMaps and Secrets.  This allows
+Environment Variables, Command Line Arguments and Files to be loosely injected into
+the Pods and Containers that consume them.
+
+{% panel style="info", title="ConfigMaps vs Secrets" %}
+- [ConfigMaps](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/)
+  are for providing non-sensitive data to Pods.
+- [Secrets](https://kubernetes.io/docs/concepts/configuration/secret/)
+  are for providing sensitive data to Pods.
 {% endpanel %}

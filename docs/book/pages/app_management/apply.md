@@ -7,7 +7,11 @@
 
 ## Motivation
 
-Apply will update a Kubernetes cluster to match state defined locally in files.
+Apply is a command that will update a Kubernetes cluster to match state defined locally in files.
+
+```bash
+kubectl apply
+```
 
 - Fully declarative - don't need to specify create or update - just manage files
 - Merges user owned state (e.g. Service `selector`) with state owned by the cluster (e.g. Service `clusterIp`)
@@ -25,10 +29,9 @@ either raw Resource Config or *kustomization.yaml*.
 
 {% method %}
 
-It is recommended to use a `kustomization.yaml` with Apply.  `kustomization.yaml` provides low-level
-tooling to simplify managing collections of Resources Configs.
-
-This `kustomization.yaml` file contains a Deployment Resource Config which will be Applied.
+Though Apply can be run directly against Resource Config files or directories using `-f`, it is recommended
+to run Apply against a `kustomization.yaml` using `-k`.  The `kustomization.yaml` allows users to define
+configuration that cuts across many Resources (e.g. namespace).
 
 {% sample lang="yaml" %}
 
@@ -37,8 +40,17 @@ This `kustomization.yaml` file contains a Deployment Resource Config which will 
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
+# list of Resource Config to be Applied
 resources:
 - deployment.yaml
+
+# namespace to deploy all Resources to
+namespace: default
+
+# labels added to all Resources
+commonLabels:
+  app: example
+  env: test
 ```
 
 ```yaml
@@ -48,15 +60,18 @@ kind: Deployment
 metadata:
   name: nginx
   labels:
-    app: nginx
+    component: nginx
+    tier: frontend
 spec:
   selector:
     matchLabels:
-      app: nginx
+      component: nginx
+      tier: frontend
   template:
     metadata:
       labels:
-        app: nginx
+        component: nginx
+        tier: frontend
     spec:
       containers:
       - name: nginx

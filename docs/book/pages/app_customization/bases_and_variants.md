@@ -30,6 +30,26 @@ Bases can be:
 - Relative paths from the `kustomization.yaml` - e.g. `../base`
 - Urls - e.g. `github.com/kubernetes-sigs/kustomize/examples/multibases?ref=v1.0.6`
 
+### Diagrams
+
+Single Base inheritted by single Application
+
+```mermaid
+graph TD;
+  B[B]-->A[A];
+```
+
+Shared Bases inheritted by different Applications
+
+```mermaid
+graph TD;
+  B1[B1]-->A1[A1];
+  B2[B2]-->A1[A1];
+  B2[B2]-->A2[A2];
+  B3[B3]-->A2[A2];
+```
+
+
 {% method %}
 **Example:** Add a `kustomization.yaml` as a Base.
 
@@ -129,3 +149,10 @@ spec:
 Bases themselves may also be Variants and have their own Bases. See [Advanced Composition](../app_composition_and_deployment/structure_multi_tier_apps.md)
 for more information.
 {% endpanel %}
+
+```mermaid
+graph TD;
+  B1[B1]-->B2[B2];
+  B2[B2]-->A[A];
+```
+
