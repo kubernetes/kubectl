@@ -1,7 +1,11 @@
-{% panel style="warning", title="Experimental Conventions" %}
-Conventions in this chapter may evolve.
-{% endpanel %}
+{% panel style="warning", title="Experimental" %}
+**Content in this chapter is experimental and will evolve based on user feedback.**
 
+Leave feedback on the conventions by creating an issue in the [kubectl](https://github.com/kubernetes/kubectl/issues)
+GitHub repository.
+
+Also provide feedback on new kubectl docs at the [survey](https://www.surveymonkey.com/r/JH35X82)
+{% endpanel %}
 
 {% panel style="info", title="TL;DR" %}
 Decouple changes to Config to be deployed to separate Environments.
@@ -27,20 +31,21 @@ Use with techniques described in [Directories](structure_directories.md) and [Br
 
 ## Workflow Example
 
-Summary of workflow with Branches:
+### Diagram
+
+#### Scenario
 
 1. Live Prod App version is *v1*
-1. Changes are introduced to Base Branch Config
-  - To be release with version *v2*
-1. Outage requires changes to the Config running in Prod (*v1*)
-1. Prod Branch Config Updated (*v1*)
+1. *v2* changes committed to Base Branch Config
+1. *v2* rolled out to Staging
+  - Deployed by continuous deployment
+1. Live Prod App requires change to *v1* (unrelated to *v2*)
+  - Change memory resources in Prod
+1. Prod Branch Config Updated at *v1*
   - Deployed immediately by continuous deployment
-1. *v2* changes are rolled out with the *v2* release
+1. *v2* changes rolled out separately
  - Tag on Base Branch merged into Prod Branch
  - Prod Branch continuously deployed
-
-
-### Diagram
 
 {% sequence width=1000 %}
 
@@ -258,7 +263,7 @@ PB-->PC: Deploy v2
 Note over PC: At v2 release
 Note over BB,PC: Unrelated Prod Outage
 Note left of PB: Alice: App SRE
-Note over PB: Alice rolls back v2 merge
+Note over PB: Alice rolls back v2 merge commit
 PB-->PC: Deploy v1
 Note over PC: At v1 release
 Note over BB,PC: Prod Outage resolved

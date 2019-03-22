@@ -68,7 +68,7 @@ Create or Update Kubernetes Resources from Remote Config.
 
 {% sample lang="yaml" %}
 ```bash
-kubectl apply -k https://github.com/kubernetes/kubectl/docs/book/examples/nginx
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/kubectl/master/docs/book/examples/nginx/nginx.yaml
 ```
 
 ```bash
@@ -83,7 +83,7 @@ Create or Update Kubernetes Resources from Local Config.
 
 {% sample lang="yaml" %}
 ```bash
-kubectl apply -k ./examples/nginx
+kubectl apply -f ./examples/nginx/nginx.yaml
 ```
 
 ```bash
@@ -98,7 +98,7 @@ Print the Resources that were Applied.
 
 {% sample lang="yaml" %}
 ```bash
-kubectl get -k ./examples/nginx/ --show-labels
+kubectl get -f ./examples/nginx/nginx.yaml --show-labels
 ```
 
 ```bash

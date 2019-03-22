@@ -1,5 +1,10 @@
 {% panel style="warning", title="Experimental" %}
-This chapter contains some recommendations that are actively being explored, and may evolve.
+**Content in this chapter is experimental and will evolve based on user feedback.**
+
+Leave feedback on the conventions by creating an issue in the [kubectl](https://github.com/kubernetes/kubectl/issues)
+GitHub repository.
+
+Also provide feedback on new kubectl docs at the [survey](https://www.surveymonkey.com/r/JH35X82)
 {% endpanel %}
 
 {% panel style="info", title="TL;DR" %}

@@ -1,9 +1,17 @@
+{% panel style="warning", title="Experimental" %}
+**Content in this chapter is experimental and will evolve based on user feedback.**
+
+Leave feedback on the conventions by creating an issue in the [kubectl](https://github.com/kubernetes/kubectl/issues)
+GitHub repository.
+
+Also provide feedback on new kubectl docs at the [survey](https://www.surveymonkey.com/r/JH35X82)
+{% endpanel %}
 
 {% panel style="info", title="TL;DR" %}
 - The same Base may be used multiple times for different Applications within the same project.
 {% endpanel %}
 
-# Advanced Composition
+# Composition with Shared Bases
 
 ## Motivation
 
@@ -12,14 +20,14 @@ Users may want to reuse the **same base multiple times within the same Apply Pro
 - Define a very generic base (e.g. "Java Application") used by multiple Applications within a Project.
 - Define multiple Environments (e.g. Staging, Canary, Prod) within a Project.
 
-## 3-Tier Composition
+## Composition With A Shared Base
 
 ```mermaid
 graph TD;
-  B("Generic Base ")---|base|A1("App 1 ");
-  B("Generic Base ")---|base|A2("App 2 ");
-  A1("App 1 ")---|base|C("Composite App ");
-  A2("App 2 ")---|base|C("Composite App ");
+  B("B ")---|base|A1("A1 ");
+  B("B ")---|base|A2("A2 ");
+  A1("A1 ")---|base|C("A ");
+  A2("A2 ")---|base|C("A ");
 ```
 
 

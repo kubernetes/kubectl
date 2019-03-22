@@ -1,5 +1,10 @@
-{% panel style="warning", title="Experimental Conventions" %}
-Conventions in this chapter may evolve.
+{% panel style="warning", title="Experimental" %}
+**Content in this chapter is experimental and will evolve based on user feedback.**
+
+Leave feedback on the conventions by creating an issue in the [kubectl](https://github.com/kubernetes/kubectl/issues)
+GitHub repository.
+
+Also provide feedback on new kubectl docs at the [survey](https://www.surveymonkey.com/r/JH35X82)
 {% endpanel %}
 
 
@@ -37,6 +42,13 @@ Use with techniques described in [Directories](structure_directories.md) and [Br
 1. Bob on the GuestBook App team switches to the new Java Base by updating the referene
 
 ## Diagram
+
+### Scenario
+
+1. Alice modifies java Base Repo and tags it v2
+  - Change doesn't get pushed anywhere yet
+1. Bob modifies GuestBook App Repo to use v2 of the java Base
+  - Change gets pushed by continuous deployment
 
 {% sequence width=1000 %}
 

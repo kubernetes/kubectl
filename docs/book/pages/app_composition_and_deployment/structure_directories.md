@@ -1,3 +1,12 @@
+{% panel style="warning", title="Experimental" %}
+**Content in this chapter is experimental and will evolve based on user feedback.**
+
+Leave feedback on the conventions by creating an issue in the [kubectl](https://github.com/kubernetes/kubectl/issues)
+GitHub repository.
+
+Also provide feedback on new kubectl docs at the [survey](https://www.surveymonkey.com/r/JH35X82)
+{% endpanel %}
+
 {% panel style="info", title="TL;DR" %}
 - Use **directory hierarchy to structure Resource Config**
   - Separate directories for separate Environment and Cluster [Config Variants](../app_customization/bases_and_variants.md)
@@ -25,6 +34,14 @@ exists in the same Repository as the source code that is being deployed.
 | Env            | **No** - Contains other dirs | Base and Cluster dirs.  | `test/`, `staging/`, `prod/` |
 | Cluster        | **Yes** - Manually or Continuously  | Deployable Config. | `us-west1`, `us-east1`, `us-central1` |
 
+
+### Bases
+
+A Kustomize Base (e.g. `bases:`) provides shared Config that is customized by some consuming `kustomization.yaml`.
+
+The directory structure outlined in this chapter organizes Bases into a hierarchy as:
+`app-bases/environment-bases/cluster`
+ 
 ## Workflow Example
 
 - Changes made to *env/cluster/* roll out to **only that specific env-cluster**
@@ -44,6 +61,15 @@ graph TD;
   S("staging/bases/ ")---|base|SUW("staging/us-west/ ");
   T("test/bases/ ")---|base|TUW("test/us-west/ ");
 ```
+
+### Scenario
+
+1. Alice modifies prod/us-west1 with change A
+  - Change gets pushed to prod us-west1 cluster by continuous deployment
+1. Alice modifies prod/bases with change B
+  - Change gets pushed to all prod clusters by continuous deployment
+1. Alice modifies bases with change C
+  - Change gets pushed to all clusters by continuous deployment
 
 {% sequence width=1000 %}
 
@@ -162,7 +188,7 @@ B-->SC: B deployed
 B-->WC: B deployed
 Note over B,EC: Prod Outage caused by B
 B-->TC: B deployed
-Note over B: Bob rolls back bases/ to A
+Note over B: Bob rolls back bases/ git commits to A
 B-->WC: A deployed
 B-->TC: A deployed
 B-->EC: A deployed
