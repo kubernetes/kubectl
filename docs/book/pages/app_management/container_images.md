@@ -6,8 +6,10 @@
 
 ## Motivation
 
-It may be useful to define the tags of container images which are
-used across many Workloads.
+It may be useful to define the tags or digests of container images which are used across many Workloads.
+
+Container image tags and digests are used to refer to a specific version or instance of a container
+image - e.g. for the `nginx` container image you might use the tag `1.15.9` or `1.14.2`.
 
 - Update the container image name or tag for multiple Workloads at once
 - Increase visibility of the versions of container images being used within

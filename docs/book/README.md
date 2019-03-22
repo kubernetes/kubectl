@@ -1,96 +1,74 @@
 {% panel style="info", title="TL;DR" %}
-- Kubernetes runs Containerized Workloads in a cluster
-- The Kubectl Book explains Kubernetes tools and workflows
+- Kubectl is the Kubernetes cli
+- Kubectl provides a swiss army knife of functionality for working with Kubernetes clusters
+- Kubectl may be used to deploy and manage applications on Kubernetes
+- Kubectl may be used for scripting and building higher-level frameworks
 {% endpanel %}
 
-# Introduction
+# Kubectl
 
-The goal of this book is to document how to configure, deploy and manage their containerized
-Workloads in Kubernetes using Kubectl.
+Kubectl is the Kubernetes cli version of a swiss army knife, and can do many things.
 
-It covers the following topics:
+While this Book is focused on using Kubectl to declaratively manage Applications in Kubernetes, it
+also covers other Kubectl functions.
 
-- Introduction to Kubernetes Workload APIs & Kubectl
-- Declarative Configuration
-- Deployment Techniques
-- Printing information about Workloads
-- Debugging Workloads
-- Imperative Porcelain Commands
+## Command Families
 
-## Overview
+Most Kubectl commands typically fall into one of a few categories:
 
-Kubernetes is a set of APIs to run containerized Workloads in a cluster.
+| Type                                   | Used For                   | Description                                        |
+|----------------------------------------|----------------------------|----------------------------------------------------|
+| Declarative Resource Management        | Deployment and Operations (e.g. GitOps)   | Declaratively manage Kubernetes Workloads using Resource Config     |
+| Imperative Resource Management         | Development Only           | Run commands to manage Kubernetes Workloads using Command Line arguments and flags |
+| Printing Workload State | Debugging  | Print information about Workloads |
+| Interacting with Containers | Debugging  | Exec, Attach, Cp, Logs |
+| Cluster Management | Cluster Ops | Drain and Cordon Nodes |
 
-Users define API objects (i.e. Resources) in files which are typically checked into source control.
-They then use kubectl to Apply (i.e. create, update, delete) to update cluster state.
+## Declarative Application Management
 
-### Pods
+The preferred approach for managing Resources is through
+declarative files called Resource Config used with the Kubectl *Apply* command.
+This command reads a local (or remote) file structure and modifies cluster state to
+reflect the declared intent.
 
-Containers are run in [*Pods*](https://kubernetes.io/docs/concepts/workloads/pods/pod-overview/) which are
-scheduled to run on *Nodes* (i.e. worker machines) in a cluster.
-
-Pods run a *single replica* of an Application and provide:
-
-- Compute Resources (cpu, memory, disk)
-- Environment Variables
-- Readiness and Health Checking
-- Network (IP address shared by containers in the Pod)
-- Mounting Shared Configuration and Secrets
-- Mounting Storage Volumes
-- Initialization
-
-{% panel style="warning", title="Multi Container Pods" %}
-Multiple replicas of an Application should be created using a Workload API to manage
-creation and deletion of Pod replicas using a PodTemplate.
-
-In some cases a Pod may contain multiple Containers forming a single instance of an Application.  These
-containers may coordinate with one another through shared network (IP) and storage.
+{% panel style="info", title="Apply" %}
+Apply is the preferred mechanism for managing Resources in a Kubernetes cluster.
 {% endpanel %}
 
-### Workloads
+## Printing state about Workloads
 
-Pods are typically managed by higher level abstractions that handle concerns such as
-replication, identity, persistent storage, custom scheduling, rolling updates, etc.
+Users will need to view Workload state.
 
-The most common out-of-the-box Workload APIs (manage Pods) are:
+- Printing summarize state and information about Resources
+- Printing complete state and information about Resources
+- Printing specific fields from Resources
+- Query Resources matching labels
 
-- [Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) (Stateless Applications)
-  - replication + rollouts
-- [StatefulSets](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/) (Stateful Applications)
-  - replication + rollouts + persistent storage + identity
-- [Jobs](https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/) (Batch Work)
-  - run to completion
-- [CronJobs](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/) (Scheduled Batch Work)
-  - scheduled run to completion
-- [DaemonSets](https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/) (Per-Machine)
-  - per-Node scheduling
+## Debugging Workloads
 
-{% panel style="success", title="API Abstraction Layers" %}
-High-level Workload APIs may manage lower-level Workload APIs instead of directly managing Pods
-(e.g. Deployments manage ReplicaSets).
-{% endpanel %}
+Kubectl supports debugging by providing commands for:
 
-### Service Discovery and Load Balancing
+- Printing Container logs
+- Printing cluster events
+- Exec or attaching to a Container
+- Copying files from Containers in the cluster to a user's filesystem
 
-Service discovery and Load Balancing may be managed by a *Service* object.  Services provide a single
-virtual IP address and dns name load balanced to a collection of Pods matching Labels.
+## Cluster Management
 
-{% panel style="info", title="Internal vs External Services" %}
-- [Services Resources](https://kubernetes.io/docs/concepts/services-networking/service/)
-  (L4) may expose Pods internally within a cluster or externally through an HA proxy.
-- [Ingress Resources](https://kubernetes.io/docs/concepts/services-networking/ingress/) (L7)
-  may expose URI endpoints and route them to Services.
-{% endpanel %}
+On occasion, users may need to perform operations to the Nodes of cluster.  Kubectl supports
+commands to drain Workloads from a Node so that it can be decommission or debugged.
 
-### Configuration and Secrets
+## Porcelain
 
-Shared Configuration and Secret data may be provided by ConfigMaps and Secrets.  This allows
-Environment Variables, Command Line Arguments and Files to be loosely injected into
-the Pods and Containers that consume them.
+Users may find using Resource Config overly verbose for *Development* and prefer to work with
+the cluster *imperatively* with a shell-like workflow.  Kubectl offers porcelain commands for
+generating and modifying Resources.
 
-{% panel style="info", title="ConfigMaps vs Secrets" %}
-- [ConfigMaps](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/)
-  are for providing non-sensitive data to Pods.
-- [Secrets](https://kubernetes.io/docs/concepts/configuration/secret/)
-  are for providing sensitive data to Pods.
+- Generating + creating Resources such as Deployments, StatefulSets, Services, ConfigMaps, etc
+- Setting fields on Resources
+- Editing (live) Resources in a text editor
+
+{% panel style="danger", title="Porcelain For Dev Only" %}
+Porcelain commands are time saving for experimenting with workloads in a dev cluster, but shouldn't
+be used for production.
 {% endpanel %}

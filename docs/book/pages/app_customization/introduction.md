@@ -1,8 +1,8 @@
 # Introduction
 
-This section of the book covers how to build Projects and Applications with multiple subcomponents
-partially defined by multiple teams or organizations.  Apply kustomizations allow the authoring
-of Resource Config to be a collaboration across teams.
+This section of the book covers how to build Projects and Applications with Config
+shared across teams.  Apply kustomizations allow the authoring of Resource Config to
+be a collaboration across teams.
 
 Kustomizations facilitate:
 

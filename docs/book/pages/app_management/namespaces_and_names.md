@@ -161,8 +161,8 @@ ConfigMaps and Secrets in the Pod Spec.
 This sets a name prefix or suffix for both generated Resources (e.g. ConfigMaps 
 and Secrets) and non-generated Resources.
 
-The namePrefix or nameSuffix that is applied is propagated to references within 
-the Project.
+The namePrefix or nameSuffix that is applied is propagated to references to updated resources -
+e.g. references to Secrets and ConfigMaps are updated with the namePrefix and nameSuffix.
 {% endpanel %}
 
 {% method %}

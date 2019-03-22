@@ -1,35 +1,15 @@
-{% panel style="warning", title="Warning: Alpha Recommendations" %}
-This chapter contains recommendations that are **still being actively evaluated, and are
-expected to evolve.**
-
-The intent of this chapter is to share the way kubectl developers are thinking about solving
-this problem as they develop more solutions.
-
-Before using these recommendations, carefully evaluate if they are right for your organization.
+{% panel style="warning", title="Experimental Conventions" %}
+Conventions in this chapter may evolve.
 {% endpanel %}
 
 
 {% panel style="info", title="TL;DR" %}
-- Finer grain management using separate repos for separate Team 
-  - Separate permissions for committing changes to separate environments
-  - Separate Issue, Project and PR tracking
+Decouple changes to Config owned by separate Teams.
 {% endpanel %}
 
 # Repository Structure Based Layout
 
-The are several techniques for users to structure their Resource Config files.
-
-| Type                                        | Summary               | Benefits                                           |
-|---------------------------------------------|-----------------------|----------------------------------------------------|
-| [Directories](structure_directories.md)        | *Simplest approach*   | Easy to get started and understand               |
-| [Branches](structure_branches.md)   | *More flexible*       | Loose coupling between version specific and live operational changes |
-| **[Repositories](structure_repositories.md)** | **Fine grain control**  | **Isolated permissions model**                         |
-
 ## Motivation
-
-This chapter describes conventions for using **Repositories** with Directories.
-
-**Advantages:**
 
 - **Isolation between teams** managing separate Environments
   - Permissions
@@ -38,119 +18,88 @@ This chapter describes conventions for using **Repositories** with Directories.
   - Issues
   - Projects
   - Automation
-   
-**Drawbacks:**
-
-- Tools designed to work with files and directories don't work across Repositories
-- Complicated to setup and manage
-- **Harder to reason about the system as a whole**
-  - State spread across multiple Repositories
 
 ## Directory Structure
 
-{% method %}
-
 ### Resource Config
 
-The convention shown here should be changed and adapted as needed.
+| Repo Type       | Deployed to a Cluster              | Contains | Example Names |
+|-----------------|------------------------------------|----------|---------------|
+| Base            | **No** - Used as Base              | Config shared with other teams. | `platform` |
+| App             | **Yes** - Manually or Continuously | Deployable Config. | `guest-book` |
 
-| Repo Type Name                                   | Purpose               | Examples |
-|----------------------------------------|-----------------------|----|
-| Base   | Contains shared Bases for all deploy environments and version dependent configuration.  When new code is added that requires additional configuration, this repository is updated.  **This Resource Config is never deployed directly.** | `app-name` |
-| Deploy   | Does not contain Config from the Base, rather refers to the Base Config remotely through the git url.  Deploy repositories contain directories with similar structure to the Base directories, but instead contain customizations overlayed on the remote Bases. **Resource Config only ever gets deployed from these Repositories.** | `app-name-test`, `app-name-staging`, `app-name-prod` |
+Use with techniques described in [Directories](structure_directories.md) and [Branches](structure_branches.md)
+
+## Workflow Example
+
+1. Alice on the Java Platform team updates the Java Base used by other teams
+1. Alice creates a Git Tag for the new release
+1. Bob on the GuestBook App team switches to the new Java Base by updating the referene
+
+## Diagram
+
+{% sequence width=1000 %}
+
+participant Base Repo as BR
+participant App Repo as AR
+participant Cluster as C
+
+Note left of BR: Alice: Platform Dev
+Note over BR: Alice modifies java Base
+Note over BR: Alice tags java Base v2
+Note left of AR: Bob: App Dev
+Note over AR: Uses java Base v1
+BR-->AR: Bob updates to reference Base v2
+Note over AR: Uses java Base v2
+AR-->C: java Base v2 changes deployed
+
+{% endsequence %}
 
 
-Structure:
-
-- Create a Base Repository for shared configuration
-  - Looks like [Directories](structure_directories.md) approach
-- For each **separate Environment, create a separate Deploy Repository**
-  - Remotely reference the Base Repository in from the Deploy Repository
-
-Techniques:
-
-- Use techniques described in [Directories](structure_directories.md) and [Branches](structure_branches.md)
+{% method %}
 
 {% sample lang="yaml" %}
 
+Structure:
 
-**Base Repository:**
+- Platform teams create Base Repositories for shared Config
+- App teams create App Repositories for their Apps
+  - Remotely reference the Base Repository
+
+**Base Repository:** Platform Team
 
 ```bash
 tree
 .
 ├── bases # Used as a Base only
 │   ├── kustomization.yaml
-│   ├── backend
-│   │   ├── deployment.yaml
-│   │   └── service.yaml
-│   ├── frontend
-│   │   ├── deployment.yaml
-│   │   ├── ingress.yaml
-│   │   └── service.yaml
-│   └── storage
-│       ├── service.yaml
-│       └── statefulset.yaml
-├── prod # Production
-│   ├── bases 
-│   │   ├── kustomization.yaml # Uses bases: ["../../bases"]
-│   │   ├── backend
-│   │   │   └── deployment-patch.yaml # Production Env specific backend overrides
-│   │   ├── frontend
-│   │   │   └── deployment-patch.yaml # Production Env specific frontend overrides
-│   │   └── storage
-│   │       └── statefulset-patch.yaml # Production Env specific storage overrides
-│   ├── us-central
-│   │   ├── kustomization.yaml # Uses bases: ["../bases"]
-│   │   └── backend
-│   │       └── deployment-patch.yaml # us-central cluster specific backend overrides
-│   ├── us-east 
-│   │   └── kustomization.yaml # Uses bases: ["../bases"]
-│   └── us-west 
-│       └── kustomization.yaml # Uses bases: ["../bases"]
-├── staging # Staging
-│   ├── bases 
-│   │   ├── kustomization.yaml # Uses bases: ["../../bases"]
-│   └── us-west 
-│       └── kustomization.yaml # Uses bases: ["../bases"]
-└── test # Test
-    ├── bases 
-    │   ├── kustomization.yaml # Uses bases: ["../../bases"]
-    └── us-west 
-        └── kustomization.yaml # Uses bases: ["../bases"]
+│   └── ...
+├── java # Java Bases
+│   ├── kustomization.yaml # Uses bases: ["../bases"]
+│   └── ...
+└── python # Python Bases
 ```
 
-**Team Repositories:**
+**App Repository:** GuestBook Team
 
 ```bash
-# sre team
 tree
 .
+├── bases # References Base Repositories
+│   └── ...
 ├── prod
-│   ├── us-central
-│   │   ├── kustomization.yaml # Uses bases: ["https://<your-repo>/prod/us-central?ref=<prod-release>"]
-│   ├── us-east 
-│   │   └── kustomization.yaml # Uses bases: ["https://<your-repo>/prod/us-east?ref=<prod-release>"]
-│   └── us-west 
-│       └── kustomization.yaml # Uses bases: ["https://<your-repo>/prod/us-west?ref=<prod-release>"]
-```
-
-```bash
-# qa team
-tree
-.
-├── staging # Staging
-│   └── us-west 
-│       └── kustomization.yaml # Uses bases: ["https://<your-repo>/staging/us-west?ref=<staging-release>"]
-```
-
-```bash
-# dev team
-tree
-.
-└── test # Test
-    └── us-west 
-        └── kustomization.yaml # Uses bases: ["https://<your-repo>/test/us-west?ref=<test-release>"]
+│   └── ...
+├── staging
+│   └── ...
+└── test
+    └── ...
 ```
 
 {% endmethod %}
+
+{% panel style="info", title="Remote URLs vs Vendoring" %}
+- Repositories owned and controlled by the same organization may be referenced to by their URL
+- Repositories owned or controlled by separate organizations should be vendored and referenced
+  by path to the vendor directory.
+{% endpanel %}
+

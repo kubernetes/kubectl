@@ -100,7 +100,10 @@ spec:
 {% endmethod %}
 
 
-{% panel style="info", title="More Info" %}
+{% panel style="info", title="Replacing Images" %}
+`newImage` allows an image name to be replaced with another arbitrary image name.  e.g. you could
+call your image `webserver` or `database` and replace it with `nginx` or `mysql`.
+
 For more information on customizing images, see [Container Images](../app_management/container_images.md).
 {% endpanel %}
 
@@ -142,7 +145,7 @@ configMapGenerator:
   behavior: merge
   literals:
   - special.how=some # this value is overridden
-  - special.other=that # this value is kept
+  - special.other=that # this value is added
 ```
 
 ```yaml
