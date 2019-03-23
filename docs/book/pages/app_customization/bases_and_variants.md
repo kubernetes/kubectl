@@ -18,7 +18,20 @@ Examples:
   but with variants between the environments.
 - a project may be deployed to **different clusters** that are tuned differently or running
   different versions of the project.
-  
+
+## Bases
+
+Bases are shared Resource Config in a `kustomization.yaml` to be used and customized by another `kustomization.yaml`.
+
+Examples of Bases:
+
+- Common Java Base
+  - Used in multiple Apps (e.g. Guest Book, Calendar, Auth)
+- Common Guest Book App Base
+  - Used in multiple Environments (e.g. Test, Staging, Prod)
+- Common Prod Guest Book App Base
+  - Used in multiple clusters (e.g. us-west, us-east, us-canary)
+
 ## Referring to a Base
 
 A project can add a Base by adding a path (relative to the `kustomization.yaml`) to **`base` that

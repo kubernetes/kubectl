@@ -47,7 +47,7 @@
 * [Directory Layout](pages/app_composition_and_deployment/structure_directories.md)
 * [Branches Layout](pages/app_composition_and_deployment/structure_branches.md)
 * [Repository Layout](pages/app_composition_and_deployment/structure_repositories.md)
-* [Multi-Tier Layout](pages/app_composition_and_deployment/structure_multi_tier_apps.md)
+* [Shared Base Layout](pages/app_composition_and_deployment/structure_multi_tier_apps.md)
 
 ## App Deployment
 

@@ -1,23 +1,39 @@
 # Contributing
 
-## Running Locally
+## Process
+
+### Fixing Issues
+
+1. Open an Issue
+1. Create a PR
+1. Email PR to sig-cli@googlegroups.com with subject `Kubectl Book: Fix Issue <Issue> in <PR>`
+1. Optional: Come to sig-cli meeting to discuss
+
+### Adding New Content
+
+1. Open an Issue with proposed content
+1. Email sig-cli@googlegroups.com with subject `Kubectl Book: Proposed Content <Issue>`
+1. Optional: Come to sig-cli meeting to discuss
+
+## Editing
+
+### Running Locally
 
 - Install [GitBook Toolchain](https://toolchain.gitbook.com/setup.html)
-- From `docs/book` run `npm ci`  to install node_modules locally (don't run install, it updates the shrinkwrap.json)
-- From `docs/book` run `npm audit` to make sure there are no vulnerabilities
+- From `docs/book` run `npm install`  to install node_modules locally (don't run install, it updates the shrinkwrap.json)
 - From `docs/book` run `gitbook serve`
 - Go to `http://localhost:4000` in a browser
 
-## Adding a Section
+### Adding a Section
 
 - Update `SUMMARY.md` with a new section formatted as `## Section Name`
 
-## Adding a Chapter
+### Adding a Chapter
 
 - Update `SUMMARY.md` under section with chapter formatted as `* [Name of Chapter](pages/section_chapter.md)`
 - Add file `pages/section_chapter.md`
 
-## Adding Examples to a Chapter
+### Adding Examples to a Chapter
 
 ```bash
 {% method %}
@@ -27,7 +43,7 @@ Formatted code
 {% endmethod %}
 ```
 
-## Adding Notes to a Chapter
+### Adding Notes to a Chapter
 
 ```bash
 {% panel style="info", title="Title of Note" %}
@@ -42,20 +58,15 @@ Notes may have the following styles:
 - warning
 - danger
 
-## Building and Publishing a release
+### Building and Publishing a release
 
 - Run `gitbook build`
-- Push fies in `_book` to a server (e.g. `firebase deploy`)
+- Push fies in `_book` to a server
 
-## Adding GitBook plugins
+### Adding GitBook plugins
 
 - Update `book.json` with the plugin
-- Run `npm i <npm-plugin-name>`
-- Run `npm strinkwrap`
-- Run `npm audit` - fix issues by hand updating `npm-shrinkwrap.json` libraries with the fixed versions
-- Run `npm ci` - install the new version
-- Run `npm audit` - verify the fixes
-- Commit `npm-shrinkwrap.json` and `package.json`
+- Run `npm install <npm-plugin-name>`
 
 ### Cool plugins
 
