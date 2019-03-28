@@ -66,7 +66,7 @@ kubectl port-forward pod/mypod :5000
 ---
 
 {% method %}
-## Specify the Conainer
+## Specify the Container
 
 Specify the Container within a Pod running multiple containers.
 
