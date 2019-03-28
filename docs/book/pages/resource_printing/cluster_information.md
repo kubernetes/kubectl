@@ -93,7 +93,7 @@ kubectl top node
 
 ## APIs
 
-The `kubectl api-versions` and `kubectl resource-types` print information
+The `kubectl api-versions` and `kubectl api-resources` print information
 about the available Kubernetes APIs.  This information is read from the
 Discovery Service.
 

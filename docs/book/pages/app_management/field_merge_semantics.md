@@ -45,7 +45,7 @@ to a default value by the apiserver, or continuously adjusted by a Controller su
 and HorizontalPodAutoscaler.
 
 {% method %}
-### Last Applied Resource Condfig
+### Last Applied Resource Config
 
 When Apply creates or updates a Resource, it writes the Resource Config it Applied to an annotation on the
 Resource.  This allows it to compare the last Resource Config it Applied to the current Resource
