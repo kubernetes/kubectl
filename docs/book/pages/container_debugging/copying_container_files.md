@@ -46,7 +46,7 @@ kubectl cp /tmp/foo <some-pod>:/tmp/bar
 {% endmethod %}
 
 {% method %}
-## Specify the Conainer
+## Specify the Container
 
 Specify the Container within a Pod running multiple containers.
 
