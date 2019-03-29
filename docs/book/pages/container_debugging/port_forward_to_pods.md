@@ -62,35 +62,3 @@ kubectl port-forward pod/mypod :5000
 ```
 
 {% endmethod %}
-
----
-
-{% method %}
-## Specify the Container
-
-Specify the Container within a Pod running multiple containers.
-
-- `-c <container-name>`
-{% sample lang="yaml" %}
-
-```bash
-kubectl cp /tmp/foo <some-pod>:/tmp/bar -c <specific-container>
-```
-
-{% endmethod %}
-  
----
-
-{% method %}
-## Namespaces
-
-Set the Pod namespace by prefixing the Pod name with `<namespace>/` .
-
-- `<pod-namespace>/<pod-name>:<path>`
-{% sample lang="yaml" %}
-
-```bash
-kubectl cp /tmp/foo <some-namespace>/<some-pod>:/tmp/bar
-```
-
-{% endmethod %}
