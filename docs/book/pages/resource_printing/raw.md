@@ -12,7 +12,7 @@ The Kubernetes Resources stored in etcd by the apiserver have **many more fields
 are shown in the summarized views**.  Users can learn much more about a Resource by
 viewing the Raw Resource as Yaml or Json.  The Raw Resource will contain:
 
-- fields specified by the **user** in the Resource Config (e.g. `metdata.name`)
+- fields specified by the **user** in the Resource Config (e.g. `metadata.name`)
 - metadata fields owned by the **apiserver** (e.g. `metadata.creationTimestamp`)
 - fields defaulted by the **apiserver** (e.g. `spec..imagePullPolicy`)
 - fields set by **Controllers** (e.g. `spec.clusterIp`, `status`)
