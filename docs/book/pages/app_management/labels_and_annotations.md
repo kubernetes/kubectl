@@ -95,15 +95,11 @@ labels.  e.g. the selectors for Services in the project will be updated to inclu
 *in addition* to the other labels.
 {% endpanel %}
 
-{% panel style="success", title="Effective Labeling Strategies" %}
-A common practice is to label Resources with metadata about the environment, application,
-tier and version.  Labeling Workload Resources makes it simpler to query Pods - e.g. for the
-purpose of getting their logs.
+{% panel style="success", title="Common Labels" %}
+The k8s.io documentation defines a set of [Common Labeling Conventions](https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/)
+that may be applied to Applications.
 
-- `app=nginx`
-- `tier=frontend`
-- `env=prod`
-- `version=1.16`
+Labeling Workload Resources makes it simpler to query Pods - e.g. for the purpose of getting their logs.
 
 {% endpanel %}
 
