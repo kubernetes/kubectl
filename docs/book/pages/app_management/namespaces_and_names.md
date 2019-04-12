@@ -87,6 +87,10 @@ spec:
 
 {% endmethod %}
 
+{% panel style="info", title="Overriding Namespaces" %}
+Setting the namespace will override the namespace on Resources if it is already set.
+{% endpanel %}
+
 ## Setting a Name prefix or suffix for all Resources
 
 A name prefix or suffix can be set for all resources using `namePrefix` or
