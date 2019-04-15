@@ -44,7 +44,7 @@ appear as a single data item in the ConfigMap keyed by the filename.
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 configMapGenerator:
-- name: myApplicationProperties
+- name: my-application-properties
   files:
   - application.properties
 ```
@@ -61,7 +61,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   # The name has had a suffix applied
-  name: myApplicationProperties-c79528k426
+  name: my-application-properties-c79528k426
 # The data has been populated from each file's contents
 data:
   application.properties: |
@@ -91,7 +91,7 @@ list of `literals`.
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 configMapGenerator:
-- name: myJavaServerEnvVars
+- name: my-java-server-env-vars
   literals:
   - JAVA_HOME=/opt/java/jdk
   - JAVA_TOOL_OPTIONS=-agentlib:hprof
@@ -104,7 +104,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   # The name has had a suffix applied
-  name: myJavaServerEnvVars-k44mhd6h5f
+  name: my-java-server-env-vars-k44mhd6h5f
 # The data has been populated from each literal pair
 data:
   JAVA_HOME: /opt/java/jdk
@@ -196,7 +196,7 @@ Workloads that reference the ConfigMap or Secret will need to know the name of t
 including the suffix, however Apply takes care of this automatically for users.  Apply will identify
 references to generated ConfigMaps and Secrets, and update them.
 
-The generated ConfigMap name will be `myJavaServerEnvVars` with a suffix unique to its contents.
+The generated ConfigMap name will be `my-java-server-env-vars` with a suffix unique to its contents.
 Changes to the contents will change the name suffix, resulting in the creation of a new ConfigMap,
 and transform Workloads to point to this one.
 
@@ -211,7 +211,7 @@ Apply will update the name to include the suffix applied to the ConfigMap name.
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 configMapGenerator:
-- name: myJavaServerEnvVars
+- name: my-java-server-env-vars
   literals:
   - JAVA_HOME=/opt/java/jdk
   - JAVA_TOOL_OPTIONS=-agentlib:hprof
@@ -246,7 +246,7 @@ spec:
       volumes:
       - name: config-volume
         configMap:
-          name: myJavaServerEnvVars
+          name: my-java-server-env-vars
 ```
 
 **Applied:** The Resources that are Applied to the cluster.
@@ -256,7 +256,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   # The name has been updated to include the suffix
-  name: myJavaServerEnvVars-k44mhd6h5f
+  name: my-java-server-env-vars-k44mhd6h5f
 data:
   JAVA_HOME: /opt/java/jdk
   JAVA_TOOL_OPTIONS: -agentlib:hprof
@@ -290,7 +290,7 @@ spec:
       - configMap:
           # The name has been updated to include the
           # suffix matching the ConfigMap
-          name: myJavaServerEnvVars-k44mhd6h5f
+          name: my-java-server-env-vars-k44mhd6h5f
         name: config-volume
 ```
 {% endmethod %}
