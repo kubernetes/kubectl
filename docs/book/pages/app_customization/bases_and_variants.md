@@ -80,7 +80,7 @@ bases:
 ```yaml
 # ../base/kustomization.yaml
 configMapGenerator:
-- name: myJavaServerEnvVars
+- name: my-java-server-env-vars
   literals:	
   - JAVA_HOME=/opt/java/jdk
   - JAVA_TOOL_OPTIONS=-agentlib:hprof
@@ -113,7 +113,7 @@ spec:
           name: config-volume
       volumes:
       - configMap:
-          name: myJavaServerEnvVars
+          name: my-java-server-env-vars
         name: config-volume
 ```
 
@@ -124,7 +124,7 @@ spec:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: myJavaServerEnvVars-k44mhd6h5f
+  name: my-java-server-env-vars-k44mhd6h5f
 data:
   JAVA_HOME: /opt/java/jdk
   JAVA_TOOL_OPTIONS: -agentlib:hprof
@@ -153,7 +153,7 @@ spec:
           name: config-volume
       volumes:
       - configMap:
-          name: myJavaServerEnvVars-k44mhd6h5f
+          name: my-java-server-env-vars-k44mhd6h5f
         name: config-volume
 ```
 {% endmethod %}
