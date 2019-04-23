@@ -17,7 +17,17 @@ a Project.
 
 See [Bases and Variations](../app_customization/bases_and_variants.md) for more details on Copying Projects.
 
+
+{% panel style="info", title="Reference" %}
+- [namespace](../reference/kustomize.md#namespace)
+- [namePrefix](../reference/kustomize.md#nameprefix)
+- [nameSuffix](../reference/kustomize.md#namesuffix)
+{% endpanel %}
+
+
 ## Setting the Namespace for all Resources
+
+Reference: 
 
 The Namespace for all namespaced Resources declared in the Resource Config may be set with `namespace`.
 This sets the namespace for both generated Resources (e.g. ConfigMaps and Secrets) and non-generated

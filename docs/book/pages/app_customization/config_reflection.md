@@ -13,6 +13,10 @@ the Service value using a `vars` entry**.  If the value is updated or transforme
 `kustomization.yaml` file (e.g. by setting a `namePrefix`), the value will be propagated
 to where it is referenced in the PodSpec.
 
+{% panel style="info", title="Reference" %}
+ - [vars](../reference/kustomize.md#var)
+ {% endpanel %} 
+
 ## Vars
 
 The `vars` section contains variable references to Resource Config fields within the project.  They require
