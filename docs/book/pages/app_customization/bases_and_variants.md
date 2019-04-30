@@ -19,6 +19,10 @@ Examples:
 - a project may be deployed to **different clusters** that are tuned differently or running
   different versions of the project.
 
+{% panel style="info", title="Reference" %}
+ - [bases](../reference/kustomize.md#bases)
+ {% endpanel %}
+
 ## Bases
 
 Bases are shared Resource Config in a `kustomization.yaml` to be used and customized by another `kustomization.yaml`.

@@ -20,6 +20,10 @@ image - e.g. for the `nginx` container image you might use the tag `1.15.9` or `
 
 See [Bases and Variations](../app_customization/bases_and_variants.md) for more details on Copying Projects.
 
+{% panel style="info", title="Reference" %}
+- [images](../reference/kustomize.md#images)
+{% endpanel %}
+
 ## images
 
 It is possible to set image tags for container images through

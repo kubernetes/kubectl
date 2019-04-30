@@ -16,6 +16,12 @@ Common examples include:
 - Running **different versions of an Image** for dev, test, canary, production
 - Configuring **different Pod Environment Variables and Arguments** for dev, test, canary, production
 
+{% panel style="info", title="Reference" %}
+- [images](../reference/kustomize.md#images)
+- [configMapGenerator](../reference/kustomize.md#configmapgenerator)
+- [secretGenerator](../reference/kustomize.md#secretgenerator)
+{% endpanel %}
+
 ## Customizing Images
 
 {% method %}

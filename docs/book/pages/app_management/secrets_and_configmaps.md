@@ -6,6 +6,12 @@
 
 # Secrets and ConfigMaps
 
+{% panel style="info", title="Reference" %}
+- [secretGenerators](../reference/kustomize.md#secretgenerator)
+- [configMapGenerators](../reference/kustomize.md#configmapgenerator)
+- [generatorOptions](../reference/kustomize.md#generatoroptions)
+{% endpanel %}
+
 ## Motivation
 
 The source of truth for Secret and ConfigMap Resources typically resides

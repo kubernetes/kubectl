@@ -55,7 +55,15 @@
 * [Accessing Multiple Clusters](pages/app_composition_and_deployment/accessing_multiple_clusters.md)
 * [Publishing Config](pages/app_composition_and_deployment/publishing_bases.md)
 
-## Imperative Porcelain
+## Reference
+
+* [kustomization.yaml](pages/reference/kustomize.md)
+
+## Examples
+
+* [kustomization.yaml](pages/examples/kustomize.md)
+
+## Miscellaneous Imperative Commands
 
 * [Introduction](pages/imperative_porcelain/introduction.md)
 * [Creating Resources](pages/imperative_porcelain/creating_resources.md)

@@ -10,6 +10,11 @@ It is often necessary for users to want to **modify arbitrary fields** from a Ba
 as resource reservations for Pods, replicas on Deployments, etc.  Overlays and patches can
 be used by Variants to specify fields values which will override the Base field values.
 
+{% panel style="info", title="Reference" %}
+- [patchesjson6902](../reference/kustomize.md#patchesjson6902)
+- [patchesStrategicMerge](../reference/kustomize.md#patchesstrategicmerge)
+{% endpanel %}
+
 ## Customizing Arbitrary Fields with Overlays
 
 {% method %}
