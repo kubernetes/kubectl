@@ -1,3 +1,7 @@
+{% panel style="success", title="Providing Feedback" %}
+**Provide feedback at the [survey](https://www.surveymonkey.com/r/JH35X82)**
+{% endpanel %}
+
 {% panel style="info", title="TL;DR" %}
 - A Kubernetes API has 2 parts - a Resource Type and a Controller
 - Resources are objects declared as json or yaml and written to a cluster

@@ -1,3 +1,7 @@
+{% panel style="success", title="Providing Feedback" %}
+**Provide feedback at the [survey](https://www.surveymonkey.com/r/JH35X82)**
+{% endpanel %}
+
 {% panel style="info", title="TL;DR" %}
 - Resource Config is stored in one or more git repositories
 - Directory hierarchy, git branches and git repositories may be used for loose coupling

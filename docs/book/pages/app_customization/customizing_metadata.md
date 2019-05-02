@@ -1,3 +1,7 @@
+{% panel style="success", title="Providing Feedback" %}
+**Provide feedback at the [survey](https://www.surveymonkey.com/r/C855WZW)**
+{% endpanel %}
+
 {% panel style="info", title="TL;DR" %}
 - Customize Base Resource Namespaces
 - Customize Base Resource Names with Prefixes or Suffixes

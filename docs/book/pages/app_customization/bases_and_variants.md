@@ -1,8 +1,14 @@
+{% panel style="success", title="Providing Feedback" %}
+**Provide feedback at the [survey](https://www.surveymonkey.com/r/C855WZW)**
+{% endpanel %}
+
 {% panel style="info", title="TL;DR" %}
 - Reuse Resource Config as Bases to `kustomization.yaml`'s.
 - Customize Base for different Environments.
 - Reuse a Base across multiple Projects.
 {% endpanel %}
+
+
 
 # Bases and Variations
 

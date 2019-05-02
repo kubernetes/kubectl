@@ -1,3 +1,7 @@
+{% panel style="success", title="Providing Feedback" %}
+**Provide feedback at the [survey](https://www.surveymonkey.com/r/CLQBQHR)**
+{% endpanel %}
+
 {% panel style="info", title="TL;DR" %}
 - Set the Namespace for all Resources within a Project with `namespace`
 - Prefix the Names of all Resources within a Project with `namePrefix`

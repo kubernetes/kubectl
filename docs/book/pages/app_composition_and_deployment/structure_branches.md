@@ -1,3 +1,7 @@
+{% panel style="success", title="Providing Feedback" %}
+**Provide feedback at the [survey](https://www.surveymonkey.com/r/JH35X82)**
+{% endpanel %}
+
 {% panel style="warning", title="Experimental" %}
 **Content in this chapter is experimental and will evolve based on user feedback.**
 

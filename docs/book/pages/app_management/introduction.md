@@ -1,3 +1,7 @@
+{% panel style="success", title="Providing Feedback" %}
+**Provide feedback at the [survey](https://www.surveymonkey.com/r/CLQBQHR)**
+{% endpanel %}
+
 {% panel style="info", title="TL;DR" %}
 - Apply manages Applications through files defining Kubernetes Resources (i.e. Resource Config)
 - Kustomize is used to author Resource Config

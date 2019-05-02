@@ -1,3 +1,7 @@
+{% panel style="success", title="Providing Feedback" %}
+**Provide feedback at the [survey](https://www.surveymonkey.com/r/C855WZW)**
+{% endpanel %}
+
 # Introduction
 
 This section of the book covers how to build Projects and Applications with Config
