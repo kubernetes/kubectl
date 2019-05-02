@@ -1,3 +1,7 @@
+{% panel style="success", title="Providing Feedback" %}
+**Provide feedback at the [survey](https://www.surveymonkey.com/r/CLQBQHR)**
+{% endpanel %}
+
 {% panel style="info", title="TL;DR" %}
 - Set Labels for all Resources declared within a Project with `commonLables`
 - Set Annotations for all Resources declared within a Project with `commonAnnotations`

@@ -1,3 +1,7 @@
+{% panel style="success", title="Providing Feedback" %}
+**Provide feedback at the [survey](https://www.surveymonkey.com/r/CLQBQHR)**
+{% endpanel %}
+
 {% panel style="info", title="TL;DR" %}
 - Apply Creates and Updates Resources in a cluster through running `kubectl apply` on Resource Config.
 - Apply manages complexity such as ordering of operations and merging user defined and cluster defined state.

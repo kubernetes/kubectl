@@ -1,3 +1,7 @@
+{% panel style="success", title="Providing Feedback" %}
+**Provide feedback at the [survey](https://www.surveymonkey.com/r/CLQBQHR)**
+{% endpanel %}
+
 {% panel style="info", title="TL;DR" %}
 - Fields set and deleted from Resource Config are merged into Resources by Apply
     - If a Resource already exists, Apply updates the Resources by merging the local Resource Config into the remote Resources

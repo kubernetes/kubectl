@@ -1,3 +1,7 @@
+{% panel style="success", title="Providing Feedback" %}
+**Provide feedback at the [survey](https://www.surveymonkey.com/r/C855WZW)**
+{% endpanel %}
+
 {% panel style="info", title="TL;DR" %}
 - Inject the values of other Resource Config fields into Pod Env Vars and Command Args with `vars`.
 {% endpanel %}

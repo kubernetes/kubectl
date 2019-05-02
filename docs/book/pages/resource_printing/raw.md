@@ -1,3 +1,7 @@
+{% panel style="success", title="Providing Feedback" %}
+**Provide feedback at the [survey](https://www.surveymonkey.com/r/JH35X82)**
+{% endpanel %}
+
 {% panel style="info", title="TL;DR" %}
 - Get or List Raw Resources in a cluster as Yaml or Json
 {% endpanel %}

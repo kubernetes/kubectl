@@ -1,3 +1,7 @@
+{% panel style="success", title="Providing Feedback" %}
+**Provide feedback at the [survey](https://www.surveymonkey.com/r/JH35X82)**
+{% endpanel %}
+
 {% panel style="info", title="TL;DR" %}
 - Target a cluster for a rollout with the `--context` flag
 - Target a cluster for a rollout with the `--kubeconfig` flag

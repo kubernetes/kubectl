@@ -1,3 +1,7 @@
+{% panel style="success", title="Providing Feedback" %}
+**Provide feedback at the [survey](https://www.surveymonkey.com/r/CLQBQHR)**
+{% endpanel %}
+
 {% panel style="info", title="TL;DR" %}
 - Generate Secrets from files and literals with `secretGenerator`
 - Generate ConfigMaps from files and literals with `configMapGenerator`
