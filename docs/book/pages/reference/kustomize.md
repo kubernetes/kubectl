@@ -351,7 +351,7 @@ Path field is a relative file path of a JSON patch file.  File contents can be e
  - op: add
    path: /some/new/path
    value: value
- - op:replace
+ - op: replace
    path: /some/existing/path
    value: new value
 ``` 
