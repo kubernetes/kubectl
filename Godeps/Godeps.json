@@ -1,0 +1,9 @@
+{
+	"ImportPath": "k8s.io/kubectl",
+	"GoVersion": "unknown",
+	"GodepVersion": "gen-godeps",
+	"Packages": [
+		"./..."
+	],
+	"Deps": null
+}
