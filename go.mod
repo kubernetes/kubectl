@@ -3,5 +3,3 @@
 module k8s.io/kubectl
 
 go 1.12
-
-replace k8s.io/kubectl => ../kubectl
