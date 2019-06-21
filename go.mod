@@ -16,8 +16,8 @@ require (
 	github.com/spf13/pflag v1.0.3
 	golang.org/x/sys v0.0.0-20190312061237-fead79001313
 	gotest.tools v2.2.0+incompatible // indirect
-	k8s.io/apimachinery v0.0.0
-	k8s.io/client-go v0.0.0
+	k8s.io/apimachinery v0.0.0-20190620073744-d16981aedf33
+	k8s.io/client-go v0.0.0-20190620074045-585a16d2e773
 )
 
 replace (
@@ -29,8 +29,6 @@ replace (
 	golang.org/x/sync => golang.org/x/sync v0.0.0-20181108010431-42b317875d0f
 	golang.org/x/sys => golang.org/x/sys v0.0.0-20190209173611-3b5209105503
 	golang.org/x/tools => golang.org/x/tools v0.0.0-20190313210603-aa82965741a9
-	k8s.io/api => ../api
-	k8s.io/apimachinery => ../apimachinery
-	k8s.io/client-go => ../client-go
-	k8s.io/kubectl => ../kubectl
+	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20190620073744-d16981aedf33
+	k8s.io/client-go => k8s.io/client-go v0.0.0-20190620074045-585a16d2e773
 )
