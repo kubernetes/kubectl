@@ -143,6 +143,10 @@
 			"Rev": "v1.0.1"
 		},
 		{
+			"ImportPath": "github.com/liggitt/tabwriter",
+			"Rev": "89fcab3d43de"
+		},
+		{
 			"ImportPath": "github.com/magiconair/properties",
 			"Rev": "v1.8.0"
 		},
