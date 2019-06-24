@@ -30,3 +30,5 @@ replace (
 	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20190624085041-961b39a1baa0
 	k8s.io/client-go => k8s.io/client-go v0.0.0-20190624085356-2c6e35a5b9cf
 )
+
+replace k8s.io/api => k8s.io/api v0.0.0-20190624085159-95846d7ef82a
