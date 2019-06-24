@@ -20,7 +20,7 @@
 		},
 		{
 			"ImportPath": "github.com/BurntSushi/toml",
-			"Rev": "v0.3.0"
+			"Rev": "v0.3.1"
 		},
 		{
 			"ImportPath": "github.com/MakeNowJust/heredoc",
@@ -100,7 +100,7 @@
 		},
 		{
 			"ImportPath": "github.com/google/uuid",
-			"Rev": "v1.0.0"
+			"Rev": "v1.1.1"
 		},
 		{
 			"ImportPath": "github.com/googleapis/gnostic",
@@ -120,7 +120,7 @@
 		},
 		{
 			"ImportPath": "github.com/hashicorp/hcl",
-			"Rev": "d8c773c4cba1"
+			"Rev": "v1.0.0"
 		},
 		{
 			"ImportPath": "github.com/hpcloud/tail",
@@ -308,15 +308,15 @@
 		},
 		{
 			"ImportPath": "k8s.io/api",
-			"Rev": "dcce3486da33"
+			"Rev": "95846d7ef82a"
 		},
 		{
 			"ImportPath": "k8s.io/apimachinery",
-			"Rev": "d16981aedf33"
+			"Rev": "961b39a1baa0"
 		},
 		{
 			"ImportPath": "k8s.io/client-go",
-			"Rev": "585a16d2e773"
+			"Rev": "2c6e35a5b9cf"
 		},
 		{
 			"ImportPath": "k8s.io/klog",
