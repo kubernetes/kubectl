@@ -216,7 +216,7 @@
 		},
 		{
 			"ImportPath": "github.com/sirupsen/logrus",
-			"Rev": "v1.2.0"
+			"Rev": "v1.4.2"
 		},
 		{
 			"ImportPath": "github.com/spf13/afero",
@@ -324,7 +324,7 @@
 		},
 		{
 			"ImportPath": "k8s.io/apimachinery",
-			"Rev": "49e757626700"
+			"Rev": "7ae370969693"
 		},
 		{
 			"ImportPath": "k8s.io/client-go",
