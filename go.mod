@@ -8,19 +8,19 @@ require (
 	github.com/Azure/go-ansiterm v0.0.0-20170929234023-d6e3b3328b78 // indirect
 	github.com/MakeNowJust/heredoc v0.0.0-20170808103936-bb23615498cd
 	github.com/docker/docker v0.7.3-0.20190327010347-be7ac8be2ae0
+	github.com/exponent-io/jsonpath v0.0.0-20151013193312-d6023ce2651d
 	github.com/liggitt/tabwriter v0.0.0-20181228230101-89fcab3d43de
 	github.com/mitchellh/go-wordwrap v1.0.0
 	github.com/pkg/errors v0.8.0 // indirect
 	github.com/russross/blackfriday v1.5.2
-	github.com/sirupsen/logrus v1.4.2 // indirect
+	github.com/sirupsen/logrus v1.2.0 // indirect
 	github.com/spf13/cobra v0.0.4
 	github.com/spf13/pflag v1.0.3
 	golang.org/x/sys v0.0.0-20190616124812-15dcb6c0061f
 	gotest.tools v2.2.0+incompatible // indirect
-	k8s.io/api v0.0.0-20190627205229-acea843d18eb
-	k8s.io/apimachinery v0.0.0-20190629005116-7ae370969693
-	k8s.io/client-go v0.0.0-20190628005442-8873628f237b
-	k8s.io/klog v0.3.1
+	k8s.io/api v0.0.0
+	k8s.io/apimachinery v0.0.0
+	k8s.io/client-go v0.0.0
 	k8s.io/utils v0.0.0-20190221042446-c2654d5206da
 )
 
@@ -31,7 +31,8 @@ replace (
 	golang.org/x/sys => golang.org/x/sys v0.0.0-20190209173611-3b5209105503
 	golang.org/x/text => golang.org/x/text v0.3.1-0.20181227161524-e6919f6577db
 	golang.org/x/tools => golang.org/x/tools v0.0.0-20190313210603-aa82965741a9
-	k8s.io/api => k8s.io/api v0.0.0-20190627205229-acea843d18eb
-	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20190629005116-7ae370969693
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20190628005442-8873628f237b
+	k8s.io/api => ../api
+	k8s.io/apimachinery => ../apimachinery
+	k8s.io/client-go => ../client-go
+	k8s.io/kubectl => ../kubectl
 )
