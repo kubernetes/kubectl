@@ -224,7 +224,7 @@
 		},
 		{
 			"ImportPath": "github.com/spf13/afero",
-			"Rev": "v1.1.2"
+			"Rev": "v1.2.2"
 		},
 		{
 			"ImportPath": "github.com/spf13/cast",
@@ -324,15 +324,15 @@
 		},
 		{
 			"ImportPath": "k8s.io/api",
-			"Rev": "acea843d18eb"
+			"Rev": "5b0469dfd244"
 		},
 		{
 			"ImportPath": "k8s.io/apimachinery",
-			"Rev": "7ae370969693"
+			"Rev": "05b5762916b3"
 		},
 		{
 			"ImportPath": "k8s.io/client-go",
-			"Rev": "8873628f237b"
+			"Rev": "b3101450e21d"
 		},
 		{
 			"ImportPath": "k8s.io/klog",
@@ -344,7 +344,7 @@
 		},
 		{
 			"ImportPath": "k8s.io/utils",
-			"Rev": "c2654d5206da"
+			"Rev": "c55fbcfc754a"
 		},
 		{
 			"ImportPath": "sigs.k8s.io/yaml",
