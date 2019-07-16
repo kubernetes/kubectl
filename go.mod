@@ -17,10 +17,10 @@ require (
 	github.com/spf13/pflag v1.0.3
 	golang.org/x/sys v0.0.0-20190616124812-15dcb6c0061f
 	gotest.tools v2.2.0+incompatible // indirect
-	k8s.io/api v0.0.0-20190711103429-37c3b8b1ca65
-	k8s.io/apimachinery v0.0.0-20190711103026-7bf792636534
+	k8s.io/api v0.0.0-20190716222831-9f95dd78c8e7
+	k8s.io/apimachinery v0.0.0-20190715170309-6171873045ff
 	k8s.io/cli-runtime v0.0.0-20190711111425-61e036b70227
-	k8s.io/client-go v0.0.0-20190711103905-2cca84cf52bc
+	k8s.io/client-go v0.0.0-20190716142725-81763ea0de19
 	k8s.io/klog v0.3.1
 	k8s.io/utils v0.0.0-20190607212802-c55fbcfc754a
 )
@@ -32,8 +32,8 @@ replace (
 	golang.org/x/sys => golang.org/x/sys v0.0.0-20190209173611-3b5209105503
 	golang.org/x/text => golang.org/x/text v0.3.1-0.20181227161524-e6919f6577db
 	golang.org/x/tools => golang.org/x/tools v0.0.0-20190313210603-aa82965741a9
-	k8s.io/api => k8s.io/api v0.0.0-20190711103429-37c3b8b1ca65
-	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20190711103026-7bf792636534
+	k8s.io/api => k8s.io/api v0.0.0-20190716222831-9f95dd78c8e7
+	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20190715170309-6171873045ff
 	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20190711111425-61e036b70227
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20190711103905-2cca84cf52bc
+	k8s.io/client-go => k8s.io/client-go v0.0.0-20190716142725-81763ea0de19
 )
