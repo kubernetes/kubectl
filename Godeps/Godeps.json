@@ -27,6 +27,10 @@
 			"Rev": "bb23615498cd"
 		},
 		{
+			"ImportPath": "github.com/NYTimes/gziphandler",
+			"Rev": "56545f4a5d46"
+		},
+		{
 			"ImportPath": "github.com/PuerkitoBio/purell",
 			"Rev": "v1.1.1"
 		},
@@ -223,6 +227,10 @@
 			"Rev": "v1.0.1"
 		},
 		{
+			"ImportPath": "github.com/munnerz/goautoneg",
+			"Rev": "a547fc61f48d"
+		},
+		{
 			"ImportPath": "github.com/mxk/go-flowrate",
 			"Rev": "cca7078d478f"
 		},
@@ -360,19 +368,23 @@
 		},
 		{
 			"ImportPath": "k8s.io/api",
-			"Rev": "9f95dd78c8e7"
+			"Rev": "653c86b0609b"
 		},
 		{
 			"ImportPath": "k8s.io/apimachinery",
-			"Rev": "6171873045ff"
+			"Rev": "0bb8574e0887"
 		},
 		{
 			"ImportPath": "k8s.io/cli-runtime",
-			"Rev": "61e036b70227"
+			"Rev": "59adbd30f884"
 		},
 		{
 			"ImportPath": "k8s.io/client-go",
-			"Rev": "81763ea0de19"
+			"Rev": "0c47f9da0001"
+		},
+		{
+			"ImportPath": "k8s.io/gengo",
+			"Rev": "0689ccc1d7d6"
 		},
 		{
 			"ImportPath": "k8s.io/klog",
@@ -380,7 +392,7 @@
 		},
 		{
 			"ImportPath": "k8s.io/kube-openapi",
-			"Rev": "b3a7cee44a30"
+			"Rev": "33be087ad058"
 		},
 		{
 			"ImportPath": "k8s.io/utils",
@@ -389,6 +401,10 @@
 		{
 			"ImportPath": "sigs.k8s.io/kustomize",
 			"Rev": "v2.0.3"
+		},
+		{
+			"ImportPath": "sigs.k8s.io/structured-merge-diff",
+			"Rev": "15d366b2352e"
 		},
 		{
 			"ImportPath": "sigs.k8s.io/yaml",
