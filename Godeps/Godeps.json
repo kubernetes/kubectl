@@ -116,7 +116,7 @@
 		},
 		{
 			"ImportPath": "github.com/gogo/protobuf",
-			"Rev": "v1.0.0"
+			"Rev": "v0.0.0-20190410021324-65acae22fc9"
 		},
 		{
 			"ImportPath": "github.com/golang/groupcache",
@@ -177,6 +177,14 @@
 		{
 			"ImportPath": "github.com/json-iterator/go",
 			"Rev": "v1.1.6"
+		},
+		{
+			"ImportPath": "github.com/kisielk/errcheck",
+			"Rev": "v1.2.0"
+		},
+		{
+			"ImportPath": "github.com/kisielk/gotool",
+			"Rev": "v1.0.0"
 		},
 		{
 			"ImportPath": "github.com/konsorten/go-windows-terminal-sequences",
@@ -368,19 +376,19 @@
 		},
 		{
 			"ImportPath": "k8s.io/api",
-			"Rev": "6607c48751ae"
+			"Rev": "69e1bce1dad5"
 		},
 		{
 			"ImportPath": "k8s.io/apimachinery",
-			"Rev": "bfcf53abc9f8"
+			"Rev": "641a75999153"
 		},
 		{
 			"ImportPath": "k8s.io/cli-runtime",
-			"Rev": "59adbd30f884"
+			"Rev": "74a61cd71909"
 		},
 		{
 			"ImportPath": "k8s.io/client-go",
-			"Rev": "f16ff99a1d2d"
+			"Rev": "a9c895e7f2ac"
 		},
 		{
 			"ImportPath": "k8s.io/gengo",
