@@ -11,16 +11,18 @@ require (
 	github.com/exponent-io/jsonpath v0.0.0-20151013193312-d6023ce2651d
 	github.com/liggitt/tabwriter v0.0.0-20181228230101-89fcab3d43de
 	github.com/mitchellh/go-wordwrap v1.0.0
+	github.com/onsi/ginkgo v1.8.0
+	github.com/onsi/gomega v1.5.0
 	github.com/russross/blackfriday v1.5.2
 	github.com/sirupsen/logrus v1.4.2 // indirect
 	github.com/spf13/cobra v0.0.4
 	github.com/spf13/pflag v1.0.3
 	golang.org/x/sys v0.0.0-20190616124812-15dcb6c0061f
 	gotest.tools v2.2.0+incompatible // indirect
-	k8s.io/api v0.0.0-20190722141453-b90922c02518
-	k8s.io/apimachinery v0.0.0-20190719140911-bfcf53abc9f8
-	k8s.io/cli-runtime v0.0.0-20190717024643-59adbd30f884
-	k8s.io/client-go v0.0.0-20190723023103-f16ff99a1d2d
+	k8s.io/api v0.0.0
+	k8s.io/apimachinery v0.0.0
+	k8s.io/cli-runtime v0.0.0
+	k8s.io/client-go v0.0.0
 	k8s.io/klog v0.3.1
 	k8s.io/utils v0.0.0-20190607212802-c55fbcfc754a
 )
@@ -32,8 +34,9 @@ replace (
 	golang.org/x/sys => golang.org/x/sys v0.0.0-20190209173611-3b5209105503
 	golang.org/x/text => golang.org/x/text v0.3.1-0.20181227161524-e6919f6577db
 	golang.org/x/tools => golang.org/x/tools v0.0.0-20190313210603-aa82965741a9
-	k8s.io/api => k8s.io/api v0.0.0-20190722141453-b90922c02518
-	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20190719140911-bfcf53abc9f8
-	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20190717024643-59adbd30f884
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20190723023103-f16ff99a1d2d
+	k8s.io/api => ../api
+	k8s.io/apimachinery => ../apimachinery
+	k8s.io/cli-runtime => ../cli-runtime
+	k8s.io/client-go => ../client-go
+	k8s.io/kubectl => ../kubectl
 )
