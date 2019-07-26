@@ -95,6 +95,10 @@
 			"Rev": "d6023ce2651d"
 		},
 		{
+			"ImportPath": "github.com/fatih/camelcase",
+			"Rev": "v1.0.0"
+		},
+		{
 			"ImportPath": "github.com/fsnotify/fsnotify",
 			"Rev": "v1.4.7"
 		},
