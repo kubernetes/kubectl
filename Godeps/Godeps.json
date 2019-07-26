@@ -43,6 +43,10 @@
 			"Rev": "eb2c6b5be1b6"
 		},
 		{
+			"ImportPath": "github.com/chai2010/gettext-go",
+			"Rev": "c6fed771bfd5"
+		},
+		{
 			"ImportPath": "github.com/coreos/etcd",
 			"Rev": "v3.3.10"
 		},
