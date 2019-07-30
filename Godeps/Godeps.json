@@ -23,6 +23,10 @@
 			"Rev": "v0.3.1"
 		},
 		{
+			"ImportPath": "github.com/BurntSushi/xgb",
+			"Rev": "27f122750802"
+		},
+		{
 			"ImportPath": "github.com/MakeNowJust/heredoc",
 			"Rev": "bb23615498cd"
 		},
@@ -275,6 +279,10 @@
 			"Rev": "v1.0.0"
 		},
 		{
+			"ImportPath": "github.com/remyoudompheng/bigfft",
+			"Rev": "52369c62f446"
+		},
+		{
 			"ImportPath": "github.com/russross/blackfriday",
 			"Rev": "v1.5.2"
 		},
@@ -327,6 +335,18 @@
 			"Rev": "e84da0312774"
 		},
 		{
+			"ImportPath": "golang.org/x/exp",
+			"Rev": "4b39c73a6495"
+		},
+		{
+			"ImportPath": "golang.org/x/image",
+			"Rev": "0694c2d4d067"
+		},
+		{
+			"ImportPath": "golang.org/x/mobile",
+			"Rev": "d3739f865fa6"
+		},
+		{
 			"ImportPath": "golang.org/x/net",
 			"Rev": "65e2d4e15006"
 		},
@@ -353,6 +373,14 @@
 		{
 			"ImportPath": "golang.org/x/tools",
 			"Rev": "aa82965741a9"
+		},
+		{
+			"ImportPath": "gonum.org/v1/gonum",
+			"Rev": "3d26580ed485"
+		},
+		{
+			"ImportPath": "gonum.org/v1/netlib",
+			"Rev": "76723241ea4e"
 		},
 		{
 			"ImportPath": "google.golang.org/appengine",
@@ -396,7 +424,11 @@
 		},
 		{
 			"ImportPath": "k8s.io/client-go",
-			"Rev": "579ad46bdcb9"
+			"Rev": "693ed41095c3"
+		},
+		{
+			"ImportPath": "k8s.io/code-generator",
+			"Rev": "14ba7d03f06f"
 		},
 		{
 			"ImportPath": "k8s.io/gengo",
@@ -411,8 +443,32 @@
 			"Rev": "33be087ad058"
 		},
 		{
+			"ImportPath": "k8s.io/metrics",
+			"Rev": "9140f5fe6ab8"
+		},
+		{
 			"ImportPath": "k8s.io/utils",
 			"Rev": "c55fbcfc754a"
+		},
+		{
+			"ImportPath": "modernc.org/cc",
+			"Rev": "v1.0.0"
+		},
+		{
+			"ImportPath": "modernc.org/golex",
+			"Rev": "v1.0.0"
+		},
+		{
+			"ImportPath": "modernc.org/mathutil",
+			"Rev": "v1.0.0"
+		},
+		{
+			"ImportPath": "modernc.org/strutil",
+			"Rev": "v1.0.0"
+		},
+		{
+			"ImportPath": "modernc.org/xc",
+			"Rev": "v1.0.0"
 		},
 		{
 			"ImportPath": "sigs.k8s.io/kustomize",
