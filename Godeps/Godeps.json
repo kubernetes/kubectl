@@ -128,7 +128,7 @@
 		},
 		{
 			"ImportPath": "github.com/gogo/protobuf",
-			"Rev": "v0.0.0-20190410021324-65acae22fc9"
+			"Rev": "65acae22fc9d"
 		},
 		{
 			"ImportPath": "github.com/golang/groupcache",
@@ -412,23 +412,23 @@
 		},
 		{
 			"ImportPath": "k8s.io/api",
-			"Rev": "69e1bce1dad5"
+			"Rev": "739c7f7721ed"
 		},
 		{
 			"ImportPath": "k8s.io/apimachinery",
-			"Rev": "1f8faeb81191"
+			"Rev": "035e418f1ad9"
 		},
 		{
 			"ImportPath": "k8s.io/cli-runtime",
-			"Rev": "74a61cd71909"
+			"Rev": "e0b53a64da0b"
 		},
 		{
 			"ImportPath": "k8s.io/client-go",
-			"Rev": "f725dd354080"
+			"Rev": "de47f833b8db"
 		},
 		{
 			"ImportPath": "k8s.io/code-generator",
-			"Rev": "14ba7d03f06f"
+			"Rev": "68819053f471"
 		},
 		{
 			"ImportPath": "k8s.io/gengo",
@@ -444,7 +444,7 @@
 		},
 		{
 			"ImportPath": "k8s.io/metrics",
-			"Rev": "de57e7cebcdb"
+			"Rev": "25630f8a23dd"
 		},
 		{
 			"ImportPath": "k8s.io/utils",
