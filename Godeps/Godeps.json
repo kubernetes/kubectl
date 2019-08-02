@@ -488,7 +488,7 @@
 		},
 		{
 			"ImportPath": "k8s.io/code-generator",
-			"Rev": "9d064f9b93f4"
+			"Rev": "21f112a5e37a"
 		},
 		{
 			"ImportPath": "k8s.io/component-base",
