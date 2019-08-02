@@ -47,6 +47,14 @@
 			"Rev": "eb2c6b5be1b6"
 		},
 		{
+			"ImportPath": "github.com/beorn7/perks",
+			"Rev": "3a771d992973"
+		},
+		{
+			"ImportPath": "github.com/blang/semver",
+			"Rev": "v3.5.0"
+		},
+		{
 			"ImportPath": "github.com/chai2010/gettext-go",
 			"Rev": "c6fed771bfd5"
 		},
@@ -71,8 +79,16 @@
 			"Rev": "v1.1.1"
 		},
 		{
+			"ImportPath": "github.com/daviddengcn/go-colortext",
+			"Rev": "511bcaf42ccd"
+		},
+		{
 			"ImportPath": "github.com/dgrijalva/jwt-go",
 			"Rev": "01aeca54ebda"
+		},
+		{
+			"ImportPath": "github.com/docker/distribution",
+			"Rev": "v2.7.1"
 		},
 		{
 			"ImportPath": "github.com/docker/docker",
@@ -139,6 +155,18 @@
 			"Rev": "v1.2.0"
 		},
 		{
+			"ImportPath": "github.com/golangplus/bytes",
+			"Rev": "45c989fe5450"
+		},
+		{
+			"ImportPath": "github.com/golangplus/fmt",
+			"Rev": "2a5d6d7d2995"
+		},
+		{
+			"ImportPath": "github.com/golangplus/testing",
+			"Rev": "af21d9c3145e"
+		},
+		{
 			"ImportPath": "github.com/google/btree",
 			"Rev": "7d79101e329e"
 		},
@@ -187,6 +215,10 @@
 			"Rev": "v1.0.0"
 		},
 		{
+			"ImportPath": "github.com/jonboulle/clockwork",
+			"Rev": "v0.1.0"
+		},
+		{
 			"ImportPath": "github.com/json-iterator/go",
 			"Rev": "v1.1.6"
 		},
@@ -219,12 +251,20 @@
 			"Rev": "89fcab3d43de"
 		},
 		{
+			"ImportPath": "github.com/lithammer/dedent",
+			"Rev": "v1.1.0"
+		},
+		{
 			"ImportPath": "github.com/magiconair/properties",
 			"Rev": "v1.8.0"
 		},
 		{
 			"ImportPath": "github.com/mailru/easyjson",
 			"Rev": "94de47d64c63"
+		},
+		{
+			"ImportPath": "github.com/matttproud/golang_protobuf_extensions",
+			"Rev": "v1.0.1"
 		},
 		{
 			"ImportPath": "github.com/mitchellh/go-homedir",
@@ -263,6 +303,10 @@
 			"Rev": "v1.5.0"
 		},
 		{
+			"ImportPath": "github.com/opencontainers/go-digest",
+			"Rev": "v1.0.0-rc1"
+		},
+		{
 			"ImportPath": "github.com/pelletier/go-toml",
 			"Rev": "v1.2.0"
 		},
@@ -277,6 +321,22 @@
 		{
 			"ImportPath": "github.com/pmezard/go-difflib",
 			"Rev": "v1.0.0"
+		},
+		{
+			"ImportPath": "github.com/prometheus/client_golang",
+			"Rev": "v0.9.2"
+		},
+		{
+			"ImportPath": "github.com/prometheus/client_model",
+			"Rev": "5c3871d89910"
+		},
+		{
+			"ImportPath": "github.com/prometheus/common",
+			"Rev": "4724e9255275"
+		},
+		{
+			"ImportPath": "github.com/prometheus/procfs",
+			"Rev": "1dc9a6cbc91a"
 		},
 		{
 			"ImportPath": "github.com/remyoudompheng/bigfft",
@@ -412,11 +472,11 @@
 		},
 		{
 			"ImportPath": "k8s.io/api",
-			"Rev": "fde72677e822"
+			"Rev": "d0d4f3afa3ab"
 		},
 		{
 			"ImportPath": "k8s.io/apimachinery",
-			"Rev": "035e418f1ad9"
+			"Rev": "6fa4771c83b3"
 		},
 		{
 			"ImportPath": "k8s.io/cli-runtime",
@@ -428,7 +488,11 @@
 		},
 		{
 			"ImportPath": "k8s.io/code-generator",
-			"Rev": "68819053f471"
+			"Rev": "9d064f9b93f4"
+		},
+		{
+			"ImportPath": "k8s.io/component-base",
+			"Rev": "8d609ba1a28a"
 		},
 		{
 			"ImportPath": "k8s.io/gengo",
