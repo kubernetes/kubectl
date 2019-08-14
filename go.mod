@@ -35,14 +35,14 @@ require (
 	golang.org/x/sys v0.0.0-20190616124812-15dcb6c0061f
 	gopkg.in/yaml.v2 v2.2.2
 	gotest.tools v2.2.0+incompatible // indirect
-	k8s.io/api v0.0.0-20190813220812-4c9d9526570f
-	k8s.io/apimachinery v0.0.0-20190813235223-d2c4b5819cd0
-	k8s.io/cli-runtime v0.0.0-20190813222619-2ebd228d24a6
-	k8s.io/client-go v0.0.0-20190813221022-7eecfc25a0aa
-	k8s.io/component-base v0.0.0-20190813221503-3e62d79579c8
+	k8s.io/api v0.0.0
+	k8s.io/apimachinery v0.0.0
+	k8s.io/cli-runtime v0.0.0
+	k8s.io/client-go v0.0.0
+	k8s.io/component-base v0.0.0
 	k8s.io/klog v0.4.0
 	k8s.io/kube-openapi v0.0.0-20190709113604-33be087ad058
-	k8s.io/metrics v0.0.0-20190814022108-e961729cfb0e
+	k8s.io/metrics v0.0.0
 	k8s.io/utils v0.0.0-20190801114015-581e00157fb1
 	sigs.k8s.io/kustomize v2.0.3+incompatible
 	sigs.k8s.io/yaml v1.1.0
@@ -50,16 +50,16 @@ require (
 
 replace (
 	golang.org/x/crypto => golang.org/x/crypto v0.0.0-20181025213731-e84da0312774
-	golang.org/x/net => golang.org/x/net v0.0.0-20190206173232-65e2d4e15006
 	golang.org/x/sync => golang.org/x/sync v0.0.0-20181108010431-42b317875d0f
 	golang.org/x/sys => golang.org/x/sys v0.0.0-20190209173611-3b5209105503
 	golang.org/x/text => golang.org/x/text v0.3.1-0.20181227161524-e6919f6577db
 	golang.org/x/tools => golang.org/x/tools v0.0.0-20190313210603-aa82965741a9
-	k8s.io/api => k8s.io/api v0.0.0-20190813220812-4c9d9526570f
-	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20190813235223-d2c4b5819cd0
-	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20190813222619-2ebd228d24a6
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20190813221022-7eecfc25a0aa
-	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20190814020510-48723802c45e
-	k8s.io/component-base => k8s.io/component-base v0.0.0-20190813221503-3e62d79579c8
-	k8s.io/metrics => k8s.io/metrics v0.0.0-20190814022108-e961729cfb0e
+	k8s.io/api => ../api
+	k8s.io/apimachinery => ../apimachinery
+	k8s.io/cli-runtime => ../cli-runtime
+	k8s.io/client-go => ../client-go
+	k8s.io/code-generator => ../code-generator
+	k8s.io/component-base => ../component-base
+	k8s.io/kubectl => ../kubectl
+	k8s.io/metrics => ../metrics
 )
