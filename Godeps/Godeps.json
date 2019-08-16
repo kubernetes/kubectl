@@ -15,8 +15,28 @@
 			"Rev": "d6e3b3328b78"
 		},
 		{
-			"ImportPath": "github.com/Azure/go-autorest",
-			"Rev": "v11.1.2"
+			"ImportPath": "github.com/Azure/go-autorest/autorest",
+			"Rev": "v0.9.0"
+		},
+		{
+			"ImportPath": "github.com/Azure/go-autorest/autorest/adal",
+			"Rev": "v0.5.0"
+		},
+		{
+			"ImportPath": "github.com/Azure/go-autorest/autorest/date",
+			"Rev": "v0.1.0"
+		},
+		{
+			"ImportPath": "github.com/Azure/go-autorest/autorest/mocks",
+			"Rev": "v0.2.0"
+		},
+		{
+			"ImportPath": "github.com/Azure/go-autorest/logger",
+			"Rev": "v0.1.0"
+		},
+		{
+			"ImportPath": "github.com/Azure/go-autorest/tracing",
+			"Rev": "v0.5.0"
 		},
 		{
 			"ImportPath": "github.com/BurntSushi/toml",
@@ -84,7 +104,7 @@
 		},
 		{
 			"ImportPath": "github.com/dgrijalva/jwt-go",
-			"Rev": "01aeca54ebda"
+			"Rev": "v3.2.0"
 		},
 		{
 			"ImportPath": "github.com/docker/distribution",
@@ -484,19 +504,19 @@
 		},
 		{
 			"ImportPath": "k8s.io/cli-runtime",
-			"Rev": "799c3f7793f3"
+			"Rev": "11248ecae1e2"
 		},
 		{
 			"ImportPath": "k8s.io/client-go",
-			"Rev": "e290f153d148"
+			"Rev": "6de8fdd4109d"
 		},
 		{
 			"ImportPath": "k8s.io/code-generator",
-			"Rev": "5654a2f3dfb8"
+			"Rev": "6483f25b1faf"
 		},
 		{
 			"ImportPath": "k8s.io/component-base",
-			"Rev": "2c85c628702c"
+			"Rev": "34b44383205a"
 		},
 		{
 			"ImportPath": "k8s.io/gengo",
@@ -512,7 +532,7 @@
 		},
 		{
 			"ImportPath": "k8s.io/metrics",
-			"Rev": "3588a53b85e5"
+			"Rev": "39346d193cfb"
 		},
 		{
 			"ImportPath": "k8s.io/utils",
