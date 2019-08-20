@@ -456,7 +456,7 @@
 		},
 		{
 			"ImportPath": "golang.org/x/tools",
-			"Rev": "aa82965741a9"
+			"Rev": "6e04913cbbac"
 		},
 		{
 			"ImportPath": "gonum.org/v1/gonum",
