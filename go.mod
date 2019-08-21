@@ -29,16 +29,16 @@ require (
 	github.com/opencontainers/go-digest v1.0.0-rc1 // indirect
 	github.com/russross/blackfriday v1.5.2
 	github.com/sirupsen/logrus v1.4.2 // indirect
-	github.com/spf13/cobra v0.0.4
+	github.com/spf13/cobra v0.0.5
 	github.com/spf13/pflag v1.0.3
 	github.com/stretchr/testify v1.3.0
 	golang.org/x/sys v0.0.0-20190616124812-15dcb6c0061f
 	gopkg.in/yaml.v2 v2.2.2
 	gotest.tools v2.2.0+incompatible // indirect
 	k8s.io/api v0.0.0-20190820101039-d651a1528133
-	k8s.io/apimachinery v0.0.0-20190820100750-21ddcbbef9e1
-	k8s.io/cli-runtime v0.0.0-20190820104540-373e70fb3de3
-	k8s.io/client-go v0.0.0-20190820101407-c8dc69f8a8bf
+	k8s.io/apimachinery v0.0.0-20190820100751-ac02f8882ef6
+	k8s.io/cli-runtime v0.0.0-20190822063518-817772b35fe3
+	k8s.io/client-go v0.0.0-20190822053941-f4e58ce6093c
 	k8s.io/component-base v0.0.0-20190820102445-1391c9d535ae
 	k8s.io/klog v0.4.0
 	k8s.io/kube-openapi v0.0.0-20190709113604-33be087ad058
@@ -54,9 +54,9 @@ replace (
 	golang.org/x/sys => golang.org/x/sys v0.0.0-20190209173611-3b5209105503
 	golang.org/x/text => golang.org/x/text v0.3.1-0.20181227161524-e6919f6577db
 	k8s.io/api => k8s.io/api v0.0.0-20190820101039-d651a1528133
-	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20190820100750-21ddcbbef9e1
-	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20190820104540-373e70fb3de3
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20190820101407-c8dc69f8a8bf
+	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20190820100751-ac02f8882ef6
+	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20190822063518-817772b35fe3
+	k8s.io/client-go => k8s.io/client-go v0.0.0-20190822053941-f4e58ce6093c
 	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20190820100531-4a676795660b
 	k8s.io/component-base => k8s.io/component-base v0.0.0-20190820102445-1391c9d535ae
 	k8s.io/metrics => k8s.io/metrics v0.0.0-20190820104355-26ad6057f7c4
