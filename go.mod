@@ -35,14 +35,14 @@ require (
 	golang.org/x/sys v0.0.0-20190616124812-15dcb6c0061f
 	gopkg.in/yaml.v2 v2.2.2
 	gotest.tools v2.2.0+incompatible // indirect
-	k8s.io/api v0.0.0-20190820101204-3efd428ce51b
+	k8s.io/api v0.0.0-20190822053644-6185379c914a
 	k8s.io/apimachinery v0.0.0-20190820074809-31b1e1ea64dc
-	k8s.io/cli-runtime v0.0.0-20190820104631-4076bb6824ea
-	k8s.io/client-go v0.0.0-20190820102012-2597db3f9d08
-	k8s.io/component-base v0.0.0-20190820074809-74b38ad9c4f2
+	k8s.io/cli-runtime v0.0.0-20190822063658-442a64f3fed7
+	k8s.io/client-go v0.0.0-20190822054823-0a74433fb222
+	k8s.io/component-base v0.0.0-20190822055535-1f6a258f5d89
 	k8s.io/klog v0.4.0
 	k8s.io/kube-openapi v0.0.0-20190709113604-33be087ad058
-	k8s.io/metrics v0.0.0-20190820104453-4564f37f2916
+	k8s.io/metrics v0.0.0-20190822063337-6c03eb8600ee
 	k8s.io/utils v0.0.0-20190801114015-581e00157fb1
 	sigs.k8s.io/kustomize v2.0.3+incompatible
 	sigs.k8s.io/yaml v1.1.0
@@ -53,11 +53,11 @@ replace (
 	golang.org/x/sync => golang.org/x/sync v0.0.0-20181108010431-42b317875d0f
 	golang.org/x/sys => golang.org/x/sys v0.0.0-20190209173611-3b5209105503
 	golang.org/x/text => golang.org/x/text v0.3.1-0.20181227161524-e6919f6577db
-	k8s.io/api => k8s.io/api v0.0.0-20190820101204-3efd428ce51b
+	k8s.io/api => k8s.io/api v0.0.0-20190822053644-6185379c914a
 	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20190820074809-31b1e1ea64dc
-	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20190820104631-4076bb6824ea
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20190820102012-2597db3f9d08
+	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20190822063658-442a64f3fed7
+	k8s.io/client-go => k8s.io/client-go v0.0.0-20190822054823-0a74433fb222
 	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20190820100630-060a3d12ce80
-	k8s.io/component-base => k8s.io/component-base v0.0.0-20190820074809-74b38ad9c4f2
-	k8s.io/metrics => k8s.io/metrics v0.0.0-20190820104453-4564f37f2916
+	k8s.io/component-base => k8s.io/component-base v0.0.0-20190822055535-1f6a258f5d89
+	k8s.io/metrics => k8s.io/metrics v0.0.0-20190822063337-6c03eb8600ee
 )
