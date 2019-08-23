@@ -247,6 +247,7 @@ k8s.io/apimachinery v0.0.0-20190822212455-21ff5c96d657/go.mod h1:EZoIMuAgG/4v58Y
 k8s.io/cli-runtime v0.0.0-20190822063518-817772b35fe3/go.mod h1:pfe5DIHseKGe87mN06NwZGIigAzG1/+6DkNMESEowj8=
 k8s.io/client-go v0.0.0-20190822053941-f4e58ce6093c/go.mod h1:JQqPsz82IY3YfNQAAJksCCAS8PL9KecFC2CQ4aB60GU=
 k8s.io/code-generator v0.0.0-20190820100531-4a676795660b/go.mod h1:cGLmodO4Xf0bnfw8/mLEXWYjiT5N9RFA9NzrYzP8VhM=
+k8s.io/component-base v0.0.0-20190820102445-1391c9d535ae h1:GOq1i0f0L+fkKbAdEoTWqJpzUEY42fohc+qKqOafRXM=
 k8s.io/component-base v0.0.0-20190820102445-1391c9d535ae/go.mod h1:1+cN3+FO5lQOzpBhBsFmxSIJpCAcD9kEEZnUIaKuOGE=
 k8s.io/gengo v0.0.0-20190128074634-0689ccc1d7d6/go.mod h1:ezvh/TsK7cY6rbqRK0oQQ8IAqLxYwwyPxAX1Pzy0ii0=
 k8s.io/gengo v0.0.0-20190813173942-955ffa8fcfc9/go.mod h1:ezvh/TsK7cY6rbqRK0oQQ8IAqLxYwwyPxAX1Pzy0ii0=
