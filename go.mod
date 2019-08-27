@@ -35,14 +35,14 @@ require (
 	golang.org/x/sys v0.0.0-20190616124812-15dcb6c0061f
 	gopkg.in/yaml.v2 v2.2.2
 	gotest.tools v2.2.0+incompatible // indirect
-	k8s.io/api v0.0.0-20190827050453-50fa2e9843ff
-	k8s.io/apimachinery v0.0.0-20190827050453-a43f8d6163d1
-	k8s.io/cli-runtime v0.0.0-20190821142400-76d9c1626b8b
-	k8s.io/client-go v0.0.0-20190827050453-cfbd47c887ff
-	k8s.io/component-base v0.0.0-20190826120455-73cfb6232c94
+	k8s.io/api v0.0.0-20190828114644-535404967fc8
+	k8s.io/apimachinery v0.0.0-20190828114644-35bd9ae31030
+	k8s.io/cli-runtime v0.0.0-20190828161418-d3f86dbae854
+	k8s.io/client-go v0.0.0-20190828155339-960df9c23167
+	k8s.io/component-base v0.0.0-20190828155824-b635e5567b37
 	k8s.io/klog v0.4.0
 	k8s.io/kube-openapi v0.0.0-20190709113604-33be087ad058
-	k8s.io/metrics v0.0.0-20190826122537-088095f319c7
+	k8s.io/metrics v0.0.0-20190828161257-dba52606d769
 	k8s.io/utils v0.0.0-20190801114015-581e00157fb1
 	sigs.k8s.io/kustomize v2.0.3+incompatible
 	sigs.k8s.io/yaml v1.1.0
@@ -53,11 +53,11 @@ replace (
 	golang.org/x/sync => golang.org/x/sync v0.0.0-20181108010431-42b317875d0f
 	golang.org/x/sys => golang.org/x/sys v0.0.0-20190209173611-3b5209105503
 	golang.org/x/text => golang.org/x/text v0.3.1-0.20181227161524-e6919f6577db
-	k8s.io/api => k8s.io/api v0.0.0-20190827050453-50fa2e9843ff
-	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20190827050453-a43f8d6163d1
-	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20190821142400-76d9c1626b8b
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20190827050453-cfbd47c887ff
-	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20190827050453-661ed15f12a9
-	k8s.io/component-base => k8s.io/component-base v0.0.0-20190826120455-73cfb6232c94
-	k8s.io/metrics => k8s.io/metrics v0.0.0-20190826122537-088095f319c7
+	k8s.io/api => k8s.io/api v0.0.0-20190828114644-535404967fc8
+	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20190828114644-35bd9ae31030
+	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20190828161418-d3f86dbae854
+	k8s.io/client-go => k8s.io/client-go v0.0.0-20190828155339-960df9c23167
+	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20190828114644-668f4934badc
+	k8s.io/component-base => k8s.io/component-base v0.0.0-20190828155824-b635e5567b37
+	k8s.io/metrics => k8s.io/metrics v0.0.0-20190828161257-dba52606d769
 )
