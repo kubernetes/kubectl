@@ -460,7 +460,7 @@
 		},
 		{
 			"ImportPath": "golang.org/x/lint",
-			"Rev": "5614ed5bae6f"
+			"Rev": "8f45f776aaf1"
 		},
 		{
 			"ImportPath": "golang.org/x/mobile",
@@ -472,7 +472,7 @@
 		},
 		{
 			"ImportPath": "golang.org/x/oauth2",
-			"Rev": "0f29369cfe45"
+			"Rev": "9f3314589c9a"
 		},
 		{
 			"ImportPath": "golang.org/x/sync",
@@ -488,7 +488,7 @@
 		},
 		{
 			"ImportPath": "golang.org/x/time",
-			"Rev": "85acf8d2951c"
+			"Rev": "f51c12702a4d"
 		},
 		{
 			"ImportPath": "golang.org/x/tools",
