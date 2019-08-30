@@ -274,9 +274,9 @@ gotest.tools v2.2.0+incompatible/go.mod h1:DsYFclhRJ6vuDpmuTbkuFWG+y2sxOXAzmJt81
 honnef.co/go/tools v0.0.0-20190102054323-c2f93a96b099/go.mod h1:rf3lG4BRIbNafJWhAfAdb/ePZxsR/4RtNHQocxwk9r4=
 honnef.co/go/tools v0.0.0-20190106161140-3f1c8253044a/go.mod h1:rf3lG4BRIbNafJWhAfAdb/ePZxsR/4RtNHQocxwk9r4=
 k8s.io/api v0.0.0-20190830074751-c43c3e1d5a79/go.mod h1:ZPzpiABYnAONRNqslkGU1hppe1VEXgsEJlFRIbP75G8=
-k8s.io/apimachinery v0.0.0-20190830154628-1693c79f78bc/go.mod h1:OOC7vMsHyCzra5xu6r1bRXkXMH76iww9BeHOAAJof4U=
-k8s.io/cli-runtime v0.0.0-20190829195939-729e37b0deac/go.mod h1:/prHxT5vPcOwlCFxzAfH10i40j1ta2rMlDQOmKWzOTk=
-k8s.io/client-go v0.0.0-20190830034949-326ca7a019c8/go.mod h1:huNBVKTSC/El60xPK9hLr2PLP1Jhcyz4O6K25rRWvYk=
+k8s.io/apimachinery v0.0.0-20190830234655-7e74522506c1/go.mod h1:OOC7vMsHyCzra5xu6r1bRXkXMH76iww9BeHOAAJof4U=
+k8s.io/cli-runtime v0.0.0-20190831000805-cb3c7ac0fd30/go.mod h1:Jqlrd6ohNp8gXiYXqN3S10gtcAniN0kyoUKLwbyyefI=
+k8s.io/client-go v0.0.0-20190830154949-d4d906eb580f/go.mod h1:IXeJ6AAriZbFm8i7g/DCA/uJ4judm2+ibRtJe684h7k=
 k8s.io/code-generator v0.0.0-20190830010859-e1805110f988/go.mod h1:DcZnH9wu/rlc2W9W82F8WPyJRR2mJVZGNE1cA/Qn6zQ=
 k8s.io/component-base v0.0.0-20190829160041-be152a771707/go.mod h1:bAfLerY9PEE9mAANE1bydHRWmLL0Ql9gB3HG/39Vws4=
 k8s.io/gengo v0.0.0-20190128074634-0689ccc1d7d6/go.mod h1:ezvh/TsK7cY6rbqRK0oQQ8IAqLxYwwyPxAX1Pzy0ii0=
