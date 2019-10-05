@@ -380,11 +380,11 @@
 		},
 		{
 			"ImportPath": "github.com/onsi/ginkgo",
-			"Rev": "v1.8.0"
+			"Rev": "v1.10.1"
 		},
 		{
 			"ImportPath": "github.com/onsi/gomega",
-			"Rev": "v1.5.0"
+			"Rev": "v1.7.0"
 		},
 		{
 			"ImportPath": "github.com/opencontainers/go-digest",
@@ -584,19 +584,19 @@
 		},
 		{
 			"ImportPath": "k8s.io/api",
-			"Rev": "10e821c09743"
+			"Rev": "2e41325d9e4b"
 		},
 		{
 			"ImportPath": "k8s.io/apimachinery",
-			"Rev": "ddf2ae2c32b1"
+			"Rev": "e71eb83a557c"
 		},
 		{
 			"ImportPath": "k8s.io/cli-runtime",
-			"Rev": "10fd5aad9108"
+			"Rev": "4d28aef60981"
 		},
 		{
 			"ImportPath": "k8s.io/client-go",
-			"Rev": "ec28f1ce4612"
+			"Rev": "b1fd78950135"
 		},
 		{
 			"ImportPath": "k8s.io/code-generator",
@@ -604,7 +604,7 @@
 		},
 		{
 			"ImportPath": "k8s.io/component-base",
-			"Rev": "be468d5d6790"
+			"Rev": "f5216b94ab44"
 		},
 		{
 			"ImportPath": "k8s.io/gengo",
@@ -620,7 +620,7 @@
 		},
 		{
 			"ImportPath": "k8s.io/metrics",
-			"Rev": "c6bb51c85f6a"
+			"Rev": "894d8cc77c5e"
 		},
 		{
 			"ImportPath": "k8s.io/utils",
