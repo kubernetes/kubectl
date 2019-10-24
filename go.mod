@@ -35,11 +35,11 @@ require (
 	golang.org/x/sys v0.0.0-20190616124812-15dcb6c0061f
 	gopkg.in/yaml.v2 v2.2.4
 	gotest.tools v2.2.0+incompatible // indirect
-	k8s.io/api v0.0.0-20191023225726-842530cfd124
-	k8s.io/apimachinery v0.0.0-20191023225540-31cb258e7ad9
-	k8s.io/cli-runtime v0.0.0-20191023071533-6ea64d505988
-	k8s.io/client-go v0.0.0-20191023065929-d1b30110f1ab
-	k8s.io/component-base v0.0.0-20191023070445-be75e4906c11
+	k8s.io/api v0.0.0-20191024025707-4cb0a757333c
+	k8s.io/apimachinery v0.0.0-20191024025529-62ce3d1e6a82
+	k8s.io/cli-runtime v0.0.0-20191025031152-0b44683c44df
+	k8s.io/client-go v0.0.0-20191024105928-464ec5ba048d
+	k8s.io/component-base v0.0.0-20191024230035-ea78290eb325
 	k8s.io/klog v1.0.0
 	k8s.io/kube-openapi v0.0.0-20190816220812-743ec37842bf
 	k8s.io/metrics v0.0.0-20191014074242-8b0351268f72
@@ -56,11 +56,11 @@ replace (
 	golang.org/x/sys => golang.org/x/sys v0.0.0-20190209173611-3b5209105503
 	golang.org/x/text => golang.org/x/text v0.3.1-0.20181227161524-e6919f6577db
 	golang.org/x/time => golang.org/x/time v0.0.0-20161028155119-f51c12702a4d
-	k8s.io/api => k8s.io/api v0.0.0-20191023225726-842530cfd124
-	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20191023225540-31cb258e7ad9
-	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20191023071533-6ea64d505988
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20191023065929-d1b30110f1ab
-	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20191017183038-0b22993d207c
-	k8s.io/component-base => k8s.io/component-base v0.0.0-20191023070445-be75e4906c11
+	k8s.io/api => k8s.io/api v0.0.0-20191024025707-4cb0a757333c
+	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20191024025529-62ce3d1e6a82
+	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20191025031152-0b44683c44df
+	k8s.io/client-go => k8s.io/client-go v0.0.0-20191024105928-464ec5ba048d
+	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20191024065345-575254a8902d
+	k8s.io/component-base => k8s.io/component-base v0.0.0-20191024230035-ea78290eb325
 	k8s.io/metrics => k8s.io/metrics v0.0.0-20191014074242-8b0351268f72
 )
