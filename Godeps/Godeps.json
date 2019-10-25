@@ -156,7 +156,7 @@
 		},
 		{
 			"ImportPath": "github.com/ghodss/yaml",
-			"Rev": "c7ce16629ff4"
+			"Rev": "v1.0.0"
 		},
 		{
 			"ImportPath": "github.com/go-kit/kit",
@@ -208,7 +208,7 @@
 		},
 		{
 			"ImportPath": "github.com/golang/protobuf",
-			"Rev": "v1.3.1"
+			"Rev": "v1.3.2"
 		},
 		{
 			"ImportPath": "github.com/golangplus/bytes",
@@ -224,7 +224,7 @@
 		},
 		{
 			"ImportPath": "github.com/google/btree",
-			"Rev": "4030bb1f1f0c"
+			"Rev": "v1.0.0"
 		},
 		{
 			"ImportPath": "github.com/google/go-cmp",
@@ -408,7 +408,7 @@
 		},
 		{
 			"ImportPath": "github.com/prometheus/client_golang",
-			"Rev": "v0.9.4"
+			"Rev": "v1.0.0"
 		},
 		{
 			"ImportPath": "github.com/prometheus/client_model",
@@ -584,27 +584,27 @@
 		},
 		{
 			"ImportPath": "k8s.io/api",
-			"Rev": "4cb0a757333c"
+			"Rev": "5524a3672fbb"
 		},
 		{
 			"ImportPath": "k8s.io/apimachinery",
-			"Rev": "62ce3d1e6a82"
+			"Rev": "af6325b3a843"
 		},
 		{
 			"ImportPath": "k8s.io/cli-runtime",
-			"Rev": "0b44683c44df"
+			"Rev": "08207da42a69"
 		},
 		{
 			"ImportPath": "k8s.io/client-go",
-			"Rev": "464ec5ba048d"
+			"Rev": "af0e48646694"
 		},
 		{
 			"ImportPath": "k8s.io/code-generator",
-			"Rev": "575254a8902d"
+			"Rev": "fb66f1f7eb3c"
 		},
 		{
 			"ImportPath": "k8s.io/component-base",
-			"Rev": "ea78290eb325"
+			"Rev": "8282bd277fec"
 		},
 		{
 			"ImportPath": "k8s.io/gengo",
@@ -620,7 +620,7 @@
 		},
 		{
 			"ImportPath": "k8s.io/metrics",
-			"Rev": "8b0351268f72"
+			"Rev": "a113c8ab860e"
 		},
 		{
 			"ImportPath": "k8s.io/utils",
