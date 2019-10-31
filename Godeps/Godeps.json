@@ -471,6 +471,10 @@
 			"Rev": "d75b2dcb6bc8"
 		},
 		{
+			"ImportPath": "github.com/xlab/handysort",
+			"Rev": "fb3537ed64a1"
+		},
+		{
 			"ImportPath": "github.com/xordataexchange/crypt",
 			"Rev": "b2862e3d0a77"
 		},
@@ -584,11 +588,11 @@
 		},
 		{
 			"ImportPath": "k8s.io/api",
-			"Rev": "5524a3672fbb"
+			"Rev": "6c5f04a580b3"
 		},
 		{
 			"ImportPath": "k8s.io/apimachinery",
-			"Rev": "af6325b3a843"
+			"Rev": "05fcdc4d1d77"
 		},
 		{
 			"ImportPath": "k8s.io/cli-runtime",
@@ -596,15 +600,15 @@
 		},
 		{
 			"ImportPath": "k8s.io/client-go",
-			"Rev": "0bdba2f91880"
+			"Rev": "1a481fb1e32d"
 		},
 		{
 			"ImportPath": "k8s.io/code-generator",
-			"Rev": "f361089c127c"
+			"Rev": "cfc5e45aeb0c"
 		},
 		{
 			"ImportPath": "k8s.io/component-base",
-			"Rev": "e99719fced85"
+			"Rev": "cba718a9c998"
 		},
 		{
 			"ImportPath": "k8s.io/gengo",
@@ -657,6 +661,10 @@
 		{
 			"ImportPath": "sigs.k8s.io/yaml",
 			"Rev": "v1.1.0"
+		},
+		{
+			"ImportPath": "vbom.ml/util",
+			"Rev": "db5cfe13f5cc"
 		}
 	]
 }
