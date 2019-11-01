@@ -289,7 +289,7 @@ honnef.co/go/tools v0.0.0-20190106161140-3f1c8253044a/go.mod h1:rf3lG4BRIbNafJWh
 k8s.io/api v0.0.0-20191101110201-6c5f04a580b3/go.mod h1:XX1oqRqWigzIBXerQ38PIiurtHiO0PAGl9/3jfw+WAQ=
 k8s.io/apimachinery v0.0.0-20191031101217-05fcdc4d1d77/go.mod h1:gA1T9z4LIup7PIegBwxkF2UYXUNVKhOAPvQWWnAc34k=
 k8s.io/cli-runtime v0.0.0-20191025231729-08207da42a69/go.mod h1:AJYvRB6JxOQCy59IzMtg5of+RQONb7AmoeJ+L5GB0Ug=
-k8s.io/client-go v0.0.0-20191028230319-1a481fb1e32d/go.mod h1:ZLqcZX6t7degTAe8tELFpWE+ekFiCB7rH8Wc4u320BA=
+k8s.io/client-go v0.0.0-20191101190952-7727ca7e789d/go.mod h1:3GRyRoxtsRtEY34ZRvag/YLnzu+rxrmWCnLQkOiTuHQ=
 k8s.io/code-generator v0.0.0-20191031101217-cfc5e45aeb0c/go.mod h1:HtDEU3n5Xo1vbwjXWiJ/lFNb5r6BWBz6aZU1IZTr4eA=
 k8s.io/component-base v0.0.0-20191101110933-cba718a9c998/go.mod h1:4lVc7JNpaKvkp+8ZBGI0EyjsKNkLNI0mKERGuZpki+k=
 k8s.io/gengo v0.0.0-20190128074634-0689ccc1d7d6/go.mod h1:ezvh/TsK7cY6rbqRK0oQQ8IAqLxYwwyPxAX1Pzy0ii0=
