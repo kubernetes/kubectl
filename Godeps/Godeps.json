@@ -288,7 +288,7 @@
 		},
 		{
 			"ImportPath": "github.com/json-iterator/go",
-			"Rev": "v1.1.7"
+			"Rev": "v1.1.8"
 		},
 		{
 			"ImportPath": "github.com/jstemmer/go-junit-report",
@@ -592,27 +592,27 @@
 		},
 		{
 			"ImportPath": "k8s.io/api",
-			"Rev": "b59024dbeec5"
+			"Rev": "6d4d1612ba53"
 		},
 		{
 			"ImportPath": "k8s.io/apimachinery",
-			"Rev": "c18f71bf2947"
+			"Rev": "dffb012825f2"
 		},
 		{
 			"ImportPath": "k8s.io/cli-runtime",
-			"Rev": "5117b67a1f72"
+			"Rev": "dc4ab95296e5"
 		},
 		{
 			"ImportPath": "k8s.io/client-go",
-			"Rev": "f8f007fd456c"
+			"Rev": "3c0d1af94be5"
 		},
 		{
 			"ImportPath": "k8s.io/code-generator",
-			"Rev": "3c1097069dc3"
+			"Rev": "a9a0d9c0b3aa"
 		},
 		{
 			"ImportPath": "k8s.io/component-base",
-			"Rev": "59be22c0dd52"
+			"Rev": "7fd2da093d6d"
 		},
 		{
 			"ImportPath": "k8s.io/gengo",
@@ -628,7 +628,7 @@
 		},
 		{
 			"ImportPath": "k8s.io/metrics",
-			"Rev": "31d350888c36"
+			"Rev": "80b462294217"
 		},
 		{
 			"ImportPath": "k8s.io/utils",
