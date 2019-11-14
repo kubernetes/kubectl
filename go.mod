@@ -36,14 +36,14 @@ require (
 	golang.org/x/sys v0.0.0-20190826190057-c7b8b68b1456
 	gopkg.in/yaml.v2 v2.2.4
 	gotest.tools v2.2.0+incompatible // indirect
-	k8s.io/api v0.0.0-20191114184158-f35a30b93e33
-	k8s.io/apimachinery v0.0.0-20191114184158-4995f184a5b8
-	k8s.io/cli-runtime v0.0.0-20191114110204-e3b04d014814
-	k8s.io/client-go v0.0.0-20191114184158-f3cdcaf970ea
-	k8s.io/component-base v0.0.0-20191114184158-ae0427be6882
+	k8s.io/api v0.0.0-20191115142644-28bee1a9beb0
+	k8s.io/apimachinery v0.0.0-20191115142644-f4e7d7f24368
+	k8s.io/cli-runtime v0.0.0-20191115142644-586eccdeb5d3
+	k8s.io/client-go v0.0.0-20191115142644-a4c677cde034
+	k8s.io/component-base v0.0.0-20191115142644-051688b905f7
 	k8s.io/klog v1.0.0
 	k8s.io/kube-openapi v0.0.0-20191107075043-30be4d16710a
-	k8s.io/metrics v0.0.0-20191109155659-c681e2925efb
+	k8s.io/metrics v0.0.0-20191115182703-d3c905f81994
 	k8s.io/utils v0.0.0-20191030222137-2b95a09bc58d
 	sigs.k8s.io/kustomize v2.0.3+incompatible
 	sigs.k8s.io/yaml v1.1.0
@@ -53,11 +53,11 @@ require (
 replace (
 	golang.org/x/sys => golang.org/x/sys v0.0.0-20190813064441-fde4db37ae7a
 	golang.org/x/tools => golang.org/x/tools v0.0.0-20190821162956-65e3620a7ae7
-	k8s.io/api => k8s.io/api v0.0.0-20191114184158-f35a30b93e33
-	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20191114184158-4995f184a5b8
-	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20191114110204-e3b04d014814
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20191114184158-f3cdcaf970ea
-	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20191114184158-bc2bfc8bb00a
-	k8s.io/component-base => k8s.io/component-base v0.0.0-20191114184158-ae0427be6882
-	k8s.io/metrics => k8s.io/metrics v0.0.0-20191109155659-c681e2925efb
+	k8s.io/api => k8s.io/api v0.0.0-20191115142644-28bee1a9beb0
+	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20191115142644-f4e7d7f24368
+	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20191115142644-586eccdeb5d3
+	k8s.io/client-go => k8s.io/client-go v0.0.0-20191115142644-a4c677cde034
+	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20191115142644-65da3bb30b8d
+	k8s.io/component-base => k8s.io/component-base v0.0.0-20191115142644-051688b905f7
+	k8s.io/metrics => k8s.io/metrics v0.0.0-20191115182703-d3c905f81994
 )
