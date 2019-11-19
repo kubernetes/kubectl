@@ -2,7 +2,7 @@
 
 module k8s.io/kubectl
 
-go 1.13
+go 1.12
 
 require (
 	github.com/Azure/go-ansiterm v0.0.0-20170929234023-d6e3b3328b78 // indirect
@@ -24,7 +24,7 @@ require (
 	github.com/liggitt/tabwriter v0.0.0-20181228230101-89fcab3d43de
 	github.com/lithammer/dedent v1.1.0
 	github.com/mitchellh/go-wordwrap v1.0.0
-	github.com/onsi/ginkgo v1.11.0
+	github.com/onsi/ginkgo v1.10.1
 	github.com/onsi/gomega v1.7.0
 	github.com/opencontainers/go-digest v1.0.0-rc1 // indirect
 	github.com/russross/blackfriday v1.5.2
@@ -34,17 +34,17 @@ require (
 	github.com/stretchr/testify v1.4.0
 	github.com/xlab/handysort v0.0.0-20150421192137-fb3537ed64a1 // indirect
 	golang.org/x/sys v0.0.0-20190826190057-c7b8b68b1456
-	gopkg.in/yaml.v2 v2.2.4
+	gopkg.in/yaml.v2 v2.2.7
 	gotest.tools v2.2.0+incompatible // indirect
-	k8s.io/api v0.0.0-20191230033939-7dc09db16fb8
-	k8s.io/apimachinery v0.0.0-20200109233455-904d3d8a3999
-	k8s.io/cli-runtime v0.0.0-20191222115356-e2d80aead1eb
-	k8s.io/client-go v0.0.0-20200107234521-8ead54f5cff8
-	k8s.io/component-base v0.0.0-20200111113959-313033959c60
+	k8s.io/api v0.0.0
+	k8s.io/apimachinery v0.0.0
+	k8s.io/cli-runtime v0.0.0
+	k8s.io/client-go v0.0.0
+	k8s.io/component-base v0.0.0
 	k8s.io/klog v1.0.0
 	k8s.io/kube-openapi v0.0.0-20191107075043-30be4d16710a
-	k8s.io/metrics v0.0.0-20191222115248-b10799206b33
-	k8s.io/utils v0.0.0-20191217005138-9e5e9d854fcc
+	k8s.io/metrics v0.0.0
+	k8s.io/utils v0.0.0-20191114184206-e782cd3c129f
 	sigs.k8s.io/kustomize v2.0.3+incompatible
 	sigs.k8s.io/yaml v1.1.0
 	vbom.ml/util v0.0.0-20160121211510-db5cfe13f5cc
@@ -53,11 +53,12 @@ require (
 replace (
 	golang.org/x/sys => golang.org/x/sys v0.0.0-20190813064441-fde4db37ae7a // pinned to release-branch.go1.13
 	golang.org/x/tools => golang.org/x/tools v0.0.0-20190821162956-65e3620a7ae7 // pinned to release-branch.go1.13
-	k8s.io/api => k8s.io/api v0.0.0-20191230033939-7dc09db16fb8
-	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20200109233455-904d3d8a3999
-	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20191222115356-e2d80aead1eb
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20200107234521-8ead54f5cff8
-	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20200107193305-1e5b5238fa65
-	k8s.io/component-base => k8s.io/component-base v0.0.0-20200111113959-313033959c60
-	k8s.io/metrics => k8s.io/metrics v0.0.0-20191222115248-b10799206b33
+	k8s.io/api => ../api
+	k8s.io/apimachinery => ../apimachinery
+	k8s.io/cli-runtime => ../cli-runtime
+	k8s.io/client-go => ../client-go
+	k8s.io/code-generator => ../code-generator
+	k8s.io/component-base => ../component-base
+	k8s.io/kubectl => ../kubectl
+	k8s.io/metrics => ../metrics
 )
