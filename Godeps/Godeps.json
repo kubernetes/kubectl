@@ -176,11 +176,11 @@
 		},
 		{
 			"ImportPath": "github.com/go-openapi/jsonreference",
-			"Rev": "v0.19.2"
+			"Rev": "v0.19.3"
 		},
 		{
 			"ImportPath": "github.com/go-openapi/spec",
-			"Rev": "v0.19.2"
+			"Rev": "v0.19.3"
 		},
 		{
 			"ImportPath": "github.com/go-openapi/swag",
@@ -340,7 +340,7 @@
 		},
 		{
 			"ImportPath": "github.com/mailru/easyjson",
-			"Rev": "b2ccc519800e"
+			"Rev": "v0.7.0"
 		},
 		{
 			"ImportPath": "github.com/matttproud/golang_protobuf_extensions",
@@ -464,7 +464,7 @@
 		},
 		{
 			"ImportPath": "github.com/stretchr/testify",
-			"Rev": "v1.3.0"
+			"Rev": "v1.4.0"
 		},
 		{
 			"ImportPath": "github.com/ugorji/go/codec",
@@ -592,27 +592,27 @@
 		},
 		{
 			"ImportPath": "k8s.io/api",
-			"Rev": "28bee1a9beb0"
+			"Rev": "4ed536977f46"
 		},
 		{
 			"ImportPath": "k8s.io/apimachinery",
-			"Rev": "89d410bde4ec"
+			"Rev": "79c2a76c473a"
 		},
 		{
 			"ImportPath": "k8s.io/cli-runtime",
-			"Rev": "15c4613aade6"
+			"Rev": "0b9013f67e6c"
 		},
 		{
 			"ImportPath": "k8s.io/client-go",
-			"Rev": "e7b5e74ed4e6"
+			"Rev": "3a262fe58afa"
 		},
 		{
 			"ImportPath": "k8s.io/code-generator",
-			"Rev": "65da3bb30b8d"
+			"Rev": "e95606b614f0"
 		},
 		{
 			"ImportPath": "k8s.io/component-base",
-			"Rev": "cf5856e80d06"
+			"Rev": "c76165dbe04e"
 		},
 		{
 			"ImportPath": "k8s.io/gengo",
@@ -628,7 +628,7 @@
 		},
 		{
 			"ImportPath": "k8s.io/metrics",
-			"Rev": "3d99c76b81f3"
+			"Rev": "c7d4ee0ffc0e"
 		},
 		{
 			"ImportPath": "k8s.io/utils",
