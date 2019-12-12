@@ -604,15 +604,15 @@
 		},
 		{
 			"ImportPath": "k8s.io/client-go",
-			"Rev": "a1d3d648d066"
+			"Rev": "16bcffe0e4b7"
 		},
 		{
 			"ImportPath": "k8s.io/code-generator",
-			"Rev": "c4c8f8345c7e"
+			"Rev": "96ef5c061dc1"
 		},
 		{
 			"ImportPath": "k8s.io/component-base",
-			"Rev": "b370c1878ea4"
+			"Rev": "1630ca29c955"
 		},
 		{
 			"ImportPath": "k8s.io/gengo",
