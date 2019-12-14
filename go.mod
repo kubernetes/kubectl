@@ -2,7 +2,7 @@
 
 module k8s.io/kubectl
 
-go 1.12
+go 1.13
 
 require (
 	github.com/Azure/go-ansiterm v0.0.0-20170929234023-d6e3b3328b78 // indirect
@@ -36,14 +36,14 @@ require (
 	golang.org/x/sys v0.0.0-20190826190057-c7b8b68b1456
 	gopkg.in/yaml.v2 v2.2.4
 	gotest.tools v2.2.0+incompatible // indirect
-	k8s.io/api v0.0.0-20191211145919-71a29d78ad4c
-	k8s.io/apimachinery v0.0.0-20191211000542-eca85dcd9994
-	k8s.io/cli-runtime v0.0.0-20191204091246-2f9002c43394
-	k8s.io/client-go v0.0.0-20191212070425-16bcffe0e4b7
-	k8s.io/component-base v0.0.0-20191211230250-1630ca29c955
+	k8s.io/api v0.0.0
+	k8s.io/apimachinery v0.0.0
+	k8s.io/cli-runtime v0.0.0
+	k8s.io/client-go v0.0.0
+	k8s.io/component-base v0.0.0
 	k8s.io/klog v1.0.0
 	k8s.io/kube-openapi v0.0.0-20191107075043-30be4d16710a
-	k8s.io/metrics v0.0.0-20191121021546-b1134fd1210c
+	k8s.io/metrics v0.0.0
 	k8s.io/utils v0.0.0-20191114184206-e782cd3c129f
 	sigs.k8s.io/kustomize v2.0.3+incompatible
 	sigs.k8s.io/yaml v1.1.0
@@ -53,11 +53,12 @@ require (
 replace (
 	golang.org/x/sys => golang.org/x/sys v0.0.0-20190813064441-fde4db37ae7a // pinned to release-branch.go1.13
 	golang.org/x/tools => golang.org/x/tools v0.0.0-20190821162956-65e3620a7ae7 // pinned to release-branch.go1.13
-	k8s.io/api => k8s.io/api v0.0.0-20191211145919-71a29d78ad4c
-	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20191211000542-eca85dcd9994
-	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20191204091246-2f9002c43394
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20191212070425-16bcffe0e4b7
-	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20191212144832-96ef5c061dc1
-	k8s.io/component-base => k8s.io/component-base v0.0.0-20191211230250-1630ca29c955
-	k8s.io/metrics => k8s.io/metrics v0.0.0-20191121021546-b1134fd1210c
+	k8s.io/api => ../api
+	k8s.io/apimachinery => ../apimachinery
+	k8s.io/cli-runtime => ../cli-runtime
+	k8s.io/client-go => ../client-go
+	k8s.io/code-generator => ../code-generator
+	k8s.io/component-base => ../component-base
+	k8s.io/kubectl => ../kubectl
+	k8s.io/metrics => ../metrics
 )
