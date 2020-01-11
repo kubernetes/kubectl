@@ -412,7 +412,7 @@
 		},
 		{
 			"ImportPath": "github.com/prometheus/client_model",
-			"Rev": "fd36f4220a90"
+			"Rev": "v0.1.0"
 		},
 		{
 			"ImportPath": "github.com/prometheus/common",
@@ -612,7 +612,7 @@
 		},
 		{
 			"ImportPath": "k8s.io/component-base",
-			"Rev": "e498b4d116ab"
+			"Rev": "313033959c60"
 		},
 		{
 			"ImportPath": "k8s.io/gengo",
