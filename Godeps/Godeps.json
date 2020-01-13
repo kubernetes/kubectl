@@ -264,7 +264,7 @@
 		},
 		{
 			"ImportPath": "github.com/googleapis/gnostic",
-			"Rev": "0c5108395e2d"
+			"Rev": "v0.1.0"
 		},
 		{
 			"ImportPath": "github.com/gophercloud/gophercloud",
@@ -612,19 +612,19 @@
 		},
 		{
 			"ImportPath": "k8s.io/api",
-			"Rev": "530d314087d8"
+			"Rev": "3946df5ca773"
 		},
 		{
 			"ImportPath": "k8s.io/apimachinery",
-			"Rev": "51168acb8295"
+			"Rev": "44bd77c24ef9"
 		},
 		{
 			"ImportPath": "k8s.io/cli-runtime",
-			"Rev": "39b342ac78f7"
+			"Rev": "4c0b167ce833"
 		},
 		{
 			"ImportPath": "k8s.io/client-go",
-			"Rev": "ea0a6e11838c"
+			"Rev": "bcaa73156d59"
 		},
 		{
 			"ImportPath": "k8s.io/code-generator",
@@ -632,7 +632,7 @@
 		},
 		{
 			"ImportPath": "k8s.io/component-base",
-			"Rev": "6a09b2cf3968"
+			"Rev": "11fea6cd3d41"
 		},
 		{
 			"ImportPath": "k8s.io/gengo",
@@ -648,7 +648,7 @@
 		},
 		{
 			"ImportPath": "k8s.io/metrics",
-			"Rev": "c34ad8962a43"
+			"Rev": "16c2751e3567"
 		},
 		{
 			"ImportPath": "k8s.io/utils",
