@@ -36,14 +36,14 @@ require (
 	golang.org/x/sys v0.0.0-20190826190057-c7b8b68b1456
 	gopkg.in/yaml.v2 v2.2.7
 	gotest.tools v2.2.0+incompatible // indirect
-	k8s.io/api v0.0.0-20200118153702-ddd293d80783
-	k8s.io/apimachinery v0.0.0-20200116033531-fb4ce0f53438
-	k8s.io/cli-runtime v0.0.0-20200118155126-feab07fccd0b
-	k8s.io/client-go v0.0.0-20200116034004-1aa326d7304e
-	k8s.io/component-base v0.0.0-20200116034511-5acc2cc4b5e6
+	k8s.io/api v0.0.0-20200118233722-7aecbd569fd4
+	k8s.io/apimachinery v0.0.0-20200118233534-b615468efe04
+	k8s.io/cli-runtime v0.0.0-20200118235715-b7dc99061fe0
+	k8s.io/client-go v0.0.0-20200118233946-a432bd9ba7da
+	k8s.io/component-base v0.0.0-20200118234435-5735a1699056
 	k8s.io/klog v1.0.0
 	k8s.io/kube-openapi v0.0.0-20191107075043-30be4d16710a
-	k8s.io/metrics v0.0.0-20200116035750-104fffcb7841
+	k8s.io/metrics v0.0.0-20200118235605-3407a290b84d
 	k8s.io/utils v0.0.0-20191217005138-9e5e9d854fcc
 	sigs.k8s.io/kustomize v2.0.3+incompatible
 	sigs.k8s.io/yaml v1.1.0
@@ -53,11 +53,11 @@ require (
 replace (
 	golang.org/x/sys => golang.org/x/sys v0.0.0-20190813064441-fde4db37ae7a // pinned to release-branch.go1.13
 	golang.org/x/tools => golang.org/x/tools v0.0.0-20190821162956-65e3620a7ae7 // pinned to release-branch.go1.13
-	k8s.io/api => k8s.io/api v0.0.0-20200118153702-ddd293d80783
-	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20200116033531-fb4ce0f53438
-	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20200118155126-feab07fccd0b
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20200116034004-1aa326d7304e
-	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20200115193335-ff19ea5b1bbd
-	k8s.io/component-base => k8s.io/component-base v0.0.0-20200116034511-5acc2cc4b5e6
-	k8s.io/metrics => k8s.io/metrics v0.0.0-20200116035750-104fffcb7841
+	k8s.io/api => k8s.io/api v0.0.0-20200118233722-7aecbd569fd4
+	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20200118233534-b615468efe04
+	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20200118235715-b7dc99061fe0
+	k8s.io/client-go => k8s.io/client-go v0.0.0-20200118233946-a432bd9ba7da
+	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20200118233344-48228b4f418f
+	k8s.io/component-base => k8s.io/component-base v0.0.0-20200118234435-5735a1699056
+	k8s.io/metrics => k8s.io/metrics v0.0.0-20200118235605-3407a290b84d
 )
