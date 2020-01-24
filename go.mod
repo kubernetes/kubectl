@@ -33,17 +33,17 @@ require (
 	github.com/spf13/pflag v1.0.5
 	github.com/stretchr/testify v1.4.0
 	github.com/xlab/handysort v0.0.0-20150421192137-fb3537ed64a1 // indirect
-	golang.org/x/sys v0.0.0-20190826190057-c7b8b68b1456
+	golang.org/x/sys v0.0.0-20191022100944-742c48ecaeb7
 	gopkg.in/yaml.v2 v2.2.8
 	gotest.tools v2.2.0+incompatible // indirect
-	k8s.io/api v0.0.0-20200130072251-812149543c99
-	k8s.io/apimachinery v0.0.0-20200130072110-845a0cbf0d16
-	k8s.io/cli-runtime v0.0.0-20200130074325-b82f392e80c6
-	k8s.io/client-go v0.0.0-20200130072521-0fcd5b52ae3f
-	k8s.io/component-base v0.0.0-20200130073007-c1abf0189091
+	k8s.io/api v0.0.0
+	k8s.io/apimachinery v0.0.0
+	k8s.io/cli-runtime v0.0.0
+	k8s.io/client-go v0.0.0
+	k8s.io/component-base v0.0.0
 	k8s.io/klog v1.0.0
 	k8s.io/kube-openapi v0.0.0-20200121204235-bf4fb3bd569c
-	k8s.io/metrics v0.0.0-20200130074206-e49811846658
+	k8s.io/metrics v0.0.0
 	k8s.io/utils v0.0.0-20191217005138-9e5e9d854fcc
 	sigs.k8s.io/kustomize v2.0.3+incompatible
 	sigs.k8s.io/yaml v1.1.0
@@ -53,11 +53,12 @@ require (
 replace (
 	golang.org/x/sys => golang.org/x/sys v0.0.0-20190813064441-fde4db37ae7a // pinned to release-branch.go1.13
 	golang.org/x/tools => golang.org/x/tools v0.0.0-20190821162956-65e3620a7ae7 // pinned to release-branch.go1.13
-	k8s.io/api => k8s.io/api v0.0.0-20200130072251-812149543c99
-	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20200130072110-845a0cbf0d16
-	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20200130074325-b82f392e80c6
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20200130072521-0fcd5b52ae3f
-	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20200129031917-c3c22629838a
-	k8s.io/component-base => k8s.io/component-base v0.0.0-20200130073007-c1abf0189091
-	k8s.io/metrics => k8s.io/metrics v0.0.0-20200130074206-e49811846658
+	k8s.io/api => ../api
+	k8s.io/apimachinery => ../apimachinery
+	k8s.io/cli-runtime => ../cli-runtime
+	k8s.io/client-go => ../client-go
+	k8s.io/code-generator => ../code-generator
+	k8s.io/component-base => ../component-base
+	k8s.io/kubectl => ../kubectl
+	k8s.io/metrics => ../metrics
 )
