@@ -228,7 +228,7 @@
 		},
 		{
 			"ImportPath": "github.com/google/gofuzz",
-			"Rev": "v1.0.0"
+			"Rev": "v1.1.0"
 		},
 		{
 			"ImportPath": "github.com/google/martian",
@@ -568,19 +568,19 @@
 		},
 		{
 			"ImportPath": "k8s.io/api",
-			"Rev": "924612ff3bca"
+			"Rev": "812149543c99"
 		},
 		{
 			"ImportPath": "k8s.io/apimachinery",
-			"Rev": "6e7abe710169"
+			"Rev": "845a0cbf0d16"
 		},
 		{
 			"ImportPath": "k8s.io/cli-runtime",
-			"Rev": "fea5ca65697c"
+			"Rev": "b82f392e80c6"
 		},
 		{
 			"ImportPath": "k8s.io/client-go",
-			"Rev": "f55f946138b4"
+			"Rev": "0fcd5b52ae3f"
 		},
 		{
 			"ImportPath": "k8s.io/code-generator",
@@ -588,7 +588,7 @@
 		},
 		{
 			"ImportPath": "k8s.io/component-base",
-			"Rev": "0919167b1313"
+			"Rev": "c1abf0189091"
 		},
 		{
 			"ImportPath": "k8s.io/gengo",
@@ -604,7 +604,7 @@
 		},
 		{
 			"ImportPath": "k8s.io/metrics",
-			"Rev": "382f77f94bb9"
+			"Rev": "e49811846658"
 		},
 		{
 			"ImportPath": "k8s.io/utils",
