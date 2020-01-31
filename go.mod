@@ -19,6 +19,7 @@ require (
 	github.com/golangplus/bytes v0.0.0-20160111154220-45c989fe5450 // indirect
 	github.com/golangplus/fmt v0.0.0-20150411045040-2a5d6d7d2995 // indirect
 	github.com/golangplus/testing v0.0.0-20180327235837-af21d9c3145e // indirect
+	github.com/google/go-cmp v0.3.0
 	github.com/googleapis/gnostic v0.1.0
 	github.com/jonboulle/clockwork v0.1.0
 	github.com/liggitt/tabwriter v0.0.0-20181228230101-89fcab3d43de
@@ -36,15 +37,15 @@ require (
 	golang.org/x/sys v0.0.0-20191022100944-742c48ecaeb7
 	gopkg.in/yaml.v2 v2.2.8
 	gotest.tools v2.2.0+incompatible // indirect
-	k8s.io/api v0.0.0-20200305164835-51c2a977a6bd
-	k8s.io/apimachinery v0.0.0-20200304180238-7c34f3d03f36
-	k8s.io/cli-runtime v0.0.0-20200304180238-1fd6bbb45fc7
-	k8s.io/client-go v0.0.0-20200306003355-9793c43f3608
-	k8s.io/component-base v0.0.0-20200305164835-37db031b83a2
+	k8s.io/api v0.0.0
+	k8s.io/apimachinery v0.0.0
+	k8s.io/cli-runtime v0.0.0
+	k8s.io/client-go v0.0.0
+	k8s.io/component-base v0.0.0
 	k8s.io/klog v1.0.0
 	k8s.io/kube-openapi v0.0.0-20200121204235-bf4fb3bd569c
-	k8s.io/metrics v0.0.0-20200304205520-6ec5295faf08
-	k8s.io/utils v0.0.0-20200229041039-0a110f9eb7ab
+	k8s.io/metrics v0.0.0
+	k8s.io/utils v0.0.0-20200117235808-5f6fbceb4c31
 	sigs.k8s.io/kustomize v2.0.3+incompatible
 	sigs.k8s.io/yaml v1.2.0
 	vbom.ml/util v0.0.0-20160121211510-db5cfe13f5cc
@@ -53,11 +54,12 @@ require (
 replace (
 	golang.org/x/sys => golang.org/x/sys v0.0.0-20190813064441-fde4db37ae7a // pinned to release-branch.go1.13
 	golang.org/x/tools => golang.org/x/tools v0.0.0-20190821162956-65e3620a7ae7 // pinned to release-branch.go1.13
-	k8s.io/api => k8s.io/api v0.0.0-20200305164835-51c2a977a6bd
-	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20200304180238-7c34f3d03f36
-	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20200304180238-1fd6bbb45fc7
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20200306003355-9793c43f3608
-	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20200223121935-f7c31974df11
-	k8s.io/component-base => k8s.io/component-base v0.0.0-20200305164835-37db031b83a2
-	k8s.io/metrics => k8s.io/metrics v0.0.0-20200304205520-6ec5295faf08
+	k8s.io/api => ../api
+	k8s.io/apimachinery => ../apimachinery
+	k8s.io/cli-runtime => ../cli-runtime
+	k8s.io/client-go => ../client-go
+	k8s.io/code-generator => ../code-generator
+	k8s.io/component-base => ../component-base
+	k8s.io/kubectl => ../kubectl
+	k8s.io/metrics => ../metrics
 )
