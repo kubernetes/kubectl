@@ -408,7 +408,7 @@
 		},
 		{
 			"ImportPath": "github.com/prometheus/client_model",
-			"Rev": "14fe0d1b01d4"
+			"Rev": "v0.2.0"
 		},
 		{
 			"ImportPath": "github.com/prometheus/common",
@@ -572,7 +572,7 @@
 		},
 		{
 			"ImportPath": "k8s.io/apimachinery",
-			"Rev": "eb4ad4570127"
+			"Rev": "f30c02351710"
 		},
 		{
 			"ImportPath": "k8s.io/cli-runtime",
@@ -588,7 +588,7 @@
 		},
 		{
 			"ImportPath": "k8s.io/component-base",
-			"Rev": "c1abf0189091"
+			"Rev": "6bcd25baa4f4"
 		},
 		{
 			"ImportPath": "k8s.io/gengo",
