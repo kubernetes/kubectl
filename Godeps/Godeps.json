@@ -476,7 +476,7 @@
 		},
 		{
 			"ImportPath": "golang.org/x/crypto",
-			"Rev": "60c769a6c586"
+			"Rev": "bac4c82f6975"
 		},
 		{
 			"ImportPath": "golang.org/x/exp",
@@ -576,11 +576,11 @@
 		},
 		{
 			"ImportPath": "k8s.io/cli-runtime",
-			"Rev": "1db9c3dcc41c"
+			"Rev": "6afaf081028f"
 		},
 		{
 			"ImportPath": "k8s.io/client-go",
-			"Rev": "40d13067fe64"
+			"Rev": "39a9bc1d5a52"
 		},
 		{
 			"ImportPath": "k8s.io/code-generator",
@@ -588,7 +588,7 @@
 		},
 		{
 			"ImportPath": "k8s.io/component-base",
-			"Rev": "52da27f0465b"
+			"Rev": "0ac4c75112dd"
 		},
 		{
 			"ImportPath": "k8s.io/gengo",
@@ -604,7 +604,7 @@
 		},
 		{
 			"ImportPath": "k8s.io/metrics",
-			"Rev": "41588ae4fcb3"
+			"Rev": "dd67fa7c7a3c"
 		},
 		{
 			"ImportPath": "k8s.io/utils",
