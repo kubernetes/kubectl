@@ -119,10 +119,6 @@
 			"Rev": "v2.7.1"
 		},
 		{
-			"ImportPath": "github.com/docker/docker",
-			"Rev": "be7ac8be2ae0"
-		},
-		{
 			"ImportPath": "github.com/docker/spdystream",
 			"Rev": "449fdfce4d96"
 		},
@@ -224,7 +220,7 @@
 		},
 		{
 			"ImportPath": "github.com/google/go-cmp",
-			"Rev": "v0.3.0"
+			"Rev": "v0.3.1"
 		},
 		{
 			"ImportPath": "github.com/google/gofuzz",
@@ -351,6 +347,10 @@
 			"Rev": "v1.1.2"
 		},
 		{
+			"ImportPath": "github.com/moby/term",
+			"Rev": "672ec06f55cd"
+		},
+		{
 			"ImportPath": "github.com/modern-go/concurrent",
 			"Rev": "bacd9c7ef1dd"
 		},
@@ -392,7 +392,7 @@
 		},
 		{
 			"ImportPath": "github.com/pkg/errors",
-			"Rev": "v0.8.1"
+			"Rev": "v0.9.1"
 		},
 		{
 			"ImportPath": "github.com/pmezard/go-difflib",
@@ -559,32 +559,36 @@
 			"Rev": "v2.2.0"
 		},
 		{
+			"ImportPath": "gotest.tools/v3",
+			"Rev": "v3.0.2"
+		},
+		{
 			"ImportPath": "honnef.co/go/tools",
 			"Rev": "3f1c8253044a"
 		},
 		{
 			"ImportPath": "k8s.io/api",
-			"Rev": "c322e7106b58"
+			"Rev": "eb909d5fe0e7"
 		},
 		{
 			"ImportPath": "k8s.io/apimachinery",
-			"Rev": "1a505bc60c6d"
+			"Rev": "147abd67b880"
 		},
 		{
 			"ImportPath": "k8s.io/cli-runtime",
-			"Rev": "5fd0fb8a5147"
+			"Rev": "2818f417d17e"
 		},
 		{
 			"ImportPath": "k8s.io/client-go",
-			"Rev": "c426e0f36d6b"
+			"Rev": "365234d2fcf0"
 		},
 		{
 			"ImportPath": "k8s.io/code-generator",
-			"Rev": "6a048a382944"
+			"Rev": "6bb2b634cece"
 		},
 		{
 			"ImportPath": "k8s.io/component-base",
-			"Rev": "6639e587ba98"
+			"Rev": "dfc3f1250855"
 		},
 		{
 			"ImportPath": "k8s.io/gengo",
@@ -600,7 +604,7 @@
 		},
 		{
 			"ImportPath": "k8s.io/metrics",
-			"Rev": "f83af58644c3"
+			"Rev": "582cd349a422"
 		},
 		{
 			"ImportPath": "k8s.io/utils",
