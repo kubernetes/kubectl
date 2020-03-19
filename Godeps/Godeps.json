@@ -251,10 +251,6 @@
 			"Rev": "v0.1.0"
 		},
 		{
-			"ImportPath": "github.com/gophercloud/gophercloud",
-			"Rev": "v0.1.0"
-		},
-		{
 			"ImportPath": "github.com/gregjones/httpcache",
 			"Rev": "9cad4c3443a7"
 		},
@@ -576,11 +572,11 @@
 		},
 		{
 			"ImportPath": "k8s.io/cli-runtime",
-			"Rev": "99b536c4b997"
+			"Rev": "4b622387b382"
 		},
 		{
 			"ImportPath": "k8s.io/client-go",
-			"Rev": "2b32f6d21530"
+			"Rev": "6251a13f71aa"
 		},
 		{
 			"ImportPath": "k8s.io/code-generator",
@@ -588,7 +584,7 @@
 		},
 		{
 			"ImportPath": "k8s.io/component-base",
-			"Rev": "dae26a37dccb"
+			"Rev": "39d55b0f0fdc"
 		},
 		{
 			"ImportPath": "k8s.io/gengo",
@@ -604,7 +600,7 @@
 		},
 		{
 			"ImportPath": "k8s.io/metrics",
-			"Rev": "6bbd5186ca94"
+			"Rev": "2cc414e7a0a0"
 		},
 		{
 			"ImportPath": "k8s.io/utils",
