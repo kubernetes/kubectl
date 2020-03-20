@@ -314,9 +314,9 @@ gotest.tools v2.2.0+incompatible/go.mod h1:DsYFclhRJ6vuDpmuTbkuFWG+y2sxOXAzmJt81
 gotest.tools/v3 v3.0.2/go.mod h1:3SzNCllyD9/Y+b5r9JIKQ474KzkZyqLqEfYqMsX94Bk=
 honnef.co/go/tools v0.0.0-20190102054323-c2f93a96b099/go.mod h1:rf3lG4BRIbNafJWhAfAdb/ePZxsR/4RtNHQocxwk9r4=
 honnef.co/go/tools v0.0.0-20190106161140-3f1c8253044a/go.mod h1:rf3lG4BRIbNafJWhAfAdb/ePZxsR/4RtNHQocxwk9r4=
-k8s.io/api v0.0.0-20200319202348-eb909d5fe0e7/go.mod h1:5nMyHS4bWX496fulniJ+Sws3P6GLvaP43GadMObLf58=
+k8s.io/api v0.0.0-20200320042356-1fc28ea2498c/go.mod h1:5nMyHS4bWX496fulniJ+Sws3P6GLvaP43GadMObLf58=
 k8s.io/apimachinery v0.0.0-20200319202151-147abd67b880/go.mod h1:yKN3QjQfKl8UdUL9RQ+/1VkR7nIUs7w02zC5CXhD+G0=
-k8s.io/cli-runtime v0.0.0-20200319204635-2818f417d17e/go.mod h1:Nvk21zi6gAb9nJ+K+zEbYeOgylq4N7oDTA8QEEft5I4=
+k8s.io/cli-runtime v0.0.0-20200320044506-d385c885f145/go.mod h1:4GZQFSMkkVSfj21Hii5uOWAtUbZz1ajgHOkRG+bVRYg=
 k8s.io/client-go v0.0.0-20200319202630-365234d2fcf0/go.mod h1:peZZtJ3/dSGdPT/rn6th1avRB2RsAVCjb6uBmwIndho=
 k8s.io/code-generator v0.0.0-20200319201949-6bb2b634cece/go.mod h1:HgVCDA66DadRZIO1Ym1MX49lfUdXKOzJ8HA7GQVQTMI=
 k8s.io/component-base v0.0.0-20200319203152-dfc3f1250855/go.mod h1:vVQbtKtC55jRBis6wh7/e228otzRkcVSGyBbmNDqRy0=
