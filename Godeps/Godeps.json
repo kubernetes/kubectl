@@ -220,7 +220,7 @@
 		},
 		{
 			"ImportPath": "github.com/google/go-cmp",
-			"Rev": "v0.3.1"
+			"Rev": "v0.4.0"
 		},
 		{
 			"ImportPath": "github.com/google/gofuzz",
@@ -296,7 +296,7 @@
 		},
 		{
 			"ImportPath": "github.com/konsorten/go-windows-terminal-sequences",
-			"Rev": "v1.0.1"
+			"Rev": "v1.0.2"
 		},
 		{
 			"ImportPath": "github.com/kr/logfmt",
@@ -304,7 +304,7 @@
 		},
 		{
 			"ImportPath": "github.com/kr/pretty",
-			"Rev": "v0.1.0"
+			"Rev": "v0.2.0"
 		},
 		{
 			"ImportPath": "github.com/kr/pty",
@@ -332,7 +332,7 @@
 		},
 		{
 			"ImportPath": "github.com/matttproud/golang_protobuf_extensions",
-			"Rev": "v1.0.1"
+			"Rev": "c182affec369"
 		},
 		{
 			"ImportPath": "github.com/mitchellh/go-homedir",
@@ -412,7 +412,7 @@
 		},
 		{
 			"ImportPath": "github.com/prometheus/procfs",
-			"Rev": "v0.0.2"
+			"Rev": "v0.0.5"
 		},
 		{
 			"ImportPath": "github.com/russross/blackfriday",
@@ -484,7 +484,7 @@
 		},
 		{
 			"ImportPath": "golang.org/x/net",
-			"Rev": "13f9640d40b9"
+			"Rev": "16171245cfb2"
 		},
 		{
 			"ImportPath": "golang.org/x/oauth2",
@@ -504,7 +504,7 @@
 		},
 		{
 			"ImportPath": "golang.org/x/time",
-			"Rev": "9d24e82272b4"
+			"Rev": "555d28b269f0"
 		},
 		{
 			"ImportPath": "golang.org/x/tools",
@@ -512,7 +512,7 @@
 		},
 		{
 			"ImportPath": "golang.org/x/xerrors",
-			"Rev": "a985d3407aa7"
+			"Rev": "9bdfabe68543"
 		},
 		{
 			"ImportPath": "google.golang.org/api",
@@ -536,7 +536,7 @@
 		},
 		{
 			"ImportPath": "gopkg.in/check.v1",
-			"Rev": "788fd7840127"
+			"Rev": "41f04d3bba15"
 		},
 		{
 			"ImportPath": "gopkg.in/fsnotify.v1",
@@ -568,27 +568,27 @@
 		},
 		{
 			"ImportPath": "k8s.io/api",
-			"Rev": "1fc28ea2498c"
+			"Rev": "b5bd82427fa8"
 		},
 		{
 			"ImportPath": "k8s.io/apimachinery",
-			"Rev": "1aec6bc431a9"
+			"Rev": "e92250ad09d8"
 		},
 		{
 			"ImportPath": "k8s.io/cli-runtime",
-			"Rev": "e1e770ed862c"
+			"Rev": "77d7d76edfc9"
 		},
 		{
 			"ImportPath": "k8s.io/client-go",
-			"Rev": "c20e80a28e46"
+			"Rev": "6240434e1ad6"
 		},
 		{
 			"ImportPath": "k8s.io/code-generator",
-			"Rev": "134829e366d8"
+			"Rev": "24eba7841593"
 		},
 		{
 			"ImportPath": "k8s.io/component-base",
-			"Rev": "96026f7a5f3b"
+			"Rev": "e497f1de9ccf"
 		},
 		{
 			"ImportPath": "k8s.io/gengo",
@@ -604,7 +604,7 @@
 		},
 		{
 			"ImportPath": "k8s.io/metrics",
-			"Rev": "34bf131139aa"
+			"Rev": "feda5dbe8e43"
 		},
 		{
 			"ImportPath": "k8s.io/utils",
