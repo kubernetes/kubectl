@@ -572,7 +572,7 @@
 		},
 		{
 			"ImportPath": "k8s.io/apimachinery",
-			"Rev": "e92250ad09d8"
+			"Rev": "f8e71527369e"
 		},
 		{
 			"ImportPath": "k8s.io/cli-runtime",
@@ -588,7 +588,7 @@
 		},
 		{
 			"ImportPath": "k8s.io/component-base",
-			"Rev": "e497f1de9ccf"
+			"Rev": "4b266285e7b8"
 		},
 		{
 			"ImportPath": "k8s.io/gengo",
