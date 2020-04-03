@@ -18,7 +18,7 @@ require (
 	github.com/golangplus/fmt v0.0.0-20150411045040-2a5d6d7d2995 // indirect
 	github.com/golangplus/testing v0.0.0-20180327235837-af21d9c3145e // indirect
 	github.com/google/go-cmp v0.4.0
-	github.com/googleapis/gnostic v0.1.0
+	github.com/googleapis/gnostic v0.4.1
 	github.com/jonboulle/clockwork v0.1.0
 	github.com/liggitt/tabwriter v0.0.0-20181228230101-89fcab3d43de
 	github.com/lithammer/dedent v1.1.0
@@ -32,16 +32,16 @@ require (
 	github.com/spf13/pflag v1.0.5
 	github.com/stretchr/testify v1.4.0
 	github.com/xlab/handysort v0.0.0-20150421192137-fb3537ed64a1 // indirect
-	golang.org/x/sys v0.0.0-20200302150141-5c8b2ff67527
+	golang.org/x/sys v0.0.0-20200323222414-85ca7c5b95cd
 	gopkg.in/yaml.v2 v2.2.8
-	k8s.io/api v0.0.0-20200402140318-464a0b549922
-	k8s.io/apimachinery v0.0.0-20200331220056-7e441e0f246a
-	k8s.io/cli-runtime v0.0.0-20200326030619-77d7d76edfc9
-	k8s.io/client-go v0.0.0-20200402220554-cb664d40f84c
-	k8s.io/component-base v0.0.0-20200402061055-be09e7a8fe3f
+	k8s.io/api v0.0.0-20200403220253-fa879b399cd0
+	k8s.io/apimachinery v0.0.0-20200403220105-fa0d5bf06730
+	k8s.io/cli-runtime v0.0.0-20200403222433-2d6fc4dd4a46
+	k8s.io/client-go v0.0.0-20200403220520-7039b495eb3e
+	k8s.io/component-base v0.0.0-20200403221034-26edb4fa15c5
 	k8s.io/klog v1.0.0
-	k8s.io/kube-openapi v0.0.0-20200121204235-bf4fb3bd569c
-	k8s.io/metrics v0.0.0-20200326030134-feda5dbe8e43
+	k8s.io/kube-openapi v0.0.0-20200401025727-01dfbe2eec3d
+	k8s.io/metrics v0.0.0-20200403222309-8a1bb52fec94
 	k8s.io/utils v0.0.0-20200324210504-a9aa75ae1b89
 	sigs.k8s.io/kustomize v2.0.3+incompatible
 	sigs.k8s.io/yaml v1.2.0
@@ -51,11 +51,11 @@ require (
 replace (
 	golang.org/x/sys => golang.org/x/sys v0.0.0-20190813064441-fde4db37ae7a // pinned to release-branch.go1.13
 	golang.org/x/tools => golang.org/x/tools v0.0.0-20190821162956-65e3620a7ae7 // pinned to release-branch.go1.13
-	k8s.io/api => k8s.io/api v0.0.0-20200402140318-464a0b549922
-	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20200331220056-7e441e0f246a
-	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20200326030619-77d7d76edfc9
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20200402220554-cb664d40f84c
-	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20200326014500-24eba7841593
-	k8s.io/component-base => k8s.io/component-base v0.0.0-20200402061055-be09e7a8fe3f
-	k8s.io/metrics => k8s.io/metrics v0.0.0-20200326030134-feda5dbe8e43
+	k8s.io/api => k8s.io/api v0.0.0-20200403220253-fa879b399cd0
+	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20200403220105-fa0d5bf06730
+	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20200403222433-2d6fc4dd4a46
+	k8s.io/client-go => k8s.io/client-go v0.0.0-20200403220520-7039b495eb3e
+	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20200403215918-804a58607501
+	k8s.io/component-base => k8s.io/component-base v0.0.0-20200403221034-26edb4fa15c5
+	k8s.io/metrics => k8s.io/metrics v0.0.0-20200403222309-8a1bb52fec94
 )
