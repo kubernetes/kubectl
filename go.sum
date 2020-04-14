@@ -325,7 +325,7 @@ gotest.tools v2.2.0+incompatible/go.mod h1:DsYFclhRJ6vuDpmuTbkuFWG+y2sxOXAzmJt81
 gotest.tools/v3 v3.0.2/go.mod h1:3SzNCllyD9/Y+b5r9JIKQ474KzkZyqLqEfYqMsX94Bk=
 honnef.co/go/tools v0.0.0-20190102054323-c2f93a96b099/go.mod h1:rf3lG4BRIbNafJWhAfAdb/ePZxsR/4RtNHQocxwk9r4=
 honnef.co/go/tools v0.0.0-20190106161140-3f1c8253044a/go.mod h1:rf3lG4BRIbNafJWhAfAdb/ePZxsR/4RtNHQocxwk9r4=
-k8s.io/api v0.0.0-20200413061331-ee3d7cc2ccd8/go.mod h1:MfG8IGkMLGJgJxPRRWC7k30CzNiPQQfGmolWWZjyzr4=
+k8s.io/api v0.0.0-20200414061335-2433a9db3db3/go.mod h1:S9B4jsMc6M3MS++oeNW7L3ZGLfPUaKMbO/PUWQcC+gU=
 k8s.io/apimachinery v0.0.0-20200413181316-06deae5c9c2c/go.mod h1:imoz42hIYwpLTRWXU8pdJ9IE8DbxUsnU9lyVN8Y1SNo=
 k8s.io/cli-runtime v0.0.0-20200410032008-46db67004b57/go.mod h1:tBOIBnD9aGgswoeK+7rN3kVzg/V058I/BQYITsFKjUQ=
 k8s.io/client-go v0.0.0-20200410182515-1be5940d0dd4/go.mod h1:zXkQ9D1RJ94zQF7I0XpAPErYL57rqGlBnNP7CW3F2Uo=
