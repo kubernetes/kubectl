@@ -592,7 +592,7 @@
 		},
 		{
 			"ImportPath": "k8s.io/component-base",
-			"Rev": "9348fb67d787"
+			"Rev": "681caaeb5a1e"
 		},
 		{
 			"ImportPath": "k8s.io/gengo",
