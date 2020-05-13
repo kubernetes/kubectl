@@ -34,11 +34,11 @@ require (
 	github.com/xlab/handysort v0.0.0-20150421192137-fb3537ed64a1 // indirect
 	golang.org/x/sys v0.0.0-20200323222414-85ca7c5b95cd
 	gopkg.in/yaml.v2 v2.2.8
-	k8s.io/api v0.0.0-20200427235940-8d2462157d4e
-	k8s.io/apimachinery v0.0.0-20200425221929-15d95c0b2af3
-	k8s.io/cli-runtime v0.0.0-20200424201741-f813b9eb0147
-	k8s.io/client-go v0.0.0-20200426040145-5159cff060fb
-	k8s.io/component-base v0.0.0-20200428080314-f55d545beea6
+	k8s.io/api v0.0.0-20200514002026-7ef7685746a7
+	k8s.io/apimachinery v0.0.0-20200511201828-85fcb0190bbf
+	k8s.io/cli-runtime v0.0.0-20200508163935-988149c8f5ff
+	k8s.io/client-go v0.0.0-20200512002333-d4685ebf697c
+	k8s.io/component-base v0.0.0-20200513082507-11de43eaa01e
 	k8s.io/klog v1.0.0
 	k8s.io/kube-openapi v0.0.0-20200403204345-e1beb1bd0f35
 	k8s.io/metrics v0.0.0-20200424082059-c463d3f35b4a
@@ -51,11 +51,11 @@ require (
 replace (
 	golang.org/x/sys => golang.org/x/sys v0.0.0-20190813064441-fde4db37ae7a // pinned to release-branch.go1.13
 	golang.org/x/tools => golang.org/x/tools v0.0.0-20190821162956-65e3620a7ae7 // pinned to release-branch.go1.13
-	k8s.io/api => k8s.io/api v0.0.0-20200427235940-8d2462157d4e
-	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20200425221929-15d95c0b2af3
-	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20200424201741-f813b9eb0147
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20200426040145-5159cff060fb
-	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20200424235518-1958644bda38
-	k8s.io/component-base => k8s.io/component-base v0.0.0-20200428080314-f55d545beea6
+	k8s.io/api => k8s.io/api v0.0.0-20200514002026-7ef7685746a7
+	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20200511201828-85fcb0190bbf
+	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20200508163935-988149c8f5ff
+	k8s.io/client-go => k8s.io/client-go v0.0.0-20200512002333-d4685ebf697c
+	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20200505081051-7baaea6316a6
+	k8s.io/component-base => k8s.io/component-base v0.0.0-20200513082507-11de43eaa01e
 	k8s.io/metrics => k8s.io/metrics v0.0.0-20200424082059-c463d3f35b4a
 )
