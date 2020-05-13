@@ -28,20 +28,20 @@ require (
 	github.com/onsi/gomega v1.7.0
 	github.com/opencontainers/go-digest v1.0.0-rc1 // indirect
 	github.com/russross/blackfriday v1.5.2
-	github.com/spf13/cobra v0.0.5
+	github.com/spf13/cobra v1.0.0
 	github.com/spf13/pflag v1.0.5
 	github.com/stretchr/testify v1.4.0
 	github.com/xlab/handysort v0.0.0-20150421192137-fb3537ed64a1 // indirect
 	golang.org/x/sys v0.0.0-20200323222414-85ca7c5b95cd
 	gopkg.in/yaml.v2 v2.2.8
-	k8s.io/api v0.0.0-20200514002026-7ef7685746a7
-	k8s.io/apimachinery v0.0.0-20200514081838-030f3066cc76
-	k8s.io/cli-runtime v0.0.0-20200515124718-7aec20a294c6
-	k8s.io/client-go v0.0.0-20200512002333-d4685ebf697c
-	k8s.io/component-base v0.0.0-20200513082507-11de43eaa01e
+	k8s.io/api v0.0.0
+	k8s.io/apimachinery v0.0.0
+	k8s.io/cli-runtime v0.0.0
+	k8s.io/client-go v0.0.0
+	k8s.io/component-base v0.0.0
 	k8s.io/klog v1.0.0
 	k8s.io/kube-openapi v0.0.0-20200403204345-e1beb1bd0f35
-	k8s.io/metrics v0.0.0-20200424082059-c463d3f35b4a
+	k8s.io/metrics v0.0.0
 	k8s.io/utils v0.0.0-20200324210504-a9aa75ae1b89
 	sigs.k8s.io/kustomize v2.0.3+incompatible
 	sigs.k8s.io/yaml v1.2.0
@@ -51,11 +51,12 @@ require (
 replace (
 	golang.org/x/sys => golang.org/x/sys v0.0.0-20190813064441-fde4db37ae7a // pinned to release-branch.go1.13
 	golang.org/x/tools => golang.org/x/tools v0.0.0-20190821162956-65e3620a7ae7 // pinned to release-branch.go1.13
-	k8s.io/api => k8s.io/api v0.0.0-20200514002026-7ef7685746a7
-	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20200514081838-030f3066cc76
-	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20200515124718-7aec20a294c6
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20200512002333-d4685ebf697c
-	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20200505081051-7baaea6316a6
-	k8s.io/component-base => k8s.io/component-base v0.0.0-20200513082507-11de43eaa01e
-	k8s.io/metrics => k8s.io/metrics v0.0.0-20200424082059-c463d3f35b4a
+	k8s.io/api => ../api
+	k8s.io/apimachinery => ../apimachinery
+	k8s.io/cli-runtime => ../cli-runtime
+	k8s.io/client-go => ../client-go
+	k8s.io/code-generator => ../code-generator
+	k8s.io/component-base => ../component-base
+	k8s.io/kubectl => ../kubectl
+	k8s.io/metrics => ../metrics
 )
