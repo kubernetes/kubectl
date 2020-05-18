@@ -748,7 +748,7 @@
 		},
 		{
 			"ImportPath": "k8s.io/apimachinery",
-			"Rev": "561e5e9b265b"
+			"Rev": "681a08151eac"
 		},
 		{
 			"ImportPath": "k8s.io/cli-runtime",
