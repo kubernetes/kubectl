@@ -756,7 +756,7 @@
 		},
 		{
 			"ImportPath": "k8s.io/apimachinery",
-			"Rev": "e0747e0da69d"
+			"Rev": "17bacc71f57a"
 		},
 		{
 			"ImportPath": "k8s.io/cli-runtime",
@@ -768,7 +768,7 @@
 		},
 		{
 			"ImportPath": "k8s.io/code-generator",
-			"Rev": "d395a8c771fd"
+			"Rev": "e6922be4b397"
 		},
 		{
 			"ImportPath": "k8s.io/component-base",
