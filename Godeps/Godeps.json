@@ -208,7 +208,7 @@
 		},
 		{
 			"ImportPath": "github.com/evanphx/json-patch",
-			"Rev": "v4.2.0"
+			"Rev": "e83c0a1c26c8"
 		},
 		{
 			"ImportPath": "github.com/exponent-io/jsonpath",
@@ -752,19 +752,19 @@
 		},
 		{
 			"ImportPath": "k8s.io/api",
-			"Rev": "54aa84730ddd"
+			"Rev": "8dc28b782f8e"
 		},
 		{
 			"ImportPath": "k8s.io/apimachinery",
-			"Rev": "d8530e6c952f"
+			"Rev": "c1bd2c2a276f"
 		},
 		{
 			"ImportPath": "k8s.io/cli-runtime",
-			"Rev": "51a43a541203"
+			"Rev": "a6a1c70cbe49"
 		},
 		{
 			"ImportPath": "k8s.io/client-go",
-			"Rev": "31e286ee1926"
+			"Rev": "3c831c893e8a"
 		},
 		{
 			"ImportPath": "k8s.io/code-generator",
@@ -772,7 +772,7 @@
 		},
 		{
 			"ImportPath": "k8s.io/component-base",
-			"Rev": "8d48f868cdb4"
+			"Rev": "6c60a4d2ed11"
 		},
 		{
 			"ImportPath": "k8s.io/gengo",
@@ -788,7 +788,7 @@
 		},
 		{
 			"ImportPath": "k8s.io/metrics",
-			"Rev": "4caf92260ddc"
+			"Rev": "7883ab5db6bc"
 		},
 		{
 			"ImportPath": "k8s.io/utils",
