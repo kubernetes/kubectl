@@ -34,15 +34,15 @@ require (
 	github.com/xlab/handysort v0.0.0-20150421192137-fb3537ed64a1 // indirect
 	golang.org/x/sys v0.0.0-20200420163511-1957bb5e6d1f
 	gopkg.in/yaml.v2 v2.2.8
-	k8s.io/api v0.0.0-20200619212010-fd326d3007d3
-	k8s.io/apimachinery v0.0.0-20200619211815-2d992b89ee69
-	k8s.io/cli-runtime v0.0.0-20200619214238-9f4f58a59674
-	k8s.io/client-go v0.0.0-20200619212252-c8ca982e6015
-	k8s.io/component-base v0.0.0-20200620052317-3e46403d1ab2
+	k8s.io/api v0.0.0
+	k8s.io/apimachinery v0.0.0
+	k8s.io/cli-runtime v0.0.0
+	k8s.io/client-go v0.0.0
+	k8s.io/component-base v0.0.0
 	k8s.io/klog/v2 v2.1.0
 	k8s.io/kube-openapi v0.0.0-20200427153329-656914f816f9
-	k8s.io/metrics v0.0.0-20200619214128-1aa7dc250a3a
-	k8s.io/utils v0.0.0-20200414100711-2df71ebbae66
+	k8s.io/metrics v0.0.0
+	k8s.io/utils v0.0.0-20200619165400-6e3d28b6ed19
 	sigs.k8s.io/kustomize v2.0.3+incompatible
 	sigs.k8s.io/yaml v1.2.0
 	vbom.ml/util v0.0.0-20160121211510-db5cfe13f5cc
@@ -51,11 +51,12 @@ require (
 replace (
 	golang.org/x/sys => golang.org/x/sys v0.0.0-20190813064441-fde4db37ae7a // pinned to release-branch.go1.13
 	golang.org/x/tools => golang.org/x/tools v0.0.0-20190821162956-65e3620a7ae7 // pinned to release-branch.go1.13
-	k8s.io/api => k8s.io/api v0.0.0-20200619212010-fd326d3007d3
-	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20200619211815-2d992b89ee69
-	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20200619214238-9f4f58a59674
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20200619212252-c8ca982e6015
-	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20200619211621-92e2f57872e8
-	k8s.io/component-base => k8s.io/component-base v0.0.0-20200620052317-3e46403d1ab2
-	k8s.io/metrics => k8s.io/metrics v0.0.0-20200619214128-1aa7dc250a3a
+	k8s.io/api => ../api
+	k8s.io/apimachinery => ../apimachinery
+	k8s.io/cli-runtime => ../cli-runtime
+	k8s.io/client-go => ../client-go
+	k8s.io/code-generator => ../code-generator
+	k8s.io/component-base => ../component-base
+	k8s.io/kubectl => ../kubectl
+	k8s.io/metrics => ../metrics
 )
