@@ -449,7 +449,7 @@ k8s.io/apimachinery v0.0.0-20200619211815-2d992b89ee69/go.mod h1:PEdH+SOrD19FEfB
 k8s.io/cli-runtime v0.0.0-20200619214238-9f4f58a59674/go.mod h1:qVQP5ehBYRIgg4B//n5zATw99wwuHPo4wThK7gcQA7k=
 k8s.io/client-go v0.0.0-20200619212252-c8ca982e6015/go.mod h1:H8iLD98YoTsJUXPpZVY5vnXKhO1imt79gFahNFoQjrc=
 k8s.io/code-generator v0.0.0-20200619211621-92e2f57872e8/go.mod h1:LGesfSUjHS76D8GCsc8HmW3s3cPPk3e+wPVagQ5sFds=
-k8s.io/component-base v0.0.0-20200619212909-5cd58fa2c139/go.mod h1:s1DiWY4TsH6Tk0UnOVqWuyw43g1z7UZO1fXNexmKHkc=
+k8s.io/component-base v0.0.0-20200620052317-3e46403d1ab2/go.mod h1:1N0kPAIEnnGTl+TOSKfV/kdhc0+Re0ScU8d3/Nllhbk=
 k8s.io/gengo v0.0.0-20200413195148-3a45101e95ac/go.mod h1:ezvh/TsK7cY6rbqRK0oQQ8IAqLxYwwyPxAX1Pzy0ii0=
 k8s.io/gengo v0.0.0-20200428234225-8167cfdcfc14/go.mod h1:ezvh/TsK7cY6rbqRK0oQQ8IAqLxYwwyPxAX1Pzy0ii0=
 k8s.io/klog/v2 v2.0.0 h1:Foj74zO6RbjjP4hBEKjnYtjjAhGg4jNynUdYF6fJrok=
