@@ -34,14 +34,14 @@ require (
 	github.com/xlab/handysort v0.0.0-20150421192137-fb3537ed64a1 // indirect
 	golang.org/x/sys v0.0.0-20200420163511-1957bb5e6d1f
 	gopkg.in/yaml.v2 v2.2.8
-	k8s.io/api v0.0.0
-	k8s.io/apimachinery v0.0.0
-	k8s.io/cli-runtime v0.0.0
-	k8s.io/client-go v0.0.0
-	k8s.io/component-base v0.0.0
+	k8s.io/api v0.0.0-20200624085548-6f8e0fa87f2f
+	k8s.io/apimachinery v0.0.0-20200624084815-eed6a5257d68
+	k8s.io/cli-runtime v0.0.0-20200624100831-be96dd2fb350
+	k8s.io/client-go v0.0.0-20200624090346-5fade4ec57c6
+	k8s.io/component-base v0.0.0-20200624091814-9e66bcb5dd0c
 	k8s.io/klog/v2 v2.1.0
 	k8s.io/kube-openapi v0.0.0-20200427153329-656914f816f9
-	k8s.io/metrics v0.0.0
+	k8s.io/metrics v0.0.0-20200624100317-1a21ec727f30
 	k8s.io/utils v0.0.0-20200619165400-6e3d28b6ed19
 	sigs.k8s.io/kustomize v2.0.3+incompatible
 	sigs.k8s.io/yaml v1.2.0
@@ -50,12 +50,11 @@ require (
 
 replace (
 	golang.org/x/sys => golang.org/x/sys v0.0.0-20200201011859-915c9c3d4ccf // pinned to release-branch.go1.14-std
-	k8s.io/api => ../api
-	k8s.io/apimachinery => ../apimachinery
-	k8s.io/cli-runtime => ../cli-runtime
-	k8s.io/client-go => ../client-go
-	k8s.io/code-generator => ../code-generator
-	k8s.io/component-base => ../component-base
-	k8s.io/kubectl => ../kubectl
-	k8s.io/metrics => ../metrics
+	k8s.io/api => k8s.io/api v0.0.0-20200624085548-6f8e0fa87f2f
+	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20200624084815-eed6a5257d68
+	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20200624100831-be96dd2fb350
+	k8s.io/client-go => k8s.io/client-go v0.0.0-20200624090346-5fade4ec57c6
+	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20200624084227-87e0dbd70a5f
+	k8s.io/component-base => k8s.io/component-base v0.0.0-20200624091814-9e66bcb5dd0c
+	k8s.io/metrics => k8s.io/metrics v0.0.0-20200624100317-1a21ec727f30
 )
