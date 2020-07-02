@@ -34,11 +34,11 @@ require (
 	github.com/xlab/handysort v0.0.0-20150421192137-fb3537ed64a1 // indirect
 	golang.org/x/sys v0.0.0-20200622214017-ed371f2e16b4
 	gopkg.in/yaml.v2 v2.2.8
-	k8s.io/api v0.0.0-20200702090434-70c9750ce4ed
-	k8s.io/apimachinery v0.0.0-20200702090250-8a773a02ba6b
+	k8s.io/api v0.0.0-20200702130436-16d572fe0f9f
+	k8s.io/apimachinery v0.0.0-20200702090251-3c2682fedbf2
 	k8s.io/cli-runtime v0.0.0-20200702092705-c1c508dd1e63
-	k8s.io/client-go v0.0.0-20200702090709-bdcd046d6cbf
-	k8s.io/component-base v0.0.0-20200702091254-df61fd08516e
+	k8s.io/client-go v0.0.0-20200702130712-9676485b71b9
+	k8s.io/component-base v0.0.0-20200702170821-b3613baa4e60
 	k8s.io/klog/v2 v2.2.0
 	k8s.io/kube-openapi v0.0.0-20200427153329-656914f816f9
 	k8s.io/metrics v0.0.0-20200702092548-05982dac5179
@@ -49,11 +49,11 @@ require (
 )
 
 replace (
-	k8s.io/api => k8s.io/api v0.0.0-20200702090434-70c9750ce4ed
-	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20200702090250-8a773a02ba6b
+	k8s.io/api => k8s.io/api v0.0.0-20200702130436-16d572fe0f9f
+	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20200702090251-3c2682fedbf2
 	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20200702092705-c1c508dd1e63
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20200702090709-bdcd046d6cbf
+	k8s.io/client-go => k8s.io/client-go v0.0.0-20200702130712-9676485b71b9
 	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20200702090103-29a41fee4a12
-	k8s.io/component-base => k8s.io/component-base v0.0.0-20200702091254-df61fd08516e
+	k8s.io/component-base => k8s.io/component-base v0.0.0-20200702170821-b3613baa4e60
 	k8s.io/metrics => k8s.io/metrics v0.0.0-20200702092548-05982dac5179
 )
