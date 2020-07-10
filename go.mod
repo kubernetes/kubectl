@@ -34,14 +34,14 @@ require (
 	github.com/xlab/handysort v0.0.0-20150421192137-fb3537ed64a1 // indirect
 	golang.org/x/sys v0.0.0-20200622214017-ed371f2e16b4
 	gopkg.in/yaml.v2 v2.2.8
-	k8s.io/api v0.0.0
-	k8s.io/apimachinery v0.0.0
-	k8s.io/cli-runtime v0.0.0
-	k8s.io/client-go v0.0.0
-	k8s.io/component-base v0.0.0
+	k8s.io/api v0.0.0-20200711010759-67a68481e276
+	k8s.io/apimachinery v0.0.0-20200711010416-9894919f2c6e
+	k8s.io/cli-runtime v0.0.0-20200711014701-ceb907b5a95d
+	k8s.io/client-go v0.0.0-20200711011221-2cf22cd48886
+	k8s.io/component-base v0.0.0-20200711012104-12d9255b32a9
 	k8s.io/klog/v2 v2.2.0
 	k8s.io/kube-openapi v0.0.0-20200427153329-656914f816f9
-	k8s.io/metrics v0.0.0
+	k8s.io/metrics v0.0.0-20200711014440-3aca2203f0fe
 	k8s.io/utils v0.0.0-20200619165400-6e3d28b6ed19
 	sigs.k8s.io/kustomize v2.0.3+incompatible
 	sigs.k8s.io/yaml v1.2.0
@@ -49,12 +49,11 @@ require (
 )
 
 replace (
-	k8s.io/api => ../api
-	k8s.io/apimachinery => ../apimachinery
-	k8s.io/cli-runtime => ../cli-runtime
-	k8s.io/client-go => ../client-go
-	k8s.io/code-generator => ../code-generator
-	k8s.io/component-base => ../component-base
-	k8s.io/kubectl => ../kubectl
-	k8s.io/metrics => ../metrics
+	k8s.io/api => k8s.io/api v0.0.0-20200711010759-67a68481e276
+	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20200711010416-9894919f2c6e
+	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20200711014701-ceb907b5a95d
+	k8s.io/client-go => k8s.io/client-go v0.0.0-20200711011221-2cf22cd48886
+	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20200711010124-585bb4eea8d5
+	k8s.io/component-base => k8s.io/component-base v0.0.0-20200711012104-12d9255b32a9
+	k8s.io/metrics => k8s.io/metrics v0.0.0-20200711014440-3aca2203f0fe
 )
