@@ -380,7 +380,7 @@
 		},
 		{
 			"ImportPath": "github.com/json-iterator/go",
-			"Rev": "v1.1.9"
+			"Rev": "v1.1.10"
 		},
 		{
 			"ImportPath": "github.com/jstemmer/go-junit-report",
@@ -508,7 +508,7 @@
 		},
 		{
 			"ImportPath": "github.com/prometheus/client_golang",
-			"Rev": "v1.6.0"
+			"Rev": "v1.7.1"
 		},
 		{
 			"ImportPath": "github.com/prometheus/client_model",
@@ -516,11 +516,11 @@
 		},
 		{
 			"ImportPath": "github.com/prometheus/common",
-			"Rev": "v0.9.1"
+			"Rev": "v0.10.0"
 		},
 		{
 			"ImportPath": "github.com/prometheus/procfs",
-			"Rev": "v0.0.11"
+			"Rev": "v0.1.3"
 		},
 		{
 			"ImportPath": "github.com/prometheus/tsdb",
@@ -752,27 +752,27 @@
 		},
 		{
 			"ImportPath": "k8s.io/api",
-			"Rev": "702e5dfa819c"
+			"Rev": "be360156aa6a"
 		},
 		{
 			"ImportPath": "k8s.io/apimachinery",
-			"Rev": "8e134319f815"
+			"Rev": "8e7d6bb9bd6d"
 		},
 		{
 			"ImportPath": "k8s.io/cli-runtime",
-			"Rev": "ceb907b5a95d"
+			"Rev": "6afecef7a0d3"
 		},
 		{
 			"ImportPath": "k8s.io/client-go",
-			"Rev": "7fa340820d1c"
+			"Rev": "505a1f443178"
 		},
 		{
 			"ImportPath": "k8s.io/code-generator",
-			"Rev": "cf20b2fb095c"
+			"Rev": "9193f19eab49"
 		},
 		{
 			"ImportPath": "k8s.io/component-base",
-			"Rev": "d0ef39c660d1"
+			"Rev": "e98e6e533eb1"
 		},
 		{
 			"ImportPath": "k8s.io/gengo",
@@ -788,7 +788,7 @@
 		},
 		{
 			"ImportPath": "k8s.io/metrics",
-			"Rev": "3aca2203f0fe"
+			"Rev": "ee44d190271a"
 		},
 		{
 			"ImportPath": "k8s.io/utils",
