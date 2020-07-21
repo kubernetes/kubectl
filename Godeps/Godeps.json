@@ -752,27 +752,27 @@
 		},
 		{
 			"ImportPath": "k8s.io/api",
-			"Rev": "0bfda2331c3c"
+			"Rev": "v0.19.0-rc.2"
 		},
 		{
 			"ImportPath": "k8s.io/apimachinery",
-			"Rev": "2c8b1211fea9"
+			"Rev": "v0.19.0-rc.2"
 		},
 		{
 			"ImportPath": "k8s.io/cli-runtime",
-			"Rev": "d0e0dc9524a2"
+			"Rev": "v0.19.0-rc.2"
 		},
 		{
 			"ImportPath": "k8s.io/client-go",
-			"Rev": "b6011de30ee5"
+			"Rev": "v0.19.0-rc.2"
 		},
 		{
 			"ImportPath": "k8s.io/code-generator",
-			"Rev": "f87d2adcd297"
+			"Rev": "v0.19.0-rc.2"
 		},
 		{
 			"ImportPath": "k8s.io/component-base",
-			"Rev": "947d876bc41b"
+			"Rev": "v0.19.0-rc.2"
 		},
 		{
 			"ImportPath": "k8s.io/gengo",
@@ -788,7 +788,7 @@
 		},
 		{
 			"ImportPath": "k8s.io/metrics",
-			"Rev": "c395a09c1c8d"
+			"Rev": "v0.19.0-rc.2"
 		},
 		{
 			"ImportPath": "k8s.io/utils",
