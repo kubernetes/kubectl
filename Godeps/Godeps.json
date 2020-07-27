@@ -611,6 +611,10 @@
 			"Rev": "b2862e3d0a77"
 		},
 		{
+			"ImportPath": "github.com/yuin/goldmark",
+			"Rev": "v1.1.27"
+		},
+		{
 			"ImportPath": "go.etcd.io/bbolt",
 			"Rev": "v1.3.2"
 		},
@@ -632,7 +636,7 @@
 		},
 		{
 			"ImportPath": "golang.org/x/crypto",
-			"Rev": "bac4c82f6975"
+			"Rev": "75b288015ac9"
 		},
 		{
 			"ImportPath": "golang.org/x/exp",
@@ -652,11 +656,11 @@
 		},
 		{
 			"ImportPath": "golang.org/x/mod",
-			"Rev": "c90efee705ee"
+			"Rev": "v0.3.0"
 		},
 		{
 			"ImportPath": "golang.org/x/net",
-			"Rev": "d3edc9973b7e"
+			"Rev": "ab3426394381"
 		},
 		{
 			"ImportPath": "golang.org/x/oauth2",
@@ -680,7 +684,7 @@
 		},
 		{
 			"ImportPath": "golang.org/x/tools",
-			"Rev": "c00d67ef29d0"
+			"Rev": "c1934b75d054"
 		},
 		{
 			"ImportPath": "golang.org/x/xerrors",
@@ -752,27 +756,27 @@
 		},
 		{
 			"ImportPath": "k8s.io/api",
-			"Rev": "0bfda2331c3c"
+			"Rev": "83df1b82c014"
 		},
 		{
 			"ImportPath": "k8s.io/apimachinery",
-			"Rev": "2c8b1211fea9"
+			"Rev": "7efdc26a675c"
 		},
 		{
 			"ImportPath": "k8s.io/cli-runtime",
-			"Rev": "d0e0dc9524a2"
+			"Rev": "315ce2822034"
 		},
 		{
 			"ImportPath": "k8s.io/client-go",
-			"Rev": "b6011de30ee5"
+			"Rev": "7f42acdcbb14"
 		},
 		{
 			"ImportPath": "k8s.io/code-generator",
-			"Rev": "f87d2adcd297"
+			"Rev": "649de32797ee"
 		},
 		{
 			"ImportPath": "k8s.io/component-base",
-			"Rev": "947d876bc41b"
+			"Rev": "83dc39ae1fb7"
 		},
 		{
 			"ImportPath": "k8s.io/gengo",
@@ -788,7 +792,7 @@
 		},
 		{
 			"ImportPath": "k8s.io/metrics",
-			"Rev": "c395a09c1c8d"
+			"Rev": "fb2bbd160026"
 		},
 		{
 			"ImportPath": "k8s.io/utils",
