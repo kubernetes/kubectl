@@ -38,14 +38,14 @@ import (
 )
 
 var (
-	resourcesLong = templates.LongDesc(`
+	resourcesLong = templates.LongDesc(i18n.T(`
 		Specify compute resource requirements (cpu, memory) for any resource that defines a pod template.  If a pod is successfully scheduled, it is guaranteed the amount of resource requested, but may burst up to its specified limits.
 
 		for each compute resource, if a limit is specified and a request is omitted, the request will default to the limit.
 
-		Possible resources include (case insensitive): %s.`)
+		Possible resources include (case insensitive): %s.`))
 
-	resourcesExample = templates.Examples(`
+	resourcesExample = templates.Examples(i18n.T(`
 		# Set a deployments nginx container cpu limits to "200m" and memory to "512Mi"
 		kubectl set resources deployment nginx -c=nginx --limits=cpu=200m,memory=512Mi
 
@@ -56,7 +56,7 @@ var (
 		kubectl set resources deployment nginx --limits=cpu=0,memory=0 --requests=cpu=0,memory=0
 
 		# Print the result (in yaml format) of updating nginx container limits from a local, without hitting the server
-		kubectl set resources -f path/to/file.yaml --limits=cpu=200m,memory=512Mi --local -o yaml`)
+		kubectl set resources -f path/to/file.yaml --limits=cpu=200m,memory=512Mi --local -o yaml`))
 )
 
 // SetResourcesOptions is the start of the data required to perform the operation. As new fields are added, add them here instead of

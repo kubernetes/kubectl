@@ -54,16 +54,16 @@ type ResumeOptions struct {
 }
 
 var (
-	resumeLong = templates.LongDesc(`
+	resumeLong = templates.LongDesc(i18n.T(`
 		Resume a paused resource
 
 		Paused resources will not be reconciled by a controller. By resuming a
 		resource, we allow it to be reconciled again.
-		Currently only deployments support being resumed.`)
+		Currently only deployments support being resumed.`))
 
-	resumeExample = templates.Examples(`
+	resumeExample = templates.Examples(i18n.T(`
 		# Resume an already paused deployment
-		kubectl rollout resume deployment/nginx`)
+		kubectl rollout resume deployment/nginx`))
 )
 
 // NewRolloutResumeOptions returns an initialized ResumeOptions instance

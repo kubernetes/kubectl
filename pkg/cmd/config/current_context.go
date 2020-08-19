@@ -34,12 +34,12 @@ type CurrentContextOptions struct {
 }
 
 var (
-	currentContextLong = templates.LongDesc(`
-		Displays the current-context`)
+	currentContextLong = templates.LongDesc(i18n.T(`
+		Displays the current-context`))
 
-	currentContextExample = templates.Examples(`
+	currentContextExample = templates.Examples(i18n.T(`
 		# Display the current-context
-		kubectl config current-context`)
+		kubectl config current-context`))
 )
 
 // NewCmdConfigCurrentContext returns a Command instance for 'config current-context' sub command

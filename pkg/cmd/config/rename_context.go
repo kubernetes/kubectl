@@ -25,6 +25,7 @@ import (
 
 	"k8s.io/client-go/tools/clientcmd"
 	cmdutil "k8s.io/kubectl/pkg/cmd/util"
+	"k8s.io/kubectl/pkg/util/i18n"
 	"k8s.io/kubectl/pkg/util/templates"
 )
 
@@ -38,22 +39,22 @@ type RenameContextOptions struct {
 const (
 	renameContextUse = "rename-context CONTEXT_NAME NEW_NAME"
 
-	renameContextShort = "Renames a context from the kubeconfig file."
+	renameContextShort = i18n.T("Renames a context from the kubeconfig file.")
 )
 
 var (
-	renameContextLong = templates.LongDesc(`
+	renameContextLong = templates.LongDesc(i18n.T(`
 		Renames a context from the kubeconfig file.
 
 		CONTEXT_NAME is the context name that you wish to change.
 
 		NEW_NAME is the new name you wish to set.
 
-		Note: In case the context being renamed is the 'current-context', this field will also be updated.`)
+		Note: In case the context being renamed is the 'current-context', this field will also be updated.`))
 
-	renameContextExample = templates.Examples(`
+	renameContextExample = templates.Examples(i18n.T(`
 		# Rename the context 'old-name' to 'new-name' in your kubeconfig file
-		kubectl config rename-context old-name new-name`)
+		kubectl config rename-context old-name new-name`))
 )
 
 // NewCmdConfigRenameContext creates a command object for the "rename-context" action

@@ -131,7 +131,7 @@ func NewCmdAnnotate(parent string, f cmdutil.Factory, ioStreams genericclioption
 		Use:                   "annotate [--overwrite] (-f FILENAME | TYPE NAME) KEY_1=VAL_1 ... KEY_N=VAL_N [--resource-version=version]",
 		DisableFlagsInUseLine: true,
 		Short:                 i18n.T("Update the annotations on a resource"),
-		Long:                  annotateLong + "\n\n" + cmdutil.SuggestAPIResources(parent),
+		Long:                  i18n.T(annotateLong + "\n\n" + cmdutil.SuggestAPIResources(parent)),
 		Example:               annotateExample,
 		Run: func(cmd *cobra.Command, args []string) {
 			cmdutil.CheckErr(o.Complete(f, cmd, args))

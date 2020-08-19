@@ -38,6 +38,7 @@ import (
 	cmdutil "k8s.io/kubectl/pkg/cmd/util"
 	"k8s.io/kubectl/pkg/polymorphichelpers"
 	"k8s.io/kubectl/pkg/scheme"
+	"k8s.io/kubectl/pkg/util/i18n"
 	"k8s.io/kubectl/pkg/util/templates"
 )
 
@@ -46,7 +47,7 @@ var (
 	envResources       = `
   	pod (po), replicationcontroller (rc), deployment (deploy), daemonset (ds), job, replicaset (rs)`
 
-	envLong = templates.LongDesc(`
+	envLong = templates.LongDesc(i18n.T(`
 		Update environment variables on a pod template.
 
 		List environment variable definitions in one or more pods, pod templates.
@@ -59,9 +60,9 @@ var (
 		syntax.
 
 		Possible resources include (case insensitive):
-		` + envResources)
+		`) + envResources)
 
-	envExample = templates.Examples(`
+	envExample = templates.Examples(i18n.T(`
           # Update deployment 'registry' with a new environment variable
 	  kubectl set env deployment/registry STORAGE_DIR=/local
 
@@ -94,7 +95,7 @@ var (
 	  kubectl set env -f deploy.json ENV-
 
 	  # Set some of the local shell environment into a deployment config on the server
-	  env | grep RAILS_ | kubectl set env -e - deployment/registry`)
+	  env | grep RAILS_ | kubectl set env -e - deployment/registry`))
 )
 
 // EnvOptions holds values for 'set env' command-lone options

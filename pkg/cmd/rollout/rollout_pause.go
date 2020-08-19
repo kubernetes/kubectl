@@ -53,18 +53,18 @@ type PauseOptions struct {
 }
 
 var (
-	pauseLong = templates.LongDesc(`
+	pauseLong = templates.LongDesc(i18n.T(`
 		Mark the provided resource as paused
 
 		Paused resources will not be reconciled by a controller.
 		Use "kubectl rollout resume" to resume a paused resource.
-		Currently only deployments support being paused.`)
+		Currently only deployments support being paused.`))
 
-	pauseExample = templates.Examples(`
+	pauseExample = templates.Examples(i18n.T(`
 		# Mark the nginx deployment as paused. Any current state of
 		# the deployment will continue its function, new updates to the deployment will not
 		# have an effect as long as the deployment is paused.
-		kubectl rollout pause deployment/nginx`)
+		kubectl rollout pause deployment/nginx`))
 )
 
 // NewCmdRolloutPause returns a Command instance for 'rollout pause' sub command

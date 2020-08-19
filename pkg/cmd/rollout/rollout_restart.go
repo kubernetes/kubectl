@@ -53,17 +53,17 @@ type RestartOptions struct {
 }
 
 var (
-	restartLong = templates.LongDesc(`
+	restartLong = templates.LongDesc(i18n.T(`
 		Restart a resource.
 
-	        Resource will be rollout restarted.`)
+	        Resource will be rollout restarted.`))
 
-	restartExample = templates.Examples(`
+	restartExample = templates.Examples(i18n.T(`
 		# Restart a deployment
 		kubectl rollout restart deployment/nginx
 
 		# Restart a daemonset
-		kubectl rollout restart daemonset/abc`)
+		kubectl rollout restart daemonset/abc`))
 )
 
 // NewRolloutRestartOptions returns an initialized RestartOptions instance

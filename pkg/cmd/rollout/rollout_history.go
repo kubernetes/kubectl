@@ -32,15 +32,15 @@ import (
 )
 
 var (
-	historyLong = templates.LongDesc(`
-		View previous rollout revisions and configurations.`)
+	historyLong = templates.LongDesc(i18n.T(`
+		View previous rollout revisions and configurations.`))
 
-	historyExample = templates.Examples(`
+	historyExample = templates.Examples(i18n.T(`
 		# View the rollout history of a deployment
 		kubectl rollout history deployment/abc
 
 		# View the details of daemonset revision 3
-		kubectl rollout history daemonset/abc --revision=3`)
+		kubectl rollout history daemonset/abc --revision=3`))
 )
 
 // RolloutHistoryOptions holds the options for 'rollout history' sub command

@@ -68,13 +68,13 @@ var (
 	imageResources = `
   	pod (po), replicationcontroller (rc), deployment (deploy), daemonset (ds), replicaset (rs)`
 
-	imageLong = templates.LongDesc(`
+	imageLong = templates.LongDesc(i18n.T(`
 		Update existing container image(s) of resources.
 
 		Possible resources include (case insensitive):
-		` + imageResources)
+		`) + imageResources)
 
-	imageExample = templates.Examples(`
+	imageExample = templates.Examples(i18n.T(`
 		# Set a deployment's nginx container image to 'nginx:1.9.1', and its busybox container image to 'busybox'.
 		kubectl set image deployment/nginx busybox=busybox nginx=nginx:1.9.1
 
@@ -85,7 +85,7 @@ var (
 		kubectl set image daemonset abc *=nginx:1.9.1
 
 		# Print result (in yaml format) of updating nginx container image from local file, without hitting the server
-		kubectl set image -f path/to/file.yaml nginx=nginx:1.9.1 --local -o yaml`)
+		kubectl set image -f path/to/file.yaml nginx=nginx:1.9.1 --local -o yaml`))
 )
 
 // NewImageOptions returns an initialized SetImageOptions instance

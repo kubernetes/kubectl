@@ -67,7 +67,7 @@ const (
 )
 
 var (
-	createAuthInfoLong = fmt.Sprintf(templates.LongDesc(`
+	createAuthInfoLong = fmt.Sprintf(templates.LongDesc(i18n.T(`
 		Sets a user entry in kubeconfig
 
 		Specifying a name that already exists will merge new fields on top of existing values.
@@ -81,9 +81,9 @@ var (
 		    Basic auth flags:
 			  --%v=basic_user --%v=basic_password
 
-		Bearer token and basic auth are mutually exclusive.`), clientcmd.FlagCertFile, clientcmd.FlagKeyFile, clientcmd.FlagBearerToken, clientcmd.FlagUsername, clientcmd.FlagPassword)
+		Bearer token and basic auth are mutually exclusive.`)), clientcmd.FlagCertFile, clientcmd.FlagKeyFile, clientcmd.FlagBearerToken, clientcmd.FlagUsername, clientcmd.FlagPassword)
 
-	createAuthInfoExample = templates.Examples(`
+	createAuthInfoExample = templates.Examples(i18n.T(`
 		# Set only the "client-key" field on the "cluster-admin"
 		# entry, without touching other values:
 		kubectl config set-credentials cluster-admin --client-key=~/.kube/admin.key
@@ -113,7 +113,7 @@ var (
 		kubectl config set-credentials cluster-admin --exec-env=key1=val1 --exec-env=key2=val2
 
 		# Remove exec auth plugin environment variables for the "cluster-admin" entry
-		kubectl config set-credentials cluster-admin --exec-env=var-to-remove-`)
+		kubectl config set-credentials cluster-admin --exec-env=var-to-remove-`))
 )
 
 // NewCmdConfigSetAuthInfo returns an Command option instance for 'config set-credentials' sub command

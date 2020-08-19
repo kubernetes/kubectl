@@ -43,7 +43,7 @@ import (
 )
 
 var (
-	statusLong = templates.LongDesc(`
+	statusLong = templates.LongDesc(i18n.T(`
 		Show the status of the rollout.
 
 		By default 'rollout status' will watch the status of the latest rollout
@@ -51,11 +51,11 @@ var (
 		you can use --watch=false. Note that if a new rollout starts in-between, then
 		'rollout status' will continue watching the latest revision. If you want to
 		pin to a specific revision and abort if it is rolled over by another revision,
-		use --revision=N where N is the revision you need to watch for.`)
+		use --revision=N where N is the revision you need to watch for.`))
 
-	statusExample = templates.Examples(`
+	statusExample = templates.Examples(i18n.T(`
 		# Watch the rollout status of a deployment
-		kubectl rollout status deployment/nginx`)
+		kubectl rollout status deployment/nginx`))
 )
 
 // RolloutStatusOptions holds the command-line options for 'rollout status' sub command

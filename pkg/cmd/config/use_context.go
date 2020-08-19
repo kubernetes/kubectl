@@ -31,9 +31,9 @@ import (
 )
 
 var (
-	useContextExample = templates.Examples(`
+	useContextExample = templates.Examples(i18n.T(`
 		# Use the context for the minikube cluster
-		kubectl config use-context minikube`)
+		kubectl config use-context minikube`))
 )
 
 type useContextOptions struct {
@@ -50,7 +50,7 @@ func NewCmdConfigUseContext(out io.Writer, configAccess clientcmd.ConfigAccess) 
 		DisableFlagsInUseLine: true,
 		Short:                 i18n.T("Sets the current-context in a kubeconfig file"),
 		Aliases:               []string{"use"},
-		Long:                  `Sets the current-context in a kubeconfig file`,
+		Long:                  i18n.T(`Sets the current-context in a kubeconfig file`),
 		Example:               useContextExample,
 		Run: func(cmd *cobra.Command, args []string) {
 			cmdutil.CheckErr(options.complete(cmd))

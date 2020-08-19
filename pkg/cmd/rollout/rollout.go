@@ -27,15 +27,15 @@ import (
 )
 
 var (
-	rolloutLong = templates.LongDesc(`
-		Manage the rollout of a resource.` + rolloutValidResources)
+	rolloutLong = templates.LongDesc(i18n.T(`
+		Manage the rollout of a resource.`) + rolloutValidResources)
 
-	rolloutExample = templates.Examples(`
+	rolloutExample = templates.Examples(i18n.T(`
 		# Rollback to the previous deployment
 		kubectl rollout undo deployment/abc
 
 		# Check the rollout status of a daemonset
-		kubectl rollout status daemonset/foo`)
+		kubectl rollout status daemonset/foo`))
 
 	rolloutValidResources = dedent.Dedent(`
 		Valid resource types include:

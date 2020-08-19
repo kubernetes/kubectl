@@ -44,12 +44,12 @@ type createClusterOptions struct {
 }
 
 var (
-	createClusterLong = templates.LongDesc(`
+	createClusterLong = templates.LongDesc(i18n.T(`
 		Sets a cluster entry in kubeconfig.
 
-		Specifying a name that already exists will merge new fields on top of existing values for those fields.`)
+		Specifying a name that already exists will merge new fields on top of existing values for those fields.`))
 
-	createClusterExample = templates.Examples(`
+	createClusterExample = templates.Examples(i18n.T(`
 		# Set only the server field on the e2e cluster entry without touching other values.
 		kubectl config set-cluster e2e --server=https://1.2.3.4
 
@@ -60,7 +60,7 @@ var (
 		kubectl config set-cluster e2e --insecure-skip-tls-verify=true
 
 		# Set custom TLS server name to use for validation for the e2e cluster entry
-		kubectl config set-cluster e2e --tls-server-name=my-cluster-name`)
+		kubectl config set-cluster e2e --tls-server-name=my-cluster-name`))
 )
 
 // NewCmdConfigSetCluster returns a Command instance for 'config set-cluster' sub command

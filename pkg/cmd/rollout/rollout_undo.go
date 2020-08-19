@@ -51,10 +51,10 @@ type UndoOptions struct {
 }
 
 var (
-	undoLong = templates.LongDesc(`
-		Rollback to a previous rollout.`)
+	undoLong = templates.LongDesc(i18n.T(`
+		Rollback to a previous rollout.`))
 
-	undoExample = templates.Examples(`
+	undoExample = templates.Examples(i18n.T(`
 		# Rollback to the previous deployment
 		kubectl rollout undo deployment/abc
 
@@ -62,7 +62,7 @@ var (
 		kubectl rollout undo daemonset/abc --to-revision=3
 
 		# Rollback to the previous deployment with dry-run
-		kubectl rollout undo --dry-run=server deployment/abc`)
+		kubectl rollout undo --dry-run=server deployment/abc`))
 )
 
 // NewRolloutUndoOptions returns an initialized UndoOptions instance

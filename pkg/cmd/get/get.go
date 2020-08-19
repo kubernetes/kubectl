@@ -159,7 +159,7 @@ func NewCmdGet(parent string, f cmdutil.Factory, streams genericclioptions.IOStr
 		Use:                   "get [(-o|--output=)json|yaml|wide|custom-columns=...|custom-columns-file=...|go-template=...|go-template-file=...|jsonpath=...|jsonpath-file=...] (TYPE[.VERSION][.GROUP] [NAME | -l label] | TYPE[.VERSION][.GROUP]/NAME ...) [flags]",
 		DisableFlagsInUseLine: true,
 		Short:                 i18n.T("Display one or many resources"),
-		Long:                  getLong + "\n\n" + cmdutil.SuggestAPIResources(parent),
+		Long:                  i18n.T(getLong + "\n\n" + cmdutil.SuggestAPIResources(parent)),
 		Example:               getExample,
 		Run: func(cmd *cobra.Command, args []string) {
 			cmdutil.CheckErr(o.Complete(f, cmd, args))
