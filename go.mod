@@ -10,7 +10,7 @@ require (
 	github.com/davecgh/go-spew v1.1.1
 	github.com/daviddengcn/go-colortext v0.0.0-20160507010035-511bcaf42ccd
 	github.com/docker/distribution v2.7.1+incompatible
-	github.com/evanphx/json-patch v0.0.0-20200808040245-162e5629780b
+	github.com/evanphx/json-patch v4.9.0+incompatible
 	github.com/exponent-io/jsonpath v0.0.0-20151013193312-d6023ce2651d
 	github.com/fatih/camelcase v1.0.0
 	github.com/go-openapi/spec v0.19.3
@@ -34,14 +34,14 @@ require (
 	github.com/xlab/handysort v0.0.0-20150421192137-fb3537ed64a1 // indirect
 	golang.org/x/sys v0.0.0-20200622214017-ed371f2e16b4
 	gopkg.in/yaml.v2 v2.2.8
-	k8s.io/api v0.0.0-20200813172118-964aaeff6c60
-	k8s.io/apimachinery v0.0.0-20200813171722-658236199ef9
-	k8s.io/cli-runtime v0.0.0-20200813180037-6e165a020c37
-	k8s.io/client-go v0.0.0-20200813172717-f28aff35751d
-	k8s.io/component-base v0.0.0-20200813173350-044ed31edf51
+	k8s.io/api v0.0.0
+	k8s.io/apimachinery v0.0.0
+	k8s.io/cli-runtime v0.0.0
+	k8s.io/client-go v0.0.0
+	k8s.io/component-base v0.0.0
 	k8s.io/klog/v2 v2.2.0
 	k8s.io/kube-openapi v0.0.0-20200805222855-6aeccd4b50c6
-	k8s.io/metrics v0.0.0-20200813175812-becf97d18972
+	k8s.io/metrics v0.0.0
 	k8s.io/utils v0.0.0-20200729134348-d5654de09c73
 	sigs.k8s.io/kustomize v2.0.3+incompatible
 	sigs.k8s.io/yaml v1.2.0
@@ -49,11 +49,12 @@ require (
 )
 
 replace (
-	k8s.io/api => k8s.io/api v0.0.0-20200813172118-964aaeff6c60
-	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20200813171722-658236199ef9
-	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20200813180037-6e165a020c37
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20200813172717-f28aff35751d
-	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20200813171329-1c3794b15e35
-	k8s.io/component-base => k8s.io/component-base v0.0.0-20200813173350-044ed31edf51
-	k8s.io/metrics => k8s.io/metrics v0.0.0-20200813175812-becf97d18972
+	k8s.io/api => ../api
+	k8s.io/apimachinery => ../apimachinery
+	k8s.io/cli-runtime => ../cli-runtime
+	k8s.io/client-go => ../client-go
+	k8s.io/code-generator => ../code-generator
+	k8s.io/component-base => ../component-base
+	k8s.io/kubectl => ../kubectl
+	k8s.io/metrics => ../metrics
 )
