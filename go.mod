@@ -13,6 +13,7 @@ require (
 	github.com/evanphx/json-patch v4.9.0+incompatible
 	github.com/exponent-io/jsonpath v0.0.0-20151013193312-d6023ce2651d
 	github.com/fatih/camelcase v1.0.0
+	github.com/fvbommel/sortorder v1.0.1
 	github.com/go-openapi/spec v0.19.3
 	github.com/golangplus/bytes v0.0.0-20160111154220-45c989fe5450 // indirect
 	github.com/golangplus/fmt v0.0.0-20150411045040-2a5d6d7d2995 // indirect
@@ -31,13 +32,12 @@ require (
 	github.com/spf13/cobra v1.0.0
 	github.com/spf13/pflag v1.0.5
 	github.com/stretchr/testify v1.4.0
-	github.com/xlab/handysort v0.0.0-20150421192137-fb3537ed64a1 // indirect
 	golang.org/x/sys v0.0.0-20200622214017-ed371f2e16b4
 	gopkg.in/yaml.v2 v2.2.8
 	k8s.io/api v0.0.0-20200902131916-03aa42fe49ac
 	k8s.io/apimachinery v0.0.0-20200902171538-6084ad015ddd
 	k8s.io/cli-runtime v0.0.0-20200902135640-4d285f01f90f
-	k8s.io/client-go v0.0.0-20200903011833-ba26c4506d39
+	k8s.io/client-go v0.0.0-20200903171857-7cd71358d5b6
 	k8s.io/component-base v0.0.0-20200902133139-1d2c8187d823
 	k8s.io/klog/v2 v2.2.0
 	k8s.io/kube-openapi v0.0.0-20200805222855-6aeccd4b50c6
@@ -45,14 +45,13 @@ require (
 	k8s.io/utils v0.0.0-20200729134348-d5654de09c73
 	sigs.k8s.io/kustomize v2.0.3+incompatible
 	sigs.k8s.io/yaml v1.2.0
-	vbom.ml/util v0.0.0-20160121211510-db5cfe13f5cc
 )
 
 replace (
 	k8s.io/api => k8s.io/api v0.0.0-20200902131916-03aa42fe49ac
 	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20200902171538-6084ad015ddd
 	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20200902135640-4d285f01f90f
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20200903011833-ba26c4506d39
+	k8s.io/client-go => k8s.io/client-go v0.0.0-20200903171857-7cd71358d5b6
 	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20200902211251-7dbebec02af3
 	k8s.io/component-base => k8s.io/component-base v0.0.0-20200902133139-1d2c8187d823
 	k8s.io/metrics => k8s.io/metrics v0.0.0-20200902135418-05baf84b7531

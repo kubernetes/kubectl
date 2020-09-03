@@ -227,6 +227,10 @@
 			"Rev": "v1.4.9"
 		},
 		{
+			"ImportPath": "github.com/fvbommel/sortorder",
+			"Rev": "v1.0.1"
+		},
+		{
 			"ImportPath": "github.com/ghodss/yaml",
 			"Rev": "v1.0.0"
 		},
@@ -607,10 +611,6 @@
 			"Rev": "43a291ad63a2"
 		},
 		{
-			"ImportPath": "github.com/xlab/handysort",
-			"Rev": "fb3537ed64a1"
-		},
-		{
 			"ImportPath": "github.com/xordataexchange/crypt",
 			"Rev": "b2862e3d0a77"
 		},
@@ -772,7 +772,7 @@
 		},
 		{
 			"ImportPath": "k8s.io/client-go",
-			"Rev": "ba26c4506d39"
+			"Rev": "7cd71358d5b6"
 		},
 		{
 			"ImportPath": "k8s.io/code-generator",
@@ -817,10 +817,6 @@
 		{
 			"ImportPath": "sigs.k8s.io/yaml",
 			"Rev": "v1.2.0"
-		},
-		{
-			"ImportPath": "vbom.ml/util",
-			"Rev": "db5cfe13f5cc"
 		}
 	]
 }
