@@ -496,7 +496,7 @@
 		},
 		{
 			"ImportPath": "github.com/opencontainers/go-digest",
-			"Rev": "v1.0.0-rc1"
+			"Rev": "v1.0.0"
 		},
 		{
 			"ImportPath": "github.com/pelletier/go-toml",
@@ -760,7 +760,7 @@
 		},
 		{
 			"ImportPath": "k8s.io/api",
-			"Rev": "697df40f2d58"
+			"Rev": "bc9e5614d1a6"
 		},
 		{
 			"ImportPath": "k8s.io/apimachinery",
@@ -772,7 +772,7 @@
 		},
 		{
 			"ImportPath": "k8s.io/client-go",
-			"Rev": "529dda0cb8f9"
+			"Rev": "909a5a393582"
 		},
 		{
 			"ImportPath": "k8s.io/code-generator",
@@ -780,7 +780,7 @@
 		},
 		{
 			"ImportPath": "k8s.io/component-base",
-			"Rev": "17e9710992b5"
+			"Rev": "f6685a3d5a51"
 		},
 		{
 			"ImportPath": "k8s.io/gengo",
@@ -796,7 +796,7 @@
 		},
 		{
 			"ImportPath": "k8s.io/metrics",
-			"Rev": "21468940b519"
+			"Rev": "935813ae0d59"
 		},
 		{
 			"ImportPath": "k8s.io/utils",
