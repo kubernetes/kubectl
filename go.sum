@@ -503,8 +503,8 @@ honnef.co/go/tools v0.0.0-20190106161140-3f1c8253044a/go.mod h1:rf3lG4BRIbNafJWh
 honnef.co/go/tools v0.0.0-20190418001031-e561f6794a2a/go.mod h1:rf3lG4BRIbNafJWhAfAdb/ePZxsR/4RtNHQocxwk9r4=
 honnef.co/go/tools v0.0.0-20190523083050-ea95bdfd59fc/go.mod h1:rf3lG4BRIbNafJWhAfAdb/ePZxsR/4RtNHQocxwk9r4=
 honnef.co/go/tools v0.0.1-2019.2.3/go.mod h1:a3bituU0lyd329TUQxRnasdCoJDkEUEAqEt0JzvZhAg=
-k8s.io/api v0.0.0-20200921235740-d9d0f5541ae1/go.mod h1:5s62z0LxtR2JsRUbtXtTNHjcz/u4iXBuX/32bK2YFx8=
-k8s.io/apimachinery v0.0.0-20200916235632-714f1137f89b/go.mod h1:DnPGDnARWFvYa3pMHgSxtbZb7gpzzAZ1pTfaUNDVlmA=
+k8s.io/api v0.0.0-20200922195808-5bb35d2636ca/go.mod h1:FAsg3Y/xcbFIbnyfpgARCQ8di7NxpIRZWbawQTkHTDo=
+k8s.io/apimachinery v0.0.0-20200922195624-5b968b2f191f/go.mod h1:DnPGDnARWFvYa3pMHgSxtbZb7gpzzAZ1pTfaUNDVlmA=
 k8s.io/cli-runtime v0.0.0-20200915100420-3cc3835b3ec2/go.mod h1:Hma9QauilauA4Azq48kPjOcZNafcVy3yUE7iiJUT8QQ=
 k8s.io/client-go v0.0.0-20200917000235-cba7285b7f29/go.mod h1:Plj2rfLmeMYfAMuMgA/1EGuUaDxt78tvB9yfdi6fg6A=
 k8s.io/code-generator v0.0.0-20200904030940-4116974d9b44/go.mod h1:moqLn7w0t9cMs4+5CQyxnfA/HV8MF6aAVENF+WZZhgk=
