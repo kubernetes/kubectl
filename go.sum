@@ -506,7 +506,7 @@ honnef.co/go/tools v0.0.1-2019.2.3/go.mod h1:a3bituU0lyd329TUQxRnasdCoJDkEUEAqEt
 k8s.io/api v0.0.0-20200922195808-5bb35d2636ca/go.mod h1:FAsg3Y/xcbFIbnyfpgARCQ8di7NxpIRZWbawQTkHTDo=
 k8s.io/apimachinery v0.0.0-20200922235617-829ed199f4e0/go.mod h1:DnPGDnARWFvYa3pMHgSxtbZb7gpzzAZ1pTfaUNDVlmA=
 k8s.io/cli-runtime v0.0.0-20200915100420-3cc3835b3ec2/go.mod h1:Hma9QauilauA4Azq48kPjOcZNafcVy3yUE7iiJUT8QQ=
-k8s.io/client-go v0.0.0-20200917000235-cba7285b7f29/go.mod h1:Plj2rfLmeMYfAMuMgA/1EGuUaDxt78tvB9yfdi6fg6A=
+k8s.io/client-go v0.0.0-20200924040014-f8c0b224ad5a/go.mod h1:0TFqP6nDzw4kbUbyCXc0xcULYS2MvbAQIAaEhgnPPAA=
 k8s.io/code-generator v0.0.0-20200904030940-4116974d9b44/go.mod h1:moqLn7w0t9cMs4+5CQyxnfA/HV8MF6aAVENF+WZZhgk=
 k8s.io/component-base v0.0.0-20200911092040-c985e940ef8f/go.mod h1:KLUf6+rBAAlh4P5aX9t725mVdFgvY6LfYzl+QOveAV4=
 k8s.io/gengo v0.0.0-20200413195148-3a45101e95ac/go.mod h1:ezvh/TsK7cY6rbqRK0oQQ8IAqLxYwwyPxAX1Pzy0ii0=
