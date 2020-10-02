@@ -772,11 +772,11 @@
 		},
 		{
 			"ImportPath": "k8s.io/client-go",
-			"Rev": "f8c0b224ad5a"
+			"Rev": "a0a9b7d9d5e2"
 		},
 		{
 			"ImportPath": "k8s.io/code-generator",
-			"Rev": "4116974d9b44"
+			"Rev": "291e6a8dc8ad"
 		},
 		{
 			"ImportPath": "k8s.io/component-base",
