@@ -34,7 +34,7 @@ require (
 	github.com/xlab/handysort v0.0.0-20150421192137-fb3537ed64a1 // indirect
 	golang.org/x/sys v0.0.0-20200622214017-ed371f2e16b4
 	gopkg.in/yaml.v2 v2.2.8
-	k8s.io/api v0.0.0-20200821172135-21b59c1ded36
+	k8s.io/api v0.0.0-20201006170643-50fcaa748a4b
 	k8s.io/apimachinery v0.0.0-20200821171749-b63a0c883fbf
 	k8s.io/cli-runtime v0.0.0-20200821180036-613970382155
 	k8s.io/client-go v0.0.0-20200904053452-bb0bc934b5b4
@@ -49,7 +49,7 @@ require (
 )
 
 replace (
-	k8s.io/api => k8s.io/api v0.0.0-20200821172135-21b59c1ded36
+	k8s.io/api => k8s.io/api v0.0.0-20201006170643-50fcaa748a4b
 	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20200821171749-b63a0c883fbf
 	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20200821180036-613970382155
 	k8s.io/client-go => k8s.io/client-go v0.0.0-20200904053452-bb0bc934b5b4
