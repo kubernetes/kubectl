@@ -796,7 +796,7 @@
 		},
 		{
 			"ImportPath": "k8s.io/metrics",
-			"Rev": "029a41d5e49d"
+			"Rev": "f36b9d74ccd1"
 		},
 		{
 			"ImportPath": "k8s.io/utils",
