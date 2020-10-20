@@ -44,7 +44,7 @@
 		},
 		{
 			"ImportPath": "github.com/Azure/go-autorest/autorest/adal",
-			"Rev": "v0.9.0"
+			"Rev": "v0.9.5"
 		},
 		{
 			"ImportPath": "github.com/Azure/go-autorest/autorest/date",
@@ -52,7 +52,7 @@
 		},
 		{
 			"ImportPath": "github.com/Azure/go-autorest/autorest/mocks",
-			"Rev": "v0.4.0"
+			"Rev": "v0.4.1"
 		},
 		{
 			"ImportPath": "github.com/Azure/go-autorest/logger",
@@ -221,6 +221,10 @@
 		{
 			"ImportPath": "github.com/fatih/camelcase",
 			"Rev": "v1.0.0"
+		},
+		{
+			"ImportPath": "github.com/form3tech-oss/jwt-go",
+			"Rev": "v3.2.2"
 		},
 		{
 			"ImportPath": "github.com/fsnotify/fsnotify",
@@ -640,7 +644,7 @@
 		},
 		{
 			"ImportPath": "golang.org/x/crypto",
-			"Rev": "75b288015ac9"
+			"Rev": "7f63de1d35b0"
 		},
 		{
 			"ImportPath": "golang.org/x/exp",
@@ -760,27 +764,27 @@
 		},
 		{
 			"ImportPath": "k8s.io/api",
-			"Rev": "2c3c141c931c"
+			"Rev": "54bcc311e327"
 		},
 		{
 			"ImportPath": "k8s.io/apimachinery",
-			"Rev": "d4f471b82f0a"
+			"Rev": "554eef9dbf66"
 		},
 		{
 			"ImportPath": "k8s.io/cli-runtime",
-			"Rev": "bc95ff91653e"
+			"Rev": "c4595e8c277b"
 		},
 		{
 			"ImportPath": "k8s.io/client-go",
-			"Rev": "67b0d2026ae5"
+			"Rev": "d1a4fe5f2d96"
 		},
 		{
 			"ImportPath": "k8s.io/code-generator",
-			"Rev": "f6667ec3dafb"
+			"Rev": "60862b8acf58"
 		},
 		{
 			"ImportPath": "k8s.io/component-base",
-			"Rev": "609bde980a40"
+			"Rev": "b8c7ac1518d8"
 		},
 		{
 			"ImportPath": "k8s.io/gengo",
@@ -796,7 +800,7 @@
 		},
 		{
 			"ImportPath": "k8s.io/metrics",
-			"Rev": "f36b9d74ccd1"
+			"Rev": "32c3330b6a44"
 		},
 		{
 			"ImportPath": "k8s.io/utils",
