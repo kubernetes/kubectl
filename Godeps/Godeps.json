@@ -764,7 +764,7 @@
 		},
 		{
 			"ImportPath": "k8s.io/api",
-			"Rev": "54bcc311e327"
+			"Rev": "ccbd11b5dd0a"
 		},
 		{
 			"ImportPath": "k8s.io/apimachinery",
@@ -772,7 +772,7 @@
 		},
 		{
 			"ImportPath": "k8s.io/cli-runtime",
-			"Rev": "c4595e8c277b"
+			"Rev": "87ad57c444cb"
 		},
 		{
 			"ImportPath": "k8s.io/client-go",
