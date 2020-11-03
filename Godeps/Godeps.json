@@ -787,6 +787,10 @@
 			"Rev": "3b346c3e8128"
 		},
 		{
+			"ImportPath": "k8s.io/component-helpers",
+			"Rev": "f4b28bd014f1"
+		},
+		{
 			"ImportPath": "k8s.io/gengo",
 			"Rev": "8167cfdcfc14"
 		},
