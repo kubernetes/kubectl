@@ -8,15 +8,15 @@
 	"Deps": [
 		{
 			"ImportPath": "cloud.google.com/go",
-			"Rev": "v0.51.0"
+			"Rev": "v0.54.0"
 		},
 		{
 			"ImportPath": "cloud.google.com/go/bigquery",
-			"Rev": "v1.0.1"
+			"Rev": "v1.4.0"
 		},
 		{
 			"ImportPath": "cloud.google.com/go/datastore",
-			"Rev": "v1.0.0"
+			"Rev": "v1.1.0"
 		},
 		{
 			"ImportPath": "cloud.google.com/go/firestore",
@@ -24,11 +24,11 @@
 		},
 		{
 			"ImportPath": "cloud.google.com/go/pubsub",
-			"Rev": "v1.0.1"
+			"Rev": "v1.2.0"
 		},
 		{
 			"ImportPath": "cloud.google.com/go/storage",
-			"Rev": "v1.0.0"
+			"Rev": "v1.6.0"
 		},
 		{
 			"ImportPath": "dmitri.shuralyov.com/gpu/mtl",
@@ -132,7 +132,7 @@
 		},
 		{
 			"ImportPath": "github.com/blang/semver",
-			"Rev": "v3.5.0"
+			"Rev": "v3.5.1"
 		},
 		{
 			"ImportPath": "github.com/census-instrumentation/opencensus-proto",
@@ -272,7 +272,7 @@
 		},
 		{
 			"ImportPath": "github.com/go-gl/glfw/v3.3/glfw",
-			"Rev": "12ad95a8df72"
+			"Rev": "6f7a984d4dc4"
 		},
 		{
 			"ImportPath": "github.com/go-kit/kit",
@@ -316,15 +316,15 @@
 		},
 		{
 			"ImportPath": "github.com/golang/groupcache",
-			"Rev": "215e87163ea7"
+			"Rev": "8c9f03a8e57e"
 		},
 		{
 			"ImportPath": "github.com/golang/mock",
-			"Rev": "v1.3.1"
+			"Rev": "v1.4.1"
 		},
 		{
 			"ImportPath": "github.com/golang/protobuf",
-			"Rev": "v1.4.2"
+			"Rev": "v1.4.3"
 		},
 		{
 			"ImportPath": "github.com/golangplus/bytes",
@@ -344,7 +344,7 @@
 		},
 		{
 			"ImportPath": "github.com/google/go-cmp",
-			"Rev": "v0.4.0"
+			"Rev": "v0.5.2"
 		},
 		{
 			"ImportPath": "github.com/google/gofuzz",
@@ -356,7 +356,7 @@
 		},
 		{
 			"ImportPath": "github.com/google/pprof",
-			"Rev": "d4f498aebedc"
+			"Rev": "1ebb73c60ed3"
 		},
 		{
 			"ImportPath": "github.com/google/renameio",
@@ -364,7 +364,7 @@
 		},
 		{
 			"ImportPath": "github.com/google/uuid",
-			"Rev": "v1.1.1"
+			"Rev": "v1.1.2"
 		},
 		{
 			"ImportPath": "github.com/googleapis/gax-go/v2",
@@ -672,7 +672,7 @@
 		},
 		{
 			"ImportPath": "github.com/prometheus/procfs",
-			"Rev": "v0.1.3"
+			"Rev": "v0.2.0"
 		},
 		{
 			"ImportPath": "github.com/prometheus/tsdb",
@@ -756,7 +756,7 @@
 		},
 		{
 			"ImportPath": "github.com/stretchr/testify",
-			"Rev": "v1.4.0"
+			"Rev": "v1.6.1"
 		},
 		{
 			"ImportPath": "github.com/subosito/gotenv",
@@ -780,7 +780,7 @@
 		},
 		{
 			"ImportPath": "go.opencensus.io",
-			"Rev": "v0.22.2"
+			"Rev": "v0.22.3"
 		},
 		{
 			"ImportPath": "go.uber.org/atomic",
@@ -800,7 +800,7 @@
 		},
 		{
 			"ImportPath": "golang.org/x/exp",
-			"Rev": "da58074b4299"
+			"Rev": "6cc2880d07d6"
 		},
 		{
 			"ImportPath": "golang.org/x/image",
@@ -808,7 +808,7 @@
 		},
 		{
 			"ImportPath": "golang.org/x/lint",
-			"Rev": "fdd1cda4f05f"
+			"Rev": "738671d3881b"
 		},
 		{
 			"ImportPath": "golang.org/x/mobile",
@@ -824,7 +824,7 @@
 		},
 		{
 			"ImportPath": "golang.org/x/oauth2",
-			"Rev": "858c2ad4c8b6"
+			"Rev": "bf48bf16ab8d"
 		},
 		{
 			"ImportPath": "golang.org/x/sync",
@@ -836,11 +836,11 @@
 		},
 		{
 			"ImportPath": "golang.org/x/text",
-			"Rev": "v0.3.3"
+			"Rev": "v0.3.4"
 		},
 		{
 			"ImportPath": "golang.org/x/time",
-			"Rev": "555d28b269f0"
+			"Rev": "3af7569d3a1e"
 		},
 		{
 			"ImportPath": "golang.org/x/tools",
@@ -848,11 +848,11 @@
 		},
 		{
 			"ImportPath": "golang.org/x/xerrors",
-			"Rev": "9bdfabe68543"
+			"Rev": "5ec99f83aff1"
 		},
 		{
 			"ImportPath": "google.golang.org/api",
-			"Rev": "v0.15.0"
+			"Rev": "v0.20.0"
 		},
 		{
 			"ImportPath": "google.golang.org/appengine",
@@ -864,11 +864,11 @@
 		},
 		{
 			"ImportPath": "google.golang.org/grpc",
-			"Rev": "v1.27.0"
+			"Rev": "v1.27.1"
 		},
 		{
 			"ImportPath": "google.golang.org/protobuf",
-			"Rev": "v1.24.0"
+			"Rev": "v1.25.0"
 		},
 		{
 			"ImportPath": "gopkg.in/alecthomas/kingpin.v2",
@@ -907,6 +907,10 @@
 			"Rev": "v2.2.8"
 		},
 		{
+			"ImportPath": "gopkg.in/yaml.v3",
+			"Rev": "9f266ea9e77c"
+		},
+		{
 			"ImportPath": "gotest.tools",
 			"Rev": "v2.2.0"
 		},
@@ -916,35 +920,35 @@
 		},
 		{
 			"ImportPath": "honnef.co/go/tools",
-			"Rev": "v0.0.1-2019.2.3"
+			"Rev": "v0.0.1-2020.1.3"
 		},
 		{
 			"ImportPath": "k8s.io/api",
-			"Rev": "e29b22345993"
+			"Rev": "ccdf63aa6ee8"
 		},
 		{
 			"ImportPath": "k8s.io/apimachinery",
-			"Rev": "323157012f87"
+			"Rev": "65a627a281ee"
 		},
 		{
 			"ImportPath": "k8s.io/cli-runtime",
-			"Rev": "fbe98341a6e2"
+			"Rev": "1dd5b70cce55"
 		},
 		{
 			"ImportPath": "k8s.io/client-go",
-			"Rev": "d396fd99ebba"
+			"Rev": "4ab8fb4585a5"
 		},
 		{
 			"ImportPath": "k8s.io/code-generator",
-			"Rev": "ebc5cde1959a"
+			"Rev": "18d1afbd2833"
 		},
 		{
 			"ImportPath": "k8s.io/component-base",
-			"Rev": "3e59e5bc0401"
+			"Rev": "9894bfc661fe"
 		},
 		{
 			"ImportPath": "k8s.io/component-helpers",
-			"Rev": "77b3698ccf7c"
+			"Rev": "12ccb9f27b2c"
 		},
 		{
 			"ImportPath": "k8s.io/gengo",
@@ -960,15 +964,23 @@
 		},
 		{
 			"ImportPath": "k8s.io/metrics",
-			"Rev": "f246df756006"
+			"Rev": "5165134a210d"
 		},
 		{
 			"ImportPath": "k8s.io/utils",
-			"Rev": "8146046b121e"
+			"Rev": "67b214c5f920"
 		},
 		{
 			"ImportPath": "rsc.io/binaryregexp",
 			"Rev": "v0.2.0"
+		},
+		{
+			"ImportPath": "rsc.io/quote/v3",
+			"Rev": "v3.1.0"
+		},
+		{
+			"ImportPath": "rsc.io/sampler",
+			"Rev": "v1.3.0"
 		},
 		{
 			"ImportPath": "sigs.k8s.io/kustomize",
