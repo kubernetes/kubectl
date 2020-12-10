@@ -928,15 +928,15 @@
 		},
 		{
 			"ImportPath": "k8s.io/apimachinery",
-			"Rev": "8f01ffc4dcb8"
+			"Rev": "15c5dba13c59"
 		},
 		{
 			"ImportPath": "k8s.io/cli-runtime",
-			"Rev": "bb334014705f"
+			"Rev": "2e4b259e04ba"
 		},
 		{
 			"ImportPath": "k8s.io/client-go",
-			"Rev": "50c086135a49"
+			"Rev": "e24efdc77f15"
 		},
 		{
 			"ImportPath": "k8s.io/code-generator",
