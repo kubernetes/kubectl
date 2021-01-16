@@ -34,27 +34,27 @@ require (
 	github.com/stretchr/testify v1.6.1
 	golang.org/x/sys v0.0.0-20201112073958-5cba982894dd
 	gopkg.in/yaml.v2 v2.2.8
-	k8s.io/api v0.0.0-20210113165900-cb95709d38de
-	k8s.io/apimachinery v0.0.0-20210112230657-1d8c923392f0
+	k8s.io/api v0.0.0-20210115125903-c873f2e8ab25
+	k8s.io/apimachinery v0.0.0-20210116005712-af2ce7e24233
 	k8s.io/cli-runtime v0.0.0-20201218091240-9547a43879a0
-	k8s.io/client-go v0.0.0-20210112050101-623741e9c1d5
-	k8s.io/component-base v0.0.0-20201217090229-e05af43f81e2
-	k8s.io/component-helpers v0.0.0-20201217090330-fc14ecbd38ba
+	k8s.io/client-go v0.0.0-20210114130407-537eda74d850
+	k8s.io/component-base v0.0.0-20210115210250-6b412b2ef0d8
+	k8s.io/component-helpers v0.0.0-20210114010638-f2e8fa560240
 	k8s.io/klog/v2 v2.4.0
 	k8s.io/kube-openapi v0.0.0-20201113171705-d219536bb9fd
-	k8s.io/metrics v0.0.0-20201219011202-c98d46127463
+	k8s.io/metrics v0.0.0-20210116051850-08fd6e46d1e4
 	k8s.io/utils v0.0.0-20201110183641-67b214c5f920
 	sigs.k8s.io/kustomize v2.0.3+incompatible
 	sigs.k8s.io/yaml v1.2.0
 )
 
 replace (
-	k8s.io/api => k8s.io/api v0.0.0-20210113165900-cb95709d38de
-	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20210112230657-1d8c923392f0
+	k8s.io/api => k8s.io/api v0.0.0-20210115125903-c873f2e8ab25
+	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20210116005712-af2ce7e24233
 	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20201218091240-9547a43879a0
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20210112050101-623741e9c1d5
-	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20210113165524-64162c9958c5
-	k8s.io/component-base => k8s.io/component-base v0.0.0-20201217090229-e05af43f81e2
-	k8s.io/component-helpers => k8s.io/component-helpers v0.0.0-20201217090330-fc14ecbd38ba
-	k8s.io/metrics => k8s.io/metrics v0.0.0-20201219011202-c98d46127463
+	k8s.io/client-go => k8s.io/client-go v0.0.0-20210114130407-537eda74d850
+	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20210116045519-2a79acd68e5f
+	k8s.io/component-base => k8s.io/component-base v0.0.0-20210115210250-6b412b2ef0d8
+	k8s.io/component-helpers => k8s.io/component-helpers v0.0.0-20210114010638-f2e8fa560240
+	k8s.io/metrics => k8s.io/metrics v0.0.0-20210116051850-08fd6e46d1e4
 )
