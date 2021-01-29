@@ -211,10 +211,6 @@
 			"Rev": "v2.7.1"
 		},
 		{
-			"ImportPath": "github.com/docker/spdystream",
-			"Rev": "449fdfce4d96"
-		},
-		{
 			"ImportPath": "github.com/docopt/docopt-go",
 			"Rev": "ee0de3bc6815"
 		},
@@ -595,6 +591,10 @@
 			"Rev": "v1.1.2"
 		},
 		{
+			"ImportPath": "github.com/moby/spdystream",
+			"Rev": "v0.2.0"
+		},
+		{
 			"ImportPath": "github.com/moby/term",
 			"Rev": "672ec06f55cd"
 		},
@@ -924,31 +924,31 @@
 		},
 		{
 			"ImportPath": "k8s.io/api",
-			"Rev": "0d6bea24dc49"
+			"Rev": "cfb031d9922e"
 		},
 		{
 			"ImportPath": "k8s.io/apimachinery",
-			"Rev": "ee96543cc673"
+			"Rev": "d656fe577b19"
 		},
 		{
 			"ImportPath": "k8s.io/cli-runtime",
-			"Rev": "3659b9895efa"
+			"Rev": "4a1e813a5738"
 		},
 		{
 			"ImportPath": "k8s.io/client-go",
-			"Rev": "b72204b2445d"
+			"Rev": "c8e0107904fe"
 		},
 		{
 			"ImportPath": "k8s.io/code-generator",
-			"Rev": "468be548890f"
+			"Rev": "062b17e0c65f"
 		},
 		{
 			"ImportPath": "k8s.io/component-base",
-			"Rev": "6b412b2ef0d8"
+			"Rev": "090761b6f2fb"
 		},
 		{
 			"ImportPath": "k8s.io/component-helpers",
-			"Rev": "f2e8fa560240"
+			"Rev": "daf7e8a321eb"
 		},
 		{
 			"ImportPath": "k8s.io/gengo",
@@ -964,7 +964,7 @@
 		},
 		{
 			"ImportPath": "k8s.io/metrics",
-			"Rev": "08fd6e46d1e4"
+			"Rev": "f74e2b7a539e"
 		},
 		{
 			"ImportPath": "k8s.io/utils",
