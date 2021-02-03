@@ -639,7 +639,7 @@ honnef.co/go/tools v0.0.1-2020.1.3/go.mod h1:X/FiERA/W4tHapMX5mGpAtMSVEeEUOyHaw9
 k8s.io/api v0.0.0-20210202201024-9f65ac4826aa/go.mod h1:3jofhj44aajVJZcPa3+rvEFZRe4nr1NNQgw5HtNky0M=
 k8s.io/apimachinery v0.0.0-20210202200849-9e39a13d2cab/go.mod h1:usCLrfBNFPxV+npBFCgIy08RBKPAhZQyIzwcvPV2eh8=
 k8s.io/cli-runtime v0.0.0-20210202202902-984374fbd3bd/go.mod h1:vN4I0m+pP/HOTtiHkCpNvUcrRPPu0/FU8aUKMibl7d4=
-k8s.io/client-go v0.0.0-20210202201239-3147a30d7bb5/go.mod h1:mJubEonhU7Puf25vxba4hDwWZKKp6ErQbXGPi9sLXhU=
+k8s.io/client-go v0.0.0-20210203041231-93ce9718ffcd/go.mod h1:mJubEonhU7Puf25vxba4hDwWZKKp6ErQbXGPi9sLXhU=
 k8s.io/code-generator v0.0.0-20210202200712-b6eef682227f/go.mod h1:O7FXIFFMbeLstjVDD1gKtnexuIo2JF8jkudWpXyjVeo=
 k8s.io/component-base v0.0.0-20210202201701-81d9ea233619/go.mod h1:usKilGzmoexy3tmMYXYM2r6QFIS+drbtnot8qjqIXe8=
 k8s.io/component-helpers v0.0.0-20210202201756-e42f75bf9b21/go.mod h1:8OBU1/nmDh8pjPoisMrILN3oAmgF9879iToT+jg9vjU=
