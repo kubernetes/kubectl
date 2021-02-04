@@ -605,6 +605,13 @@ func GetResourcesAndPairs(args []string, pairType string) (resources []string, p
 			return
 		}
 	}
+	// In case of annotation of LDAP object, the resource itself may contain '='
+	// For example: CN=Group1,OU=Groups,OU=People,DC=example,DC=local
+	// in such cases the first item in pairArgs will be considered as a resource
+	if len(resources) == 0 {
+		resources = append(resources, pairArgs[0])
+		pairArgs  = append(pairArgs[:0], pairArgs[0+1:]...)
+	}
 	return
 }
 
