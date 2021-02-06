@@ -34,27 +34,27 @@ require (
 	github.com/stretchr/testify v1.6.1
 	golang.org/x/sys v0.0.0-20201112073958-5cba982894dd
 	gopkg.in/yaml.v2 v2.2.8
-	k8s.io/api v0.0.0-20210205010857-9e1a49de1e2f
-	k8s.io/apimachinery v0.0.0-20210202200849-9e39a13d2cab
-	k8s.io/cli-runtime v0.0.0-20210202202902-984374fbd3bd
-	k8s.io/client-go v0.0.0-20210203041231-93ce9718ffcd
-	k8s.io/component-base v0.0.0-20210205131209-cc3f82d8eb26
-	k8s.io/component-helpers v0.0.0-20210202201756-e42f75bf9b21
+	k8s.io/api v0.0.0-20210206010904-48bd8381a38a
+	k8s.io/apimachinery v0.0.0-20210206010734-c93b0f84892e
+	k8s.io/cli-runtime v0.0.0-20210206012746-85724360dac6
+	k8s.io/client-go v0.0.0-20210206011112-100613764a76
+	k8s.io/component-base v0.0.0-20210206011540-fc5f0989f107
+	k8s.io/component-helpers v0.0.0-20210206011635-fb438f0205fc
 	k8s.io/klog/v2 v2.5.0
 	k8s.io/kube-openapi v0.0.0-20201113171705-d219536bb9fd
-	k8s.io/metrics v0.0.0-20210202202759-ef93df266531
+	k8s.io/metrics v0.0.0-20210206012643-eb773d8be706
 	k8s.io/utils v0.0.0-20201110183641-67b214c5f920
 	sigs.k8s.io/kustomize v2.0.3+incompatible
 	sigs.k8s.io/yaml v1.2.0
 )
 
 replace (
-	k8s.io/api => k8s.io/api v0.0.0-20210205010857-9e1a49de1e2f
-	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20210202200849-9e39a13d2cab
-	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20210202202902-984374fbd3bd
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20210203041231-93ce9718ffcd
-	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20210202200712-b6eef682227f
-	k8s.io/component-base => k8s.io/component-base v0.0.0-20210205131209-cc3f82d8eb26
-	k8s.io/component-helpers => k8s.io/component-helpers v0.0.0-20210202201756-e42f75bf9b21
-	k8s.io/metrics => k8s.io/metrics v0.0.0-20210202202759-ef93df266531
+	k8s.io/api => k8s.io/api v0.0.0-20210206010904-48bd8381a38a
+	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20210206010734-c93b0f84892e
+	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20210206012746-85724360dac6
+	k8s.io/client-go => k8s.io/client-go v0.0.0-20210206011112-100613764a76
+	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20210206010601-575533eae677
+	k8s.io/component-base => k8s.io/component-base v0.0.0-20210206011540-fc5f0989f107
+	k8s.io/component-helpers => k8s.io/component-helpers v0.0.0-20210206011635-fb438f0205fc
+	k8s.io/metrics => k8s.io/metrics v0.0.0-20210206012643-eb773d8be706
 )
