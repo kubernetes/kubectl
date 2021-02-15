@@ -2,7 +2,7 @@
 
 module k8s.io/kubectl
 
-go 1.15
+go 1.16
 
 require (
 	github.com/MakeNowJust/heredoc v0.0.0-20170808103936-bb23615498cd
@@ -34,27 +34,28 @@ require (
 	github.com/stretchr/testify v1.6.1
 	golang.org/x/sys v0.0.0-20201112073958-5cba982894dd
 	gopkg.in/yaml.v2 v2.2.8
-	k8s.io/api v0.0.0-20210301212011-b852e500ef89
-	k8s.io/apimachinery v0.0.0-20210301175527-603e04655e9f
-	k8s.io/cli-runtime v0.0.0-20210301213836-f36b02a34076
-	k8s.io/client-go v0.0.0-20210301212223-fcbadc8b4149
-	k8s.io/component-base v0.0.0-20210301212626-169ae627a654
-	k8s.io/component-helpers v0.0.0-20210301212722-1fac02b493c0
+	k8s.io/api v0.0.0
+	k8s.io/apimachinery v0.0.0
+	k8s.io/cli-runtime v0.0.0
+	k8s.io/client-go v0.0.0
+	k8s.io/component-base v0.0.0
+	k8s.io/component-helpers v0.0.0
 	k8s.io/klog/v2 v2.5.0
 	k8s.io/kube-openapi v0.0.0-20201113171705-d219536bb9fd
-	k8s.io/metrics v0.0.0-20210301213732-116055520951
+	k8s.io/metrics v0.0.0
 	k8s.io/utils v0.0.0-20201110183641-67b214c5f920
 	sigs.k8s.io/kustomize v2.0.3+incompatible
 	sigs.k8s.io/yaml v1.2.0
 )
 
 replace (
-	k8s.io/api => k8s.io/api v0.0.0-20210301212011-b852e500ef89
-	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20210301175527-603e04655e9f
-	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20210301213836-f36b02a34076
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20210301212223-fcbadc8b4149
-	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20210301175527-3491177bb59d
-	k8s.io/component-base => k8s.io/component-base v0.0.0-20210301212626-169ae627a654
-	k8s.io/component-helpers => k8s.io/component-helpers v0.0.0-20210301212722-1fac02b493c0
-	k8s.io/metrics => k8s.io/metrics v0.0.0-20210301213732-116055520951
+	k8s.io/api => ../api
+	k8s.io/apimachinery => ../apimachinery
+	k8s.io/cli-runtime => ../cli-runtime
+	k8s.io/client-go => ../client-go
+	k8s.io/code-generator => ../code-generator
+	k8s.io/component-base => ../component-base
+	k8s.io/component-helpers => ../component-helpers
+	k8s.io/kubectl => ../kubectl
+	k8s.io/metrics => ../metrics
 )
