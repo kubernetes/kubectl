@@ -37,7 +37,7 @@ require (
 	k8s.io/apimachinery v0.0.0-20210303091935-317ebe7c2dbd
 	k8s.io/cli-runtime v0.0.0-20210303100556-396a7ac4c917
 	k8s.io/client-go v0.0.0-20210303092632-a33729487127
-	k8s.io/component-base v0.0.0-20210303093958-e9a8fc604a43
+	k8s.io/component-base v0.0.0-20210303093959-3bbc7808d9b4
 	k8s.io/component-helpers v0.0.0-20210303094157-5d0270f60007
 	k8s.io/klog/v2 v2.5.0
 	k8s.io/kube-openapi v0.0.0-20201113171705-d219536bb9fd
@@ -53,7 +53,7 @@ replace (
 	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20210303100556-396a7ac4c917
 	k8s.io/client-go => k8s.io/client-go v0.0.0-20210303092632-a33729487127
 	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20210303091708-748252d1b6f4
-	k8s.io/component-base => k8s.io/component-base v0.0.0-20210303093958-e9a8fc604a43
+	k8s.io/component-base => k8s.io/component-base v0.0.0-20210303093959-3bbc7808d9b4
 	k8s.io/component-helpers => k8s.io/component-helpers v0.0.0-20210303094157-5d0270f60007
 	k8s.io/metrics => k8s.io/metrics v0.0.0-20210303100352-2439e8db5753
 )
