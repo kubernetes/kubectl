@@ -920,7 +920,7 @@
 		},
 		{
 			"ImportPath": "k8s.io/api",
-			"Rev": "9a813edcaca0"
+			"Rev": "c4b19412b7d9"
 		},
 		{
 			"ImportPath": "k8s.io/apimachinery",
@@ -940,7 +940,7 @@
 		},
 		{
 			"ImportPath": "k8s.io/component-base",
-			"Rev": "3bbc7808d9b4"
+			"Rev": "a7be188c8339"
 		},
 		{
 			"ImportPath": "k8s.io/component-helpers",
