@@ -924,11 +924,11 @@
 		},
 		{
 			"ImportPath": "k8s.io/apimachinery",
-			"Rev": "317ebe7c2dbd"
+			"Rev": "086982076e5b"
 		},
 		{
 			"ImportPath": "k8s.io/cli-runtime",
-			"Rev": "396a7ac4c917"
+			"Rev": "f536d1e57e2c"
 		},
 		{
 			"ImportPath": "k8s.io/client-go",
