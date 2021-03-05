@@ -932,11 +932,11 @@
 		},
 		{
 			"ImportPath": "k8s.io/client-go",
-			"Rev": "9409f5796d38"
+			"Rev": "ec8fb0246c86"
 		},
 		{
 			"ImportPath": "k8s.io/code-generator",
-			"Rev": "748252d1b6f4"
+			"Rev": "b9b4ecbf9b41"
 		},
 		{
 			"ImportPath": "k8s.io/component-base",
