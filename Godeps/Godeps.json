@@ -928,11 +928,11 @@
 		},
 		{
 			"ImportPath": "k8s.io/cli-runtime",
-			"Rev": "58ece87116b5"
+			"Rev": "b150ffa97bc4"
 		},
 		{
 			"ImportPath": "k8s.io/client-go",
-			"Rev": "ec8fb0246c86"
+			"Rev": "503eb33ae57a"
 		},
 		{
 			"ImportPath": "k8s.io/code-generator",
