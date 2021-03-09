@@ -23,7 +23,7 @@ require (
 	github.com/liggitt/tabwriter v0.0.0-20181228230101-89fcab3d43de
 	github.com/lithammer/dedent v1.1.0
 	github.com/mitchellh/go-wordwrap v1.0.0
-	github.com/moby/term v0.0.0-20200312100748-672ec06f55cd
+	github.com/moby/term v0.0.0-20201216013528-df9cb8a40635
 	github.com/onsi/ginkgo v1.11.0
 	github.com/onsi/gomega v1.7.0
 	github.com/opencontainers/go-digest v1.0.0 // indirect
@@ -37,7 +37,7 @@ require (
 	k8s.io/apimachinery v0.0.0-20210309143504-98d3ae9509fd
 	k8s.io/cli-runtime v0.0.0-20210309121231-13fcfe021d4b
 	k8s.io/client-go v0.0.0-20210309224750-6085ad09f2ca
-	k8s.io/component-base v0.0.0-20210309144516-39b19c884a91
+	k8s.io/component-base v0.0.0-20210309225503-56a18a6b2b2b
 	k8s.io/component-helpers v0.0.0-20210309225651-87483a14c217
 	k8s.io/klog/v2 v2.5.0
 	k8s.io/kube-openapi v0.0.0-20210305001622-591a79e4bda7
@@ -54,7 +54,7 @@ replace (
 	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20210309121231-13fcfe021d4b
 	k8s.io/client-go => k8s.io/client-go v0.0.0-20210309224750-6085ad09f2ca
 	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20210309103010-24be182ad6d3
-	k8s.io/component-base => k8s.io/component-base v0.0.0-20210309144516-39b19c884a91
+	k8s.io/component-base => k8s.io/component-base v0.0.0-20210309225503-56a18a6b2b2b
 	k8s.io/component-helpers => k8s.io/component-helpers v0.0.0-20210309225651-87483a14c217
 	k8s.io/metrics => k8s.io/metrics v0.0.0-20210309120641-2c00c32ce563
 )

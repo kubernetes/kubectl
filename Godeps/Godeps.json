@@ -204,7 +204,7 @@
 		},
 		{
 			"ImportPath": "github.com/creack/pty",
-			"Rev": "v1.1.9"
+			"Rev": "v1.1.11"
 		},
 		{
 			"ImportPath": "github.com/davecgh/go-spew",
@@ -564,7 +564,7 @@
 		},
 		{
 			"ImportPath": "github.com/konsorten/go-windows-terminal-sequences",
-			"Rev": "v1.0.3"
+			"Rev": "v1.0.1"
 		},
 		{
 			"ImportPath": "github.com/kr/logfmt",
@@ -656,7 +656,7 @@
 		},
 		{
 			"ImportPath": "github.com/moby/term",
-			"Rev": "672ec06f55cd"
+			"Rev": "df9cb8a40635"
 		},
 		{
 			"ImportPath": "github.com/modern-go/concurrent",
@@ -788,7 +788,7 @@
 		},
 		{
 			"ImportPath": "github.com/sirupsen/logrus",
-			"Rev": "v1.6.0"
+			"Rev": "v1.4.2"
 		},
 		{
 			"ImportPath": "github.com/smartystreets/assertions",
@@ -1023,12 +1023,8 @@
 			"Rev": "9f266ea9e77c"
 		},
 		{
-			"ImportPath": "gotest.tools",
-			"Rev": "v2.2.0"
-		},
-		{
 			"ImportPath": "gotest.tools/v3",
-			"Rev": "v3.0.2"
+			"Rev": "v3.0.3"
 		},
 		{
 			"ImportPath": "honnef.co/go/tools",
@@ -1056,7 +1052,7 @@
 		},
 		{
 			"ImportPath": "k8s.io/component-base",
-			"Rev": "39b19c884a91"
+			"Rev": "56a18a6b2b2b"
 		},
 		{
 			"ImportPath": "k8s.io/component-helpers",
