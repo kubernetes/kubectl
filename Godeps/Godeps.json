@@ -1052,11 +1052,11 @@
 		},
 		{
 			"ImportPath": "k8s.io/component-base",
-			"Rev": "56a18a6b2b2b"
+			"Rev": "04becb09aab2"
 		},
 		{
 			"ImportPath": "k8s.io/component-helpers",
-			"Rev": "87483a14c217"
+			"Rev": "3abc8de3968d"
 		},
 		{
 			"ImportPath": "k8s.io/gengo",
