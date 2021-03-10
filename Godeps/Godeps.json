@@ -1032,11 +1032,11 @@
 		},
 		{
 			"ImportPath": "k8s.io/api",
-			"Rev": "f1e2e30ecadb"
+			"Rev": "8814a7de4e49"
 		},
 		{
 			"ImportPath": "k8s.io/apimachinery",
-			"Rev": "98d3ae9509fd"
+			"Rev": "1f1bc58a1c79"
 		},
 		{
 			"ImportPath": "k8s.io/cli-runtime",
