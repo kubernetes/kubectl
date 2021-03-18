@@ -34,17 +34,17 @@ require (
 	github.com/spf13/pflag v1.0.5
 	github.com/stretchr/testify v1.4.0
 	github.com/xlab/handysort v0.0.0-20150421192137-fb3537ed64a1 // indirect
-	golang.org/x/sys v0.0.0-20191022100944-742c48ecaeb7
+	golang.org/x/sys v0.0.0-20201112073958-5cba982894dd
 	gopkg.in/yaml.v2 v2.2.8
 	gotest.tools v2.2.0+incompatible // indirect
-	k8s.io/api v0.0.0-20200903132205-4352ece35dc9
-	k8s.io/apimachinery v0.0.0-20201105122504-3f2274d12649
-	k8s.io/cli-runtime v0.0.0-20200903140634-426396820054
-	k8s.io/client-go v0.0.0-20201214171407-649866c409a9
-	k8s.io/component-base v0.0.0-20200903133847-65f5cb33b5af
+	k8s.io/api v0.0.0
+	k8s.io/apimachinery v0.0.0
+	k8s.io/cli-runtime v0.0.0
+	k8s.io/client-go v0.0.0
+	k8s.io/component-base v0.0.0
 	k8s.io/klog v1.0.0
 	k8s.io/kube-openapi v0.0.0-20200410145947-61e04a5be9a6 // release-1.18
-	k8s.io/metrics v0.0.0-20200903140419-7e794871ebd7
+	k8s.io/metrics v0.0.0
 	k8s.io/utils v0.0.0-20200324210504-a9aa75ae1b89
 	sigs.k8s.io/kustomize v2.0.3+incompatible
 	sigs.k8s.io/yaml v1.2.0
@@ -52,13 +52,15 @@ require (
 )
 
 replace (
-	golang.org/x/sys => golang.org/x/sys v0.0.0-20190813064441-fde4db37ae7a // pinned to release-branch.go1.13
+	golang.org/x/crypto => golang.org/x/crypto v0.0.0-20200220183623-bac4c82f6975
+	golang.org/x/text => golang.org/x/text v0.3.2
 	golang.org/x/tools => golang.org/x/tools v0.0.0-20190821162956-65e3620a7ae7 // pinned to release-branch.go1.13
-	k8s.io/api => k8s.io/api v0.0.0-20200903132205-4352ece35dc9
-	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20201105122504-3f2274d12649
-	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20200903140634-426396820054
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20201214171407-649866c409a9
-	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20200708172309-f186a36abf5c
-	k8s.io/component-base => k8s.io/component-base v0.0.0-20200903133847-65f5cb33b5af
-	k8s.io/metrics => k8s.io/metrics v0.0.0-20200903140419-7e794871ebd7
+	k8s.io/api => ../api
+	k8s.io/apimachinery => ../apimachinery
+	k8s.io/cli-runtime => ../cli-runtime
+	k8s.io/client-go => ../client-go
+	k8s.io/code-generator => ../code-generator
+	k8s.io/component-base => ../component-base
+	k8s.io/kubectl => ../kubectl
+	k8s.io/metrics => ../metrics
 )
