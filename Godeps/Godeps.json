@@ -892,15 +892,19 @@
 		},
 		{
 			"ImportPath": "go.uber.org/atomic",
-			"Rev": "v1.4.0"
+			"Rev": "v1.6.0"
 		},
 		{
 			"ImportPath": "go.uber.org/multierr",
-			"Rev": "v1.1.0"
+			"Rev": "v1.5.0"
+		},
+		{
+			"ImportPath": "go.uber.org/tools",
+			"Rev": "2cfd321de3ee"
 		},
 		{
 			"ImportPath": "go.uber.org/zap",
-			"Rev": "v1.10.0"
+			"Rev": "v1.16.0"
 		},
 		{
 			"ImportPath": "golang.org/x/crypto",
@@ -1052,7 +1056,7 @@
 		},
 		{
 			"ImportPath": "k8s.io/component-base",
-			"Rev": "18d65a503ea1"
+			"Rev": "a57cc3fac704"
 		},
 		{
 			"ImportPath": "k8s.io/component-helpers",
