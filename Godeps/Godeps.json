@@ -420,7 +420,7 @@
 		},
 		{
 			"ImportPath": "github.com/googleapis/gnostic",
-			"Rev": "v0.4.1"
+			"Rev": "v0.5.1"
 		},
 		{
 			"ImportPath": "github.com/gopherjs/gopherjs",
@@ -831,6 +831,10 @@
 			"Rev": "v1.7.0"
 		},
 		{
+			"ImportPath": "github.com/stoewer/go-strcase",
+			"Rev": "v1.2.0"
+		},
+		{
 			"ImportPath": "github.com/stretchr/objx",
 			"Rev": "v0.2.0"
 		},
@@ -1024,7 +1028,7 @@
 		},
 		{
 			"ImportPath": "gopkg.in/yaml.v3",
-			"Rev": "9f266ea9e77c"
+			"Rev": "eeeca48fe776"
 		},
 		{
 			"ImportPath": "gotest.tools/v3",
@@ -1036,31 +1040,31 @@
 		},
 		{
 			"ImportPath": "k8s.io/api",
-			"Rev": "648b77825832"
+			"Rev": "e993e0004b6d"
 		},
 		{
 			"ImportPath": "k8s.io/apimachinery",
-			"Rev": "8daf28983e6e"
+			"Rev": "37b6f01a7c3f"
 		},
 		{
 			"ImportPath": "k8s.io/cli-runtime",
-			"Rev": "a3112a1a9f25"
+			"Rev": "86a596a2e6d5"
 		},
 		{
 			"ImportPath": "k8s.io/client-go",
-			"Rev": "8c8fa70f7a2a"
+			"Rev": "bfec2914ea57"
 		},
 		{
 			"ImportPath": "k8s.io/code-generator",
-			"Rev": "70ccd8277642"
+			"Rev": "dd2ded1d0f40"
 		},
 		{
 			"ImportPath": "k8s.io/component-base",
-			"Rev": "a57cc3fac704"
+			"Rev": "460e8c72807d"
 		},
 		{
 			"ImportPath": "k8s.io/component-helpers",
-			"Rev": "ddd2d94034ce"
+			"Rev": "97f4ac1696ce"
 		},
 		{
 			"ImportPath": "k8s.io/gengo",
@@ -1072,11 +1076,11 @@
 		},
 		{
 			"ImportPath": "k8s.io/kube-openapi",
-			"Rev": "591a79e4bda7"
+			"Rev": "1a6458611d18"
 		},
 		{
 			"ImportPath": "k8s.io/metrics",
-			"Rev": "e376210570bf"
+			"Rev": "3b59e60eb211"
 		},
 		{
 			"ImportPath": "k8s.io/utils",
