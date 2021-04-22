@@ -1060,7 +1060,7 @@
 		},
 		{
 			"ImportPath": "k8s.io/component-base",
-			"Rev": "873d5fac2edc"
+			"Rev": "22edd95d0cdf"
 		},
 		{
 			"ImportPath": "k8s.io/component-helpers",
