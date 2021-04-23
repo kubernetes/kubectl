@@ -44,11 +44,11 @@
 		},
 		{
 			"ImportPath": "github.com/Azure/go-autorest/autorest",
-			"Rev": "v0.11.12"
+			"Rev": "v0.11.17"
 		},
 		{
 			"ImportPath": "github.com/Azure/go-autorest/autorest/adal",
-			"Rev": "v0.9.5"
+			"Rev": "v0.9.10"
 		},
 		{
 			"ImportPath": "github.com/Azure/go-autorest/autorest/date",
@@ -1044,27 +1044,27 @@
 		},
 		{
 			"ImportPath": "k8s.io/apimachinery",
-			"Rev": "ba18a62c2bc2"
+			"Rev": "ec059b16b345"
 		},
 		{
 			"ImportPath": "k8s.io/cli-runtime",
-			"Rev": "7bf98babcc43"
+			"Rev": "8a120cfd4c50"
 		},
 		{
 			"ImportPath": "k8s.io/client-go",
-			"Rev": "071918f6b2dc"
+			"Rev": "d3fbdeba9a5e"
 		},
 		{
 			"ImportPath": "k8s.io/code-generator",
-			"Rev": "cbf249e0c797"
+			"Rev": "112073bd706e"
 		},
 		{
 			"ImportPath": "k8s.io/component-base",
-			"Rev": "22edd95d0cdf"
+			"Rev": "44faecbf614e"
 		},
 		{
 			"ImportPath": "k8s.io/component-helpers",
-			"Rev": "d82b95e556d3"
+			"Rev": "090244e35f78"
 		},
 		{
 			"ImportPath": "k8s.io/gengo",
@@ -1080,7 +1080,7 @@
 		},
 		{
 			"ImportPath": "k8s.io/metrics",
-			"Rev": "4975c938f470"
+			"Rev": "b6e3c12b3e8a"
 		},
 		{
 			"ImportPath": "k8s.io/utils",
