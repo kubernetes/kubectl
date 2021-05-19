@@ -687,6 +687,10 @@
 			"Rev": "a10e7caefd8e"
 		},
 		{
+			"ImportPath": "github.com/nxadm/tail",
+			"Rev": "v1.4.4"
+		},
+		{
 			"ImportPath": "github.com/oklog/ulid",
 			"Rev": "v1.3.1"
 		},
@@ -696,11 +700,11 @@
 		},
 		{
 			"ImportPath": "github.com/onsi/ginkgo",
-			"Rev": "v1.11.0"
+			"Rev": "v1.14.0"
 		},
 		{
 			"ImportPath": "github.com/onsi/gomega",
-			"Rev": "v1.7.0"
+			"Rev": "v1.10.1"
 		},
 		{
 			"ImportPath": "github.com/opencontainers/go-digest",
@@ -840,7 +844,7 @@
 		},
 		{
 			"ImportPath": "github.com/stretchr/testify",
-			"Rev": "v1.6.1"
+			"Rev": "v1.7.0"
 		},
 		{
 			"ImportPath": "github.com/subosito/gotenv",
@@ -1040,31 +1044,31 @@
 		},
 		{
 			"ImportPath": "k8s.io/api",
-			"Rev": "bb4775a810cf"
+			"Rev": "d5fda5562a2e"
 		},
 		{
 			"ImportPath": "k8s.io/apimachinery",
-			"Rev": "2540c63454fb"
+			"Rev": "c7322e849168"
 		},
 		{
 			"ImportPath": "k8s.io/cli-runtime",
-			"Rev": "8ab980e4692a"
+			"Rev": "742f66824d8e"
 		},
 		{
 			"ImportPath": "k8s.io/client-go",
-			"Rev": "03f765c56af0"
+			"Rev": "b0c8a7cef141"
 		},
 		{
 			"ImportPath": "k8s.io/code-generator",
-			"Rev": "994995d2440d"
+			"Rev": "deed3360ef40"
 		},
 		{
 			"ImportPath": "k8s.io/component-base",
-			"Rev": "84c0c6f957d1"
+			"Rev": "8b08f85f6db5"
 		},
 		{
 			"ImportPath": "k8s.io/component-helpers",
-			"Rev": "da324a2dc382"
+			"Rev": "41eea304b4c6"
 		},
 		{
 			"ImportPath": "k8s.io/gengo",
@@ -1080,7 +1084,7 @@
 		},
 		{
 			"ImportPath": "k8s.io/metrics",
-			"Rev": "5aeb201c50c7"
+			"Rev": "d4f6f0e322cf"
 		},
 		{
 			"ImportPath": "k8s.io/utils",
