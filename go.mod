@@ -31,15 +31,15 @@ require (
 	github.com/stretchr/testify v1.7.0
 	golang.org/x/sys v0.0.0-20210225134936-a50acf3fe073
 	gopkg.in/yaml.v2 v2.4.0
-	k8s.io/api v0.0.0-20210519190848-d5fda5562a2e
-	k8s.io/apimachinery v0.0.0-20210519190646-c7322e849168
-	k8s.io/cli-runtime v0.0.0-20210519193311-742f66824d8e
-	k8s.io/client-go v0.0.0-20210519191142-b0c8a7cef141
-	k8s.io/component-base v0.0.0-20210519191730-8b08f85f6db5
-	k8s.io/component-helpers v0.0.0-20210519191838-41eea304b4c6
+	k8s.io/api v0.22.0-alpha.2
+	k8s.io/apimachinery v0.22.0-alpha.2
+	k8s.io/cli-runtime v0.22.0-alpha.2
+	k8s.io/client-go v0.22.0-alpha.2
+	k8s.io/component-base v0.22.0-alpha.2
+	k8s.io/component-helpers v0.22.0-alpha.2
 	k8s.io/klog/v2 v2.8.0
 	k8s.io/kube-openapi v0.0.0-20210421082810-95288971da7e
-	k8s.io/metrics v0.0.0-20210519193154-d4f6f0e322cf
+	k8s.io/metrics v0.22.0-alpha.2
 	k8s.io/utils v0.0.0-20201110183641-67b214c5f920
 	sigs.k8s.io/kustomize/api v0.8.8
 	sigs.k8s.io/kustomize/kustomize/v4 v4.1.2
@@ -47,12 +47,12 @@ require (
 )
 
 replace (
-	k8s.io/api => k8s.io/api v0.0.0-20210519190848-d5fda5562a2e
-	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20210519190646-c7322e849168
-	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20210519193311-742f66824d8e
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20210519191142-b0c8a7cef141
-	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20210519190450-deed3360ef40
-	k8s.io/component-base => k8s.io/component-base v0.0.0-20210519191730-8b08f85f6db5
-	k8s.io/component-helpers => k8s.io/component-helpers v0.0.0-20210519191838-41eea304b4c6
-	k8s.io/metrics => k8s.io/metrics v0.0.0-20210519193154-d4f6f0e322cf
+	k8s.io/api => k8s.io/api v0.22.0-alpha.2
+	k8s.io/apimachinery => k8s.io/apimachinery v0.22.0-alpha.2
+	k8s.io/cli-runtime => k8s.io/cli-runtime v0.22.0-alpha.2
+	k8s.io/client-go => k8s.io/client-go v0.22.0-alpha.2
+	k8s.io/code-generator => k8s.io/code-generator v0.22.0-alpha.2
+	k8s.io/component-base => k8s.io/component-base v0.22.0-alpha.2
+	k8s.io/component-helpers => k8s.io/component-helpers v0.22.0-alpha.2
+	k8s.io/metrics => k8s.io/metrics v0.22.0-alpha.2
 )
