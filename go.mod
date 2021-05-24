@@ -33,28 +33,29 @@ require (
 	github.com/stretchr/testify v1.6.1
 	golang.org/x/sys v0.0.0-20210426230700-d19ff857e887
 	gopkg.in/yaml.v2 v2.4.0
-	k8s.io/api v0.0.0-20211006163708-86d955a525a9
-	k8s.io/apimachinery v0.0.0-20211006163404-6c4c0b383bc9
-	k8s.io/cli-runtime v0.0.0-20211006171539-a421c0537bcc
-	k8s.io/client-go v0.0.0-20211006164548-cd49ed727a6b
-	k8s.io/component-base v0.0.0-20211006165148-d088b5b946a3
-	k8s.io/component-helpers v0.0.0-20211006165314-dacad8cb3fcb
+	k8s.io/api v0.0.0
+	k8s.io/apimachinery v0.0.0
+	k8s.io/cli-runtime v0.0.0
+	k8s.io/client-go v0.0.0
+	k8s.io/component-base v0.0.0
+	k8s.io/component-helpers v0.0.0
 	k8s.io/klog/v2 v2.9.0
 	k8s.io/kube-openapi v0.0.0-20210305001622-591a79e4bda7
-	k8s.io/metrics v0.0.0-20211006171351-de75bc981086
-	k8s.io/utils v0.0.0-20201110183641-67b214c5f920
+	k8s.io/metrics v0.0.0
+	k8s.io/utils v0.0.0-20210521133846-da695404a2bc
 	sigs.k8s.io/kustomize/api v0.8.8
 	sigs.k8s.io/kustomize/kustomize/v4 v4.1.2
 	sigs.k8s.io/yaml v1.2.0
 )
 
 replace (
-	k8s.io/api => k8s.io/api v0.0.0-20211006163708-86d955a525a9
-	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20211006163404-6c4c0b383bc9
-	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20211006171539-a421c0537bcc
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20211006164548-cd49ed727a6b
-	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20211006163100-f784720748de
-	k8s.io/component-base => k8s.io/component-base v0.0.0-20211006165148-d088b5b946a3
-	k8s.io/component-helpers => k8s.io/component-helpers v0.0.0-20211006165314-dacad8cb3fcb
-	k8s.io/metrics => k8s.io/metrics v0.0.0-20211006171351-de75bc981086
+	k8s.io/api => ../api
+	k8s.io/apimachinery => ../apimachinery
+	k8s.io/cli-runtime => ../cli-runtime
+	k8s.io/client-go => ../client-go
+	k8s.io/code-generator => ../code-generator
+	k8s.io/component-base => ../component-base
+	k8s.io/component-helpers => ../component-helpers
+	k8s.io/kubectl => ../kubectl
+	k8s.io/metrics => ../metrics
 )
