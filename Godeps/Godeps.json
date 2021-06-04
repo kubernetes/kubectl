@@ -992,23 +992,23 @@
 		},
 		{
 			"ImportPath": "k8s.io/cli-runtime",
-			"Rev": "0c839ec07fe7"
+			"Rev": "23de5b2aa764"
 		},
 		{
 			"ImportPath": "k8s.io/client-go",
-			"Rev": "09dbda0b387f"
+			"Rev": "2a923d5fc64c"
 		},
 		{
 			"ImportPath": "k8s.io/code-generator",
-			"Rev": "9c11f9272960"
+			"Rev": "daefbeda97a9"
 		},
 		{
 			"ImportPath": "k8s.io/component-base",
-			"Rev": "a099a26853cb"
+			"Rev": "f43a88d7e436"
 		},
 		{
 			"ImportPath": "k8s.io/component-helpers",
-			"Rev": "8f7f89d23351"
+			"Rev": "b4d0c2178efc"
 		},
 		{
 			"ImportPath": "k8s.io/gengo",
@@ -1024,11 +1024,11 @@
 		},
 		{
 			"ImportPath": "k8s.io/metrics",
-			"Rev": "45ac72778a18"
+			"Rev": "04c50ebe544e"
 		},
 		{
 			"ImportPath": "k8s.io/utils",
-			"Rev": "67b214c5f920"
+			"Rev": "da695404a2bc"
 		},
 		{
 			"ImportPath": "rsc.io/binaryregexp",

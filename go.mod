@@ -33,14 +33,14 @@ require (
 	gopkg.in/yaml.v2 v2.4.0
 	k8s.io/api v0.0.0-20210601194609-0b55fc9ab6bb
 	k8s.io/apimachinery v0.0.0-20210601194424-1e82f3b632c6
-	k8s.io/cli-runtime v0.0.0-20210603160237-0c839ec07fe7
-	k8s.io/client-go v0.0.0-20210602034813-09dbda0b387f
-	k8s.io/component-base v0.0.0-20210603154938-a099a26853cb
-	k8s.io/component-helpers v0.0.0-20210601195503-8f7f89d23351
+	k8s.io/cli-runtime v0.0.0-20210604080617-23de5b2aa764
+	k8s.io/client-go v0.0.0-20210604074848-2a923d5fc64c
+	k8s.io/component-base v0.0.0-20210604075235-f43a88d7e436
+	k8s.io/component-helpers v0.0.0-20210604075334-b4d0c2178efc
 	k8s.io/klog/v2 v2.9.0
 	k8s.io/kube-openapi v0.0.0-20210421082810-95288971da7e
-	k8s.io/metrics v0.0.0-20210601200700-45ac72778a18
-	k8s.io/utils v0.0.0-20201110183641-67b214c5f920
+	k8s.io/metrics v0.0.0-20210604080509-04c50ebe544e
+	k8s.io/utils v0.0.0-20210521133846-da695404a2bc
 	sigs.k8s.io/kustomize/api v0.8.10
 	sigs.k8s.io/kustomize/kustomize/v4 v4.1.3
 	sigs.k8s.io/yaml v1.2.0
@@ -49,10 +49,10 @@ require (
 replace (
 	k8s.io/api => k8s.io/api v0.0.0-20210601194609-0b55fc9ab6bb
 	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20210601194424-1e82f3b632c6
-	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20210603160237-0c839ec07fe7
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20210602034813-09dbda0b387f
-	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20210601194243-9c11f9272960
-	k8s.io/component-base => k8s.io/component-base v0.0.0-20210603154938-a099a26853cb
-	k8s.io/component-helpers => k8s.io/component-helpers v0.0.0-20210601195503-8f7f89d23351
-	k8s.io/metrics => k8s.io/metrics v0.0.0-20210601200700-45ac72778a18
+	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20210604080617-23de5b2aa764
+	k8s.io/client-go => k8s.io/client-go v0.0.0-20210604074848-2a923d5fc64c
+	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20210604074252-daefbeda97a9
+	k8s.io/component-base => k8s.io/component-base v0.0.0-20210604075235-f43a88d7e436
+	k8s.io/component-helpers => k8s.io/component-helpers v0.0.0-20210604075334-b4d0c2178efc
+	k8s.io/metrics => k8s.io/metrics v0.0.0-20210604080509-04c50ebe544e
 )
