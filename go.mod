@@ -31,7 +31,7 @@ require (
 	github.com/stretchr/testify v1.7.0
 	golang.org/x/sys v0.0.0-20210616094352-59db8d763f22
 	gopkg.in/yaml.v2 v2.4.0
-	k8s.io/api v0.0.0-20210625074319-07d5b5c5af44
+	k8s.io/api v0.0.0-20210627034315-6db9ac894d5d
 	k8s.io/apimachinery v0.0.0-20210624234137-a4b8a5f324ca
 	k8s.io/cli-runtime v0.0.0-20210619073704-985493538305
 	k8s.io/client-go v0.0.0-20210624234554-dae61bee3a0a
@@ -47,7 +47,7 @@ require (
 )
 
 replace (
-	k8s.io/api => k8s.io/api v0.0.0-20210625074319-07d5b5c5af44
+	k8s.io/api => k8s.io/api v0.0.0-20210627034315-6db9ac894d5d
 	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20210624234137-a4b8a5f324ca
 	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20210619073704-985493538305
 	k8s.io/client-go => k8s.io/client-go v0.0.0-20210624234554-dae61bee3a0a
