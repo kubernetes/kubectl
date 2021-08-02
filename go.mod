@@ -31,15 +31,15 @@ require (
 	github.com/stretchr/testify v1.7.0
 	golang.org/x/sys v0.0.0-20210616094352-59db8d763f22
 	gopkg.in/yaml.v2 v2.4.0
-	k8s.io/api v0.0.0-20210713180919-cd49d276cbe7
+	k8s.io/api v0.0.0-20210716001550-68328c152cca
 	k8s.io/apimachinery v0.0.0-20210712060818-a644435e2c13
-	k8s.io/cli-runtime v0.0.0-20210708220808-2cd779a6117f
-	k8s.io/client-go v0.0.0-20210708214810-7a90b08589bb
-	k8s.io/component-base v0.0.0-20210722183836-c8cabcb7d39d
-	k8s.io/component-helpers v0.0.0-20210722184006-15f52a375bdb
+	k8s.io/cli-runtime v0.0.0-20210803003910-24147945b9ef
+	k8s.io/client-go v0.0.0-20210803001025-5629b666e53e
+	k8s.io/component-base v0.0.0-20210803001705-19bf70b84f18
+	k8s.io/component-helpers v0.0.0-20210803001830-1ca354a80bfa
 	k8s.io/klog/v2 v2.9.0
 	k8s.io/kube-openapi v0.0.0-20210421082810-95288971da7e
-	k8s.io/metrics v0.0.0-20210722190012-2d7be36f4677
+	k8s.io/metrics v0.0.0-20210803003725-565f2f7c8650
 	k8s.io/utils v0.0.0-20210707171843-4b05e18ac7d9
 	sigs.k8s.io/kustomize/kustomize/v4 v4.2.0
 	sigs.k8s.io/kustomize/kyaml v0.11.0
@@ -47,12 +47,12 @@ require (
 )
 
 replace (
-	k8s.io/api => k8s.io/api v0.0.0-20210713180919-cd49d276cbe7
+	k8s.io/api => k8s.io/api v0.0.0-20210716001550-68328c152cca
 	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20210712060818-a644435e2c13
-	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20210708220808-2cd779a6117f
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20210708214810-7a90b08589bb
-	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20210707174948-9fd003d7c83d
-	k8s.io/component-base => k8s.io/component-base v0.0.0-20210722183836-c8cabcb7d39d
-	k8s.io/component-helpers => k8s.io/component-helpers v0.0.0-20210722184006-15f52a375bdb
-	k8s.io/metrics => k8s.io/metrics v0.0.0-20210722190012-2d7be36f4677
+	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20210803003910-24147945b9ef
+	k8s.io/client-go => k8s.io/client-go v0.0.0-20210803001025-5629b666e53e
+	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20210802205419-ff0bf9f43854
+	k8s.io/component-base => k8s.io/component-base v0.0.0-20210803001705-19bf70b84f18
+	k8s.io/component-helpers => k8s.io/component-helpers v0.0.0-20210803001830-1ca354a80bfa
+	k8s.io/metrics => k8s.io/metrics v0.0.0-20210803003725-565f2f7c8650
 )
