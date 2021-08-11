@@ -29,17 +29,17 @@ require (
 	github.com/spf13/cobra v1.2.1
 	github.com/spf13/pflag v1.0.5
 	github.com/stretchr/testify v1.7.0
-	golang.org/x/sys v0.0.0-20210616094352-59db8d763f22
+	golang.org/x/sys v0.0.0-20210820121016-41cdb8703e55
 	gopkg.in/yaml.v2 v2.4.0
-	k8s.io/api v0.0.0-20210823160431-2e3872a4612f
-	k8s.io/apimachinery v0.0.0-20210823160225-43d8bfe8f725
-	k8s.io/cli-runtime v0.0.0-20210824002257-268ac8001f0e
-	k8s.io/client-go v0.0.0-20210824160736-b1403d113abc
-	k8s.io/component-base v0.0.0-20210820041117-a191e9fae528
-	k8s.io/component-helpers v0.0.0-20210820041228-dc1a4086b424
+	k8s.io/api v0.0.0
+	k8s.io/apimachinery v0.0.0
+	k8s.io/cli-runtime v0.0.0
+	k8s.io/client-go v0.0.0
+	k8s.io/component-base v0.0.0
+	k8s.io/component-helpers v0.0.0
 	k8s.io/klog/v2 v2.9.0
 	k8s.io/kube-openapi v0.0.0-20210817084001-7fbd8d59e5b8
-	k8s.io/metrics v0.0.0-20210820042529-eb018c1fbc08
+	k8s.io/metrics v0.0.0
 	k8s.io/utils v0.0.0-20210819203725-bdf08cb9a70a
 	sigs.k8s.io/kustomize/kustomize/v4 v4.2.0
 	sigs.k8s.io/kustomize/kyaml v0.11.0
@@ -47,12 +47,15 @@ require (
 )
 
 replace (
-	k8s.io/api => k8s.io/api v0.0.0-20210823160431-2e3872a4612f
-	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20210823160225-43d8bfe8f725
-	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20210824002257-268ac8001f0e
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20210824160736-b1403d113abc
-	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20210820002124-48d3d44c66d6
-	k8s.io/component-base => k8s.io/component-base v0.0.0-20210820041117-a191e9fae528
-	k8s.io/component-helpers => k8s.io/component-helpers v0.0.0-20210820041228-dc1a4086b424
-	k8s.io/metrics => k8s.io/metrics v0.0.0-20210820042529-eb018c1fbc08
+	k8s.io/api => ../api
+	k8s.io/apimachinery => ../apimachinery
+	k8s.io/cli-runtime => ../cli-runtime
+	k8s.io/client-go => ../client-go
+	k8s.io/code-generator => ../code-generator
+	k8s.io/component-base => ../component-base
+	k8s.io/component-helpers => ../component-helpers
+	k8s.io/kubectl => ../kubectl
+	k8s.io/metrics => ../metrics
 )
+
+replace golang.org/x/sys => golang.org/x/sys v0.0.0-20210820121016-41cdb8703e55
