@@ -39,7 +39,7 @@ require (
 	k8s.io/component-helpers v0.0.0-20210917121340-877e28014df4
 	k8s.io/klog/v2 v2.20.0
 	k8s.io/kube-openapi v0.0.0-20210817084001-7fbd8d59e5b8
-	k8s.io/metrics v0.0.0-20210917125721-7746c9beebab
+	k8s.io/metrics v0.0.0-20210917125722-7754d83b5e6b
 	k8s.io/utils v0.0.0-20210819203725-bdf08cb9a70a
 	sigs.k8s.io/kustomize/kustomize/v4 v4.2.0
 	sigs.k8s.io/kustomize/kyaml v0.11.0
@@ -54,5 +54,5 @@ replace (
 	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20210917113608-df0a6b4dbccd
 	k8s.io/component-base => k8s.io/component-base v0.0.0-20210917120930-d2872948dda4
 	k8s.io/component-helpers => k8s.io/component-helpers v0.0.0-20210917121340-877e28014df4
-	k8s.io/metrics => k8s.io/metrics v0.0.0-20210917125721-7746c9beebab
+	k8s.io/metrics => k8s.io/metrics v0.0.0-20210917125722-7754d83b5e6b
 )
