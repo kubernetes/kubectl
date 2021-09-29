@@ -31,12 +31,12 @@ require (
 	github.com/stretchr/testify v1.7.0
 	golang.org/x/sys v0.0.0-20210820121016-41cdb8703e55
 	gopkg.in/yaml.v2 v2.4.0
-	k8s.io/api v0.0.0-20210917114730-87c4113e35a1
-	k8s.io/apimachinery v0.0.0-20210917114041-87fb71e8a0dc
-	k8s.io/cli-runtime v0.0.0-20210917130154-3505ace81723
-	k8s.io/client-go v0.0.0-20210917115542-0866d9668796
-	k8s.io/component-base v0.0.0-20210917120930-d2872948dda4
-	k8s.io/component-helpers v0.0.0-20210917121340-877e28014df4
+	k8s.io/api v0.0.0-20210924234029-7036ead25397
+	k8s.io/apimachinery v0.0.0-20210920194645-86c0c0f8c8e2
+	k8s.io/cli-runtime v0.0.0-20210929125347-88458a05069f
+	k8s.io/client-go v0.0.0-20210929123603-fe0e5b13da25
+	k8s.io/component-base v0.0.0-20210921194550-26d1dd95ca3c
+	k8s.io/component-helpers v0.0.0-20210917121342-2322d85764d9
 	k8s.io/klog/v2 v2.20.0
 	k8s.io/kube-openapi v0.0.0-20210817084001-7fbd8d59e5b8
 	k8s.io/metrics v0.0.0-20210917125722-7754d83b5e6b
@@ -47,12 +47,12 @@ require (
 )
 
 replace (
-	k8s.io/api => k8s.io/api v0.0.0-20210917114730-87c4113e35a1
-	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20210917114041-87fb71e8a0dc
-	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20210917130154-3505ace81723
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20210917115542-0866d9668796
-	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20210917113608-df0a6b4dbccd
-	k8s.io/component-base => k8s.io/component-base v0.0.0-20210917120930-d2872948dda4
-	k8s.io/component-helpers => k8s.io/component-helpers v0.0.0-20210917121340-877e28014df4
+	k8s.io/api => k8s.io/api v0.0.0-20210924234029-7036ead25397
+	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20210920194645-86c0c0f8c8e2
+	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20210929125347-88458a05069f
+	k8s.io/client-go => k8s.io/client-go v0.0.0-20210929123603-fe0e5b13da25
+	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20210921210841-9e6514600625
+	k8s.io/component-base => k8s.io/component-base v0.0.0-20210921194550-26d1dd95ca3c
+	k8s.io/component-helpers => k8s.io/component-helpers v0.0.0-20210917121342-2322d85764d9
 	k8s.io/metrics => k8s.io/metrics v0.0.0-20210917125722-7754d83b5e6b
 )
