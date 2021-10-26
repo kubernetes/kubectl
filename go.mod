@@ -10,7 +10,7 @@ require (
 	github.com/davecgh/go-spew v1.1.1
 	github.com/daviddengcn/go-colortext v0.0.0-20160507010035-511bcaf42ccd
 	github.com/docker/distribution v2.7.1+incompatible
-	github.com/evanphx/json-patch v4.11.0+incompatible
+	github.com/evanphx/json-patch v4.12.0+incompatible
 	github.com/exponent-io/jsonpath v0.0.0-20151013193312-d6023ce2651d
 	github.com/fatih/camelcase v1.0.0
 	github.com/fvbommel/sortorder v1.0.1
@@ -31,15 +31,15 @@ require (
 	github.com/stretchr/testify v1.7.0
 	golang.org/x/sys v0.0.0-20210820121016-41cdb8703e55
 	gopkg.in/yaml.v2 v2.4.0
-	k8s.io/api v0.0.0-20211022203536-7d47955f01bd
-	k8s.io/apimachinery v0.0.0-20211022203306-153f11a7f300
-	k8s.io/cli-runtime v0.0.0-20211022210040-18965cbf2e62
-	k8s.io/client-go v0.0.0-20211022203833-56656ba0e04f
-	k8s.io/component-base v0.0.0-20211022204341-77b90367040a
-	k8s.io/component-helpers v0.0.0-20211022204454-b3236b395fbf
+	k8s.io/api v0.0.0
+	k8s.io/apimachinery v0.0.0
+	k8s.io/cli-runtime v0.0.0
+	k8s.io/client-go v0.0.0
+	k8s.io/component-base v0.0.0
+	k8s.io/component-helpers v0.0.0
 	k8s.io/klog/v2 v2.30.0
 	k8s.io/kube-openapi v0.0.0-20210817084001-7fbd8d59e5b8
-	k8s.io/metrics v0.0.0-20211022205919-b66fbebe2989
+	k8s.io/metrics v0.0.0
 	k8s.io/utils v0.0.0-20210930125809-cb0fa318a74b
 	sigs.k8s.io/kustomize/kustomize/v4 v4.2.0
 	sigs.k8s.io/kustomize/kyaml v0.11.0
@@ -47,12 +47,13 @@ require (
 )
 
 replace (
-	k8s.io/api => k8s.io/api v0.0.0-20211022203536-7d47955f01bd
-	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20211022203306-153f11a7f300
-	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20211022210040-18965cbf2e62
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20211022203833-56656ba0e04f
-	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20211022203048-1ca1c4b1a3d6
-	k8s.io/component-base => k8s.io/component-base v0.0.0-20211022204341-77b90367040a
-	k8s.io/component-helpers => k8s.io/component-helpers v0.0.0-20211022204454-b3236b395fbf
-	k8s.io/metrics => k8s.io/metrics v0.0.0-20211022205919-b66fbebe2989
+	k8s.io/api => ../api
+	k8s.io/apimachinery => ../apimachinery
+	k8s.io/cli-runtime => ../cli-runtime
+	k8s.io/client-go => ../client-go
+	k8s.io/code-generator => ../code-generator
+	k8s.io/component-base => ../component-base
+	k8s.io/component-helpers => ../component-helpers
+	k8s.io/kubectl => ../kubectl
+	k8s.io/metrics => ../metrics
 )
