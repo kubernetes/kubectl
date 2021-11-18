@@ -34,27 +34,27 @@ require (
 	github.com/stretchr/testify v1.6.1
 	golang.org/x/sys v0.0.0-20201112073958-5cba982894dd
 	gopkg.in/yaml.v2 v2.2.8
-	k8s.io/api v0.0.0-20211111072721-19b6426640e4
-	k8s.io/apimachinery v0.0.0-20211111072158-2e90a7f8ecac
-	k8s.io/cli-runtime v0.0.0-20211111084236-d12f3d0a40d9
-	k8s.io/client-go v0.0.0-20211111073827-7e4462aced1f
-	k8s.io/component-base v0.0.0-20211111075749-f6c165ebdcbc
-	k8s.io/component-helpers v0.0.0-20211111080050-92f9e16a083d
+	k8s.io/api v0.20.14-rc.0
+	k8s.io/apimachinery v0.20.14-rc.0
+	k8s.io/cli-runtime v0.20.14-rc.0
+	k8s.io/client-go v0.20.14-rc.0
+	k8s.io/component-base v0.20.14-rc.0
+	k8s.io/component-helpers v0.20.14-rc.0
 	k8s.io/klog/v2 v2.4.0
 	k8s.io/kube-openapi v0.0.0-20211110013926-83f114cd0513
-	k8s.io/metrics v0.0.0-20211111083925-a55624006835
+	k8s.io/metrics v0.20.14-rc.0
 	k8s.io/utils v0.0.0-20201110183641-67b214c5f920
 	sigs.k8s.io/kustomize v2.0.3+incompatible
 	sigs.k8s.io/yaml v1.2.0
 )
 
 replace (
-	k8s.io/api => k8s.io/api v0.0.0-20211111072721-19b6426640e4
-	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20211111072158-2e90a7f8ecac
-	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20211111084236-d12f3d0a40d9
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20211111073827-7e4462aced1f
-	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20211111071744-9814fff3d840
-	k8s.io/component-base => k8s.io/component-base v0.0.0-20211111075749-f6c165ebdcbc
-	k8s.io/component-helpers => k8s.io/component-helpers v0.0.0-20211111080050-92f9e16a083d
-	k8s.io/metrics => k8s.io/metrics v0.0.0-20211111083925-a55624006835
+	k8s.io/api => k8s.io/api v0.20.14-rc.0
+	k8s.io/apimachinery => k8s.io/apimachinery v0.20.14-rc.0
+	k8s.io/cli-runtime => k8s.io/cli-runtime v0.20.14-rc.0
+	k8s.io/client-go => k8s.io/client-go v0.20.14-rc.0
+	k8s.io/code-generator => k8s.io/code-generator v0.20.14-rc.0
+	k8s.io/component-base => k8s.io/component-base v0.20.14-rc.0
+	k8s.io/component-helpers => k8s.io/component-helpers v0.20.14-rc.0
+	k8s.io/metrics => k8s.io/metrics v0.20.14-rc.0
 )
