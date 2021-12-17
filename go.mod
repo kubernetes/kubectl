@@ -21,7 +21,7 @@ require (
 	github.com/liggitt/tabwriter v0.0.0-20181228230101-89fcab3d43de
 	github.com/lithammer/dedent v1.1.0
 	github.com/mitchellh/go-wordwrap v1.0.0
-	github.com/moby/term v0.0.0-20210619224110-3f7ff695adc6
+	github.com/moby/term v0.0.0-20210610120745-9d4ed1856297
 	github.com/onsi/ginkgo v1.14.0
 	github.com/onsi/gomega v1.10.1
 	github.com/opencontainers/go-digest v1.0.0 // indirect
@@ -31,15 +31,15 @@ require (
 	github.com/stretchr/testify v1.7.0
 	golang.org/x/sys v0.0.0-20211019181941-9d821ace8654
 	gopkg.in/yaml.v2 v2.4.0
-	k8s.io/api v0.0.0-20211217212405-236866c4c265
-	k8s.io/apimachinery v0.0.0-20211215211714-e7b02e651498
-	k8s.io/cli-runtime v0.0.0-20211213173919-7521450cf418
-	k8s.io/client-go v0.0.0-20211220212102-a6257fdee400
-	k8s.io/component-base v0.0.0-20211221052218-af8dd770b476
-	k8s.io/component-helpers v0.0.0-20211213172604-8b3953eba17e
-	k8s.io/klog/v2 v2.30.0
+	k8s.io/api v0.0.0
+	k8s.io/apimachinery v0.0.0
+	k8s.io/cli-runtime v0.0.0
+	k8s.io/client-go v0.0.0
+	k8s.io/component-base v0.0.0
+	k8s.io/component-helpers v0.0.0
+	k8s.io/klog/v2 v2.40.1
 	k8s.io/kube-openapi v0.0.0-20211115234752-e816edb12b65
-	k8s.io/metrics v0.0.0-20211213222910-3c854b862b8a
+	k8s.io/metrics v0.0.0
 	k8s.io/utils v0.0.0-20211208161948-7d6a63dca704
 	sigs.k8s.io/kustomize/kustomize/v4 v4.4.1
 	sigs.k8s.io/kustomize/kyaml v0.13.0
@@ -47,12 +47,13 @@ require (
 )
 
 replace (
-	k8s.io/api => k8s.io/api v0.0.0-20211217212405-236866c4c265
-	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20211215211714-e7b02e651498
-	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20211213173919-7521450cf418
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20211220212102-a6257fdee400
-	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20211213211337-08f5f5bd3bac
-	k8s.io/component-base => k8s.io/component-base v0.0.0-20211221052218-af8dd770b476
-	k8s.io/component-helpers => k8s.io/component-helpers v0.0.0-20211213172604-8b3953eba17e
-	k8s.io/metrics => k8s.io/metrics v0.0.0-20211213222910-3c854b862b8a
+	k8s.io/api => ../api
+	k8s.io/apimachinery => ../apimachinery
+	k8s.io/cli-runtime => ../cli-runtime
+	k8s.io/client-go => ../client-go
+	k8s.io/code-generator => ../code-generator
+	k8s.io/component-base => ../component-base
+	k8s.io/component-helpers => ../component-helpers
+	k8s.io/kubectl => ../kubectl
+	k8s.io/metrics => ../metrics
 )
