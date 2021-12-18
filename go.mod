@@ -29,17 +29,17 @@ require (
 	github.com/spf13/cobra v1.2.1
 	github.com/spf13/pflag v1.0.5
 	github.com/stretchr/testify v1.7.0
-	golang.org/x/sys v0.0.0-20220114195835-da31bd327af9
+	golang.org/x/sys v0.0.0-20220209214540-3681064d5158
 	gopkg.in/yaml.v2 v2.4.0
-	k8s.io/api v0.0.0-20220216020308-4097bdc14411
-	k8s.io/apimachinery v0.0.0-20220217060053-ec22c4369561
-	k8s.io/cli-runtime v0.0.0-20220211182418-ce08a7c816b2
-	k8s.io/client-go v0.0.0-20220215060521-a7d2e0118033
-	k8s.io/component-base v0.0.0-20220214200630-8ffe7361d341
-	k8s.io/component-helpers v0.0.0-20220211181107-590c06cbb7ac
+	k8s.io/api v0.0.0
+	k8s.io/apimachinery v0.0.0
+	k8s.io/cli-runtime v0.0.0
+	k8s.io/client-go v0.0.0
+	k8s.io/component-base v0.0.0
+	k8s.io/component-helpers v0.0.0
 	k8s.io/klog/v2 v2.40.1
 	k8s.io/kube-openapi v0.0.0-20211115234752-e816edb12b65
-	k8s.io/metrics v0.0.0-20220211182304-30fa1ea194c5
+	k8s.io/metrics v0.0.0
 	k8s.io/utils v0.0.0-20220210201930-3a6ce19ff2f9
 	sigs.k8s.io/json v0.0.0-20211208200746-9f7c6b3444d2
 	sigs.k8s.io/kustomize/kustomize/v4 v4.4.1
@@ -48,12 +48,15 @@ require (
 )
 
 replace (
-	k8s.io/api => k8s.io/api v0.0.0-20220216020308-4097bdc14411
-	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20220217060053-ec22c4369561
-	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20220211182418-ce08a7c816b2
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20220215060521-a7d2e0118033
-	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20220216204708-5915ef051dfa
-	k8s.io/component-base => k8s.io/component-base v0.0.0-20220214200630-8ffe7361d341
-	k8s.io/component-helpers => k8s.io/component-helpers v0.0.0-20220211181107-590c06cbb7ac
-	k8s.io/metrics => k8s.io/metrics v0.0.0-20220211182304-30fa1ea194c5
+	k8s.io/api => ../api
+	k8s.io/apimachinery => ../apimachinery
+	k8s.io/cli-runtime => ../cli-runtime
+	k8s.io/client-go => ../client-go
+	k8s.io/code-generator => ../code-generator
+	k8s.io/component-base => ../component-base
+	k8s.io/component-helpers => ../component-helpers
+	k8s.io/kubectl => ../kubectl
+	k8s.io/metrics => ../metrics
 )
+
+replace golang.org/x/sys => golang.org/x/sys v0.0.0-20220209214540-3681064d5158
