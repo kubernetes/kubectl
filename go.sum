@@ -917,8 +917,8 @@ honnef.co/go/tools v0.0.1-2020.1.3/go.mod h1:X/FiERA/W4tHapMX5mGpAtMSVEeEUOyHaw9
 honnef.co/go/tools v0.0.1-2020.1.4/go.mod h1:X/FiERA/W4tHapMX5mGpAtMSVEeEUOyHaw9vFzvIQ3k=
 k8s.io/api v0.0.0-20220122011914-e6d62ddcb184 h1:a1wkQXZrIEgcgVgsnIgfLTZKfJaCHnOaAcg++AK2VdU=
 k8s.io/api v0.0.0-20220122011914-e6d62ddcb184/go.mod h1:9BHCEbOkylgh9XPJAareQz6PA4lvlzao3FSiw9D9hIg=
-k8s.io/apimachinery v0.0.0-20220122011717-3d7c63b4de4f h1:LDS86PISylkCZIAp15eBSScOVdrsPLclxgvezdAJCjo=
-k8s.io/apimachinery v0.0.0-20220122011717-3d7c63b4de4f/go.mod h1:x0yrIIAdS2/JR9TKFHtSn8dYQDIw8mTIeAqPvOuEozA=
+k8s.io/apimachinery v0.0.0-20220125200954-322368c20f9b h1:b6hngIfatKOyoqX9X5TqJ/UJdLsEOSdCogU69QC0hn4=
+k8s.io/apimachinery v0.0.0-20220125200954-322368c20f9b/go.mod h1:x0yrIIAdS2/JR9TKFHtSn8dYQDIw8mTIeAqPvOuEozA=
 k8s.io/cli-runtime v0.0.0-20220122014111-e2af539b5326 h1:QAXmbcOYu7xAofVUfsYhakeAOu+DfBGhgJ90Vl/LmYk=
 k8s.io/cli-runtime v0.0.0-20220122014111-e2af539b5326/go.mod h1:mOL/5Q3vNmbj+6KjT+ksc7cdYKr6vrnNGTsm8WpmKCQ=
 k8s.io/client-go v0.0.0-20220125012153-7f0455096073 h1:wf08facRQq6h3c4yF49Y50yHNXhyhcBZ3Ih2ZadPAOo=
