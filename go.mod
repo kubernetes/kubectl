@@ -31,15 +31,15 @@ require (
 	github.com/stretchr/testify v1.7.0
 	golang.org/x/sys v0.0.0-20220114195835-da31bd327af9
 	gopkg.in/yaml.v2 v2.4.0
-	k8s.io/api v0.0.0-20220211180231-29fd43e6ca1e
-	k8s.io/apimachinery v0.0.0-20220211180034-1a1682da6e3c
-	k8s.io/cli-runtime v0.0.0-20220211182418-ce08a7c816b2
-	k8s.io/client-go v0.0.0-20220211180521-b74c541cff29
-	k8s.io/component-base v0.0.0-20220214200630-8ffe7361d341
-	k8s.io/component-helpers v0.0.0-20220211181107-590c06cbb7ac
+	k8s.io/api v0.24.0-alpha.3
+	k8s.io/apimachinery v0.24.0-alpha.3
+	k8s.io/cli-runtime v0.24.0-alpha.3
+	k8s.io/client-go v0.24.0-alpha.3
+	k8s.io/component-base v0.24.0-alpha.3
+	k8s.io/component-helpers v0.24.0-alpha.3
 	k8s.io/klog/v2 v2.40.1
 	k8s.io/kube-openapi v0.0.0-20211115234752-e816edb12b65
-	k8s.io/metrics v0.0.0-20220211182304-30fa1ea194c5
+	k8s.io/metrics v0.24.0-alpha.3
 	k8s.io/utils v0.0.0-20220210201930-3a6ce19ff2f9
 	sigs.k8s.io/json v0.0.0-20211208200746-9f7c6b3444d2
 	sigs.k8s.io/kustomize/kustomize/v4 v4.4.1
@@ -48,12 +48,12 @@ require (
 )
 
 replace (
-	k8s.io/api => k8s.io/api v0.0.0-20220211180231-29fd43e6ca1e
-	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20220211180034-1a1682da6e3c
-	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20220211182418-ce08a7c816b2
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20220211180521-b74c541cff29
-	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20220211175847-bbecdaac97e8
-	k8s.io/component-base => k8s.io/component-base v0.0.0-20220214200630-8ffe7361d341
-	k8s.io/component-helpers => k8s.io/component-helpers v0.0.0-20220211181107-590c06cbb7ac
-	k8s.io/metrics => k8s.io/metrics v0.0.0-20220211182304-30fa1ea194c5
+	k8s.io/api => k8s.io/api v0.24.0-alpha.3
+	k8s.io/apimachinery => k8s.io/apimachinery v0.24.0-alpha.3
+	k8s.io/cli-runtime => k8s.io/cli-runtime v0.24.0-alpha.3
+	k8s.io/client-go => k8s.io/client-go v0.24.0-alpha.3
+	k8s.io/code-generator => k8s.io/code-generator v0.24.0-alpha.3
+	k8s.io/component-base => k8s.io/component-base v0.24.0-alpha.3
+	k8s.io/component-helpers => k8s.io/component-helpers v0.24.0-alpha.3
+	k8s.io/metrics => k8s.io/metrics v0.24.0-alpha.3
 )
