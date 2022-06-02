@@ -29,15 +29,15 @@ require (
 	github.com/stretchr/testify v1.7.0
 	golang.org/x/sys v0.0.0-20220209214540-3681064d5158
 	gopkg.in/yaml.v2 v2.4.0
-	k8s.io/api v0.0.0-20220531234821-832b1f4dc5da
-	k8s.io/apimachinery v0.0.0-20220527204257-be3a79b26814
-	k8s.io/cli-runtime v0.0.0-20220602191202-e90b85a3baf1
-	k8s.io/client-go v0.0.0-20220530124808-f88de91ae5c1
-	k8s.io/component-base v0.0.0-20220531235246-ba9c052508ce
-	k8s.io/component-helpers v0.0.0-20220509184522-76ad8716b7b9
+	k8s.io/api v0.0.0
+	k8s.io/apimachinery v0.0.0
+	k8s.io/cli-runtime v0.0.0
+	k8s.io/client-go v0.0.0
+	k8s.io/component-base v0.0.0
+	k8s.io/component-helpers v0.0.0
 	k8s.io/klog/v2 v2.60.1
-	k8s.io/kube-openapi v0.0.0-20220328201542-3ee0da9b0b42
-	k8s.io/metrics v0.0.0-20220509191710-5c2ab688925a
+	k8s.io/kube-openapi v0.0.0-20220603121420-31174f50af60
+	k8s.io/metrics v0.0.0
 	k8s.io/utils v0.0.0-20220210201930-3a6ce19ff2f9
 	sigs.k8s.io/json v0.0.0-20211208200746-9f7c6b3444d2
 	sigs.k8s.io/kustomize/kustomize/v4 v4.5.4
@@ -49,7 +49,7 @@ require (
 	github.com/Azure/go-ansiterm v0.0.0-20210617225240-d185dfc1b5a1 // indirect
 	github.com/PuerkitoBio/purell v1.1.1 // indirect
 	github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578 // indirect
-	github.com/emicklei/go-restful v2.9.5+incompatible // indirect
+	github.com/emicklei/go-restful/v3 v3.7.5-0.20220308211933-7c971ca4d0fd // indirect
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
 	github.com/go-errors/errors v1.0.1 // indirect
 	github.com/go-logr/logr v1.2.3 // indirect
@@ -98,12 +98,13 @@ require (
 )
 
 replace (
-	k8s.io/api => k8s.io/api v0.0.0-20220531234821-832b1f4dc5da
-	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20220527204257-be3a79b26814
-	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20220602191202-e90b85a3baf1
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20220530124808-f88de91ae5c1
-	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20220512215755-7d977b3e5454
-	k8s.io/component-base => k8s.io/component-base v0.0.0-20220531235246-ba9c052508ce
-	k8s.io/component-helpers => k8s.io/component-helpers v0.0.0-20220509184522-76ad8716b7b9
-	k8s.io/metrics => k8s.io/metrics v0.0.0-20220509191710-5c2ab688925a
+	k8s.io/api => ../api
+	k8s.io/apimachinery => ../apimachinery
+	k8s.io/cli-runtime => ../cli-runtime
+	k8s.io/client-go => ../client-go
+	k8s.io/code-generator => ../code-generator
+	k8s.io/component-base => ../component-base
+	k8s.io/component-helpers => ../component-helpers
+	k8s.io/kubectl => ../kubectl
+	k8s.io/metrics => ../metrics
 )
