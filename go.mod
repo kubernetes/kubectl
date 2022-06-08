@@ -2,7 +2,7 @@
 
 module k8s.io/kubectl
 
-go 1.21
+go 1.22.0
 
 require (
 	github.com/MakeNowJust/heredoc v1.0.0
@@ -30,15 +30,15 @@ require (
 	github.com/stretchr/testify v1.8.4
 	golang.org/x/sys v0.17.0
 	gopkg.in/yaml.v2 v2.4.0
-	k8s.io/api v0.0.0-20240301075851-e88057d7f696
-	k8s.io/apimachinery v0.0.0-20240229214048-6362b69e393e
-	k8s.io/cli-runtime v0.0.0-20240224204640-c66e3bf9f5f1
-	k8s.io/client-go v0.0.0-20240229235935-1047f6396b27
-	k8s.io/component-base v0.0.0-20240227002902-6c2a49d37aa4
-	k8s.io/component-helpers v0.0.0-20240221203355-866cab6f8733
+	k8s.io/api v0.0.0
+	k8s.io/apimachinery v0.0.0
+	k8s.io/cli-runtime v0.0.0
+	k8s.io/client-go v0.0.0
+	k8s.io/component-base v0.0.0
+	k8s.io/component-helpers v0.0.0
 	k8s.io/klog/v2 v2.120.1
 	k8s.io/kube-openapi v0.0.0-20231113174909-778a5567bc1e
-	k8s.io/metrics v0.0.0-20240221205043-a918a5050f23
+	k8s.io/metrics v0.0.0
 	k8s.io/utils v0.0.0-20230726121419-3b25d923346b
 	sigs.k8s.io/json v0.0.0-20221116044647-bc3834ca7abd
 	sigs.k8s.io/kustomize/kustomize/v5 v5.0.4-0.20230601165947-6ce0bf390ce3
@@ -96,12 +96,13 @@ require (
 )
 
 replace (
-	k8s.io/api => k8s.io/api v0.0.0-20240301075851-e88057d7f696
-	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20240229214048-6362b69e393e
-	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20240224204640-c66e3bf9f5f1
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20240229235935-1047f6396b27
-	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20240226041948-011e65eea8da
-	k8s.io/component-base => k8s.io/component-base v0.0.0-20240227002902-6c2a49d37aa4
-	k8s.io/component-helpers => k8s.io/component-helpers v0.0.0-20240221203355-866cab6f8733
-	k8s.io/metrics => k8s.io/metrics v0.0.0-20240221205043-a918a5050f23
+	k8s.io/api => ../api
+	k8s.io/apimachinery => ../apimachinery
+	k8s.io/cli-runtime => ../cli-runtime
+	k8s.io/client-go => ../client-go
+	k8s.io/code-generator => ../code-generator
+	k8s.io/component-base => ../component-base
+	k8s.io/component-helpers => ../component-helpers
+	k8s.io/kubectl => ../kubectl
+	k8s.io/metrics => ../metrics
 )
