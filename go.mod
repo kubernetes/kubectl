@@ -29,15 +29,15 @@ require (
 	github.com/stretchr/testify v1.7.0
 	golang.org/x/sys v0.0.0-20220209214540-3681064d5158
 	gopkg.in/yaml.v2 v2.4.0
-	k8s.io/api v0.0.0-20220609195407-d50b1bc97ca6
-	k8s.io/apimachinery v0.0.0-20220610234641-d407afb45eb7
-	k8s.io/cli-runtime v0.0.0-20220611001350-4a06235d4490
-	k8s.io/client-go v0.0.0-20220610235149-87a5b7b3b7a4
-	k8s.io/component-base v0.0.0-20220610235728-dbe7e0383ddc
-	k8s.io/component-helpers v0.0.0-20220610235835-f0f45d874ca8
+	k8s.io/api v0.0.0
+	k8s.io/apimachinery v0.0.0
+	k8s.io/cli-runtime v0.0.0
+	k8s.io/client-go v0.0.0
+	k8s.io/component-base v0.0.0
+	k8s.io/component-helpers v0.0.0
 	k8s.io/klog/v2 v2.60.1
 	k8s.io/kube-openapi v0.0.0-20220603121420-31174f50af60
-	k8s.io/metrics v0.0.0-20220611001233-24a5f5353a4c
+	k8s.io/metrics v0.0.0
 	k8s.io/utils v0.0.0-20220210201930-3a6ce19ff2f9
 	sigs.k8s.io/json v0.0.0-20211208200746-9f7c6b3444d2
 	sigs.k8s.io/kustomize/kustomize/v4 v4.5.4
@@ -91,18 +91,19 @@ require (
 	google.golang.org/protobuf v1.27.1 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/tomb.v1 v1.0.0-20141024135613-dd632973f1e7 // indirect
-	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 	sigs.k8s.io/kustomize/api v0.11.4 // indirect
 	sigs.k8s.io/structured-merge-diff/v4 v4.2.1 // indirect
 )
 
 replace (
-	k8s.io/api => k8s.io/api v0.0.0-20220609195407-d50b1bc97ca6
-	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20220610234641-d407afb45eb7
-	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20220611001350-4a06235d4490
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20220610235149-87a5b7b3b7a4
-	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20220610234447-35a5f0061164
-	k8s.io/component-base => k8s.io/component-base v0.0.0-20220610235728-dbe7e0383ddc
-	k8s.io/component-helpers => k8s.io/component-helpers v0.0.0-20220610235835-f0f45d874ca8
-	k8s.io/metrics => k8s.io/metrics v0.0.0-20220611001233-24a5f5353a4c
+	k8s.io/api => ../api
+	k8s.io/apimachinery => ../apimachinery
+	k8s.io/cli-runtime => ../cli-runtime
+	k8s.io/client-go => ../client-go
+	k8s.io/code-generator => ../code-generator
+	k8s.io/component-base => ../component-base
+	k8s.io/component-helpers => ../component-helpers
+	k8s.io/kubectl => ../kubectl
+	k8s.io/metrics => ../metrics
 )
