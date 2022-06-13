@@ -31,13 +31,13 @@ require (
 	gopkg.in/yaml.v2 v2.4.0
 	k8s.io/api v0.0.0-20220613074849-6b0201da8019
 	k8s.io/apimachinery v0.0.0-20220613074648-b90ea24d2fd6
-	k8s.io/cli-runtime v0.0.0-20220613081341-bdacd8aef674
-	k8s.io/client-go v0.0.0-20220613075149-d4fc9af2dfad
-	k8s.io/component-base v0.0.0-20220613075733-a8a2668bd522
-	k8s.io/component-helpers v0.0.0-20220613075839-5f980ecc2354
+	k8s.io/cli-runtime v0.0.0-20220613201155-e6102818c52f
+	k8s.io/client-go v0.0.0-20220613195210-2a9f95519059
+	k8s.io/component-base v0.0.0-20220613195522-9227fb076997
+	k8s.io/component-helpers v0.0.0-20220613195630-b1940738c8fa
 	k8s.io/klog/v2 v2.60.1
 	k8s.io/kube-openapi v0.0.0-20220603121420-31174f50af60
-	k8s.io/metrics v0.0.0-20220613081224-ae78c3e30199
+	k8s.io/metrics v0.0.0-20220613201036-22f38926a041
 	k8s.io/utils v0.0.0-20220210201930-3a6ce19ff2f9
 	sigs.k8s.io/json v0.0.0-20211208200746-9f7c6b3444d2
 	sigs.k8s.io/kustomize/kustomize/v4 v4.5.4
@@ -49,7 +49,7 @@ require (
 	github.com/Azure/go-ansiterm v0.0.0-20210617225240-d185dfc1b5a1 // indirect
 	github.com/PuerkitoBio/purell v1.1.1 // indirect
 	github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578 // indirect
-	github.com/emicklei/go-restful/v3 v3.7.5-0.20220308211933-7c971ca4d0fd // indirect
+	github.com/emicklei/go-restful/v3 v3.8.0 // indirect
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
 	github.com/go-errors/errors v1.0.1 // indirect
 	github.com/go-logr/logr v1.2.3 // indirect
@@ -99,10 +99,10 @@ require (
 replace (
 	k8s.io/api => k8s.io/api v0.0.0-20220613074849-6b0201da8019
 	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20220613074648-b90ea24d2fd6
-	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20220613081341-bdacd8aef674
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20220613075149-d4fc9af2dfad
-	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20220613074454-f2ea99579e3b
-	k8s.io/component-base => k8s.io/component-base v0.0.0-20220613075733-a8a2668bd522
-	k8s.io/component-helpers => k8s.io/component-helpers v0.0.0-20220613075839-5f980ecc2354
-	k8s.io/metrics => k8s.io/metrics v0.0.0-20220613081224-ae78c3e30199
+	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20220613201155-e6102818c52f
+	k8s.io/client-go => k8s.io/client-go v0.0.0-20220613195210-2a9f95519059
+	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20220613194457-cb496e785eea
+	k8s.io/component-base => k8s.io/component-base v0.0.0-20220613195522-9227fb076997
+	k8s.io/component-helpers => k8s.io/component-helpers v0.0.0-20220613195630-b1940738c8fa
+	k8s.io/metrics => k8s.io/metrics v0.0.0-20220613201036-22f38926a041
 )
