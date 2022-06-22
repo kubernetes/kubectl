@@ -23,21 +23,22 @@ require (
 	github.com/moby/term v0.0.0-20210619224110-3f7ff695adc6
 	github.com/onsi/ginkgo v1.14.0
 	github.com/onsi/gomega v1.10.1
+	github.com/pkg/errors v0.9.1
 	github.com/russross/blackfriday v1.5.2
 	github.com/spf13/cobra v1.4.0
 	github.com/spf13/pflag v1.0.5
 	github.com/stretchr/testify v1.7.0
 	golang.org/x/sys v0.0.0-20220209214540-3681064d5158
 	gopkg.in/yaml.v2 v2.4.0
-	k8s.io/api v0.0.0-20220623035010-b98f264fe39f
-	k8s.io/apimachinery v0.0.0-20220627171659-66bbc5043e26
-	k8s.io/cli-runtime v0.0.0-20220627201224-f94bba323eab
-	k8s.io/client-go v0.0.0-20220627195245-f5b6af45630a
-	k8s.io/component-base v0.0.0-20220627195835-52746bc9b0f1
-	k8s.io/component-helpers v0.0.0-20220623040108-86c57e065334
-	k8s.io/klog/v2 v2.70.0
+	k8s.io/api v0.0.0
+	k8s.io/apimachinery v0.0.0
+	k8s.io/cli-runtime v0.0.0
+	k8s.io/client-go v0.0.0
+	k8s.io/component-base v0.0.0
+	k8s.io/component-helpers v0.0.0
+	k8s.io/klog/v2 v2.60.1
 	k8s.io/kube-openapi v0.0.0-20220603121420-31174f50af60
-	k8s.io/metrics v0.0.0-20220623041623-1d33a6c8539d
+	k8s.io/metrics v0.0.0
 	k8s.io/utils v0.0.0-20220210201930-3a6ce19ff2f9
 	sigs.k8s.io/json v0.0.0-20211208200746-9f7c6b3444d2
 	sigs.k8s.io/kustomize/kustomize/v4 v4.5.4
@@ -77,7 +78,6 @@ require (
 	github.com/nxadm/tail v1.4.4 // indirect
 	github.com/opencontainers/go-digest v1.0.0 // indirect
 	github.com/peterbourgon/diskv v2.0.1+incompatible // indirect
-	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/xlab/treeprint v0.0.0-20181112141820-a009c3971eca // indirect
 	go.starlark.net v0.0.0-20200306205701-8dd3e2ee1dd5 // indirect
@@ -97,12 +97,13 @@ require (
 )
 
 replace (
-	k8s.io/api => k8s.io/api v0.0.0-20220623035010-b98f264fe39f
-	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20220627171659-66bbc5043e26
-	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20220627201224-f94bba323eab
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20220627195245-f5b6af45630a
-	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20220623034541-068d9f81c4ad
-	k8s.io/component-base => k8s.io/component-base v0.0.0-20220627195835-52746bc9b0f1
-	k8s.io/component-helpers => k8s.io/component-helpers v0.0.0-20220623040108-86c57e065334
-	k8s.io/metrics => k8s.io/metrics v0.0.0-20220623041623-1d33a6c8539d
+	k8s.io/api => ../api
+	k8s.io/apimachinery => ../apimachinery
+	k8s.io/cli-runtime => ../cli-runtime
+	k8s.io/client-go => ../client-go
+	k8s.io/code-generator => ../code-generator
+	k8s.io/component-base => ../component-base
+	k8s.io/component-helpers => ../component-helpers
+	k8s.io/kubectl => ../kubectl
+	k8s.io/metrics => ../metrics
 )
