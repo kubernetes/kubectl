@@ -30,16 +30,16 @@ require (
 	github.com/stretchr/testify v1.7.0
 	golang.org/x/sys v0.0.0-20220319134239-a9b59b0215f8
 	gopkg.in/yaml.v2 v2.4.0
-	k8s.io/api v0.0.0-20220727000259-04aced3612cf
-	k8s.io/apimachinery v0.0.0-20220727000102-7fb03423f864
-	k8s.io/cli-runtime v0.0.0-20220727002824-86f8aac7fe4e
-	k8s.io/client-go v0.0.0-20220727000546-cc879cd5b66e
-	k8s.io/component-base v0.0.0-20220727001241-c9db45da9b0d
-	k8s.io/component-helpers v0.0.0-20220727001345-406e8f267875
+	k8s.io/api v0.0.0
+	k8s.io/apimachinery v0.0.0
+	k8s.io/cli-runtime v0.0.0
+	k8s.io/client-go v0.0.0
+	k8s.io/component-base v0.0.0
+	k8s.io/component-helpers v0.0.0
 	k8s.io/klog/v2 v2.70.1
 	k8s.io/kube-openapi v0.0.0-20220627174259-011e075b9cb8
-	k8s.io/metrics v0.0.0-20220727002717-4c0a26a908fb
-	k8s.io/utils v0.0.0-20220210201930-3a6ce19ff2f9
+	k8s.io/metrics v0.0.0
+	k8s.io/utils v0.0.0-20220725171434-9bab9ef40391
 	sigs.k8s.io/json v0.0.0-20220713155537-f223a00ba0e2
 	sigs.k8s.io/kustomize/kustomize/v4 v4.5.4
 	sigs.k8s.io/kustomize/kyaml v0.13.6
@@ -94,12 +94,13 @@ require (
 )
 
 replace (
-	k8s.io/api => k8s.io/api v0.0.0-20220727000259-04aced3612cf
-	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20220727000102-7fb03423f864
-	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20220727002824-86f8aac7fe4e
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20220727000546-cc879cd5b66e
-	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20220726212509-22db44c58f5a
-	k8s.io/component-base => k8s.io/component-base v0.0.0-20220727001241-c9db45da9b0d
-	k8s.io/component-helpers => k8s.io/component-helpers v0.0.0-20220727001345-406e8f267875
-	k8s.io/metrics => k8s.io/metrics v0.0.0-20220727002717-4c0a26a908fb
+	k8s.io/api => ../api
+	k8s.io/apimachinery => ../apimachinery
+	k8s.io/cli-runtime => ../cli-runtime
+	k8s.io/client-go => ../client-go
+	k8s.io/code-generator => ../code-generator
+	k8s.io/component-base => ../component-base
+	k8s.io/component-helpers => ../component-helpers
+	k8s.io/kubectl => ../kubectl
+	k8s.io/metrics => ../metrics
 )
