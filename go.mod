@@ -28,18 +28,18 @@ require (
 	github.com/russross/blackfriday v1.5.2
 	github.com/spf13/cobra v1.2.1
 	github.com/spf13/pflag v1.0.5
-	github.com/stretchr/testify v1.8.0
+	github.com/stretchr/testify v1.7.0
 	golang.org/x/sys v0.0.0-20210831042530-f4d43177bf5e
 	gopkg.in/yaml.v2 v2.4.0
-	k8s.io/api v0.0.0-20221026235553-5794fb8999af
-	k8s.io/apimachinery v0.0.0-20221026235213-fb3228f40456
-	k8s.io/cli-runtime v0.0.0-20221027003536-e4bd4c19711c
-	k8s.io/client-go v0.0.0-20221027000126-d33f57bea097
-	k8s.io/component-base v0.0.0-20221027000837-04bb955c2d1e
-	k8s.io/component-helpers v0.0.0-20221027001019-a56118d43df0
+	k8s.io/api v0.0.0
+	k8s.io/apimachinery v0.0.0
+	k8s.io/cli-runtime v0.0.0
+	k8s.io/client-go v0.0.0
+	k8s.io/component-base v0.0.0
+	k8s.io/component-helpers v0.0.0
 	k8s.io/klog/v2 v2.30.0
 	k8s.io/kube-openapi v0.0.0-20211115234752-e816edb12b65
-	k8s.io/metrics v0.0.0-20221027003335-f2e2342b1e92
+	k8s.io/metrics v0.0.0
 	k8s.io/utils v0.0.0-20211116205334-6203023598ed
 	sigs.k8s.io/kustomize/kustomize/v4 v4.4.1
 	sigs.k8s.io/kustomize/kyaml v0.13.0
@@ -47,12 +47,13 @@ require (
 )
 
 replace (
-	k8s.io/api => k8s.io/api v0.0.0-20221026235553-5794fb8999af
-	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20221026235213-fb3228f40456
-	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20221027003536-e4bd4c19711c
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20221027000126-d33f57bea097
-	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20221026234857-6646d3001ad1
-	k8s.io/component-base => k8s.io/component-base v0.0.0-20221027000837-04bb955c2d1e
-	k8s.io/component-helpers => k8s.io/component-helpers v0.0.0-20221027001019-a56118d43df0
-	k8s.io/metrics => k8s.io/metrics v0.0.0-20221027003335-f2e2342b1e92
+	k8s.io/api => ../api
+	k8s.io/apimachinery => ../apimachinery
+	k8s.io/cli-runtime => ../cli-runtime
+	k8s.io/client-go => ../client-go
+	k8s.io/code-generator => ../code-generator
+	k8s.io/component-base => ../component-base
+	k8s.io/component-helpers => ../component-helpers
+	k8s.io/kubectl => ../kubectl
+	k8s.io/metrics => ../metrics
 )
