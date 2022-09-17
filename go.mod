@@ -14,30 +14,30 @@ require (
 	github.com/fatih/camelcase v1.0.0
 	github.com/fvbommel/sortorder v1.0.1
 	github.com/google/gnostic v0.5.7-v3refs
-	github.com/google/go-cmp v0.5.8
+	github.com/google/go-cmp v0.5.9
 	github.com/jonboulle/clockwork v0.2.2
 	github.com/liggitt/tabwriter v0.0.0-20181228230101-89fcab3d43de
 	github.com/lithammer/dedent v1.1.0
 	github.com/mitchellh/go-wordwrap v1.0.0
 	github.com/moby/term v0.0.0-20210619224110-3f7ff695adc6
-	github.com/onsi/ginkgo/v2 v2.2.0
+	github.com/onsi/ginkgo/v2 v2.1.6
 	github.com/onsi/gomega v1.20.1
 	github.com/pkg/errors v0.9.1
 	github.com/russross/blackfriday v1.5.2
 	github.com/spf13/cobra v1.4.0
 	github.com/spf13/pflag v1.0.5
-	github.com/stretchr/testify v1.7.0
+	github.com/stretchr/testify v1.8.0
 	golang.org/x/sys v0.0.0-20220722155257-8c9f86f7a55f
 	gopkg.in/yaml.v2 v2.4.0
-	k8s.io/api v0.0.0-20220916032116-c98ebf18d366
-	k8s.io/apimachinery v0.0.0-20220919104142-612703ed13bf
-	k8s.io/cli-runtime v0.0.0-20220909232940-d79a93cec812
-	k8s.io/client-go v0.0.0-20220919184700-b6e72dce2814
-	k8s.io/component-base v0.0.0-20220919111118-ebe9a64d31a1
-	k8s.io/component-helpers v0.0.0-20220919111453-c3262473b8cd
+	k8s.io/api v0.0.0
+	k8s.io/apimachinery v0.0.0
+	k8s.io/cli-runtime v0.0.0
+	k8s.io/client-go v0.0.0
+	k8s.io/component-base v0.0.0
+	k8s.io/component-helpers v0.0.0
 	k8s.io/klog/v2 v2.80.1
 	k8s.io/kube-openapi v0.0.0-20220803162953-67bda5d908f1
-	k8s.io/metrics v0.0.0-20220919115431-9ea68bfb2057
+	k8s.io/metrics v0.0.0
 	k8s.io/utils v0.0.0-20220728103510-ee6ede2d64ed
 	sigs.k8s.io/json v0.0.0-20220713155537-f223a00ba0e2
 	sigs.k8s.io/kustomize/kustomize/v4 v4.5.7
@@ -50,7 +50,7 @@ require (
 	github.com/PuerkitoBio/purell v1.1.1 // indirect
 	github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/emicklei/go-restful/v3 v3.8.0 // indirect
+	github.com/emicklei/go-restful/v3 v3.9.0 // indirect
 	github.com/go-errors/errors v1.0.1 // indirect
 	github.com/go-logr/logr v1.2.3 // indirect
 	github.com/go-openapi/jsonpointer v0.19.5 // indirect
@@ -93,12 +93,13 @@ require (
 )
 
 replace (
-	k8s.io/api => k8s.io/api v0.0.0-20220916032116-c98ebf18d366
-	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20220919104142-612703ed13bf
-	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20220909232940-d79a93cec812
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20220919184700-b6e72dce2814
-	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20220919103714-b54a056c2b87
-	k8s.io/component-base => k8s.io/component-base v0.0.0-20220919111118-ebe9a64d31a1
-	k8s.io/component-helpers => k8s.io/component-helpers v0.0.0-20220919111453-c3262473b8cd
-	k8s.io/metrics => k8s.io/metrics v0.0.0-20220919115431-9ea68bfb2057
+	k8s.io/api => ../api
+	k8s.io/apimachinery => ../apimachinery
+	k8s.io/cli-runtime => ../cli-runtime
+	k8s.io/client-go => ../client-go
+	k8s.io/code-generator => ../code-generator
+	k8s.io/component-base => ../component-base
+	k8s.io/component-helpers => ../component-helpers
+	k8s.io/kubectl => ../kubectl
+	k8s.io/metrics => ../metrics
 )
