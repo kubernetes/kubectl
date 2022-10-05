@@ -29,20 +29,20 @@ require (
 	github.com/stretchr/testify v1.8.0
 	golang.org/x/sys v0.0.0-20220722155257-8c9f86f7a55f
 	gopkg.in/yaml.v2 v2.4.0
-	k8s.io/api v0.0.0-20220922184533-be233f856791
-	k8s.io/apimachinery v0.0.0-20220922184044-826a74e82875
-	k8s.io/cli-runtime v0.0.0-20220922193734-3141d5468ff0
-	k8s.io/client-go v0.0.0-20220926163418-2f43d370b32c
-	k8s.io/component-base v0.0.0-20220928223046-40d14bdbd62f
-	k8s.io/component-helpers v0.0.0-20220922190532-f4131335a651
+	k8s.io/api v0.0.0
+	k8s.io/apimachinery v0.0.0
+	k8s.io/cli-runtime v0.0.0
+	k8s.io/client-go v0.0.0
+	k8s.io/component-base v0.0.0
+	k8s.io/component-helpers v0.0.0
 	k8s.io/klog/v2 v2.80.1
 	k8s.io/kube-openapi v0.0.0-20220803162953-67bda5d908f1
-	k8s.io/metrics v0.0.0-20220926170735-60b7c6e9742e
+	k8s.io/metrics v0.0.0
 	k8s.io/utils v0.0.0-20220922133306-665eaaec4324
 	sigs.k8s.io/json v0.0.0-20220713155537-f223a00ba0e2
 	sigs.k8s.io/kustomize/kustomize/v4 v4.5.7
 	sigs.k8s.io/kustomize/kyaml v0.13.9
-	sigs.k8s.io/yaml v1.2.0
+	sigs.k8s.io/yaml v1.3.0
 )
 
 require (
@@ -91,12 +91,13 @@ require (
 )
 
 replace (
-	k8s.io/api => k8s.io/api v0.0.0-20220922184533-be233f856791
-	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20220922184044-7fb78ee96289
-	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20220922193734-3141d5468ff0
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20220926163418-2f43d370b32c
-	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20220926162019-1d82d12fa310
-	k8s.io/component-base => k8s.io/component-base v0.0.0-20220928223046-40d14bdbd62f
-	k8s.io/component-helpers => k8s.io/component-helpers v0.0.0-20220922190532-f4131335a651
-	k8s.io/metrics => k8s.io/metrics v0.0.0-20220926170735-60b7c6e9742e
+	k8s.io/api => ../api
+	k8s.io/apimachinery => ../apimachinery
+	k8s.io/cli-runtime => ../cli-runtime
+	k8s.io/client-go => ../client-go
+	k8s.io/code-generator => ../code-generator
+	k8s.io/component-base => ../component-base
+	k8s.io/component-helpers => ../component-helpers
+	k8s.io/kubectl => ../kubectl
+	k8s.io/metrics => ../metrics
 )
