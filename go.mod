@@ -31,15 +31,15 @@ require (
 	github.com/stretchr/testify v1.8.0
 	golang.org/x/sys v0.0.0-20220209214540-3681064d5158
 	gopkg.in/yaml.v2 v2.4.0
-	k8s.io/api v0.0.0-20221007035403-c39d53a2a226
-	k8s.io/apimachinery v0.0.0-20221007035042-883966403371
-	k8s.io/cli-runtime v0.0.0-20221007042947-b6331efbc707
-	k8s.io/client-go v0.0.0-20221007035908-2dace393ea36
-	k8s.io/component-base v0.0.0-20221007040611-9e9ea7010a77
-	k8s.io/component-helpers v0.0.0-20221007040736-60c44495dc7d
+	k8s.io/api v0.24.8-rc.0
+	k8s.io/apimachinery v0.24.8-rc.0
+	k8s.io/cli-runtime v0.24.8-rc.0
+	k8s.io/client-go v0.24.8-rc.0
+	k8s.io/component-base v0.24.8-rc.0
+	k8s.io/component-helpers v0.24.8-rc.0
 	k8s.io/klog/v2 v2.60.1
 	k8s.io/kube-openapi v0.0.0-20220328201542-3ee0da9b0b42
-	k8s.io/metrics v0.0.0-20221007042803-fcf81ea13534
+	k8s.io/metrics v0.24.8-rc.0
 	k8s.io/utils v0.0.0-20220210201930-3a6ce19ff2f9
 	sigs.k8s.io/json v0.0.0-20211208200746-9f7c6b3444d2
 	sigs.k8s.io/kustomize/kustomize/v4 v4.5.4
@@ -48,12 +48,12 @@ require (
 )
 
 replace (
-	k8s.io/api => k8s.io/api v0.0.0-20221007035403-c39d53a2a226
-	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20221007035042-883966403371
-	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20221007042947-b6331efbc707
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20221007035908-2dace393ea36
-	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20221007034743-b7214a11fb33
-	k8s.io/component-base => k8s.io/component-base v0.0.0-20221007040611-9e9ea7010a77
-	k8s.io/component-helpers => k8s.io/component-helpers v0.0.0-20221007040736-60c44495dc7d
-	k8s.io/metrics => k8s.io/metrics v0.0.0-20221007042803-fcf81ea13534
+	k8s.io/api => k8s.io/api v0.24.8-rc.0
+	k8s.io/apimachinery => k8s.io/apimachinery v0.24.8-rc.0
+	k8s.io/cli-runtime => k8s.io/cli-runtime v0.24.8-rc.0
+	k8s.io/client-go => k8s.io/client-go v0.24.8-rc.0
+	k8s.io/code-generator => k8s.io/code-generator v0.24.8-rc.0
+	k8s.io/component-base => k8s.io/component-base v0.24.8-rc.0
+	k8s.io/component-helpers => k8s.io/component-helpers v0.24.8-rc.0
+	k8s.io/metrics => k8s.io/metrics v0.24.8-rc.0
 )
