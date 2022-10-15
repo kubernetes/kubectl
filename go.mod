@@ -30,14 +30,14 @@ require (
 	golang.org/x/sys v0.0.0-20220908164124-27713097b956
 	gopkg.in/yaml.v2 v2.4.0
 	k8s.io/api v0.0.0-20221012115127-0184bd884c5e
-	k8s.io/apimachinery v0.0.0-20221014074937-b839e82f5d70
-	k8s.io/cli-runtime v0.0.0-20221014082720-00d0bc2b7021
-	k8s.io/client-go v0.0.0-20221014075641-aea20dde598b
-	k8s.io/component-base v0.0.0-20221014080429-1c6f043b5467
-	k8s.io/component-helpers v0.0.0-20221014080608-2ac0564900bd
+	k8s.io/apimachinery v0.0.0-20221015034908-7b5633b03212
+	k8s.io/cli-runtime v0.0.0-20221015041739-b6a5653c8754
+	k8s.io/client-go v0.0.0-20221015035403-6b2491258ec0
+	k8s.io/component-base v0.0.0-20221015040048-ab4648626070
+	k8s.io/component-helpers v0.0.0-20221015040152-a9b550beb43e
 	k8s.io/klog/v2 v2.80.1
-	k8s.io/kube-openapi v0.0.0-20220803162953-67bda5d908f1
-	k8s.io/metrics v0.0.0-20221014082539-1493d956e8ee
+	k8s.io/kube-openapi v0.0.0-20221012153701-172d655c2280
+	k8s.io/metrics v0.0.0-20221015041629-9726bc4cad01
 	k8s.io/utils v0.0.0-20220922133306-665eaaec4324
 	sigs.k8s.io/json v0.0.0-20220713155537-f223a00ba0e2
 	sigs.k8s.io/kustomize/kustomize/v4 v4.5.7
@@ -92,11 +92,11 @@ require (
 
 replace (
 	k8s.io/api => k8s.io/api v0.0.0-20221012115127-0184bd884c5e
-	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20221014074937-b839e82f5d70
-	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20221014082720-00d0bc2b7021
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20221014075641-aea20dde598b
-	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20221014074710-e80bbc4e36d5
-	k8s.io/component-base => k8s.io/component-base v0.0.0-20221014080429-1c6f043b5467
-	k8s.io/component-helpers => k8s.io/component-helpers v0.0.0-20221014080608-2ac0564900bd
-	k8s.io/metrics => k8s.io/metrics v0.0.0-20221014082539-1493d956e8ee
+	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20221015034908-7b5633b03212
+	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20221015041739-b6a5653c8754
+	k8s.io/client-go => k8s.io/client-go v0.0.0-20221015035403-6b2491258ec0
+	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20221015034715-3bbe2156a58d
+	k8s.io/component-base => k8s.io/component-base v0.0.0-20221015040048-ab4648626070
+	k8s.io/component-helpers => k8s.io/component-helpers v0.0.0-20221015040152-a9b550beb43e
+	k8s.io/metrics => k8s.io/metrics v0.0.0-20221015041629-9726bc4cad01
 )
