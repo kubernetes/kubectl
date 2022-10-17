@@ -20,8 +20,8 @@ require (
 	github.com/lithammer/dedent v1.1.0
 	github.com/mitchellh/go-wordwrap v1.0.0
 	github.com/moby/term v0.0.0-20210619224110-3f7ff695adc6
-	github.com/onsi/ginkgo/v2 v2.2.0
-	github.com/onsi/gomega v1.20.1
+	github.com/onsi/ginkgo/v2 v2.3.1
+	github.com/onsi/gomega v1.22.1
 	github.com/pkg/errors v0.9.1
 	github.com/russross/blackfriday/v2 v2.1.0
 	github.com/spf13/cobra v1.6.0
@@ -30,14 +30,14 @@ require (
 	golang.org/x/sys v0.0.0-20220908164124-27713097b956
 	gopkg.in/yaml.v2 v2.4.0
 	k8s.io/api v0.0.0-20221012115127-0184bd884c5e
-	k8s.io/apimachinery v0.0.0-20221015034908-7b5633b03212
+	k8s.io/apimachinery v0.0.0-20221017194938-70a38aaa19ef
 	k8s.io/cli-runtime v0.0.0-20221015041739-b6a5653c8754
-	k8s.io/client-go v0.0.0-20221015075338-fa9ed7f5fed2
-	k8s.io/component-base v0.0.0-20221015161253-7e459dd1d5fa
-	k8s.io/component-helpers v0.0.0-20221015040152-a9b550beb43e
+	k8s.io/client-go v0.0.0-20221017195518-9cc33a48a716
+	k8s.io/component-base v0.0.0-20221017200238-034e08cbfdfb
+	k8s.io/component-helpers v0.0.0-20221017200342-f55d4a0c1767
 	k8s.io/klog/v2 v2.80.1
 	k8s.io/kube-openapi v0.0.0-20221012153701-172d655c2280
-	k8s.io/metrics v0.0.0-20221015041629-9726bc4cad01
+	k8s.io/metrics v0.0.0-20221017201900-57e823688239
 	k8s.io/utils v0.0.0-20220922133306-665eaaec4324
 	sigs.k8s.io/json v0.0.0-20220713155537-f223a00ba0e2
 	sigs.k8s.io/kustomize/kustomize/v4 v4.5.7
@@ -92,11 +92,11 @@ require (
 
 replace (
 	k8s.io/api => k8s.io/api v0.0.0-20221012115127-0184bd884c5e
-	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20221015034908-7b5633b03212
+	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20221017194938-70a38aaa19ef
 	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20221015041739-b6a5653c8754
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20221015075338-fa9ed7f5fed2
-	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20221015034715-3bbe2156a58d
-	k8s.io/component-base => k8s.io/component-base v0.0.0-20221015161253-7e459dd1d5fa
-	k8s.io/component-helpers => k8s.io/component-helpers v0.0.0-20221015040152-a9b550beb43e
-	k8s.io/metrics => k8s.io/metrics v0.0.0-20221015041629-9726bc4cad01
+	k8s.io/client-go => k8s.io/client-go v0.0.0-20221017195518-9cc33a48a716
+	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20221017194732-d6a8b70c7bea
+	k8s.io/component-base => k8s.io/component-base v0.0.0-20221017200238-034e08cbfdfb
+	k8s.io/component-helpers => k8s.io/component-helpers v0.0.0-20221017200342-f55d4a0c1767
+	k8s.io/metrics => k8s.io/metrics v0.0.0-20221017201900-57e823688239
 )
