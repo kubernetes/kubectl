@@ -544,8 +544,8 @@ k8s.io/api v0.0.0-20221028075226-689257039cfb h1:QZsHf1k3xHSbYozSHt8DZOrH36F8Mbd
 k8s.io/api v0.0.0-20221028075226-689257039cfb/go.mod h1:96woDPRgmgH0tVTXgsLdv0cwHXPUvZ97ghr8sMUtxx0=
 k8s.io/apimachinery v0.0.0-20221028155017-b03a432a2a6d h1:fg/DbLqFKxFESf3AnU5iwCexZWOUnFFLb0JraG20wZo=
 k8s.io/apimachinery v0.0.0-20221028155017-b03a432a2a6d/go.mod h1:zSkBXgO5G/dSQOe256tx5Yo2OJytojpY3bsXu/4/ZJE=
-k8s.io/cli-runtime v0.0.0-20221028082309-76d40a058aae h1:phqrhTIhN89dieCciPqSOFn2AUFK/WhRMNxsP9rg9AE=
-k8s.io/cli-runtime v0.0.0-20221028082309-76d40a058aae/go.mod h1:8Za6U2FoTs3UoLXV5Q8VJIpf4bJypigmS2rfXgvwaH4=
+k8s.io/cli-runtime v0.0.0-20221030161243-cf309f8903f6 h1:qt3gwW+JHgYf49iawwhBdRn+C0PVn/ttSFUObjuSRsg=
+k8s.io/cli-runtime v0.0.0-20221030161243-cf309f8903f6/go.mod h1:VCK6BtIAZKGm+vtIuPX7Izszv8qB+hRMk7aSQl1ymRU=
 k8s.io/client-go v0.0.0-20221028155554-0d5739633518 h1:KlSjZkXeVyocbVpEU157nadMdQIfWXchaItVtjmMVUE=
 k8s.io/client-go v0.0.0-20221028155554-0d5739633518/go.mod h1:9OZTm80DH1AI7P4cpx8yehVlTU1xZQCsMtAtlJYLWDw=
 k8s.io/component-base v0.0.0-20221028160413-57523092d0c2 h1:lHXBae/IFHPh8Lu9rDRTzt6KyTiBkKvRJWeLTYpXFDA=
