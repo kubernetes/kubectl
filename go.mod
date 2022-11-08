@@ -33,7 +33,7 @@ require (
 	k8s.io/api v0.0.0-20221108053747-3f61c95cab71
 	k8s.io/apimachinery v0.0.0-20221108052757-4fe4321a9d5e
 	k8s.io/cli-runtime v0.0.0-20221108072842-e556445586e6
-	k8s.io/client-go v0.0.0-20221108054908-3daf180aa6b1
+	k8s.io/client-go v0.0.0-20221108054910-ea9ec9169797
 	k8s.io/component-base v0.0.0-20221108061007-abdc0eb56a1d
 	k8s.io/component-helpers v0.0.0-20221108061658-aa222c251f8e
 	k8s.io/klog/v2 v2.80.1
@@ -43,6 +43,7 @@ require (
 	sigs.k8s.io/json v0.0.0-20220713155537-f223a00ba0e2
 	sigs.k8s.io/kustomize/kustomize/v4 v4.5.7
 	sigs.k8s.io/kustomize/kyaml v0.13.9
+	sigs.k8s.io/structured-merge-diff/v4 v4.2.3
 	sigs.k8s.io/yaml v1.3.0
 )
 
@@ -87,14 +88,13 @@ require (
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	sigs.k8s.io/kustomize/api v0.12.1 // indirect
-	sigs.k8s.io/structured-merge-diff/v4 v4.2.3 // indirect
 )
 
 replace (
 	k8s.io/api => k8s.io/api v0.0.0-20221108053747-3f61c95cab71
 	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20221108052757-4fe4321a9d5e
 	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20221108072842-e556445586e6
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20221108054908-3daf180aa6b1
+	k8s.io/client-go => k8s.io/client-go v0.0.0-20221108054910-ea9ec9169797
 	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20221108000200-7429fbb99432
 	k8s.io/component-base => k8s.io/component-base v0.0.0-20221108061007-abdc0eb56a1d
 	k8s.io/component-helpers => k8s.io/component-helpers v0.0.0-20221108061658-aa222c251f8e
