@@ -92,7 +92,7 @@ require (
 
 replace (
 	k8s.io/api => k8s.io/api v0.0.0-20221116135212-053624e78dd8
-	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20221116134806-067949de242e
+	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20221108055230-656123506f33
 	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20221116143920-982d36886a36
 	k8s.io/client-go => k8s.io/client-go v0.0.0-20221116135827-968ba8d06935
 	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20221107193021-11d5c4c49cbf
