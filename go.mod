@@ -30,15 +30,15 @@ require (
 	github.com/stretchr/testify v1.8.1
 	golang.org/x/sys v0.3.0
 	gopkg.in/yaml.v2 v2.4.0
-	k8s.io/api v0.0.0-20230112014319-210a19362bf5
-	k8s.io/apimachinery v0.0.0-20230112013515-257f65905ef1
-	k8s.io/cli-runtime v0.0.0-20230112041829-b60d89b7b725
-	k8s.io/client-go v0.0.0-20230112020956-ce349e1afaa1
-	k8s.io/component-base v0.0.0-20230112023433-efc9a68681cd
-	k8s.io/component-helpers v0.0.0-20230112023934-a9355de142cb
+	k8s.io/api v0.0.0
+	k8s.io/apimachinery v0.0.0
+	k8s.io/cli-runtime v0.0.0
+	k8s.io/client-go v0.0.0
+	k8s.io/component-base v0.0.0
+	k8s.io/component-helpers v0.0.0
 	k8s.io/klog/v2 v2.80.1
 	k8s.io/kube-openapi v0.0.0-20230109183929-3758b55a6596
-	k8s.io/metrics v0.0.0-20230112041402-c2dc14b8d904
+	k8s.io/metrics v0.0.0
 	k8s.io/utils v0.0.0-20221107191617-1a15be271d1d
 	sigs.k8s.io/json v0.0.0-20220713155537-f223a00ba0e2
 	sigs.k8s.io/kustomize/kustomize/v4 v4.5.7
@@ -60,7 +60,7 @@ require (
 	github.com/google/btree v1.0.1 // indirect
 	github.com/google/gofuzz v1.1.0 // indirect
 	github.com/google/shlex v0.0.0-20191202100458-e7afc7fbc510 // indirect
-	github.com/google/uuid v1.1.2 // indirect
+	github.com/google/uuid v1.3.0 // indirect
 	github.com/gregjones/httpcache v0.0.0-20180305231024-9cad4c3443a7 // indirect
 	github.com/imdario/mergo v0.3.6 // indirect
 	github.com/inconshreveable/mousetrap v1.0.1 // indirect
@@ -91,12 +91,13 @@ require (
 )
 
 replace (
-	k8s.io/api => k8s.io/api v0.0.0-20230112014319-210a19362bf5
-	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20230112013515-257f65905ef1
-	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20230112041829-b60d89b7b725
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20230112020956-ce349e1afaa1
-	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20230112012922-e2dcc1f715e6
-	k8s.io/component-base => k8s.io/component-base v0.0.0-20230112023433-efc9a68681cd
-	k8s.io/component-helpers => k8s.io/component-helpers v0.0.0-20230112023934-a9355de142cb
-	k8s.io/metrics => k8s.io/metrics v0.0.0-20230112041402-c2dc14b8d904
+	k8s.io/api => ../api
+	k8s.io/apimachinery => ../apimachinery
+	k8s.io/cli-runtime => ../cli-runtime
+	k8s.io/client-go => ../client-go
+	k8s.io/code-generator => ../code-generator
+	k8s.io/component-base => ../component-base
+	k8s.io/component-helpers => ../component-helpers
+	k8s.io/kubectl => ../kubectl
+	k8s.io/metrics => ../metrics
 )
