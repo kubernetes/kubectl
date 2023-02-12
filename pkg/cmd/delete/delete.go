@@ -20,6 +20,7 @@ import (
 	"fmt"
 	"net/url"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -325,6 +326,7 @@ func (o *DeleteOptions) DeleteResult(r *resource.Result) error {
 			}
 			return nil
 		}
+		fmt.Fprintf(o.Out, "Deleting...\n")
 		response, err := o.deleteResource(info, options)
 		if err != nil {
 			return err
@@ -395,10 +397,20 @@ func (o *DeleteOptions) DeleteResult(r *resource.Result) error {
 }
 
 func (o *DeleteOptions) deleteResource(info *resource.Info, deleteOptions *metav1.DeleteOptions) (runtime.Object, error) {
-	deleteResponse, err := resource.
-		NewHelper(info.Client, info.Mapping).
-		DryRun(o.DryRunStrategy == cmdutil.DryRunServer).
-		DeleteWithOptions(info.Namespace, info.Name, deleteOptions)
+	var wg sync.WaitGroup
+	var err error
+	var deleteResponse runtime.Object
+
+	wg.Add(1)
+	go func() {
+		// Decrement the counter when the go routine completes
+		defer wg.Done()
+		deleteResponse, err = resource.
+			NewHelper(info.Client, info.Mapping).
+			DryRun(o.DryRunStrategy == cmdutil.DryRunServer).
+			DeleteWithOptions(info.Namespace, info.Name, deleteOptions)
+	}()
+	wg.Wait()
 	if err != nil {
 		return nil, cmdutil.AddSourceToErr("deleting", info.Source, err)
 	}
@@ -412,6 +424,7 @@ func (o *DeleteOptions) deleteResource(info *resource.Info, deleteOptions *metav
 // PrintObj for deleted objects is special because we do not have an object to print.
 // This mirrors name printer behavior
 func (o *DeleteOptions) PrintObj(info *resource.Info) {
+
 	operation := "deleted"
 	groupKind := info.Mapping.GroupVersionKind
 	kindString := fmt.Sprintf("%s.%s", strings.ToLower(groupKind.Kind), groupKind.Group)
