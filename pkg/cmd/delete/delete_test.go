@@ -83,7 +83,7 @@ func TestDeleteObjectByTuple(t *testing.T) {
 	cmd.Flags().Set("cascade", "false")
 	cmd.Flags().Set("output", "name")
 	cmd.Run(cmd, []string{"replicationcontrollers/redis-master-controller"})
-	if buf.String() != "replicationcontroller/redis-master-controller\n" {
+	if buf.String() != "Deleting...\nreplicationcontroller/redis-master-controller\n" {
 		t.Errorf("unexpected output: %s", buf.String())
 	}
 
@@ -93,7 +93,7 @@ func TestDeleteObjectByTuple(t *testing.T) {
 	cmd.Flags().Set("namespace", "test")
 	cmd.Flags().Set("output", "name")
 	cmd.Run(cmd, []string{"secrets/mysecret"})
-	if buf.String() != "secret/mysecret\n" {
+	if buf.String() != "Deleting...\nsecret/mysecret\n" {
 		t.Errorf("unexpected output: %s", buf.String())
 	}
 }
@@ -144,7 +144,7 @@ func TestCascadingStrategy(t *testing.T) {
 	cmd.Flags().Set("namespace", "test")
 	cmd.Flags().Set("output", "name")
 	cmd.Run(cmd, []string{"secrets/mysecret"})
-	if buf.String() != "secret/mysecret\n" {
+	if buf.String() != "Deleting...\nsecret/mysecret\n" {
 		t.Errorf("unexpected output: %s", buf.String())
 	}
 
@@ -157,7 +157,7 @@ func TestCascadingStrategy(t *testing.T) {
 	cmd.Flags().Set("cascade", "foreground")
 	cmd.Flags().Set("output", "name")
 	cmd.Run(cmd, []string{"secrets/mysecret"})
-	if buf.String() != "secret/mysecret\n" {
+	if buf.String() != "Deleting...\nsecret/mysecret\n" {
 		t.Errorf("unexpected output: %s", buf.String())
 	}
 
@@ -170,7 +170,7 @@ func TestCascadingStrategy(t *testing.T) {
 	cmd.Flags().Set("cascade", "orphan")
 	cmd.Flags().Set("output", "name")
 	cmd.Run(cmd, []string{"secrets/mysecret"})
-	if buf.String() != "secret/mysecret\n" {
+	if buf.String() != "Deleting...\nsecret/mysecret\n" {
 		t.Errorf("unexpected output: %s", buf.String())
 	}
 }
@@ -212,7 +212,7 @@ func TestDeleteNamedObject(t *testing.T) {
 	cmd.Flags().Set("cascade", "false")
 	cmd.Flags().Set("output", "name")
 	cmd.Run(cmd, []string{"replicationcontrollers", "redis-master-controller"})
-	if buf.String() != "replicationcontroller/redis-master-controller\n" {
+	if buf.String() != "Deleting...\nreplicationcontroller/redis-master-controller\n" {
 		t.Errorf("unexpected output: %s", buf.String())
 	}
 
@@ -223,7 +223,7 @@ func TestDeleteNamedObject(t *testing.T) {
 	cmd.Flags().Set("cascade", "false")
 	cmd.Flags().Set("output", "name")
 	cmd.Run(cmd, []string{"secrets", "mysecret"})
-	if buf.String() != "secret/mysecret\n" {
+	if buf.String() != "Deleting...\nsecret/mysecret\n" {
 		t.Errorf("unexpected output: %s", buf.String())
 	}
 }
@@ -258,7 +258,7 @@ func TestDeleteObject(t *testing.T) {
 	cmd.Run(cmd, []string{})
 
 	// uses the name from the file, not the response
-	if buf.String() != "replicationcontroller/redis-master\n" {
+	if buf.String() != "Deleting...\nreplicationcontroller/redis-master\n" {
 		t.Errorf("unexpected output: %s", buf.String())
 	}
 }
@@ -288,7 +288,7 @@ func TestGracePeriodScenarios(t *testing.T) {
 			cmdArgs:                   []string{"pods/foo"},
 			forceFlag:                 true,
 			expectedGracePeriod:       "0",
-			expectedOut:               "pod/foo\n",
+			expectedOut:               "Deleting...\npod/foo\n",
 			expectedErrOut:            "Warning: Immediate deletion does not wait for confirmation that the running resource has been terminated. The resource may continue to run on the cluster indefinitely.\n",
 			expectedDeleteRequestPath: "/namespaces/test/pods/foo",
 		},
@@ -298,7 +298,7 @@ func TestGracePeriodScenarios(t *testing.T) {
 			forceFlag:                 true,
 			gracePeriodFlag:           "0",
 			expectedGracePeriod:       "0",
-			expectedOut:               "pod/foo\n",
+			expectedOut:               "Deleting...\npod/foo\n",
 			expectedErrOut:            "Warning: Immediate deletion does not wait for confirmation that the running resource has been terminated. The resource may continue to run on the cluster indefinitely.\n",
 			expectedDeleteRequestPath: "/namespaces/test/pods/foo",
 		},
@@ -315,7 +315,7 @@ func TestGracePeriodScenarios(t *testing.T) {
 			cmdArgs:                   []string{"pods/foo"},
 			gracePeriodFlag:           "0",
 			expectedGracePeriod:       "1",
-			expectedOut:               "pod/foo\n",
+			expectedOut:               "Deleting...\npod/foo\n",
 			expectedDeleteRequestPath: "/namespaces/test/pods/foo",
 		},
 		{
@@ -323,7 +323,7 @@ func TestGracePeriodScenarios(t *testing.T) {
 			cmdArgs:                   []string{"pods/foo"},
 			gracePeriodFlag:           "10",
 			expectedGracePeriod:       "10",
-			expectedOut:               "pod/foo\n",
+			expectedOut:               "Deleting...\npod/foo\n",
 			expectedDeleteRequestPath: "/namespaces/test/pods/foo",
 		},
 		{
@@ -331,7 +331,7 @@ func TestGracePeriodScenarios(t *testing.T) {
 			cmdArgs:                   []string{"pods/foo"},
 			nowFlag:                   true,
 			expectedGracePeriod:       "1",
-			expectedOut:               "pod/foo\n",
+			expectedOut:               "Deleting...\npod/foo\n",
 			expectedDeleteRequestPath: "/namespaces/test/pods/foo",
 		},
 		{
@@ -480,7 +480,7 @@ func TestDeleteObjectIgnoreNotFound(t *testing.T) {
 	cmd.Flags().Set("output", "name")
 	cmd.Run(cmd, []string{})
 
-	if buf.String() != "" {
+	if buf.String() != "Deleting...\n" {
 		t.Errorf("unexpected output: %s", buf.String())
 	}
 }
@@ -571,7 +571,7 @@ func TestDeleteAllIgnoreNotFound(t *testing.T) {
 	cmd.Flags().Set("output", "name")
 	cmd.Run(cmd, []string{"services"})
 
-	if buf.String() != "service/baz\n" {
+	if buf.String() != "Deleting...\nservice/baz\nDeleting...\n" {
 		t.Errorf("unexpected output: %s", buf.String())
 	}
 }
@@ -608,7 +608,7 @@ func TestDeleteMultipleObject(t *testing.T) {
 	cmd.Flags().Set("output", "name")
 	cmd.Run(cmd, []string{})
 
-	if buf.String() != "replicationcontroller/redis-master\nservice/frontend\n" {
+	if buf.String() != "Deleting...\nreplicationcontroller/redis-master\nDeleting...\nservice/frontend\n" {
 		t.Errorf("unexpected output: %s", buf.String())
 	}
 }
@@ -656,7 +656,7 @@ func TestDeleteMultipleObjectContinueOnMissing(t *testing.T) {
 		t.Errorf("unexpected error: expected NotFound, got %v", err)
 	}
 
-	if buf.String() != "service/frontend\n" {
+	if buf.String() != "Deleting...\nDeleting...\nservice/frontend\n" {
 		t.Errorf("unexpected output: %s", buf.String())
 	}
 }
@@ -695,7 +695,7 @@ func TestDeleteMultipleResourcesWithTheSameName(t *testing.T) {
 	cmd.Flags().Set("cascade", "false")
 	cmd.Flags().Set("output", "name")
 	cmd.Run(cmd, []string{"replicationcontrollers,services", "baz", "foo"})
-	if buf.String() != "replicationcontroller/baz\nreplicationcontroller/foo\nservice/baz\nservice/foo\n" {
+	if buf.String() != "Deleting...\nreplicationcontroller/baz\nDeleting...\nreplicationcontroller/foo\nDeleting...\nservice/baz\nDeleting...\nservice/foo\n" {
 		t.Errorf("unexpected output: %s", buf.String())
 	}
 }
@@ -729,7 +729,7 @@ func TestDeleteDirectory(t *testing.T) {
 	cmd.Flags().Set("output", "name")
 	cmd.Run(cmd, []string{})
 
-	if buf.String() != "replicationcontroller/frontend\nreplicationcontroller/redis-master\nreplicationcontroller/redis-slave\n" {
+	if buf.String() != "Deleting...\nreplicationcontroller/frontend\nDeleting...\nreplicationcontroller/redis-master\nDeleting...\nreplicationcontroller/redis-slave\n" {
 		t.Errorf("unexpected output: %s", buf.String())
 	}
 }
@@ -775,7 +775,7 @@ func TestDeleteMultipleSelector(t *testing.T) {
 	cmd.Flags().Set("output", "name")
 	cmd.Run(cmd, []string{"pods,services"})
 
-	if buf.String() != "pod/foo\npod/bar\nservice/baz\n" {
+	if buf.String() != "Deleting...\npod/foo\nDeleting...\npod/bar\nDeleting...\nservice/baz\n" {
 		t.Errorf("unexpected output: %s", buf.String())
 	}
 }
