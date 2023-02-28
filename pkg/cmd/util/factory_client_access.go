@@ -44,14 +44,17 @@ type factoryImpl struct {
 	oapi          *openapi.CachedOpenAPIGetter
 	parser        sync.Once
 	getter        sync.Once
+
+	pathVisitor resource.PathVisitor
 }
 
-func NewFactory(clientGetter genericclioptions.RESTClientGetter) Factory {
+func NewFactory(clientGetter genericclioptions.RESTClientGetter, pathVisitor resource.PathVisitor) Factory {
 	if clientGetter == nil {
 		panic("attempt to instantiate client_access_factory with nil clientGetter")
 	}
 	f := &factoryImpl{
 		clientGetter: clientGetter,
+		pathVisitor:  pathVisitor,
 	}
 
 	return f

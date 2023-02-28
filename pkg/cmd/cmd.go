@@ -78,6 +78,7 @@ import (
 	"k8s.io/kubectl/pkg/util/term"
 
 	"k8s.io/cli-runtime/pkg/genericclioptions"
+	"k8s.io/cli-runtime/pkg/resource"
 	"k8s.io/kubectl/pkg/cmd/kustomize"
 )
 
@@ -329,7 +330,7 @@ func NewKubectlCommand(o KubectlOptions) *cobra.Command {
 	// Updates hooks to add kubectl command headers: SIG CLI KEP 859.
 	addCmdHeaderHooks(cmds, kubeConfigFlags)
 
-	f := cmdutil.NewFactory(matchVersionKubeConfigFlags)
+	f := cmdutil.NewFactory(matchVersionKubeConfigFlags, &resource.FilePathVisitor{})
 
 	// Proxy command is incompatible with CommandHeaderRoundTripper, so
 	// clear the WrapConfigFn before running proxy command.
