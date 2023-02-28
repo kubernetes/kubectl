@@ -94,7 +94,7 @@ func (f *factoryImpl) DynamicClient() (dynamic.Interface, error) {
 
 // NewBuilder returns a new resource builder for structured api objects.
 func (f *factoryImpl) NewBuilder() *resource.Builder {
-	return resource.NewBuilder(f.clientGetter)
+	return resource.NewBuilder(f.clientGetter, f.pathVisitor)
 }
 
 func (f *factoryImpl) RESTClient() (*restclient.RESTClient, error) {
