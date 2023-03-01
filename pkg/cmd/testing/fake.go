@@ -549,6 +549,7 @@ func (f *TestFactory) NewBuilder() *resource.Builder {
 		func() (restmapper.CategoryExpander, error) {
 			return resource.FakeCategoryExpander, nil
 		},
+		&resource.FilePathVisitor{},
 	)
 }
 

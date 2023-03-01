@@ -95,7 +95,7 @@ func (o *CertificateOptions) Complete(restClientGetter genericclioptions.RESTCli
 		return printer.PrintObj(obj, out)
 	}
 
-	o.builder = resource.NewBuilder(restClientGetter)
+	o.builder = resource.NewBuilder(restClientGetter, &resource.FilePathVisitor{})
 
 	clientConfig, err := restClientGetter.ToRESTConfig()
 	if err != nil {

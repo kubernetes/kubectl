@@ -257,7 +257,7 @@ func (o *DebugOptions) Complete(restClientGetter genericclioptions.RESTClientGet
 
 	o.podClient = client.CoreV1()
 
-	o.Builder = resource.NewBuilder(restClientGetter)
+	o.Builder = resource.NewBuilder(restClientGetter, &resource.FilePathVisitor{})
 
 	return nil
 }

@@ -87,7 +87,7 @@ func (o *ClusterInfoOptions) Complete(restClientGetter genericclioptions.RESTCli
 	}
 	o.Namespace = cmdNamespace
 
-	o.Builder = resource.NewBuilder(restClientGetter)
+	o.Builder = resource.NewBuilder(restClientGetter, &resource.FilePathVisitor{})
 	return nil
 }
 
