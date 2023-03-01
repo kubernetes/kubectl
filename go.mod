@@ -29,15 +29,15 @@ require (
 	github.com/stretchr/testify v1.8.0
 	golang.org/x/sys v0.5.0
 	gopkg.in/yaml.v2 v2.4.0
-	k8s.io/api v0.0.0-20230215102453-fd06b74c0f8e
-	k8s.io/apimachinery v0.0.0-20230215101633-77401902abdf
-	k8s.io/cli-runtime v0.0.0-20230215140030-7be4923ca66a
-	k8s.io/client-go v0.0.0-20230215110628-6a7e45d190b4
-	k8s.io/component-base v0.0.0-20230215115539-eaa1db095341
-	k8s.io/component-helpers v0.0.0-20230215120406-334656d2753a
+	k8s.io/api v0.23.18-rc.0
+	k8s.io/apimachinery v0.23.18-rc.0
+	k8s.io/cli-runtime v0.23.18-rc.0
+	k8s.io/client-go v0.23.18-rc.0
+	k8s.io/component-base v0.23.18-rc.0
+	k8s.io/component-helpers v0.23.18-rc.0
 	k8s.io/klog/v2 v2.30.0
 	k8s.io/kube-openapi v0.0.0-20211115234752-e816edb12b65
-	k8s.io/metrics v0.0.0-20230215135205-59577062d863
+	k8s.io/metrics v0.23.18-rc.0
 	k8s.io/utils v0.0.0-20211116205334-6203023598ed
 	sigs.k8s.io/kustomize/kustomize/v4 v4.4.1
 	sigs.k8s.io/kustomize/kyaml v0.13.0
@@ -96,12 +96,12 @@ require (
 )
 
 replace (
-	k8s.io/api => k8s.io/api v0.0.0-20230215102453-fd06b74c0f8e
-	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20230215101633-77401902abdf
-	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20230215140030-7be4923ca66a
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20230215110628-6a7e45d190b4
-	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20230215101013-b0633c2331ef
-	k8s.io/component-base => k8s.io/component-base v0.0.0-20230215115539-eaa1db095341
-	k8s.io/component-helpers => k8s.io/component-helpers v0.0.0-20230215120406-334656d2753a
-	k8s.io/metrics => k8s.io/metrics v0.0.0-20230215135205-59577062d863
+	k8s.io/api => k8s.io/api v0.23.18-rc.0
+	k8s.io/apimachinery => k8s.io/apimachinery v0.23.18-rc.0
+	k8s.io/cli-runtime => k8s.io/cli-runtime v0.23.18-rc.0
+	k8s.io/client-go => k8s.io/client-go v0.23.18-rc.0
+	k8s.io/code-generator => k8s.io/code-generator v0.23.18-rc.0
+	k8s.io/component-base => k8s.io/component-base v0.23.18-rc.0
+	k8s.io/component-helpers => k8s.io/component-helpers v0.23.18-rc.0
+	k8s.io/metrics => k8s.io/metrics v0.23.18-rc.0
 )
