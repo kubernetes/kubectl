@@ -330,7 +330,14 @@ func NewKubectlCommand(o KubectlOptions) *cobra.Command {
 	// Updates hooks to add kubectl command headers: SIG CLI KEP 859.
 	addCmdHeaderHooks(cmds, kubeConfigFlags)
 
-	f := cmdutil.NewFactory(matchVersionKubeConfigFlags, &resource.FilePathVisitor{})
+	var pathVisitor resource.PathVisitor
+	if o.ConfigFlags.PathVisitorLoader != nil {
+		pathVisitor = o.ConfigFlags.PathVisitorLoader()
+	} else {
+		pathVisitor = &resource.FilePathVisitor{}
+	}
+
+	f := cmdutil.NewFactory(matchVersionKubeConfigFlags, pathVisitor)
 
 	// Proxy command is incompatible with CommandHeaderRoundTripper, so
 	// clear the WrapConfigFn before running proxy command.
@@ -433,7 +440,11 @@ func NewKubectlCommand(o KubectlOptions) *cobra.Command {
 	registerCompletionFuncForGlobalFlags(cmds, f)
 
 	cmds.AddCommand(alpha)
-	cmds.AddCommand(cmdconfig.NewCmdConfig(clientcmd.NewDefaultPathOptions(), o.IOStreams))
+	pathOptions := clientcmd.NewDefaultPathOptions()
+	if o.ConfigFlags.KubeConfigLoader != nil {
+		pathOptions.LoadingRules.KubeConfigLoader = o.ConfigFlags.KubeConfigLoader
+	}
+	cmds.AddCommand(cmdconfig.NewCmdConfig(pathOptions, o.IOStreams))
 	cmds.AddCommand(plugin.NewCmdPlugin(o.IOStreams))
 	cmds.AddCommand(version.NewCmdVersion(f, o.IOStreams))
 	cmds.AddCommand(apiresources.NewCmdAPIVersions(f, o.IOStreams))
