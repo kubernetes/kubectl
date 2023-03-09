@@ -63,4 +63,8 @@ type Factory interface {
 	Validator(validationDirective string) (validation.Schema, error)
 	// OpenAPISchema returns the parsed openapi schema definition
 	OpenAPISchema() (openapi.Resources, error)
+
+	SecretFromFileSources() genericclioptions.HandleSecretFromFileSources
+	ConfigMapFromFileSources() genericclioptions.HandleConfigMapFromFileSources
+	ConfigMapFromEnvFileSources() genericclioptions.HandleConfigMapFromEnvFileSources
 }

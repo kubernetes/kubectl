@@ -115,19 +115,25 @@ type CreateSecretOptions struct {
 	ValidationDirective string
 
 	genericclioptions.IOStreams
+
+	HandleSecretFromFileSources genericclioptions.HandleSecretFromFileSources
+
+	HandleConfigMapFromFileSources genericclioptions.HandleConfigMapFromFileSources
 }
 
 // NewSecretOptions creates a new *CreateSecretOptions with default value
-func NewSecretOptions(ioStreams genericclioptions.IOStreams) *CreateSecretOptions {
+func NewSecretOptions(f cmdutil.Factory, ioStreams genericclioptions.IOStreams) *CreateSecretOptions {
 	return &CreateSecretOptions{
-		PrintFlags: genericclioptions.NewPrintFlags("created").WithTypeSetter(scheme.Scheme),
-		IOStreams:  ioStreams,
+		PrintFlags:                     genericclioptions.NewPrintFlags("created").WithTypeSetter(scheme.Scheme),
+		IOStreams:                      ioStreams,
+		HandleSecretFromFileSources:    f.SecretFromFileSources(),
+		HandleConfigMapFromFileSources: f.ConfigMapFromFileSources(),
 	}
 }
 
 // NewCmdCreateSecretGeneric is a command to create generic secrets from files, directories, or literal values
 func NewCmdCreateSecretGeneric(f cmdutil.Factory, ioStreams genericclioptions.IOStreams) *cobra.Command {
-	o := NewSecretOptions(ioStreams)
+	o := NewSecretOptions(f, ioStreams)
 
 	cmd := &cobra.Command{
 		Use:                   "generic NAME [--type=string] [--from-file=[key=]source] [--from-literal=key1=value1] [--dry-run=server|client|none]",
@@ -260,8 +266,14 @@ func (o *CreateSecretOptions) createSecret() (*corev1.Secret, error) {
 		}
 	}
 	if len(o.FileSources) > 0 {
-		if err := handleSecretFromFileSources(secret, o.FileSources); err != nil {
-			return nil, err
+		if o.HandleSecretFromFileSources != nil {
+			if err := o.HandleSecretFromFileSources(secret, o.FileSources); err != nil {
+				return nil, err
+			}
+		} else {
+			if err := handleSecretFromFileSources(secret, o.FileSources); err != nil {
+				return nil, err
+			}
 		}
 	}
 	if len(o.EnvFileSources) > 0 {

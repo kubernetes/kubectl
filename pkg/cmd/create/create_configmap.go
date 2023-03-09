@@ -99,19 +99,26 @@ type ConfigMapOptions struct {
 	ValidationDirective string
 
 	genericclioptions.IOStreams
+
+	HandleSecretFromFileSources       genericclioptions.HandleSecretFromFileSources
+	HandleConfigMapFromFileSources    genericclioptions.HandleConfigMapFromFileSources
+	HandleConfigMapFromEnvFileSources genericclioptions.HandleConfigMapFromEnvFileSources
 }
 
 // NewConfigMapOptions creates a new *ConfigMapOptions with default value
-func NewConfigMapOptions(ioStreams genericclioptions.IOStreams) *ConfigMapOptions {
+func NewConfigMapOptions(f cmdutil.Factory, ioStreams genericclioptions.IOStreams) *ConfigMapOptions {
 	return &ConfigMapOptions{
-		PrintFlags: genericclioptions.NewPrintFlags("created").WithTypeSetter(scheme.Scheme),
-		IOStreams:  ioStreams,
+		PrintFlags:                        genericclioptions.NewPrintFlags("created").WithTypeSetter(scheme.Scheme),
+		IOStreams:                         ioStreams,
+		HandleSecretFromFileSources:       f.SecretFromFileSources(),
+		HandleConfigMapFromFileSources:    f.ConfigMapFromFileSources(),
+		HandleConfigMapFromEnvFileSources: f.ConfigMapFromEnvFileSources(),
 	}
 }
 
 // NewCmdCreateConfigMap creates the `create configmap` Cobra command
 func NewCmdCreateConfigMap(f cmdutil.Factory, ioStreams genericclioptions.IOStreams) *cobra.Command {
-	o := NewConfigMapOptions(ioStreams)
+	o := NewConfigMapOptions(f, ioStreams)
 
 	cmd := &cobra.Command{
 		Use:                   "configmap NAME [--from-file=[key=]source] [--from-literal=key1=value1] [--dry-run=server|client|none]",
@@ -250,8 +257,14 @@ func (o *ConfigMapOptions) createConfigMap() (*corev1.ConfigMap, error) {
 	configMap.BinaryData = map[string][]byte{}
 
 	if len(o.FileSources) > 0 {
-		if err := handleConfigMapFromFileSources(configMap, o.FileSources); err != nil {
-			return nil, err
+		if o.HandleConfigMapFromFileSources != nil {
+			if err := o.HandleConfigMapFromFileSources(configMap, o.FileSources); err != nil {
+				return nil, err
+			}
+		} else {
+			if err := handleConfigMapFromFileSources(configMap, o.FileSources); err != nil {
+				return nil, err
+			}
 		}
 	}
 	if len(o.LiteralSources) > 0 {
@@ -260,9 +273,16 @@ func (o *ConfigMapOptions) createConfigMap() (*corev1.ConfigMap, error) {
 		}
 	}
 	if len(o.EnvFileSources) > 0 {
-		if err := handleConfigMapFromEnvFileSources(configMap, o.EnvFileSources); err != nil {
-			return nil, err
+		if o.HandleConfigMapFromFileSources != nil {
+			if err := o.HandleConfigMapFromEnvFileSources(configMap, o.EnvFileSources); err != nil {
+				return nil, err
+			}
+		} else {
+			if err := handleConfigMapFromEnvFileSources(configMap, o.EnvFileSources); err != nil {
+				return nil, err
+			}
 		}
+
 	}
 	if o.AppendHash {
 		hash, err := hash.ConfigMapHash(configMap)

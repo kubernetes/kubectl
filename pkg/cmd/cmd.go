@@ -337,7 +337,12 @@ func NewKubectlCommand(o KubectlOptions) *cobra.Command {
 		pathVisitor = &resource.FilePathVisitor{}
 	}
 
-	f := cmdutil.NewFactory(matchVersionKubeConfigFlags, pathVisitor)
+	f := cmdutil.NewFactory(matchVersionKubeConfigFlags,
+		pathVisitor,
+		o.ConfigFlags.HandleSecretFromFileSources,
+		o.ConfigFlags.HandleConfigMapFromFileSources,
+		o.ConfigFlags.HandleConfigMapFromEnvFileSources,
+	)
 
 	// Proxy command is incompatible with CommandHeaderRoundTripper, so
 	// clear the WrapConfigFn before running proxy command.

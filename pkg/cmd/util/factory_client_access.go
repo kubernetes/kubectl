@@ -46,15 +46,27 @@ type factoryImpl struct {
 	getter        sync.Once
 
 	pathVisitor resource.PathVisitor
+
+	handleSecretFromFileSources       genericclioptions.HandleSecretFromFileSources
+	handleConfigMapFromFileSources    genericclioptions.HandleConfigMapFromFileSources
+	handleConfigMapFromEnvFileSources genericclioptions.HandleConfigMapFromEnvFileSources
 }
 
-func NewFactory(clientGetter genericclioptions.RESTClientGetter, pathVisitor resource.PathVisitor) Factory {
+func NewFactory(clientGetter genericclioptions.RESTClientGetter,
+	pathVisitor resource.PathVisitor,
+	handleSecretFromFileSources genericclioptions.HandleSecretFromFileSources,
+	handleConfigMapFromFileSources genericclioptions.HandleConfigMapFromFileSources,
+	handleConfigMapFromEnvFileSources genericclioptions.HandleConfigMapFromEnvFileSources,
+) Factory {
 	if clientGetter == nil {
 		panic("attempt to instantiate client_access_factory with nil clientGetter")
 	}
 	f := &factoryImpl{
-		clientGetter: clientGetter,
-		pathVisitor:  pathVisitor,
+		clientGetter:                      clientGetter,
+		pathVisitor:                       pathVisitor,
+		handleSecretFromFileSources:       handleSecretFromFileSources,
+		handleConfigMapFromFileSources:    handleConfigMapFromFileSources,
+		handleConfigMapFromEnvFileSources: handleConfigMapFromEnvFileSources,
 	}
 
 	return f
@@ -202,4 +214,16 @@ func (f *factoryImpl) openAPIGetter() discovery.OpenAPISchemaInterface {
 	})
 
 	return f.oapi
+}
+
+func (f *factoryImpl) SecretFromFileSources() genericclioptions.HandleSecretFromFileSources {
+	return f.handleSecretFromFileSources
+}
+
+func (f *factoryImpl) ConfigMapFromFileSources() genericclioptions.HandleConfigMapFromFileSources {
+	return f.handleConfigMapFromFileSources
+}
+
+func (f *factoryImpl) ConfigMapFromEnvFileSources() genericclioptions.HandleConfigMapFromEnvFileSources {
+	return f.handleConfigMapFromEnvFileSources
 }

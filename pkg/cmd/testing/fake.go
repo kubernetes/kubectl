@@ -448,7 +448,7 @@ func NewTestFactory() *TestFactory {
 	}
 
 	return &TestFactory{
-		Factory:           cmdutil.NewFactory(configFlags, &resource.FilePathVisitor{}),
+		Factory:           cmdutil.NewFactory(configFlags, &resource.FilePathVisitor{}, nil, nil),
 		kubeConfigFlags:   configFlags,
 		FakeDynamicClient: fakedynamic.NewSimpleDynamicClient(scheme.Scheme),
 		tempConfigFile:    tmpFile,
