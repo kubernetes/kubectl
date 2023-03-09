@@ -273,7 +273,7 @@ func (o *ConfigMapOptions) createConfigMap() (*corev1.ConfigMap, error) {
 		}
 	}
 	if len(o.EnvFileSources) > 0 {
-		if o.HandleConfigMapFromFileSources != nil {
+		if o.HandleConfigMapFromEnvFileSources != nil {
 			if err := o.HandleConfigMapFromEnvFileSources(configMap, o.EnvFileSources); err != nil {
 				return nil, err
 			}
