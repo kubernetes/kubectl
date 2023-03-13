@@ -2,7 +2,7 @@
 
 module k8s.io/kubectl
 
-go 1.19
+go 1.20
 
 require (
 	github.com/MakeNowJust/heredoc v1.0.0
@@ -30,15 +30,15 @@ require (
 	github.com/stretchr/testify v1.8.1
 	golang.org/x/sys v0.5.0
 	gopkg.in/yaml.v2 v2.4.0
-	k8s.io/api v0.0.0-20230313011535-19ee583d5657
-	k8s.io/apimachinery v0.0.0-20230310204503-273f86d1012f
-	k8s.io/cli-runtime v0.0.0-20230310093857-5c6f9c63192f
-	k8s.io/client-go v0.0.0-20230313012152-012954e4d5d6
-	k8s.io/component-base v0.0.0-20230310085212-d69652187fff
-	k8s.io/component-helpers v0.0.0-20230310085329-cb3213391b8c
+	k8s.io/api v0.0.0
+	k8s.io/apimachinery v0.0.0
+	k8s.io/cli-runtime v0.0.0
+	k8s.io/client-go v0.0.0
+	k8s.io/component-base v0.0.0
+	k8s.io/component-helpers v0.0.0
 	k8s.io/klog/v2 v2.90.1
 	k8s.io/kube-openapi v0.0.0-20230308215209-15aac26d736a
-	k8s.io/metrics v0.0.0-20230310093652-f3de07cf9e01
+	k8s.io/metrics v0.0.0
 	k8s.io/utils v0.0.0-20230209194617-a36077c30491
 	sigs.k8s.io/json v0.0.0-20221116044647-bc3834ca7abd
 	sigs.k8s.io/kustomize/kustomize/v4 v4.5.7
@@ -91,12 +91,13 @@ require (
 )
 
 replace (
-	k8s.io/api => k8s.io/api v0.0.0-20230313011535-19ee583d5657
-	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20230310204503-273f86d1012f
-	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20230310093857-5c6f9c63192f
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20230313012152-012954e4d5d6
-	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20230310082919-4a4a238d07ff
-	k8s.io/component-base => k8s.io/component-base v0.0.0-20230310085212-d69652187fff
-	k8s.io/component-helpers => k8s.io/component-helpers v0.0.0-20230310085329-cb3213391b8c
-	k8s.io/metrics => k8s.io/metrics v0.0.0-20230310093652-f3de07cf9e01
+	k8s.io/api => ../api
+	k8s.io/apimachinery => ../apimachinery
+	k8s.io/cli-runtime => ../cli-runtime
+	k8s.io/client-go => ../client-go
+	k8s.io/code-generator => ../code-generator
+	k8s.io/component-base => ../component-base
+	k8s.io/component-helpers => ../component-helpers
+	k8s.io/kubectl => ../kubectl
+	k8s.io/metrics => ../metrics
 )
