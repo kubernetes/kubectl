@@ -30,15 +30,15 @@ require (
 	github.com/stretchr/testify v1.8.2
 	golang.org/x/sys v0.7.0
 	gopkg.in/yaml.v2 v2.4.0
-	k8s.io/api v0.0.0-20230420094736-8360d82aecbc
-	k8s.io/apimachinery v0.0.0-20230420093948-61b874e0403b
-	k8s.io/cli-runtime v0.0.0-20230421062125-703a1fcd934f
-	k8s.io/client-go v0.0.0-20230421054430-bc930747ec5b
-	k8s.io/component-base v0.0.0-20230420101238-3233afb68d4f
-	k8s.io/component-helpers v0.0.0-20230420101358-8fb079e7d7b0
+	k8s.io/api v0.0.0-20230424214209-9dec43fa7a26
+	k8s.io/apimachinery v0.0.0-20230424213653-150a158d04ab
+	k8s.io/cli-runtime v0.0.0-20230424231721-e1f487044417
+	k8s.io/client-go v0.0.0-20230424215815-e846cbee0dd6
+	k8s.io/component-base v0.0.0-20230424222117-cb3e5be831b8
+	k8s.io/component-helpers v0.0.0-20230424222346-69d74371a952
 	k8s.io/klog/v2 v2.90.1
 	k8s.io/kube-openapi v0.0.0-20230308215209-15aac26d736a
-	k8s.io/metrics v0.0.0-20230420103401-325b372bd5e1
+	k8s.io/metrics v0.0.0-20230424231436-41ad4e9b9657
 	k8s.io/utils v0.0.0-20230209194617-a36077c30491
 	sigs.k8s.io/json v0.0.0-20221116044647-bc3834ca7abd
 	sigs.k8s.io/kustomize/kustomize/v5 v5.0.1
@@ -52,7 +52,7 @@ require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/emicklei/go-restful/v3 v3.9.0 // indirect
 	github.com/go-errors/errors v1.4.2 // indirect
-	github.com/go-logr/logr v1.2.3 // indirect
+	github.com/go-logr/logr v1.2.4 // indirect
 	github.com/go-openapi/jsonpointer v0.19.6 // indirect
 	github.com/go-openapi/swag v0.22.3 // indirect
 	github.com/go-task/slim-sprig v0.0.0-20210107165309-348f09dbbbc0 // indirect
@@ -94,12 +94,12 @@ require (
 )
 
 replace (
-	k8s.io/api => k8s.io/api v0.0.0-20230420094736-8360d82aecbc
-	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20230420093948-61b874e0403b
-	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20230421062125-703a1fcd934f
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20230421054430-bc930747ec5b
-	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20230420093317-abb7434d73d5
-	k8s.io/component-base => k8s.io/component-base v0.0.0-20230420101238-3233afb68d4f
-	k8s.io/component-helpers => k8s.io/component-helpers v0.0.0-20230420101358-8fb079e7d7b0
-	k8s.io/metrics => k8s.io/metrics v0.0.0-20230420103401-325b372bd5e1
+	k8s.io/api => k8s.io/api v0.0.0-20230424214209-9dec43fa7a26
+	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20230424213653-150a158d04ab
+	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20230424231721-e1f487044417
+	k8s.io/client-go => k8s.io/client-go v0.0.0-20230424215815-e846cbee0dd6
+	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20230424213333-d0b82bbfefe8
+	k8s.io/component-base => k8s.io/component-base v0.0.0-20230424222117-cb3e5be831b8
+	k8s.io/component-helpers => k8s.io/component-helpers v0.0.0-20230424222346-69d74371a952
+	k8s.io/metrics => k8s.io/metrics v0.0.0-20230424231436-41ad4e9b9657
 )
