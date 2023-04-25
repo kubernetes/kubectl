@@ -30,15 +30,15 @@ require (
 	github.com/stretchr/testify v1.8.2
 	golang.org/x/sys v0.7.0
 	gopkg.in/yaml.v2 v2.4.0
-	k8s.io/api v0.0.0-20230424214213-e93fc0e43e75
-	k8s.io/apimachinery v0.0.0-20230424213653-0db4b4996746
-	k8s.io/cli-runtime v0.0.0-20230424231722-a06c3584ec7c
-	k8s.io/client-go v0.0.0-20230424215824-d2b87849d5e7
-	k8s.io/component-base v0.0.0-20230424222119-16ca987d98cf
-	k8s.io/component-helpers v0.0.0-20230424222347-3a2f2e020e21
+	k8s.io/api v0.0.0-20230425174508-34a8caec8792
+	k8s.io/apimachinery v0.0.0-20230425174017-478f0974b2e7
+	k8s.io/cli-runtime v0.0.0-20230425185849-b5c1ebe353ed
+	k8s.io/client-go v0.0.0-20230425175111-b26f379fe1e8
+	k8s.io/component-base v0.0.0-20230425180508-25833dc857cd
+	k8s.io/component-helpers v0.0.0-20230425181106-6f40a0f5eeff
 	k8s.io/klog/v2 v2.90.1
 	k8s.io/kube-openapi v0.0.0-20230308215209-15aac26d736a
-	k8s.io/metrics v0.0.0-20230424231439-22f463345956
+	k8s.io/metrics v0.0.0-20230425185529-648f825ce324
 	k8s.io/utils v0.0.0-20230209194617-a36077c30491
 	sigs.k8s.io/json v0.0.0-20221116044647-bc3834ca7abd
 	sigs.k8s.io/kustomize/kustomize/v5 v5.0.1
@@ -87,19 +87,19 @@ require (
 	golang.org/x/time v0.3.0 // indirect
 	golang.org/x/tools v0.8.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
-	google.golang.org/protobuf v1.28.1 // indirect
+	google.golang.org/protobuf v1.30.0 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	sigs.k8s.io/kustomize/api v0.13.2 // indirect
 )
 
 replace (
-	k8s.io/api => k8s.io/api v0.0.0-20230424214213-e93fc0e43e75
-	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20230424213653-0db4b4996746
-	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20230424231722-a06c3584ec7c
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20230424215824-d2b87849d5e7
-	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20230424213334-9423c3dbc45c
-	k8s.io/component-base => k8s.io/component-base v0.0.0-20230424222119-16ca987d98cf
-	k8s.io/component-helpers => k8s.io/component-helpers v0.0.0-20230424222347-3a2f2e020e21
-	k8s.io/metrics => k8s.io/metrics v0.0.0-20230424231439-22f463345956
+	k8s.io/api => k8s.io/api v0.0.0-20230425174508-34a8caec8792
+	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20230425174017-478f0974b2e7
+	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20230425185849-b5c1ebe353ed
+	k8s.io/client-go => k8s.io/client-go v0.0.0-20230425175111-b26f379fe1e8
+	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20230425173437-fcf383781ba5
+	k8s.io/component-base => k8s.io/component-base v0.0.0-20230425180508-25833dc857cd
+	k8s.io/component-helpers => k8s.io/component-helpers v0.0.0-20230425181106-6f40a0f5eeff
+	k8s.io/metrics => k8s.io/metrics v0.0.0-20230425185529-648f825ce324
 )
