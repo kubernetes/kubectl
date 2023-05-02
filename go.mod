@@ -32,8 +32,8 @@ require (
 	gopkg.in/yaml.v2 v2.4.0
 	k8s.io/api v0.0.0-20230502053112-cdff1d4efea5
 	k8s.io/apimachinery v0.0.0-20230502013411-c11b0f21a18f
-	k8s.io/cli-runtime v0.0.0-20230502101629-cfdf645e83d6
-	k8s.io/client-go v0.0.0-20230502053453-71d8553562d8
+	k8s.io/cli-runtime v0.0.0-20230502190731-05e2e179c396
+	k8s.io/client-go v0.0.0-20230502094408-1513f87e7abe
 	k8s.io/component-base v0.0.0-20230501221019-ba15531b8233
 	k8s.io/component-helpers v0.0.0-20230501221513-9f84e26d89c3
 	k8s.io/klog/v2 v2.90.1
@@ -78,7 +78,7 @@ require (
 	github.com/opencontainers/go-digest v1.0.0 // indirect
 	github.com/peterbourgon/diskv v2.0.1+incompatible // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
-	github.com/xlab/treeprint v1.1.0 // indirect
+	github.com/xlab/treeprint v1.2.0 // indirect
 	go.starlark.net v0.0.0-20200306205701-8dd3e2ee1dd5 // indirect
 	golang.org/x/net v0.9.0 // indirect
 	golang.org/x/oauth2 v0.0.0-20220223155221-ee480838109b // indirect
@@ -96,8 +96,8 @@ require (
 replace (
 	k8s.io/api => k8s.io/api v0.0.0-20230502053112-cdff1d4efea5
 	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20230502013411-c11b0f21a18f
-	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20230502101629-cfdf645e83d6
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20230502053453-71d8553562d8
+	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20230502190731-05e2e179c396
+	k8s.io/client-go => k8s.io/client-go v0.0.0-20230502094408-1513f87e7abe
 	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20230501212622-ce065752af56
 	k8s.io/component-base => k8s.io/component-base v0.0.0-20230501221019-ba15531b8233
 	k8s.io/component-helpers => k8s.io/component-helpers v0.0.0-20230501221513-9f84e26d89c3
