@@ -30,15 +30,15 @@ require (
 	github.com/stretchr/testify v1.8.2
 	golang.org/x/sys v0.7.0
 	gopkg.in/yaml.v2 v2.4.0
-	k8s.io/api v0.0.0-20230503175224-7a87286591e4
-	k8s.io/apimachinery v0.0.0-20230503174314-7ecc58659e5e
+	k8s.io/api v0.0.0-20230506223117-f3a0f2ed177a
+	k8s.io/apimachinery v0.0.0-20230508165628-e7958c5fe270
 	k8s.io/cli-runtime v0.0.0-20230504080109-6a67eceb5a5c
-	k8s.io/client-go v0.0.0-20230505090544-bbdc95deee6f
-	k8s.io/component-base v0.0.0-20230503184328-d8237c55bb0d
+	k8s.io/client-go v0.0.0-20230509212518-783d0d33626e
+	k8s.io/component-base v0.0.0-20230510051351-394420edbb3f
 	k8s.io/component-helpers v0.0.0-20230503184823-e13365989545
 	k8s.io/klog/v2 v2.100.1
 	k8s.io/kube-openapi v0.0.0-20230501164219-8b0f38b5fd1f
-	k8s.io/metrics v0.0.0-20230503201041-0e3d051e3ef2
+	k8s.io/metrics v0.0.0-20230509222513-a85c404a533e
 	k8s.io/utils v0.0.0-20230209194617-a36077c30491
 	sigs.k8s.io/json v0.0.0-20221116044647-bc3834ca7abd
 	sigs.k8s.io/kustomize/kustomize/v5 v5.0.1
@@ -94,12 +94,12 @@ require (
 )
 
 replace (
-	k8s.io/api => k8s.io/api v0.0.0-20230503175224-7a87286591e4
-	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20230503174314-7ecc58659e5e
+	k8s.io/api => k8s.io/api v0.0.0-20230506223117-f3a0f2ed177a
+	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20230508165628-e7958c5fe270
 	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20230504080109-6a67eceb5a5c
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20230505090544-bbdc95deee6f
-	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20230503172937-f7315244e4ce
-	k8s.io/component-base => k8s.io/component-base v0.0.0-20230503184328-d8237c55bb0d
+	k8s.io/client-go => k8s.io/client-go v0.0.0-20230509212518-783d0d33626e
+	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20230509180209-89a7a4d0e489
+	k8s.io/component-base => k8s.io/component-base v0.0.0-20230510051351-394420edbb3f
 	k8s.io/component-helpers => k8s.io/component-helpers v0.0.0-20230503184823-e13365989545
-	k8s.io/metrics => k8s.io/metrics v0.0.0-20230503201041-0e3d051e3ef2
+	k8s.io/metrics => k8s.io/metrics v0.0.0-20230509222513-a85c404a533e
 )
