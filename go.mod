@@ -8,7 +8,7 @@ require (
 	github.com/MakeNowJust/heredoc v1.0.0
 	github.com/chai2010/gettext-go v1.0.2
 	github.com/daviddengcn/go-colortext v1.0.0
-	github.com/docker/distribution v2.8.1+incompatible
+	github.com/docker/distribution v2.8.2+incompatible
 	github.com/evanphx/json-patch v4.12.0+incompatible
 	github.com/exponent-io/jsonpath v0.0.0-20151013193312-d6023ce2651d
 	github.com/fatih/camelcase v1.0.0
@@ -31,9 +31,9 @@ require (
 	golang.org/x/sys v0.7.0
 	gopkg.in/yaml.v2 v2.4.0
 	k8s.io/api v0.0.0-20230515170019-2f9553831ec2
-	k8s.io/apimachinery v0.0.0-20230516005413-9d33220bdac3
-	k8s.io/cli-runtime v0.0.0-20230516015243-f38e29aced76
-	k8s.io/client-go v0.0.0-20230516011209-c2105c181594
+	k8s.io/apimachinery v0.0.0-20230516234833-8d8634786e1c
+	k8s.io/cli-runtime v0.0.0-20230517014327-8f16e4f3e5ff
+	k8s.io/client-go v0.0.0-20230517010017-2a5f18df73b7
 	k8s.io/component-base v0.0.0-20230516012726-18782b4b48a0
 	k8s.io/component-helpers v0.0.0-20230516012840-d17b6f1e8450
 	k8s.io/klog/v2 v2.100.1
@@ -95,10 +95,10 @@ require (
 
 replace (
 	k8s.io/api => k8s.io/api v0.0.0-20230515170019-2f9553831ec2
-	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20230516005413-9d33220bdac3
-	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20230516015243-f38e29aced76
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20230516011209-c2105c181594
-	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20230516005052-932443cff55e
+	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20230516234833-8d8634786e1c
+	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20230517014327-8f16e4f3e5ff
+	k8s.io/client-go => k8s.io/client-go v0.0.0-20230517010017-2a5f18df73b7
+	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20230516165233-03cdae3b9a25
 	k8s.io/component-base => k8s.io/component-base v0.0.0-20230516012726-18782b4b48a0
 	k8s.io/component-helpers => k8s.io/component-helpers v0.0.0-20230516012840-d17b6f1e8450
 	k8s.io/metrics => k8s.io/metrics v0.0.0-20230516014900-0923edd7c939
