@@ -30,11 +30,11 @@ require (
 	golang.org/x/sys v0.6.0
 	gopkg.in/yaml.v2 v2.4.0
 	k8s.io/api v0.0.0-20230506010734-a66c7f8978d7
-	k8s.io/apimachinery v0.0.0-20230506005852-75464993cc05
-	k8s.io/cli-runtime v0.0.0-20230506023522-2ff0c92051f8
-	k8s.io/client-go v0.0.0-20230506012701-d32b1d7c08e5
+	k8s.io/apimachinery v0.0.0-20230523181929-844b4ec4956b
+	k8s.io/cli-runtime v0.0.0-20230523193705-251a133da1f6
+	k8s.io/client-go v0.0.0-20230523183903-5ddf75f6a2b2
 	k8s.io/component-base v0.0.0-20230506014031-03acf95fddee
-	k8s.io/component-helpers v0.0.0-20230506014247-d3bd8c3eb769
+	k8s.io/component-helpers v0.0.0-20230523185536-3473fad98395
 	k8s.io/klog/v2 v2.70.1
 	k8s.io/kube-openapi v0.0.0-20220803162953-67bda5d908f1
 	k8s.io/metrics v0.0.0-20230506023236-efe2c4f81711
@@ -61,7 +61,7 @@ require (
 	github.com/google/btree v1.0.1 // indirect
 	github.com/google/gofuzz v1.1.0 // indirect
 	github.com/google/shlex v0.0.0-20191202100458-e7afc7fbc510 // indirect
-	github.com/google/uuid v1.1.2 // indirect
+	github.com/google/uuid v1.3.0 // indirect
 	github.com/gregjones/httpcache v0.0.0-20180305231024-9cad4c3443a7 // indirect
 	github.com/imdario/mergo v0.3.6 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
@@ -94,11 +94,11 @@ require (
 
 replace (
 	k8s.io/api => k8s.io/api v0.0.0-20230506010734-a66c7f8978d7
-	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20230506005852-75464993cc05
-	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20230506023522-2ff0c92051f8
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20230506012701-d32b1d7c08e5
-	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20230506005438-21e5dbb468d7
+	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20230523181929-844b4ec4956b
+	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20230523193705-251a133da1f6
+	k8s.io/client-go => k8s.io/client-go v0.0.0-20230523183903-5ddf75f6a2b2
+	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20230523181434-6fcc9f28ff8b
 	k8s.io/component-base => k8s.io/component-base v0.0.0-20230506014031-03acf95fddee
-	k8s.io/component-helpers => k8s.io/component-helpers v0.0.0-20230506014247-d3bd8c3eb769
+	k8s.io/component-helpers => k8s.io/component-helpers v0.0.0-20230523185536-3473fad98395
 	k8s.io/metrics => k8s.io/metrics v0.0.0-20230506023236-efe2c4f81711
 )
