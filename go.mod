@@ -30,15 +30,15 @@ require (
 	github.com/stretchr/testify v1.8.2
 	golang.org/x/sys v0.7.0
 	gopkg.in/yaml.v2 v2.4.0
-	k8s.io/api v0.0.0-20230515170019-2f9553831ec2
-	k8s.io/apimachinery v0.0.0-20230524221503-b43878988803
-	k8s.io/cli-runtime v0.0.0-20230524224338-d4575fc3d036
-	k8s.io/client-go v0.0.0-20230525061952-6fbb0bd42d86
-	k8s.io/component-base v0.0.0-20230524222639-c480b94a7172
-	k8s.io/component-helpers v0.0.0-20230524222740-aefc24b94ab4
+	k8s.io/api v0.0.0
+	k8s.io/apimachinery v0.0.0
+	k8s.io/cli-runtime v0.0.0
+	k8s.io/client-go v0.0.0
+	k8s.io/component-base v0.0.0
+	k8s.io/component-helpers v0.0.0
 	k8s.io/klog/v2 v2.100.1
 	k8s.io/kube-openapi v0.0.0-20230524182850-78281498afbb
-	k8s.io/metrics v0.0.0-20230524224224-73f0a98c235b
+	k8s.io/metrics v0.0.0
 	k8s.io/utils v0.0.0-20230406110748-d93618cff8a2
 	sigs.k8s.io/json v0.0.0-20221116044647-bc3834ca7abd
 	sigs.k8s.io/kustomize/kustomize/v5 v5.0.1
@@ -81,7 +81,7 @@ require (
 	github.com/xlab/treeprint v1.2.0 // indirect
 	go.starlark.net v0.0.0-20200306205701-8dd3e2ee1dd5 // indirect
 	golang.org/x/net v0.9.0 // indirect
-	golang.org/x/oauth2 v0.0.0-20220223155221-ee480838109b // indirect
+	golang.org/x/oauth2 v0.6.0 // indirect
 	golang.org/x/term v0.7.0 // indirect
 	golang.org/x/text v0.9.0 // indirect
 	golang.org/x/time v0.3.0 // indirect
@@ -94,12 +94,13 @@ require (
 )
 
 replace (
-	k8s.io/api => k8s.io/api v0.0.0-20230515170019-2f9553831ec2
-	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20230524221503-b43878988803
-	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20230524224338-d4575fc3d036
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20230525061952-6fbb0bd42d86
-	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20230524221308-db4dff4b8168
-	k8s.io/component-base => k8s.io/component-base v0.0.0-20230524222639-c480b94a7172
-	k8s.io/component-helpers => k8s.io/component-helpers v0.0.0-20230524222740-aefc24b94ab4
-	k8s.io/metrics => k8s.io/metrics v0.0.0-20230524224224-73f0a98c235b
+	k8s.io/api => ../api
+	k8s.io/apimachinery => ../apimachinery
+	k8s.io/cli-runtime => ../cli-runtime
+	k8s.io/client-go => ../client-go
+	k8s.io/code-generator => ../code-generator
+	k8s.io/component-base => ../component-base
+	k8s.io/component-helpers => ../component-helpers
+	k8s.io/kubectl => ../kubectl
+	k8s.io/metrics => ../metrics
 )
