@@ -1465,3 +1465,74 @@ func TestWaitForJSONPathCondition(t *testing.T) {
 		})
 	}
 }
+
+// TestConditionFuncFor tests that the condition string can be properly parsed into a ConditionFunc.
+func TestConditionFuncFor(t *testing.T) {
+	tests := []struct {
+		name        string
+		condition   string
+		expectedErr string
+	}{
+		{
+			name:        "jsonpath simple expression",
+			condition:   "jsonpath={.metadata.name}=foo-b6699dcfb-rnv7t",
+			expectedErr: None,
+		},
+		{
+			name:        "jsonpath selecting based on condition",
+			condition:   "jsonpath=status.conditions[?(@.type==\"Available\")].status=True",
+			expectedErr: None,
+		},
+		{
+			name:        "jsonpath expression too complex",
+			condition:   "jsonpath={.status.conditions[?(@.type==\"Failed\"||@.type==\"Complete\")].status}=True",
+			expectedErr: "unrecognized character in action: U+007C '|'",
+		},
+		{
+			name:      "jsonpath expression invalid",
+			condition: "jsonpath={=True",
+			expectedErr: "unexpected path string, expected a 'name1.name2' or '.name1.name2' or '{name1.name2}' or " +
+				"'{.name1.name2}'",
+		},
+		{
+			name:        "jsonpath expression incomplete",
+			condition:   "jsonpath=abc",
+			expectedErr: "jsonpath wait format must be --for=jsonpath='{.status.readyReplicas}'=3",
+		},
+		{
+			name:        "condition delete",
+			condition:   "delete",
+			expectedErr: None,
+		},
+		{
+			name:        "condition true",
+			condition:   "condition=hello",
+			expectedErr: None,
+		},
+		{
+			name:        "condition with value",
+			condition:   "condition=hello=world",
+			expectedErr: None,
+		},
+		{
+			name:        "unrecognized condition",
+			condition:   "cond=invalid",
+			expectedErr: "unrecognized condition: \"cond=invalid\"",
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			_, err := conditionFuncFor(test.condition, nil)
+			switch {
+			case err == nil && test.expectedErr != None:
+				t.Fatalf("missing: %q", test.expectedErr)
+			case err != nil && test.expectedErr == None:
+				t.Fatal(err)
+			case err != nil && test.expectedErr != None:
+				if !strings.Contains(err.Error(), test.expectedErr) {
+					t.Fatalf("expected %q, got %q", test.expectedErr, err.Error())
+				}
+			}
+		})
+	}
+}

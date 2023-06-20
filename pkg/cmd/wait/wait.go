@@ -207,10 +207,12 @@ func conditionFuncFor(condition string, errOut io.Writer) (ConditionFunc, error)
 	}
 	if strings.HasPrefix(condition, "jsonpath=") {
 		splitStr := strings.Split(condition, "=")
-		if len(splitStr) != 3 {
+		if len(splitStr) < 3 {
 			return nil, fmt.Errorf("jsonpath wait format must be --for=jsonpath='{.status.readyReplicas}'=3")
 		}
-		jsonPathExp, jsonPathCond, err := processJSONPathInput(splitStr[1], splitStr[2])
+		jsonPathExp, jsonPathCond, err := processJSONPathInput(
+			strings.Join(splitStr[1:len(splitStr)-1], "="),
+			splitStr[len(splitStr)-1])
 		if err != nil {
 			return nil, err
 		}
