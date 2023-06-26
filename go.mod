@@ -30,15 +30,15 @@ require (
 	github.com/stretchr/testify v1.8.2
 	golang.org/x/sys v0.10.0
 	gopkg.in/yaml.v2 v2.4.0
-	k8s.io/api v0.0.0-20230718014949-277ce0d086e7
-	k8s.io/apimachinery v0.0.0-20230718014249-03c97687112f
-	k8s.io/cli-runtime v0.0.0-20230718023435-1f56e523fc00
-	k8s.io/client-go v0.0.0-20230718015924-efe741a289f1
-	k8s.io/component-base v0.0.0-20230718021152-590f17cba088
-	k8s.io/component-helpers v0.0.0-20230718021330-c2a2c968b338
+	k8s.io/api v0.0.0
+	k8s.io/apimachinery v0.0.0
+	k8s.io/cli-runtime v0.0.0
+	k8s.io/client-go v0.0.0
+	k8s.io/component-base v0.0.0
+	k8s.io/component-helpers v0.0.0
 	k8s.io/klog/v2 v2.100.1
-	k8s.io/kube-openapi v0.0.0-20230601164746-7562a1006961
-	k8s.io/metrics v0.0.0-20230718023301-8d84181e804c
+	k8s.io/kube-openapi v0.0.0-20230717233707-2695361300d9
+	k8s.io/metrics v0.0.0
 	k8s.io/utils v0.0.0-20230406110748-d93618cff8a2
 	sigs.k8s.io/json v0.0.0-20221116044647-bc3834ca7abd
 	sigs.k8s.io/kustomize/kustomize/v5 v5.0.4-0.20230601165947-6ce0bf390ce3
@@ -81,7 +81,7 @@ require (
 	github.com/xlab/treeprint v1.2.0 // indirect
 	go.starlark.net v0.0.0-20230525235612-a134d8f9ddca // indirect
 	golang.org/x/net v0.12.0 // indirect
-	golang.org/x/oauth2 v0.8.0 // indirect
+	golang.org/x/oauth2 v0.6.0 // indirect
 	golang.org/x/sync v0.2.0 // indirect
 	golang.org/x/term v0.10.0 // indirect
 	golang.org/x/text v0.11.0 // indirect
@@ -95,12 +95,13 @@ require (
 )
 
 replace (
-	k8s.io/api => k8s.io/api v0.0.0-20230718014949-277ce0d086e7
-	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20230718014249-03c97687112f
-	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20230718023435-1f56e523fc00
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20230718015924-efe741a289f1
-	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20230718013613-44fe51155386
-	k8s.io/component-base => k8s.io/component-base v0.0.0-20230718021152-590f17cba088
-	k8s.io/component-helpers => k8s.io/component-helpers v0.0.0-20230718021330-c2a2c968b338
-	k8s.io/metrics => k8s.io/metrics v0.0.0-20230718023301-8d84181e804c
+	k8s.io/api => ../api
+	k8s.io/apimachinery => ../apimachinery
+	k8s.io/cli-runtime => ../cli-runtime
+	k8s.io/client-go => ../client-go
+	k8s.io/code-generator => ../code-generator
+	k8s.io/component-base => ../component-base
+	k8s.io/component-helpers => ../component-helpers
+	k8s.io/kubectl => ../kubectl
+	k8s.io/metrics => ../metrics
 )
