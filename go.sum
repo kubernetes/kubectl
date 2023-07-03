@@ -202,6 +202,8 @@ golang.org/x/sync v0.0.0-20181108010431-42b317875d0f/go.mod h1:RxMgew5VJxzue5/jJ
 golang.org/x/sync v0.0.0-20190423024810-112230192c58/go.mod h1:RxMgew5VJxzue5/jJTE5uejpjVlOe/izrB70Jof72aM=
 golang.org/x/sync v0.0.0-20190911185100-cd5d95a43a6e/go.mod h1:RxMgew5VJxzue5/jJTE5uejpjVlOe/izrB70Jof72aM=
 golang.org/x/sync v0.0.0-20201020160332-67f06af15bc9/go.mod h1:RxMgew5VJxzue5/jJTE5uejpjVlOe/izrB70Jof72aM=
+golang.org/x/sync v0.2.0 h1:PUR+T4wwASmuSTYdKjYHI5TD22Wy5ogLU5qZCOLxBrI=
+golang.org/x/sync v0.2.0/go.mod h1:RxMgew5VJxzue5/jJTE5uejpjVlOe/izrB70Jof72aM=
 golang.org/x/sys v0.0.0-20180830151530-49385e6e1522/go.mod h1:STP8DvDyc/dI5b8T5hshtkjS+E42TnysNCUPdjciGhY=
 golang.org/x/sys v0.0.0-20190215142949-d0b11bdaac8a/go.mod h1:STP8DvDyc/dI5b8T5hshtkjS+E42TnysNCUPdjciGhY=
 golang.org/x/sys v0.0.0-20190412213103-97732733099d/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
@@ -275,8 +277,8 @@ k8s.io/api v0.0.0-20230619010547-366128ee4928 h1:VtT+X4fQgmod0SJBrnSvLvzH8Ny1UhE
 k8s.io/api v0.0.0-20230619010547-366128ee4928/go.mod h1:lkmrK7wL9oZlvKTkAr8N2y0yBKuoQKhp0sT0ccuH9mM=
 k8s.io/apimachinery v0.0.0-20230628220152-83d6d372b1a4 h1:ntS2ZHGzNY/ISRKPPU937LFSwjYZ7poMcwAeu1xCnKM=
 k8s.io/apimachinery v0.0.0-20230628220152-83d6d372b1a4/go.mod h1:tAiIbF8KB8+Ri2DfUWwZGwNOThIwM0fhXLnOymriu+4=
-k8s.io/cli-runtime v0.0.0-20230619013419-022795328092 h1:LQeJIQgnvTlqAQusdLV8zbduQHrAhBW7u8d5vfTUmuE=
-k8s.io/cli-runtime v0.0.0-20230619013419-022795328092/go.mod h1:w+QHMtFYb+w4QFqv4PMJm3an/Cu9WAa36ixOoLcFcwY=
+k8s.io/cli-runtime v0.0.0-20230703144156-807b4689df02 h1:m8g6/9wmKkauvtbXlAF5FbA6Jr/K5c9q5iRVCGGVsUg=
+k8s.io/cli-runtime v0.0.0-20230703144156-807b4689df02/go.mod h1:JjcUh5Vo040mgmPHCLzE68mklWVeGqFoVqR0OtGDY1k=
 k8s.io/client-go v0.0.0-20230628205645-0cde78477a6d h1:QS9FOMAlIjl/S8V4fnVAYauzzDE74HBChbxyjS+nbQ4=
 k8s.io/client-go v0.0.0-20230628205645-0cde78477a6d/go.mod h1:E758318z7wD+fEdLJS55XgKv/Jnl+K+/nHIw4lPlieE=
 k8s.io/component-base v0.0.0-20230629215145-b8f9f7cc1db2 h1:res0K6caIh79PJuWtgXA20Z1LU1x/5HuleTMfTRK60A=
