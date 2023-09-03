@@ -20,8 +20,8 @@ github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/daviddengcn/go-colortext v1.0.0 h1:ANqDyC0ys6qCSvuEK7l3g5RaehL/Xck9EX8ATG8oKsE=
 github.com/daviddengcn/go-colortext v1.0.0/go.mod h1:zDqEI5NVUop5QPpVJUxE9UO10hRnmkD5G4Pmri9+m4c=
-github.com/docker/distribution v2.8.2+incompatible h1:T3de5rq0dB1j30rp0sA2rER+m322EBzniBPB6ZIzuh8=
-github.com/docker/distribution v2.8.2+incompatible/go.mod h1:J2gT2udsDAN96Uj4KfcMRqY0/ypR+oyYUYmja8H+y+w=
+github.com/distribution/reference v0.5.0 h1:/FUIFXtfc/x2gpa5/VGfiGLuOIdYa1t65IKK2OFGvA0=
+github.com/distribution/reference v0.5.0/go.mod h1:BbU0aIcezP1/5jX/8MP0YiH4SdvB5Y4f/wlDRiLyi3E=
 github.com/emicklei/go-restful/v3 v3.9.0 h1:XwGDlfxEnQZzuopoqxwSEllNcCOM9DhhFyhFIIGKwxE=
 github.com/emicklei/go-restful/v3 v3.9.0/go.mod h1:6n3XBCmQQb25CM2LCACGz8ukIrRry+4bhvbpWn3mrbc=
 github.com/envoyproxy/go-control-plane v0.9.1-0.20191026205805-5f8ba28d4473/go.mod h1:YTl/9mNaCwkRvm6d1a2C3ymFceY/DCBVvsKhRF0iEA4=
@@ -279,8 +279,8 @@ k8s.io/apimachinery v0.0.0-20230901041540-0d057e543013 h1:SWrddEv3aWWseUfiT42ziJ
 k8s.io/apimachinery v0.0.0-20230901041540-0d057e543013/go.mod h1:4XSLsQ98qjSQA9IF1M+KnXoc+E7kiualOL0cx3GFYZI=
 k8s.io/cli-runtime v0.0.0-20230901070915-634e4246f62f h1:8hZTDKUT/GEfyEYLCko9bQRntv9nWvAP6/El1T7uvws=
 k8s.io/cli-runtime v0.0.0-20230901070915-634e4246f62f/go.mod h1:D1xvIOWRR7r68+qx+gjCt6xEJps7tY5OBzaIqhVCocU=
-k8s.io/client-go v0.0.0-20230901044730-f28f485cb457 h1:CWGmsaCyF6gtnYL/XPXVK4QYkiSLpBeFXO6ShSnZ+9M=
-k8s.io/client-go v0.0.0-20230901044730-f28f485cb457/go.mod h1:JzQk2oylP9hExOxB75uIVBuewuTkXrbQW+wBlineOZg=
+k8s.io/client-go v0.0.0-20230901180031-5e052e483509 h1:8ImDNx9hJM97LVDvxletFrniXqar1M9YFQqLWid1N/A=
+k8s.io/client-go v0.0.0-20230901180031-5e052e483509/go.mod h1:JzQk2oylP9hExOxB75uIVBuewuTkXrbQW+wBlineOZg=
 k8s.io/component-base v0.0.0-20230901051635-6a97c85314ee h1:Anwc25j0e3xg4JVrZ5eYm38LYFPWENftQc17unJmRn8=
 k8s.io/component-base v0.0.0-20230901051635-6a97c85314ee/go.mod h1:yBM3yqVHGaf3rugDRYf5C5JHw/gT2E3MCfyCEErkVVQ=
 k8s.io/component-helpers v0.0.0-20230901052700-b3425863cef8 h1:OwenOHg8hcDdXVlsaWx0a9EtgZKsDhD6hLQm8hoOvb8=
