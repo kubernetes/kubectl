@@ -27,18 +27,18 @@ require (
 	github.com/russross/blackfriday/v2 v2.1.0
 	github.com/spf13/cobra v1.7.0
 	github.com/spf13/pflag v1.0.5
-	github.com/stretchr/testify v1.8.2
+	github.com/stretchr/testify v1.8.3
 	golang.org/x/sys v0.13.0
 	gopkg.in/yaml.v2 v2.4.0
-	k8s.io/api v0.0.0-20231010190924-5eb44ad6f962
-	k8s.io/apimachinery v0.0.0-20231010190649-3bbde9f6ea88
-	k8s.io/cli-runtime v0.0.0-20231010194050-f509253963c9
-	k8s.io/client-go v0.0.0-20231010191310-b4ee45cc0a2a
-	k8s.io/component-base v0.0.0-20231010191948-acc00dbd1b95
-	k8s.io/component-helpers v0.0.0-20231010192113-aea163aecbf2
+	k8s.io/api v0.0.0
+	k8s.io/apimachinery v0.0.0
+	k8s.io/cli-runtime v0.0.0
+	k8s.io/client-go v0.0.0
+	k8s.io/component-base v0.0.0
+	k8s.io/component-helpers v0.0.0
 	k8s.io/klog/v2 v2.100.1
 	k8s.io/kube-openapi v0.0.0-20230905202853-d090da108d2f
-	k8s.io/metrics v0.0.0-20231010193917-a953b1d15fa2
+	k8s.io/metrics v0.0.0
 	k8s.io/utils v0.0.0-20230726121419-3b25d923346b
 	sigs.k8s.io/json v0.0.0-20221116044647-bc3834ca7abd
 	sigs.k8s.io/kustomize/kustomize/v5 v5.0.4-0.20230601165947-6ce0bf390ce3
@@ -96,12 +96,13 @@ require (
 )
 
 replace (
-	k8s.io/api => k8s.io/api v0.0.0-20231010190924-5eb44ad6f962
-	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20231010190649-3bbde9f6ea88
-	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20231010194050-f509253963c9
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20231010191310-b4ee45cc0a2a
-	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20231010190425-45e783df5a8d
-	k8s.io/component-base => k8s.io/component-base v0.0.0-20231010191948-acc00dbd1b95
-	k8s.io/component-helpers => k8s.io/component-helpers v0.0.0-20231010192113-aea163aecbf2
-	k8s.io/metrics => k8s.io/metrics v0.0.0-20231010193917-a953b1d15fa2
+	k8s.io/api => ../api
+	k8s.io/apimachinery => ../apimachinery
+	k8s.io/cli-runtime => ../cli-runtime
+	k8s.io/client-go => ../client-go
+	k8s.io/code-generator => ../code-generator
+	k8s.io/component-base => ../component-base
+	k8s.io/component-helpers => ../component-helpers
+	k8s.io/kubectl => ../kubectl
+	k8s.io/metrics => ../metrics
 )
