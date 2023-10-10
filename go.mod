@@ -28,17 +28,17 @@ require (
 	github.com/spf13/cobra v1.6.0
 	github.com/spf13/pflag v1.0.5
 	github.com/stretchr/testify v1.8.1
-	golang.org/x/sys v0.6.0
+	golang.org/x/sys v0.13.0
 	gopkg.in/yaml.v2 v2.4.0
-	k8s.io/api v0.0.0-20230705181702-64b026215965
-	k8s.io/apimachinery v0.0.0-20230612171306-38152d47d786
-	k8s.io/cli-runtime v0.0.0-20230705200247-da2c5ab289b9
-	k8s.io/client-go v0.0.0-20230705183401-860d25f20e24
-	k8s.io/component-base v0.0.0-20230705190003-c964270bd046
-	k8s.io/component-helpers v0.0.0-20230705190518-e8b08838a22f
+	k8s.io/api v0.0.0
+	k8s.io/apimachinery v0.0.0
+	k8s.io/cli-runtime v0.0.0
+	k8s.io/client-go v0.0.0
+	k8s.io/component-base v0.0.0
+	k8s.io/component-helpers v0.0.0
 	k8s.io/klog/v2 v2.90.1
 	k8s.io/kube-openapi v0.0.0-20230501164219-8b0f38b5fd1f
-	k8s.io/metrics v0.0.0-20230705195439-9bc879e3b42c
+	k8s.io/metrics v0.0.0
 	k8s.io/utils v0.0.0-20230209194617-a36077c30491
 	sigs.k8s.io/json v0.0.0-20221116044647-bc3834ca7abd
 	sigs.k8s.io/kustomize/kustomize/v5 v5.0.1
@@ -80,10 +80,10 @@ require (
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/xlab/treeprint v1.1.0 // indirect
 	go.starlark.net v0.0.0-20200306205701-8dd3e2ee1dd5 // indirect
-	golang.org/x/net v0.8.0 // indirect
+	golang.org/x/net v0.17.0 // indirect
 	golang.org/x/oauth2 v0.0.0-20220223155221-ee480838109b // indirect
-	golang.org/x/term v0.6.0 // indirect
-	golang.org/x/text v0.8.0 // indirect
+	golang.org/x/term v0.13.0 // indirect
+	golang.org/x/text v0.13.0 // indirect
 	golang.org/x/time v0.0.0-20220210224613-90d013bbcef8 // indirect
 	golang.org/x/tools v0.7.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
@@ -94,12 +94,13 @@ require (
 )
 
 replace (
-	k8s.io/api => k8s.io/api v0.0.0-20230705181702-64b026215965
-	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20230612171306-38152d47d786
-	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20230705200247-da2c5ab289b9
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20230705183401-860d25f20e24
-	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20230705153058-ad209354fb6b
-	k8s.io/component-base => k8s.io/component-base v0.0.0-20230705190003-c964270bd046
-	k8s.io/component-helpers => k8s.io/component-helpers v0.0.0-20230705190518-e8b08838a22f
-	k8s.io/metrics => k8s.io/metrics v0.0.0-20230705195439-9bc879e3b42c
+	k8s.io/api => ../api
+	k8s.io/apimachinery => ../apimachinery
+	k8s.io/cli-runtime => ../cli-runtime
+	k8s.io/client-go => ../client-go
+	k8s.io/code-generator => ../code-generator
+	k8s.io/component-base => ../component-base
+	k8s.io/component-helpers => ../component-helpers
+	k8s.io/kubectl => ../kubectl
+	k8s.io/metrics => ../metrics
 )
