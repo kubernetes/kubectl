@@ -100,7 +100,7 @@ replace (
 	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20231016230655-a1b8da8152f9
 	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20231016233948-5ed3353c6f0d
 	k8s.io/client-go => k8s.io/client-go v0.0.0-20231016231308-435ce6f2a8ef
-	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20231016230436-5fb8c14c0223
+	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20231020225209-acb5a7676aab
 	k8s.io/component-base => k8s.io/component-base v0.0.0-20231016231942-6aa55648c840
 	k8s.io/component-helpers => k8s.io/component-helpers v0.0.0-20231016232104-31220e3cdde6
 	k8s.io/metrics => k8s.io/metrics v0.0.0-20231016233822-df52c6ba865d
