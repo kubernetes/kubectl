@@ -15,14 +15,14 @@ require (
 	github.com/fvbommel/sortorder v1.1.0
 	github.com/go-openapi/jsonreference v0.20.2
 	github.com/google/gnostic-models v0.6.8
-	github.com/google/go-cmp v0.5.9
+	github.com/google/go-cmp v0.6.0
 	github.com/jonboulle/clockwork v0.2.2
 	github.com/liggitt/tabwriter v0.0.0-20181228230101-89fcab3d43de
 	github.com/lithammer/dedent v1.1.0
 	github.com/mitchellh/go-wordwrap v1.0.1
 	github.com/moby/term v0.0.0-20221205130635-1aeaba878587
 	github.com/onsi/ginkgo/v2 v2.13.0
-	github.com/onsi/gomega v1.28.0
+	github.com/onsi/gomega v1.29.0
 	github.com/pkg/errors v0.9.1
 	github.com/russross/blackfriday/v2 v2.1.0
 	github.com/spf13/cobra v1.7.0
@@ -30,15 +30,15 @@ require (
 	github.com/stretchr/testify v1.8.4
 	golang.org/x/sys v0.13.0
 	gopkg.in/yaml.v2 v2.4.0
-	k8s.io/api v0.0.0-20231026091235-25009ae79765
-	k8s.io/apimachinery v0.0.0-20231026091025-0785eb2fbd30
-	k8s.io/cli-runtime v0.0.0-20231026093925-b52809d51a06
-	k8s.io/client-go v0.0.0-20231026091529-4028f5ba6e18
-	k8s.io/component-base v0.0.0-20231026092130-42e32587411a
-	k8s.io/component-helpers v0.0.0-20231026092244-9d021fe8f7bd
+	k8s.io/api v0.0.0
+	k8s.io/apimachinery v0.0.0
+	k8s.io/cli-runtime v0.0.0
+	k8s.io/client-go v0.0.0
+	k8s.io/component-base v0.0.0
+	k8s.io/component-helpers v0.0.0
 	k8s.io/klog/v2 v2.100.1
 	k8s.io/kube-openapi v0.0.0-20231010175941-2dd684a91f00
-	k8s.io/metrics v0.0.0-20231026093805-3bb5742de9b7
+	k8s.io/metrics v0.0.0
 	k8s.io/utils v0.0.0-20230726121419-3b25d923346b
 	sigs.k8s.io/json v0.0.0-20221116044647-bc3834ca7abd
 	sigs.k8s.io/kustomize/kustomize/v5 v5.0.4-0.20230601165947-6ce0bf390ce3
@@ -96,12 +96,13 @@ require (
 )
 
 replace (
-	k8s.io/api => k8s.io/api v0.0.0-20231026091235-25009ae79765
-	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20231026091025-0785eb2fbd30
-	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20231026093925-b52809d51a06
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20231026091529-4028f5ba6e18
-	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20231026090828-f0a605abe6c7
-	k8s.io/component-base => k8s.io/component-base v0.0.0-20231026092130-42e32587411a
-	k8s.io/component-helpers => k8s.io/component-helpers v0.0.0-20231026092244-9d021fe8f7bd
-	k8s.io/metrics => k8s.io/metrics v0.0.0-20231026093805-3bb5742de9b7
+	k8s.io/api => ../api
+	k8s.io/apimachinery => ../apimachinery
+	k8s.io/cli-runtime => ../cli-runtime
+	k8s.io/client-go => ../client-go
+	k8s.io/code-generator => ../code-generator
+	k8s.io/component-base => ../component-base
+	k8s.io/component-helpers => ../component-helpers
+	k8s.io/kubectl => ../kubectl
+	k8s.io/metrics => ../metrics
 )
