@@ -290,8 +290,8 @@ k8s.io/cli-runtime v0.0.0-20231214014655-980bedf450ab h1:8nuoqCK6oAz0j7lNoPOf/xC
 k8s.io/cli-runtime v0.0.0-20231214014655-980bedf450ab/go.mod h1:Oiv1zTLiE9aJpk5MLrbt+WxFzUAI3O/5tkpU52Hzlvw=
 k8s.io/client-go v0.0.0-20231214062645-12b0e099db07 h1:ZS2nmuO/kLEu1y1kWzF1mx4DfYoRje+M/RY8dGlX4x8=
 k8s.io/client-go v0.0.0-20231214062645-12b0e099db07/go.mod h1:wd9M/3hAksYsMQOAjiMDmvsBJdOV4pvsxmFHgISYamM=
-k8s.io/component-base v0.0.0-20231214092946-c7854a92aea4 h1:EKwmHpwSd5VTPv0gkqBgxb3Lp7ruIYa/MtPqEJKfa/Q=
-k8s.io/component-base v0.0.0-20231214092946-c7854a92aea4/go.mod h1:6VoyMZMsbZiaW3g1GXMVyBhrYEwX1Jw9at9jHgUJSvI=
+k8s.io/component-base v0.0.0-20231214212714-c18a0491da83 h1:3VIbcybkAN5f3AprDJHyqcjrPzTckl0vezWi4qOxeaM=
+k8s.io/component-base v0.0.0-20231214212714-c18a0491da83/go.mod h1:hfrC8Hy+/Zk4oyXxcIB8mIoTrgeimRcEcYt3bWG/LvE=
 k8s.io/component-helpers v0.0.0-20231214012813-25d1948ef05d h1:T+Q0srfMbXD5/HUxQ0oS8Z1pVPxeobDJm6sv4+QYDg4=
 k8s.io/component-helpers v0.0.0-20231214012813-25d1948ef05d/go.mod h1:2bUpuWaL9W5HMo3d5sCOewnQoA8CgL8vPkw1umIL4tg=
 k8s.io/klog/v2 v2.110.1 h1:U/Af64HJf7FcwMcXyKm2RPM22WZzyR7OSpYj5tg3cL0=
