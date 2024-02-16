@@ -28,17 +28,17 @@ require (
 	github.com/spf13/cobra v1.7.0
 	github.com/spf13/pflag v1.0.5
 	github.com/stretchr/testify v1.8.4
-	golang.org/x/sys v0.15.0
+	golang.org/x/sys v0.17.0
 	gopkg.in/yaml.v2 v2.4.0
-	k8s.io/api v0.0.0-20240221122400-4efc15a7a4b4
-	k8s.io/apimachinery v0.0.0-20240221122145-856aea55acea
-	k8s.io/cli-runtime v0.0.0-20240221125116-452d03bcab73
-	k8s.io/client-go v0.0.0-20240221122726-e88f4481f2db
-	k8s.io/component-base v0.0.0-20240215013150-2f5bf1a7c2f0
-	k8s.io/component-helpers v0.0.0-20240215013307-3ab112d45fdf
+	k8s.io/api v0.0.0
+	k8s.io/apimachinery v0.0.0
+	k8s.io/cli-runtime v0.0.0
+	k8s.io/client-go v0.0.0
+	k8s.io/component-base v0.0.0
+	k8s.io/component-helpers v0.0.0
 	k8s.io/klog/v2 v2.120.1
 	k8s.io/kube-openapi v0.0.0-20231113174909-778a5567bc1e
-	k8s.io/metrics v0.0.0-20240215015224-ecb23cfab1c4
+	k8s.io/metrics v0.0.0
 	k8s.io/utils v0.0.0-20230726121419-3b25d923346b
 	sigs.k8s.io/json v0.0.0-20221116044647-bc3834ca7abd
 	sigs.k8s.io/kustomize/kustomize/v5 v5.0.4-0.20230601165947-6ce0bf390ce3
@@ -84,7 +84,7 @@ require (
 	golang.org/x/net v0.19.0 // indirect
 	golang.org/x/oauth2 v0.10.0 // indirect
 	golang.org/x/sync v0.5.0 // indirect
-	golang.org/x/term v0.15.0 // indirect
+	golang.org/x/term v0.17.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	golang.org/x/time v0.3.0 // indirect
 	golang.org/x/tools v0.16.1 // indirect
@@ -96,12 +96,13 @@ require (
 )
 
 replace (
-	k8s.io/api => k8s.io/api v0.0.0-20240221122400-4efc15a7a4b4
-	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20240221122145-856aea55acea
-	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20240221125116-452d03bcab73
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20240221122726-e88f4481f2db
-	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20240221121934-b820965c8173
-	k8s.io/component-base => k8s.io/component-base v0.0.0-20240215013150-2f5bf1a7c2f0
-	k8s.io/component-helpers => k8s.io/component-helpers v0.0.0-20240215013307-3ab112d45fdf
-	k8s.io/metrics => k8s.io/metrics v0.0.0-20240215015224-ecb23cfab1c4
+	k8s.io/api => ../api
+	k8s.io/apimachinery => ../apimachinery
+	k8s.io/cli-runtime => ../cli-runtime
+	k8s.io/client-go => ../client-go
+	k8s.io/code-generator => ../code-generator
+	k8s.io/component-base => ../component-base
+	k8s.io/component-helpers => ../component-helpers
+	k8s.io/kubectl => ../kubectl
+	k8s.io/metrics => ../metrics
 )
