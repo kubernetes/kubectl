@@ -94,14 +94,3 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	sigs.k8s.io/kustomize/api v0.13.5-0.20230601165947-6ce0bf390ce3 // indirect
 )
-
-replace (
-	k8s.io/api => k8s.io/api v0.0.0-20240313000607-f98a50355b81
-	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20240312235255-d794766488ac
-	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20240313013500-2e16d702ba16
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20240313002401-403b37f3ba57
-	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20240313003814-867d3ef3e448
-	k8s.io/component-base => k8s.io/component-base v0.0.0-20240313004157-bdb0447fa7fd
-	k8s.io/component-helpers => k8s.io/component-helpers v0.0.0-20240313004438-fd7d2c0554cc
-	k8s.io/metrics => k8s.io/metrics v0.0.0-20240313012830-1f4a4da3352a
-)
