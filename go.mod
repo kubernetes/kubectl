@@ -30,15 +30,15 @@ require (
 	github.com/stretchr/testify v1.8.4
 	golang.org/x/sys v0.18.0
 	gopkg.in/yaml.v2 v2.4.0
-	k8s.io/api v0.0.0
-	k8s.io/apimachinery v0.0.0
-	k8s.io/cli-runtime v0.0.0
-	k8s.io/client-go v0.0.0
-	k8s.io/component-base v0.0.0
-	k8s.io/component-helpers v0.0.0
+	k8s.io/api v0.0.0-20240404161350-448db12cecfb
+	k8s.io/apimachinery v0.0.0-20240404161013-3e7c65a7bc4d
+	k8s.io/cli-runtime v0.0.0-20240404170840-f3adc8e99a12
+	k8s.io/client-go v0.0.0-20240404162704-0058eeef6a23
+	k8s.io/component-base v0.0.0-20240404163600-1c2da834f8fb
+	k8s.io/component-helpers v0.0.0-20240404163757-b6827720b9c8
 	k8s.io/klog/v2 v2.110.1
 	k8s.io/kube-openapi v0.0.0-20231010175941-2dd684a91f00
-	k8s.io/metrics v0.0.0
+	k8s.io/metrics v0.0.0-20240404170622-aaafb6345789
 	k8s.io/utils v0.0.0-20230726121419-3b25d923346b
 	sigs.k8s.io/json v0.0.0-20221116044647-bc3834ca7abd
 	sigs.k8s.io/kustomize/kustomize/v5 v5.0.4-0.20230601165947-6ce0bf390ce3
@@ -93,16 +93,4 @@ require (
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	sigs.k8s.io/kustomize/api v0.13.5-0.20230601165947-6ce0bf390ce3 // indirect
-)
-
-replace (
-	k8s.io/api => ../api
-	k8s.io/apimachinery => ../apimachinery
-	k8s.io/cli-runtime => ../cli-runtime
-	k8s.io/client-go => ../client-go
-	k8s.io/code-generator => ../code-generator
-	k8s.io/component-base => ../component-base
-	k8s.io/component-helpers => ../component-helpers
-	k8s.io/kubectl => ../kubectl
-	k8s.io/metrics => ../metrics
 )
