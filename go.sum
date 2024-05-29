@@ -272,8 +272,8 @@ k8s.io/apimachinery v0.0.0-20240528083227-d8a3da39bf82 h1:VdBSu9hfIGtUc3VYM0eGHn
 k8s.io/apimachinery v0.0.0-20240528083227-d8a3da39bf82/go.mod h1:Tbh97rImB1AK+ESEKVAzaakMJKJaMzpxIdHfDmHds3U=
 k8s.io/cli-runtime v0.0.0-20240528091233-f82feee4b536 h1:aXwb4tceQ3nY6mndpxJN012d+YIlgeh9VA1ucwE5cR4=
 k8s.io/cli-runtime v0.0.0-20240528091233-f82feee4b536/go.mod h1:C9KhxobcPB0tQckItM4Hzgk+biufhcpj0l7oH+PuNT4=
-k8s.io/client-go v0.0.0-20240528083908-f53839a9ad6d h1:MuPyO9czPo8DjKOWIkiA3DMJPlEIAynEZsdFxpBjvyc=
-k8s.io/client-go v0.0.0-20240528083908-f53839a9ad6d/go.mod h1:+c5wPEi2MNKtdV/wDx7qDyUXI3cMU2qaK0q/VDl4Fbg=
+k8s.io/client-go v0.0.0-20240529003851-3f130bd83012 h1:Ia03YFFHR6x3NQpJzr8gqchJ2EasOZ9d2nqMTTx04Ok=
+k8s.io/client-go v0.0.0-20240529003851-3f130bd83012/go.mod h1:pRwViaYrqKDNdgYyKqU7OK5Pc43mVS/goqBvGAZD3Pc=
 k8s.io/component-base v0.0.0-20240528084817-bf51cae4d7aa h1:1+L1S2gK7/eBRGjU6y31177QOYZhDlNx+Io7ruK0u2Y=
 k8s.io/component-base v0.0.0-20240528084817-bf51cae4d7aa/go.mod h1:lhuGni/wsFDYwGe330Fvy+97lQs+VrkEHzKh9FfMbM4=
 k8s.io/component-helpers v0.0.0-20240528084957-01aaeb49cda3 h1:Jr2k4h6O8q4J0q/SdCA10KPlILBxb2nO+h3tWEPTbOQ=
