@@ -279,12 +279,12 @@ honnef.co/go/tools v0.0.0-20190102054323-c2f93a96b099/go.mod h1:rf3lG4BRIbNafJWh
 honnef.co/go/tools v0.0.0-20190523083050-ea95bdfd59fc/go.mod h1:rf3lG4BRIbNafJWhAfAdb/ePZxsR/4RtNHQocxwk9r4=
 k8s.io/api v0.0.0-20240707022826-2cf4612580d3 h1:2bHi5SAn7dRf6oJGO29yFEtMyIN9oCD86In1R70UnXA=
 k8s.io/api v0.0.0-20240707022826-2cf4612580d3/go.mod h1:TeZW9JsLR2mmT3LA7JsD/4i5g40HHrREIdaD0QCEP1Y=
-k8s.io/apimachinery v0.0.0-20240707022528-c1f240355706 h1:17r0OQj+n4pHLABJJ5Sb5GeSSZy4NF0YSaEy2qsPLLY=
-k8s.io/apimachinery v0.0.0-20240707022528-c1f240355706/go.mod h1:Et4EUFrefx1K28ZwNXpkHUqq7fSML2FROj79Ku7Lj1w=
+k8s.io/apimachinery v0.0.0-20240711022542-6b362fab6df2 h1:NFXoAJM3jIlKAOfDNCKb29pjw8iNnhtT+Z6YOQhXM50=
+k8s.io/apimachinery v0.0.0-20240711022542-6b362fab6df2/go.mod h1:Et4EUFrefx1K28ZwNXpkHUqq7fSML2FROj79Ku7Lj1w=
 k8s.io/cli-runtime v0.0.0-20240707030735-f3a07984ce75 h1:jWSuMI9QUWe40r8V1nEwFZ+AHg3wzTxH6eqClJ19CCE=
 k8s.io/cli-runtime v0.0.0-20240707030735-f3a07984ce75/go.mod h1:2Umm5N7cEQTVpw0RI+Ner/0aB0bvFokCZIevJNf+eFM=
-k8s.io/client-go v0.0.0-20240707023231-354ed1bc9f1f h1:HEQPgzOtITgo4RE9ZpCX7Sn2Cu8h1DlXY9S1Bi9djsU=
-k8s.io/client-go v0.0.0-20240707023231-354ed1bc9f1f/go.mod h1:Nbn3B+SZKebFY2/5RTVUF6AyS37oDLJ9XXwrxjXpbTI=
+k8s.io/client-go v0.0.0-20240710183246-7f36d816ee99 h1:ay9vtgW1GcBryEkZPnfx6pmWmkmLTWLKn3TizDGeTqI=
+k8s.io/client-go v0.0.0-20240710183246-7f36d816ee99/go.mod h1:M4YkUERkMjSHhNDDe6dYdACCOtPD4td6mRAME6AX7i8=
 k8s.io/component-base v0.0.0-20240707024307-c741ec442cc3 h1:ipvnLvus3w+bw+jX1TQGeMyet9Gi/RBFgZ4g6dipaXM=
 k8s.io/component-base v0.0.0-20240707024307-c741ec442cc3/go.mod h1:VeVS94EfiiihI+wS+FbnUdsR6PcwWIL9dteXdwq0Jpw=
 k8s.io/component-helpers v0.0.0-20240707024433-5a2d7426dbcc h1:kB8GqtqhywwlqrqA2pbQgCSPqmlPO7/356BdVwUgpTQ=
