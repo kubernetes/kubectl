@@ -29,16 +29,16 @@ require (
 	golang.org/x/sys v0.21.0
 	gopkg.in/evanphx/json-patch.v4 v4.12.0
 	gopkg.in/yaml.v2 v2.4.0
-	k8s.io/api v0.0.0-20240712023323-4badb3333d55
-	k8s.io/apimachinery v0.0.0-20240711222537-4524748494bf
-	k8s.io/cli-runtime v0.0.0-20240711160938-80033e7bae90
-	k8s.io/client-go v0.0.0-20240712063246-53b8be7ceab5
-	k8s.io/component-base v0.0.0-20240712064316-a485d5310861
-	k8s.io/component-helpers v0.0.0-20240707024433-5a2d7426dbcc
+	k8s.io/api v0.0.0
+	k8s.io/apimachinery v0.0.0
+	k8s.io/cli-runtime v0.0.0
+	k8s.io/client-go v0.0.0
+	k8s.io/component-base v0.0.0
+	k8s.io/component-helpers v0.0.0
 	k8s.io/klog/v2 v2.130.1
 	k8s.io/kube-openapi v0.0.0-20240228011516-70dd3763d340
-	k8s.io/metrics v0.0.0-20240707030551-d18976eab41c
-	k8s.io/utils v0.0.0-20230726121419-3b25d923346b
+	k8s.io/metrics v0.0.0
+	k8s.io/utils v0.0.0-20240711033017-18e509b52bc8
 	sigs.k8s.io/json v0.0.0-20221116044647-bc3834ca7abd
 	sigs.k8s.io/kustomize/kustomize/v5 v5.4.2
 	sigs.k8s.io/kustomize/kyaml v0.17.1
@@ -94,4 +94,16 @@ require (
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	sigs.k8s.io/kustomize/api v0.17.2 // indirect
+)
+
+replace (
+	k8s.io/api => ../api
+	k8s.io/apimachinery => ../apimachinery
+	k8s.io/cli-runtime => ../cli-runtime
+	k8s.io/client-go => ../client-go
+	k8s.io/code-generator => ../code-generator
+	k8s.io/component-base => ../component-base
+	k8s.io/component-helpers => ../component-helpers
+	k8s.io/kubectl => ../kubectl
+	k8s.io/metrics => ../metrics
 )
