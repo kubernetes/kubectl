@@ -30,17 +30,17 @@ require (
 	github.com/stretchr/testify v1.9.0
 	golang.org/x/sys v0.23.0
 	gopkg.in/evanphx/json-patch.v4 v4.12.0
-	k8s.io/api v0.0.0-20241007141734-f2b3dfac9f9a
-	k8s.io/apimachinery v0.0.0-20241008174842-acfda137309f
-	k8s.io/cli-runtime v0.0.0-20241010022152-0eed95c391e2
-	k8s.io/client-go v0.0.0-20241009095550-cae730524e69
-	k8s.io/component-base v0.0.0-20241009221110-e1bff02fe65d
-	k8s.io/component-helpers v0.0.0-20240928083404-d763e5df641d
+	k8s.io/api v0.0.0
+	k8s.io/apimachinery v0.0.0
+	k8s.io/cli-runtime v0.0.0
+	k8s.io/client-go v0.0.0
+	k8s.io/component-base v0.0.0
+	k8s.io/component-helpers v0.0.0
 	k8s.io/klog/v2 v2.130.1
 	k8s.io/kube-openapi v0.0.0-20240827152857-f7e401e7b4c2
-	k8s.io/metrics v0.0.0-20240928085824-562ef3a49262
+	k8s.io/metrics v0.0.0
 	k8s.io/utils v0.0.0-20240711033017-18e509b52bc8
-	sigs.k8s.io/json v0.0.0-20221116044647-bc3834ca7abd
+	sigs.k8s.io/json v0.0.0-20241010143419-9aa6b5e7a4b3
 	sigs.k8s.io/kustomize/kustomize/v5 v5.5.0
 	sigs.k8s.io/kustomize/kyaml v0.18.1
 	sigs.k8s.io/structured-merge-diff/v4 v4.4.1
@@ -96,4 +96,14 @@ require (
 	sigs.k8s.io/kustomize/api v0.18.0 // indirect
 )
 
-replace k8s.io/code-generator => k8s.io/code-generator v0.0.0-20241009220734-fa8be78a95ed
+replace (
+	k8s.io/api => ../api
+	k8s.io/apimachinery => ../apimachinery
+	k8s.io/cli-runtime => ../cli-runtime
+	k8s.io/client-go => ../client-go
+	k8s.io/code-generator => ../code-generator
+	k8s.io/component-base => ../component-base
+	k8s.io/component-helpers => ../component-helpers
+	k8s.io/kubectl => ../kubectl
+	k8s.io/metrics => ../metrics
+)
