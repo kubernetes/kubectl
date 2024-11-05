@@ -212,8 +212,8 @@ k8s.io/client-go v0.0.0-20241105230542-c1010ffd7de3 h1:ZgoctdRlDLgbqPdEdcgyoyBbV
 k8s.io/client-go v0.0.0-20241105230542-c1010ffd7de3/go.mod h1:p8opQH8f5aM1YzHrN0yWNcD4qqfAJIaR0+kVTU/TIBw=
 k8s.io/component-base v0.0.0-20241105231555-33a822ed3833 h1:85DceDhD40wu9EBtSDCkSHnYB1Lx0hVgu4pj/ZQLioU=
 k8s.io/component-base v0.0.0-20241105231555-33a822ed3833/go.mod h1:LiXjb6P40r1C7CAwQfD9HDBX7LzkVHFgYJOzj1oaFO4=
-k8s.io/component-helpers v0.0.0-20241105231722-d4567c4eae79 h1:NFGOuTpkzXvjO+25qKf62FapbNfip/7NQeDC7yGOR+0=
-k8s.io/component-helpers v0.0.0-20241105231722-d4567c4eae79/go.mod h1:20oehylAewaR480tjzt53k9buvR28B7/IPICt2B2HwU=
+k8s.io/component-helpers v0.0.0-20241106031610-152c23240712 h1:Rrua4apankkeV+AUmvSSj7CsilO2T/s3BCOtIH3u9tE=
+k8s.io/component-helpers v0.0.0-20241106031610-152c23240712/go.mod h1:20oehylAewaR480tjzt53k9buvR28B7/IPICt2B2HwU=
 k8s.io/klog/v2 v2.130.1 h1:n9Xl7H1Xvksem4KFG4PYbdQCQxqc/tTUyrgXaOhHSzk=
 k8s.io/klog/v2 v2.130.1/go.mod h1:3Jpz1GvMt720eyJH1ckRHK1EDfpxISzJ7I9OYgaDtPE=
 k8s.io/kube-openapi v0.0.0-20241105132330-32ad38e42d3f h1:GA7//TjRY9yWGy1poLzYYJJ4JRdzg3+O6e8I+e+8T5Y=
