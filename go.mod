@@ -6,6 +6,10 @@ go 1.23.0
 
 godebug default=go1.23
 
+godebug winreadlinkvolume=0
+
+godebug winsymlink=0
+
 require (
 	github.com/MakeNowJust/heredoc v1.0.0
 	github.com/chai2010/gettext-go v1.0.2
@@ -29,15 +33,15 @@ require (
 	github.com/stretchr/testify v1.9.0
 	golang.org/x/sys v0.26.0
 	gopkg.in/evanphx/json-patch.v4 v4.12.0
-	k8s.io/api v0.0.0-20241127162655-f8e5e36c84f1
-	k8s.io/apimachinery v0.0.0-20241108022104-96b97de8d6ba
-	k8s.io/cli-runtime v0.0.0-20241127191239-3a2a8b4ac538
-	k8s.io/client-go v0.0.0-20241127164845-55d23e26d5ef
-	k8s.io/component-base v0.0.0-20241127171706-ad7c5246b8a7
-	k8s.io/component-helpers v0.0.0-20241127172529-c4f6b2b48ad9
+	k8s.io/api v0.0.0
+	k8s.io/apimachinery v0.0.0
+	k8s.io/cli-runtime v0.0.0
+	k8s.io/client-go v0.0.0
+	k8s.io/component-base v0.0.0
+	k8s.io/component-helpers v0.0.0
 	k8s.io/klog/v2 v2.130.1
 	k8s.io/kube-openapi v0.0.0-20241105132330-32ad38e42d3f
-	k8s.io/metrics v0.0.0-20241127190304-5197509dee0d
+	k8s.io/metrics v0.0.0
 	k8s.io/utils v0.0.0-20241104100929-3ea5e8cea738
 	sigs.k8s.io/json v0.0.0-20241010143419-9aa6b5e7a4b3
 	sigs.k8s.io/kustomize/kustomize/v5 v5.5.0
@@ -94,4 +98,13 @@ require (
 	sigs.k8s.io/kustomize/api v0.18.0 // indirect
 )
 
-replace k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20240920213627-16af2ff33fbf
+replace (
+	k8s.io/api => ../api
+	k8s.io/apimachinery => ../apimachinery
+	k8s.io/cli-runtime => ../cli-runtime
+	k8s.io/client-go => ../client-go
+	k8s.io/code-generator => ../code-generator
+	k8s.io/component-base => ../component-base
+	k8s.io/component-helpers => ../component-helpers
+	k8s.io/metrics => ../metrics
+)
