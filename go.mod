@@ -32,10 +32,10 @@ require (
 	golang.org/x/sys v0.28.0
 	gopkg.in/evanphx/json-patch.v4 v4.12.0
 	k8s.io/api v0.0.0-20241214014715-eac45518d7fe
-	k8s.io/apimachinery v0.0.0-20241214014415-767f17a6afea
+	k8s.io/apimachinery v0.0.0-20241218005452-a1a247aa259f
 	k8s.io/cli-runtime v0.0.0-20241214022530-e4532273187e
 	k8s.io/client-go v0.0.0-20241215015103-67da6d1a4174
-	k8s.io/component-base v0.0.0-20241214020124-b7fbd0d55e44
+	k8s.io/component-base v0.0.0-20241218055610-6f2a8d010d0b
 	k8s.io/component-helpers v0.0.0-20241214020249-81a0289f4873
 	k8s.io/klog/v2 v2.130.1
 	k8s.io/kube-openapi v0.0.0-20241212222426-2c72e554b1e7
