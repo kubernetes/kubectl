@@ -31,15 +31,15 @@ require (
 	github.com/stretchr/testify v1.9.0
 	golang.org/x/sys v0.28.0
 	gopkg.in/evanphx/json-patch.v4 v4.12.0
-	k8s.io/api v0.0.0-20241220201724-9603cdf39dd3
-	k8s.io/apimachinery v0.0.0-20241218214440-307a3ddd3cae
-	k8s.io/cli-runtime v0.0.0-20241214022530-e4532273187e
-	k8s.io/client-go v0.0.0-20241229162156-da6e2946e51b
-	k8s.io/component-base v0.0.0-20241227092012-b0e32027e0d6
-	k8s.io/component-helpers v0.0.0-20241218220436-ea1d94c89c60
+	k8s.io/api v0.0.0
+	k8s.io/apimachinery v0.0.0
+	k8s.io/cli-runtime v0.0.0
+	k8s.io/client-go v0.0.0
+	k8s.io/component-base v0.0.0
+	k8s.io/component-helpers v0.0.0
 	k8s.io/klog/v2 v2.130.1
 	k8s.io/kube-openapi v0.0.0-20241212222426-2c72e554b1e7
-	k8s.io/metrics v0.0.0-20241214022351-cd48baffab30
+	k8s.io/metrics v0.0.0
 	k8s.io/utils v0.0.0-20241104100929-3ea5e8cea738
 	sigs.k8s.io/json v0.0.0-20241010143419-9aa6b5e7a4b3
 	sigs.k8s.io/kustomize/kustomize/v5 v5.5.0
@@ -60,7 +60,7 @@ require (
 	github.com/go-openapi/swag v0.23.0 // indirect
 	github.com/go-task/slim-sprig/v3 v3.0.0 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
-	github.com/google/btree v1.0.1 // indirect
+	github.com/google/btree v1.1.3 // indirect
 	github.com/google/gofuzz v1.2.0 // indirect
 	github.com/google/pprof v0.0.0-20241029153458-d1b30febd7db // indirect
 	github.com/google/shlex v0.0.0-20191202100458-e7afc7fbc510 // indirect
@@ -95,4 +95,13 @@ require (
 	sigs.k8s.io/kustomize/api v0.18.0 // indirect
 )
 
-replace k8s.io/code-generator => k8s.io/code-generator v0.0.0-20241218220056-bd95f067c5d5
+replace (
+	k8s.io/api => ../api
+	k8s.io/apimachinery => ../apimachinery
+	k8s.io/cli-runtime => ../cli-runtime
+	k8s.io/client-go => ../client-go
+	k8s.io/code-generator => ../code-generator
+	k8s.io/component-base => ../component-base
+	k8s.io/component-helpers => ../component-helpers
+	k8s.io/metrics => ../metrics
+)
