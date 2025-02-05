@@ -31,12 +31,12 @@ require (
 	github.com/stretchr/testify v1.9.0
 	golang.org/x/sys v0.28.0
 	gopkg.in/evanphx/json-patch.v4 v4.12.0
-	k8s.io/api v0.0.0-20250124010721-4dccc5e86b95
-	k8s.io/apimachinery v0.0.0-20250117041610-45d29dc4d66f
+	k8s.io/api v0.0.0-20250205124818-68351e3d8f2c
+	k8s.io/apimachinery v0.0.0-20250130161731-a2cb7d3ca743
 	k8s.io/cli-runtime v0.0.0-20250115210038-303c7e6c2210
-	k8s.io/client-go v0.0.0-20250124042358-97f3d2697cce
-	k8s.io/component-base v0.0.0-20250122204818-5979ae2bc737
-	k8s.io/component-helpers v0.0.0-20250122205051-7e76b2dae270
+	k8s.io/client-go v0.0.0-20250130002447-362c5e8de9fa
+	k8s.io/component-base v0.0.0-20250130203310-264c1fd30132
+	k8s.io/component-helpers v0.0.0-20250206005633-32b49ece5108
 	k8s.io/klog/v2 v2.130.1
 	k8s.io/kube-openapi v0.0.0-20241212222426-2c72e554b1e7
 	k8s.io/metrics v0.0.0-20250122212522-3fd29d3bdca4
