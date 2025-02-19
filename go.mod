@@ -33,13 +33,13 @@ require (
 	gopkg.in/evanphx/json-patch.v4 v4.12.0
 	k8s.io/api v0.0.0-20250218234707-8ce7fe8996bd
 	k8s.io/apimachinery v0.0.0-20250214214420-47e7fa9a40a2
-	k8s.io/cli-runtime v0.0.0-20250115210038-303c7e6c2210
-	k8s.io/client-go v0.0.0-20250215195049-90ccd59ab165
-	k8s.io/component-base v0.0.0-20250206205508-05a58ccfe08d
-	k8s.io/component-helpers v0.0.0-20250206005633-32b49ece5108
+	k8s.io/cli-runtime v0.0.0-20250219042710-d8bf041fc5b4
+	k8s.io/client-go v0.0.0-20250219035121-72c2d4d41534
+	k8s.io/component-base v0.0.0-20250219040255-ff8818df2c0e
+	k8s.io/component-helpers v0.0.0-20250219040428-5b4ccb7b8e1b
 	k8s.io/klog/v2 v2.130.1
 	k8s.io/kube-openapi v0.0.0-20241212222426-2c72e554b1e7
-	k8s.io/metrics v0.0.0-20250122212522-3fd29d3bdca4
+	k8s.io/metrics v0.0.0-20250219042533-b125306072ba
 	k8s.io/utils v0.0.0-20241104100929-3ea5e8cea738
 	sigs.k8s.io/json v0.0.0-20241010143419-9aa6b5e7a4b3
 	sigs.k8s.io/kustomize/kustomize/v5 v5.6.0
@@ -65,7 +65,7 @@ require (
 	github.com/google/pprof v0.0.0-20241029153458-d1b30febd7db // indirect
 	github.com/google/shlex v0.0.0-20191202100458-e7afc7fbc510 // indirect
 	github.com/google/uuid v1.6.0 // indirect
-	github.com/gorilla/websocket v1.5.0 // indirect
+	github.com/gorilla/websocket v1.5.3 // indirect
 	github.com/gregjones/httpcache v0.0.0-20190611155906-901d90724c79 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
@@ -94,5 +94,3 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	sigs.k8s.io/kustomize/api v0.19.0 // indirect
 )
-
-replace k8s.io/code-generator => k8s.io/code-generator v0.0.0-20250211120344-47286fcaaaaa
