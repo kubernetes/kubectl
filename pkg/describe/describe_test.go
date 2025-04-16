@@ -727,6 +727,7 @@ func getResourceList(cpu, memory string) corev1.ResourceList {
 }
 
 func TestDescribeService(t *testing.T) {
+	trafficDistributionPreferClose := "PreferClose"
 	singleStack := corev1.IPFamilyPolicySingleStack
 	testCases := []struct {
 		name           string
@@ -758,6 +759,7 @@ func TestDescribeService(t *testing.T) {
 					ExternalTrafficPolicy: corev1.ServiceExternalTrafficPolicyLocal,
 					InternalTrafficPolicy: ptr.To(corev1.ServiceInternalTrafficPolicyCluster),
 					HealthCheckNodePort:   32222,
+					TrafficDistribution:   &trafficDistributionPreferClose,
 				},
 				Status: corev1.ServiceStatus{
 					LoadBalancer: corev1.LoadBalancerStatus{
@@ -809,6 +811,7 @@ func TestDescribeService(t *testing.T) {
 				External Traffic Policy:  Local
 				Internal Traffic Policy:  Cluster
 				HealthCheck NodePort:     32222
+				Traffic Distribution:     PreferClose
 				Events:                   <none>
 			`)[1:],
 		},
