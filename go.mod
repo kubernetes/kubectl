@@ -23,16 +23,16 @@ require (
 	github.com/onsi/ginkgo/v2 v2.21.0
 	github.com/onsi/gomega v1.35.1
 	github.com/russross/blackfriday/v2 v2.1.0
-	github.com/spf13/cobra v1.8.1
+	github.com/spf13/cobra v1.9.1
 	github.com/spf13/pflag v1.0.6
 	github.com/stretchr/testify v1.10.0
 	golang.org/x/sys v0.31.0
 	gopkg.in/evanphx/json-patch.v4 v4.12.0
-	k8s.io/api v0.0.0-20250606195803-f3c48f85ffba
+	k8s.io/api v0.0.0-20250610195658-be9d9f7dc6a8
 	k8s.io/apimachinery v0.0.0-20250606195423-d5745c2f38f8
-	k8s.io/cli-runtime v0.0.0-20250606204809-f362bb80cfad
+	k8s.io/cli-runtime v0.0.0-20250610203159-86bf0da7d6ec
 	k8s.io/client-go v0.0.0-20250609120107-9638111dc7f5
-	k8s.io/component-base v0.0.0-20250606201941-ea9d99bbcc9c
+	k8s.io/component-base v0.0.0-20250610200514-42a6c90f512f
 	k8s.io/component-helpers v0.0.0-20250606202116-ff3bd79c2cff
 	k8s.io/klog/v2 v2.130.1
 	k8s.io/kube-openapi v0.0.0-20250318190949-c8a335a9a2ff
