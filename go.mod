@@ -31,13 +31,13 @@ require (
 	gopkg.in/evanphx/json-patch.v4 v4.12.0
 	k8s.io/api v0.0.0-20250702170451-bfa25161ab14
 	k8s.io/apimachinery v0.0.0-20250702170156-7548d4da2f38
-	k8s.io/cli-runtime v0.0.0-20250702174741-771108e68e98
-	k8s.io/client-go v0.0.0-20250702170847-0746d1b7322b
-	k8s.io/component-base v0.0.0-20250702172159-a7fbca963794
-	k8s.io/component-helpers v0.0.0-20250702172321-ceb0144a4fc5
+	k8s.io/cli-runtime v0.0.0-20250702214254-751a3d513c59
+	k8s.io/client-go v0.0.0-20250702210839-783cf83ee3e2
+	k8s.io/component-base v0.0.0-20250702211828-4643692dd643
+	k8s.io/component-helpers v0.0.0-20250702211950-3f340216f77c
 	k8s.io/klog/v2 v2.130.1
 	k8s.io/kube-openapi v0.0.0-20250628140032-d90c4fd18f59
-	k8s.io/metrics v0.0.0-20250702174601-480d2f096d0d
+	k8s.io/metrics v0.0.0-20250702214118-8dd40717bc52
 	k8s.io/utils v0.0.0-20250604170112-4c0f3b243397
 	sigs.k8s.io/json v0.0.0-20241010143419-9aa6b5e7a4b3
 	sigs.k8s.io/kustomize/kustomize/v5 v5.6.0
@@ -51,7 +51,7 @@ require (
 	github.com/Azure/go-ansiterm v0.0.0-20230124172434-306776ec8161 // indirect
 	github.com/blang/semver/v4 v4.0.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/emicklei/go-restful/v3 v3.11.0 // indirect
+	github.com/emicklei/go-restful/v3 v3.12.2 // indirect
 	github.com/fxamacker/cbor/v2 v2.8.0 // indirect
 	github.com/go-errors/errors v1.4.2 // indirect
 	github.com/go-logr/logr v1.4.2 // indirect
