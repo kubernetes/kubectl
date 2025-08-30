@@ -23,21 +23,22 @@ require (
 	github.com/onsi/ginkgo/v2 v2.21.0
 	github.com/onsi/gomega v1.35.1
 	github.com/russross/blackfriday/v2 v2.1.0
-	github.com/spf13/cobra v1.10.0
-	github.com/spf13/pflag v1.0.9
+	github.com/spf13/cobra v1.9.1
+	github.com/spf13/pflag v1.0.6
 	github.com/stretchr/testify v1.10.0
 	go.yaml.in/yaml/v2 v2.4.2
 	golang.org/x/sys v0.33.0
+	golang.org/x/text v0.25.0
 	gopkg.in/evanphx/json-patch.v4 v4.13.0
-	k8s.io/api v0.0.0-20250903202746-44a3d73239dc
-	k8s.io/apimachinery v0.0.0-20250905080136-9357001b8e78
-	k8s.io/cli-runtime v0.0.0-20250902165332-7d8e49aaa285
-	k8s.io/client-go v0.0.0-20250903162942-d32752779319
-	k8s.io/component-base v0.0.0-20250903090628-8f7bf5d4d816
-	k8s.io/component-helpers v0.0.0-20250901205557-25c8f29f0f91
+	k8s.io/api v0.0.0
+	k8s.io/apimachinery v0.0.0
+	k8s.io/cli-runtime v0.0.0
+	k8s.io/client-go v0.0.0
+	k8s.io/component-base v0.0.0
+	k8s.io/component-helpers v0.0.0
 	k8s.io/klog/v2 v2.130.1
 	k8s.io/kube-openapi v0.0.0-20250710124328-f3f2b991d03b
-	k8s.io/metrics v0.0.0-20250903212841-755d0b3c2772
+	k8s.io/metrics v0.0.0
 	k8s.io/utils v0.0.0-20250604170112-4c0f3b243397
 	sigs.k8s.io/json v0.0.0-20241014173422-cfa47c3a1cc8
 	sigs.k8s.io/kustomize/kustomize/v5 v5.7.1
@@ -84,7 +85,6 @@ require (
 	golang.org/x/oauth2 v0.30.0 // indirect
 	golang.org/x/sync v0.14.0 // indirect
 	golang.org/x/term v0.32.0 // indirect
-	golang.org/x/text v0.25.0 // indirect
 	golang.org/x/time v0.9.0 // indirect
 	golang.org/x/tools v0.26.0 // indirect
 	google.golang.org/protobuf v1.36.6 // indirect
@@ -93,4 +93,13 @@ require (
 	sigs.k8s.io/kustomize/api v0.20.1 // indirect
 )
 
-replace k8s.io/code-generator => k8s.io/code-generator v0.0.0-20250905083205-6db766a1011d
+replace (
+	k8s.io/api => ../api
+	k8s.io/apimachinery => ../apimachinery
+	k8s.io/cli-runtime => ../cli-runtime
+	k8s.io/client-go => ../client-go
+	k8s.io/code-generator => ../code-generator
+	k8s.io/component-base => ../component-base
+	k8s.io/component-helpers => ../component-helpers
+	k8s.io/metrics => ../metrics
+)
