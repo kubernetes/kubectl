@@ -24,20 +24,20 @@ require (
 	github.com/onsi/gomega v1.35.1
 	github.com/russross/blackfriday/v2 v2.1.0
 	github.com/spf13/cobra v1.9.1
-	github.com/spf13/pflag v1.0.6
+	github.com/spf13/pflag v1.0.9
 	github.com/stretchr/testify v1.10.0
 	go.yaml.in/yaml/v2 v2.4.2
 	golang.org/x/sys v0.33.0
 	gopkg.in/evanphx/json-patch.v4 v4.13.0
-	k8s.io/api v0.0.0-20250830163657-b903cd06836a
-	k8s.io/apimachinery v0.0.0-20250830163350-eb2c6e0d1ec4
-	k8s.io/cli-runtime v0.0.0-20250830171832-3e7914c55f7e
-	k8s.io/client-go v0.0.0-20250830164107-2a8d855d0d97
-	k8s.io/component-base v0.0.0-20250830165319-75dce96cfea7
-	k8s.io/component-helpers v0.0.0-20250830165448-f84446610ecc
+	k8s.io/api v0.0.0
+	k8s.io/apimachinery v0.0.0
+	k8s.io/cli-runtime v0.0.0
+	k8s.io/client-go v0.0.0
+	k8s.io/component-base v0.0.0
+	k8s.io/component-helpers v0.0.0
 	k8s.io/klog/v2 v2.130.1
 	k8s.io/kube-openapi v0.0.0-20250710124328-f3f2b991d03b
-	k8s.io/metrics v0.0.0-20250830171643-3daf20f585bd
+	k8s.io/metrics v0.0.0
 	k8s.io/utils v0.0.0-20250604170112-4c0f3b243397
 	sigs.k8s.io/json v0.0.0-20241014173422-cfa47c3a1cc8
 	sigs.k8s.io/kustomize/kustomize/v5 v5.7.1
@@ -91,4 +91,15 @@ require (
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	sigs.k8s.io/kustomize/api v0.20.1 // indirect
+)
+
+replace (
+	k8s.io/api => ../api
+	k8s.io/apimachinery => ../apimachinery
+	k8s.io/cli-runtime => ../cli-runtime
+	k8s.io/client-go => ../client-go
+	k8s.io/code-generator => ../code-generator
+	k8s.io/component-base => ../component-base
+	k8s.io/component-helpers => ../component-helpers
+	k8s.io/metrics => ../metrics
 )
