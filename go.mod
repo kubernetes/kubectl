@@ -30,15 +30,15 @@ require (
 	golang.org/x/sys v0.35.0
 	golang.org/x/text v0.28.0
 	gopkg.in/evanphx/json-patch.v4 v4.13.0
-	k8s.io/api v0.0.0-20250910154843-1fa0d26cdf76
-	k8s.io/apimachinery v0.0.0-20250910225611-100e5eee9b94
-	k8s.io/cli-runtime v0.0.0-20250910163532-99cfbcf4fd65
-	k8s.io/client-go v0.0.0-20250910225604-81eaeec477e6
-	k8s.io/component-base v0.0.0-20250910160652-c223836092f2
-	k8s.io/component-helpers v0.0.0-20250910160901-2e4efeae85b2
+	k8s.io/api v0.0.0-20250911194840-ed58f06b9673
+	k8s.io/apimachinery v0.0.0-20250911194554-abb5535e33dd
+	k8s.io/cli-runtime v0.0.0-20250911203055-a6027708804a
+	k8s.io/client-go v0.0.0-20250911195247-f8bdeaf0f324
+	k8s.io/component-base v0.0.0-20250911200454-bc57539132eb
+	k8s.io/component-helpers v0.0.0-20250911200634-ef6688a1204b
 	k8s.io/klog/v2 v2.130.1
-	k8s.io/kube-openapi v0.0.0-20250710124328-f3f2b991d03b
-	k8s.io/metrics v0.0.0-20250910163341-6697702d9a24
+	k8s.io/kube-openapi v0.0.0-20250910181357-589584f1c912
+	k8s.io/metrics v0.0.0-20250911202906-07d03813f941
 	k8s.io/utils v0.0.0-20250604170112-4c0f3b243397
 	sigs.k8s.io/json v0.0.0-20241014173422-cfa47c3a1cc8
 	sigs.k8s.io/kustomize/kustomize/v5 v5.7.1
@@ -86,11 +86,9 @@ require (
 	golang.org/x/sync v0.16.0 // indirect
 	golang.org/x/term v0.34.0 // indirect
 	golang.org/x/time v0.9.0 // indirect
-	golang.org/x/tools v0.35.0 // indirect
+	golang.org/x/tools v0.36.0 // indirect
 	google.golang.org/protobuf v1.36.8 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	sigs.k8s.io/kustomize/api v0.20.1 // indirect
 )
-
-replace k8s.io/code-generator => k8s.io/code-generator v0.0.0-20250911000617-8ba2fe21578c
