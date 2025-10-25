@@ -88,7 +88,7 @@ func (s *DeploymentStatusViewer) Status(obj runtime.Unstructured, revision int64
 		}
 		return fmt.Sprintf("deployment %q successfully rolled out\n", deployment.Name), true, nil
 	}
-	return fmt.Sprintf("Waiting for deployment spec update to be observed...\n"), false, nil
+	return "Waiting for deployment spec update to be observed...\n", false, nil
 }
 
 // Status returns a message describing daemon set status, and a bool value indicating if the status is considered done.
