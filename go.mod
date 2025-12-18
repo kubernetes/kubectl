@@ -31,14 +31,14 @@ require (
 	golang.org/x/text v0.31.0
 	gopkg.in/evanphx/json-patch.v4 v4.13.0
 	k8s.io/api v0.0.0-20251218142453-d61fc3e73090
-	k8s.io/apimachinery v0.0.0-20251218062153-94056eccfb12
+	k8s.io/apimachinery v0.0.0-20251218155518-84d740c9e27f
 	k8s.io/cli-runtime v0.0.0-20251218190423-627cbb7db4b7
 	k8s.io/client-go v0.0.0-20251218182902-ba82880ed7f8
-	k8s.io/component-base v0.0.0-20251218183935-6b1677c92f05
+	k8s.io/component-base v0.0.0-20251218183936-76908b00a947
 	k8s.io/component-helpers v0.0.0-20251218184106-e1af7e5df9b0
 	k8s.io/klog/v2 v2.130.1
 	k8s.io/kube-openapi v0.0.0-20250910181357-589584f1c912
-	k8s.io/metrics v0.0.0-20251218190239-c4609b88145e
+	k8s.io/metrics v0.0.0-20251218190240-b266d604ad1d
 	k8s.io/utils v0.0.0-20251002143259-bc988d571ff4
 	sigs.k8s.io/json v0.0.0-20250730193827-2d320260d730
 	sigs.k8s.io/kustomize/kustomize/v5 v5.7.1
