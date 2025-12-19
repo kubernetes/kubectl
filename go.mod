@@ -20,8 +20,8 @@ require (
 	github.com/lithammer/dedent v1.1.0
 	github.com/mitchellh/go-wordwrap v1.0.1
 	github.com/moby/term v0.5.0
-	github.com/onsi/ginkgo/v2 v2.27.2
-	github.com/onsi/gomega v1.38.2
+	github.com/onsi/ginkgo/v2 v2.27.3
+	github.com/onsi/gomega v1.38.3
 	github.com/russross/blackfriday/v2 v2.1.0
 	github.com/spf13/cobra v1.10.0
 	github.com/spf13/pflag v1.0.9
@@ -30,15 +30,15 @@ require (
 	golang.org/x/sys v0.38.0
 	golang.org/x/text v0.31.0
 	gopkg.in/evanphx/json-patch.v4 v4.13.0
-	k8s.io/api v0.0.0-20251219182516-ab0a763e4743
-	k8s.io/apimachinery v0.0.0-20251219182209-f4aa7a78c194
-	k8s.io/cli-runtime v0.0.0-20251219190600-1e278d004f1d
-	k8s.io/client-go v0.0.0-20251219182938-1078d9cd6f0f
-	k8s.io/component-base v0.0.0-20251219184033-bb6314076150
-	k8s.io/component-helpers v0.0.0-20251219184206-82e965b7f96c
+	k8s.io/api v0.0.0-20251219182517-42a0dbb88620
+	k8s.io/apimachinery v0.0.0-20251219182210-41f756ddfded
+	k8s.io/cli-runtime v0.0.0-20251219190600-870c204a4e3a
+	k8s.io/client-go v0.0.0-20251219182940-687c6c1315a9
+	k8s.io/component-base v0.0.0-20251219184035-4ce954c841ad
+	k8s.io/component-helpers v0.0.0-20251219184207-438200f632a0
 	k8s.io/klog/v2 v2.130.1
 	k8s.io/kube-openapi v0.0.0-20250910181357-589584f1c912
-	k8s.io/metrics v0.0.0-20251219190414-6533f664f8c8
+	k8s.io/metrics v0.0.0-20251219190415-727d8ff03873
 	k8s.io/utils v0.0.0-20251219084037-98d557b7f1e7
 	sigs.k8s.io/json v0.0.0-20250730193827-2d320260d730
 	sigs.k8s.io/kustomize/kustomize/v5 v5.7.1
