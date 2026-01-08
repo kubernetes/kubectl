@@ -32,7 +32,7 @@ require (
 	gopkg.in/evanphx/json-patch.v4 v4.13.0
 	k8s.io/api v0.0.0-20251223142543-49b7fdb8413e
 	k8s.io/apimachinery v0.0.0-20260107193351-2936fea9b085
-	k8s.io/cli-runtime v0.0.0-20251223150732-70c3df11de00
+	k8s.io/cli-runtime v0.0.0-20260108235553-c1d982a10779
 	k8s.io/client-go v0.0.0-20260107183400-52d9854c37fe
 	k8s.io/component-base v0.0.0-20251226184832-b8fb4e3d1155
 	k8s.io/component-helpers v0.0.0-20251223144302-5042f4d06524
