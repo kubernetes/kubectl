@@ -32,7 +32,7 @@ func Convert_config_AllowlistEntry_To_v1beta1_AllowlistEntry(in *config.Allowlis
 // The internal AllowlistEntry type does not have the `Name` field, which is deprecated as of v1.36. Convert `Name` to `Command` where possible, and return an error if both `Name` and `Command` are supplied.
 func Convert_v1beta1_AllowlistEntry_To_config_AllowlistEntry(in *AllowlistEntry, out *config.AllowlistEntry, s conversion.Scope) error {
 	if len(in.Name) != 0 && len(in.Command) != 0 {
-		return fmt.Errorf("both `Name` and `Command` were supplied. `Name` is deprecated, use `Command` instead.")
+		return fmt.Errorf("both `Name` and `Command` were supplied. `Name` is deprecated, use `Command` instead")
 	}
 
 	// when both `Name` and `Command` are empty, propagate the empty value and
