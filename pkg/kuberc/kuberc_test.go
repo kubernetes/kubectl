@@ -3128,7 +3128,7 @@ credentialPluginAllowlist:
 `,
 		},
 		{
-			name:      "allowlist-policy-with-both-name-and-command",
+			name:      "allowlist-policy-with-both-name-and-command-having-different-values",
 			shouldErr: true,
 			kuberc: `apiVersion: kubectl.config.k8s.io/v1beta1
 kind: Preference
@@ -3136,6 +3136,17 @@ credentialPluginPolicy: "Allowlist"
 credentialPluginAllowlist:
 - name: "foo"
   command: "bar"
+`,
+		},
+		{
+			name:      "allowlist-policy-with-both-name-and-command-having-the-same-value",
+			shouldErr: false,
+			kuberc: `apiVersion: kubectl.config.k8s.io/v1beta1
+kind: Preference
+credentialPluginPolicy: "Allowlist"
+credentialPluginAllowlist:
+- name: "foo"
+  command: "foo"
 `,
 		},
 		{
