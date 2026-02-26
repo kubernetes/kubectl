@@ -2978,8 +2978,8 @@ users:
 			return &config.Preference{
 				CredentialPluginPolicy: config.CredentialPluginPolicy("Allowlist"),
 				CredentialPluginAllowlist: []config.AllowlistEntry{
-					{Name: "bar"},
-					{Name: "baz"},
+					{Command: "bar"},
+					{Command: "baz"},
 				},
 			}, nil
 		}
