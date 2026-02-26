@@ -2992,8 +2992,8 @@ users:
 		require.NotNil(t, cfg, "rest config")
 		require.NotNil(t, cfg.ExecProvider, "exec config")
 		require.Equal(t, clientcmdapi.PolicyType("Allowlist"), cfg.ExecProvider.PluginPolicy.PolicyType)
-		require.Equal(t, "bar", cfg.ExecProvider.PluginPolicy.Allowlist[0].Name)
-		require.Equal(t, "baz", cfg.ExecProvider.PluginPolicy.Allowlist[1].Name)
+		require.Equal(t, "bar", cfg.ExecProvider.PluginPolicy.Allowlist[0].Command)
+		require.Equal(t, "baz", cfg.ExecProvider.PluginPolicy.Allowlist[1].Command)
 	})
 
 	type pluginPolicyTest struct {
