@@ -30,10 +30,10 @@ require (
 	golang.org/x/sys v0.40.0
 	golang.org/x/text v0.33.0
 	gopkg.in/evanphx/json-patch.v4 v4.13.0
-	k8s.io/api v0.0.0-20260227163613-d93bd39adfb7
-	k8s.io/apimachinery v0.0.0-20260227163238-b6415d345084
+	k8s.io/api v0.0.0-20260228003330-ffec185e33c1
+	k8s.io/apimachinery v0.0.0-20260227203245-48224b4d1ddb
 	k8s.io/cli-runtime v0.0.0-20260227172404-5d8163f22d8c
-	k8s.io/client-go v0.0.0-20260227204202-2f21ae3478f8
+	k8s.io/client-go v0.0.0-20260228084218-c86837f7edbe
 	k8s.io/component-base v0.0.0-20260227165336-7a57b97c7f91
 	k8s.io/component-helpers v0.0.0-20260227165526-69b095369cfd
 	k8s.io/klog/v2 v2.130.1
@@ -92,3 +92,5 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	sigs.k8s.io/kustomize/api v0.21.1 // indirect
 )
+
+replace k8s.io/code-generator => k8s.io/code-generator v0.0.0-20260227205141-63e8cd8e75e5
