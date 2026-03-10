@@ -78,7 +78,7 @@ func FindOrDefaultContainerByName(pod *v1.Pod, name string, quiet bool, warn io.
 
 	// fallback to pick the first container to maintain existing behavior
 	container := &pod.Spec.Containers[0]
-	if !quiet {
+	if !quiet && (len(pod.Spec.Containers) > 1 || len(pod.Spec.InitContainers) > 0 || len(pod.Spec.EphemeralContainers) > 0) {
 		fmt.Fprintf(warn, "Defaulted container %q out of: %s\n", container.Name, AllContainerNames(pod)) // nolint:errcheck
 	}
 	klog.V(4).Infof("Using the first container in a pod: %s", container.Name)
