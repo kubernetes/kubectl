@@ -3990,8 +3990,8 @@ func describeNodeResource(nodeNonTerminatedPodsList *corev1.PodList, node *corev
 	}
 
 	for _, pod := range nodeNonTerminatedPodsList.Items {
-		req := resourcehelper.PodRequests(&pod, resourcehelper.PodResourcesOptions{SkipPodLevelResources: false})
-		limit := resourcehelper.PodLimits(&pod, resourcehelper.PodResourcesOptions{SkipPodLevelResources: false})
+		req := resourcehelper.PodRequests(&pod, resourcehelper.PodResourcesOptions{SkipPodLevelResources: false, UseStatusResources: true})
+		limit := resourcehelper.PodLimits(&pod, resourcehelper.PodResourcesOptions{SkipPodLevelResources: false, UseStatusResources: true})
 		cpuReq, cpuLimit, memoryReq, memoryLimit := req[corev1.ResourceCPU], limit[corev1.ResourceCPU], req[corev1.ResourceMemory], limit[corev1.ResourceMemory]
 		fractionCpuReq := float64(cpuReq.MilliValue()) / float64(allocatable.Cpu().MilliValue()) * 100
 		fractionCpuLimit := float64(cpuLimit.MilliValue()) / float64(allocatable.Cpu().MilliValue()) * 100
