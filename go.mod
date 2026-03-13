@@ -32,13 +32,13 @@ require (
 	gopkg.in/evanphx/json-patch.v4 v4.13.0
 	k8s.io/api v0.0.0
 	k8s.io/apimachinery v0.0.0
-	k8s.io/cli-runtime v0.0.0
+	k8s.io/cli-runtime v0.0.0-20260317114404-b0a204f5a85d
 	k8s.io/client-go v0.0.0
-	k8s.io/component-base v0.0.0
-	k8s.io/component-helpers v0.0.0
+	k8s.io/component-base v0.0.0-20260313115336-089d54029606
+	k8s.io/component-helpers v0.0.0-20260313115336-7bbdfdab85fe
 	k8s.io/klog/v2 v2.140.0
 	k8s.io/kube-openapi v0.0.0-20260304202019-5b3e3fdb0acf
-	k8s.io/metrics v0.0.0
+	k8s.io/metrics v0.0.0-20260317113002-502a3c36866a
 	k8s.io/streaming v0.0.0
 	k8s.io/utils v0.0.0-20260210185600-b8788abfbbc2
 	sigs.k8s.io/json v0.0.0-20250730193827-2d320260d730
@@ -95,13 +95,8 @@ require (
 )
 
 replace (
-	k8s.io/api => ../api
-	k8s.io/apimachinery => ../apimachinery
-	k8s.io/cli-runtime => ../cli-runtime
-	k8s.io/client-go => ../client-go
-	k8s.io/code-generator => ../code-generator
-	k8s.io/component-base => ../component-base
-	k8s.io/component-helpers => ../component-helpers
-	k8s.io/metrics => ../metrics
-	k8s.io/streaming => ../streaming
+	k8s.io/api => k8s.io/api v0.0.0-20260317073624-369111fb8de0
+	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20260317071512-f00b254e34da
+	k8s.io/client-go => k8s.io/client-go v0.0.0-20260317075959-9dc763689d1a
+	k8s.io/streaming => k8s.io/streaming v0.0.0-20260317070603-951b6bf67777
 )
