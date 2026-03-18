@@ -23,7 +23,7 @@ require (
 	github.com/onsi/ginkgo/v2 v2.28.1
 	github.com/onsi/gomega v1.39.1
 	github.com/russross/blackfriday/v2 v2.1.0
-	github.com/spf13/cobra v1.10.0
+	github.com/spf13/cobra v1.10.2
 	github.com/spf13/pflag v1.0.9
 	github.com/stretchr/testify v1.11.1
 	go.yaml.in/yaml/v2 v2.4.3
@@ -32,9 +32,9 @@ require (
 	gopkg.in/evanphx/json-patch.v4 v4.13.0
 	k8s.io/api v0.0.0
 	k8s.io/apimachinery v0.0.0
-	k8s.io/cli-runtime v0.0.0-20260317114404-b0a204f5a85d
-	k8s.io/client-go v0.0.0-20260318040424-bb93391625eb
-	k8s.io/component-base v0.0.0-20260317085346-690fd4f8073c
+	k8s.io/cli-runtime v0.0.0-20260318170149-579d47f2d3a6
+	k8s.io/client-go v0.0.0-20260318160710-6c2138477663
+	k8s.io/component-base v0.0.0-20260318162252-8a878838d00d
 	k8s.io/component-helpers v0.0.0-20260317090818-58c8ea9b1070
 	k8s.io/klog/v2 v2.140.0
 	k8s.io/kube-openapi v0.0.0-20260304202019-5b3e3fdb0acf
@@ -95,7 +95,7 @@ require (
 )
 
 replace (
-	k8s.io/api => k8s.io/api v0.0.0-20260318053538-629d7f3ac8bd
+	k8s.io/api => k8s.io/api v0.0.0-20260318160010-913796feea53
 	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20260317234939-27f467019a4e
 	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20260318001842-22fe297914e4
 )
