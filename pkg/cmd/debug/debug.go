@@ -199,7 +199,7 @@ func (o *DebugOptions) AddFlags(cmd *cobra.Command) {
 	cmd.Flags().BoolVar(&o.Replace, "replace", o.Replace, i18n.T("When used with '--copy-to', delete the original Pod."))
 	cmd.Flags().StringToString("env", nil, i18n.T("Environment variables to set in the container."))
 	cmd.Flags().StringVar(&o.Image, "image", o.Image, i18n.T("Container image to use for debug container."))
-	cmd.Flags().BoolVar(&o.KeepLabels, "keep-labels", o.KeepLabels, i18n.T("If true, keep the original pod labels.(This flag only works when used with '--copy-to')"))
+	cmd.Flags().BoolVar(&o.KeepLabels, "keep-labels", o.KeepLabels, i18n.T("If true, keep the original pod labels."))
 	cmd.Flags().BoolVar(&o.KeepAnnotations, "keep-annotations", o.KeepAnnotations, i18n.T("If true, keep the original pod annotations.(This flag only works when used with '--copy-to')"))
 	cmd.Flags().BoolVar(&o.KeepLiveness, "keep-liveness", o.KeepLiveness, i18n.T("If true, keep the original pod liveness probes.(This flag only works when used with '--copy-to')"))
 	cmd.Flags().BoolVar(&o.KeepReadiness, "keep-readiness", o.KeepReadiness, i18n.T("If true, keep the original pod readiness probes.(This flag only works when used with '--copy-to')"))
@@ -511,6 +511,18 @@ func (o *DebugOptions) debugByEphemeralContainer(ctx context.Context, pod *corev
 	klog.V(2).Infof("generated strategic merge patch for debug container: %s", patch)
 
 	pods := o.podClient.Pods(pod.Namespace)
+
+	// When --keep-labels=false, remove labels from the pod to isolate it from
+	// controllers (e.g. ReplicaSet, Service) before adding the ephemeral container.
+	// This requires a separate metadata patch since the ephemeralcontainers subresource
+	// only allows modifying ephemeral containers.
+	if !o.KeepLabels && len(pod.Labels) > 0 {
+		labelsPatch := []byte(`{"metadata":{"labels":null}}`)
+		if _, err := pods.Patch(ctx, pod.Name, types.StrategicMergePatchType, labelsPatch, metav1.PatchOptions{}); err != nil {
+			return nil, "", fmt.Errorf("error removing labels from pod: %v", err)
+		}
+	}
+
 	result, err := pods.Patch(ctx, pod.Name, types.StrategicMergePatchType, patch, metav1.PatchOptions{}, "ephemeralcontainers")
 	if err != nil {
 		// The apiserver will return a 404 when the EphemeralContainers feature is disabled because the `/ephemeralcontainers` subresource

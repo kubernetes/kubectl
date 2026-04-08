@@ -185,7 +185,7 @@ func (p *legacyProfile) Apply(pod *corev1.Pod, containerName string, target runt
 		p.RemoveLabels(pod)
 
 	case ephemeral:
-		// no additional modifications needed
+		p.RemoveLabels(pod)
 	}
 
 	return nil
@@ -212,6 +212,7 @@ func (p *generalProfile) Apply(pod *corev1.Pod, containerName string, target run
 		shareProcessNamespace(pod)
 
 	case ephemeral:
+		p.RemoveLabels(pod)
 		allowProcessTracing(pod, containerName)
 	}
 
@@ -234,7 +235,10 @@ func (p *baselineProfile) Apply(pod *corev1.Pod, containerName string, target ru
 		p.RemoveInitContainers(pod)
 		shareProcessNamespace(pod)
 
-	case ephemeral, node:
+	case ephemeral:
+		p.RemoveLabels(pod)
+
+	case node:
 		// no additional modifications needed
 	}
 
@@ -261,7 +265,10 @@ func (p *restrictedProfile) Apply(pod *corev1.Pod, containerName string, target 
 		p.RemoveInitContainers(pod)
 		shareProcessNamespace(pod)
 
-	case ephemeral, node:
+	case ephemeral:
+		p.RemoveLabels(pod)
+
+	case node:
 		// no additional modifications needed
 	}
 
@@ -288,7 +295,7 @@ func (p *netadminProfile) Apply(pod *corev1.Pod, containerName string, target ru
 		shareProcessNamespace(pod)
 
 	case ephemeral:
-		// no additional modifications needed
+		p.RemoveLabels(pod)
 	}
 
 	return nil
@@ -316,7 +323,7 @@ func (p *sysadminProfile) Apply(pod *corev1.Pod, containerName string, target ru
 		shareProcessNamespace(pod)
 
 	case ephemeral:
-		// no additional modifications needed
+		p.RemoveLabels(pod)
 	}
 
 	return nil
