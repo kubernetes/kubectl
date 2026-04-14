@@ -29,15 +29,15 @@ require (
 	github.com/stretchr/testify v1.11.1
 	golang.org/x/sys v0.31.0
 	gopkg.in/evanphx/json-patch.v4 v4.12.0
-	k8s.io/api v0.0.0-20260414142210-4bbf759a7c4c
-	k8s.io/apimachinery v0.0.0-20260414140157-df1bb253bbf9
-	k8s.io/cli-runtime v0.0.0-20260414184805-062ebc8faa2e
-	k8s.io/client-go v0.0.0-20260414145438-1ff803b30a95
-	k8s.io/component-base v0.0.0-20260414160228-6de1503f6892
-	k8s.io/component-helpers v0.0.0-20260414161421-7772ff136f54
+	k8s.io/api v0.0.0-20260414142211-4ccbe448876d
+	k8s.io/apimachinery v0.0.0-20260414140158-f091036ab312
+	k8s.io/cli-runtime v0.0.0-20260414184806-eb5ecec06838
+	k8s.io/client-go v0.0.0-20260414145440-b7f7df016a6d
+	k8s.io/component-base v0.0.0-20260414160230-686d2cdb0770
+	k8s.io/component-helpers v0.0.0-20260414161422-b5028b193c02
 	k8s.io/klog/v2 v2.130.1
 	k8s.io/kube-openapi v0.0.0-20250318190949-c8a335a9a2ff
-	k8s.io/metrics v0.0.0-20260414183607-61c5f7445b59
+	k8s.io/metrics v0.0.0-20260414183609-61cac4d98a7f
 	k8s.io/utils v0.0.0-20241104100929-3ea5e8cea738
 	sigs.k8s.io/json v0.0.0-20241010143419-9aa6b5e7a4b3
 	sigs.k8s.io/kustomize/kustomize/v5 v5.6.0
@@ -68,7 +68,7 @@ require (
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
-	github.com/moby/spdystream v0.5.0 // indirect
+	github.com/moby/spdystream v0.5.1 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/monochromegane/go-gitignore v0.0.0-20200626010858-205db1a8cc00 // indirect
