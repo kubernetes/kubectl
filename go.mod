@@ -29,15 +29,15 @@ require (
 	go.yaml.in/yaml/v2 v2.4.2
 	golang.org/x/sys v0.31.0
 	gopkg.in/evanphx/json-patch.v4 v4.12.0
-	k8s.io/api v0.0.0-20260414142439-ad42a1f6281f
-	k8s.io/apimachinery v0.0.0-20260414140422-454f531d3fb5
-	k8s.io/cli-runtime v0.0.0-20260414184920-6eb2a64e5685
-	k8s.io/client-go v0.0.0-20260414150839-e4156f317ef4
-	k8s.io/component-base v0.0.0-20260414160359-90136e701ab9
-	k8s.io/component-helpers v0.0.0-20260414161519-0e028c1ce3f8
+	k8s.io/api v0.34.7
+	k8s.io/apimachinery v0.34.7
+	k8s.io/cli-runtime v0.34.7
+	k8s.io/client-go v0.34.7
+	k8s.io/component-base v0.34.7
+	k8s.io/component-helpers v0.34.7
 	k8s.io/klog/v2 v2.130.1
 	k8s.io/kube-openapi v0.0.0-20250710124328-f3f2b991d03b
-	k8s.io/metrics v0.0.0-20260414183727-21abe30b5567
+	k8s.io/metrics v0.34.7
 	k8s.io/utils v0.0.0-20250604170112-4c0f3b243397
 	sigs.k8s.io/json v0.0.0-20241014173422-cfa47c3a1cc8
 	sigs.k8s.io/kustomize/kustomize/v5 v5.7.1
