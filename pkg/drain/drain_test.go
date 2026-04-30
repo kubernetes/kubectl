@@ -24,6 +24,7 @@ import (
 	"math"
 	"os"
 	"reflect"
+	"slices"
 	"sort"
 	"strconv"
 	"testing"
@@ -508,10 +509,8 @@ func TestDeleteOrEvictWithDryRunServer(t *testing.T) {
 			// removing the object, simulating real API server dry-run behavior.
 			k.PrependReactor("delete", "pods", func(actions ktest.Action) (bool, runtime.Object, error) {
 				deleteAction := actions.(ktest.DeleteAction)
-				for _, v := range deleteAction.GetDeleteOptions().DryRun {
-					if v == metav1.DryRunAll {
-						return true, nil, nil
-					}
+				if slices.Contains(deleteAction.GetDeleteOptions().DryRun, metav1.DryRunAll) {
+					return true, nil, nil
 				}
 				return false, nil, nil
 			})
