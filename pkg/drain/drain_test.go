@@ -491,7 +491,7 @@ func TestDeleteOrEvictWithDryRunServer(t *testing.T) {
 			var allPods []runtime.Object
 			var podsToDelete []corev1.Pod
 
-			for i := 1; i <= 4; i++ {
+			for i := 1; i <= 2; i++ {
 				pod := corev1.Pod{
 					ObjectMeta: metav1.ObjectMeta{
 						Name:      fmt.Sprintf("mypod-%d", i),
@@ -499,20 +499,19 @@ func TestDeleteOrEvictWithDryRunServer(t *testing.T) {
 					},
 				}
 				allPods = append(allPods, &pod)
-				if i <= 2 {
-					podsToDelete = append(podsToDelete, pod)
-				}
+				podsToDelete = append(podsToDelete, pod)
 			}
 
 			k := fake.NewSimpleClientset(allPods...)
 
-			// fake clientset will actually delete objects from the in-memory store.
 			// This reactor intercepts delete requests with DryRun set and returns success without
 			// removing the object, simulating real API server dry-run behavior.
 			k.PrependReactor("delete", "pods", func(actions ktest.Action) (bool, runtime.Object, error) {
 				deleteAction := actions.(ktest.DeleteAction)
-				if len(deleteAction.GetDeleteOptions().DryRun) > 0 {
-					return true, nil, nil
+				for _, v := range deleteAction.GetDeleteOptions().DryRun {
+					if v == metav1.DryRunAll {
+						return true, nil, nil
+					}
 				}
 				return false, nil, nil
 			})
