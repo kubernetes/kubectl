@@ -390,6 +390,9 @@ func (d *Helper) deletePods(pods []corev1.Pod, getPodFn func(namespace, name str
 		if err != nil && !apierrors.IsNotFound(err) {
 			return err
 		}
+		if d.DryRunStrategy == cmdutil.DryRunServer {
+			continue
+		}
 		if d.OnPodDeletionOrEvictionStarted != nil {
 			d.OnPodDeletionOrEvictionStarted(&pod, false)
 		}
