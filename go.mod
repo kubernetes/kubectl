@@ -30,22 +30,22 @@ require (
 	golang.org/x/sys v0.45.0
 	golang.org/x/text v0.37.0
 	gopkg.in/evanphx/json-patch.v4 v4.13.0
-	k8s.io/api v0.0.0-20260701084926-e425034170ac
-	k8s.io/apimachinery v0.0.0-20260701165018-c428e39362be
-	k8s.io/cli-runtime v0.0.0-20260629164614-69e8693b2560
-	k8s.io/client-go v0.0.0-20260701170242-0f26f3dd91bb
-	k8s.io/component-base v0.0.0-20260626175201-04d6ee2658ec
-	k8s.io/component-helpers v0.0.0-20260701101538-42914c38c15b
+	k8s.io/api v0.0.0
+	k8s.io/apimachinery v0.0.0
+	k8s.io/cli-runtime v0.0.0
+	k8s.io/client-go v0.0.0
+	k8s.io/component-base v0.0.0
+	k8s.io/component-helpers v0.0.0
 	k8s.io/klog/v2 v2.140.0
 	k8s.io/kube-openapi v0.0.0-20260618221249-bc653b64f974
-	k8s.io/metrics v0.0.0-20260701180425-4edfa3b84a68
-	k8s.io/streaming v0.0.0-20260626172358-68009e8e6aa5
+	k8s.io/metrics v0.0.0
+	k8s.io/streaming v0.0.0
 	k8s.io/utils v0.0.0-20260626114624-be93311217bd
 	sigs.k8s.io/json v0.0.0-20250730193827-2d320260d730
 	sigs.k8s.io/kustomize/kustomize/v5 v5.8.1
 	sigs.k8s.io/kustomize/kyaml v0.21.1
 	sigs.k8s.io/randfill v1.0.0
-	sigs.k8s.io/structured-merge-diff/v6 v6.4.0
+	sigs.k8s.io/structured-merge-diff/v6 v6.4.2
 	sigs.k8s.io/yaml v1.6.0
 )
 
@@ -101,4 +101,16 @@ require (
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	sigs.k8s.io/kustomize/api v0.21.1 // indirect
+)
+
+replace (
+	k8s.io/api => ../api
+	k8s.io/apimachinery => ../apimachinery
+	k8s.io/cli-runtime => ../cli-runtime
+	k8s.io/client-go => ../client-go
+	k8s.io/code-generator => ../code-generator
+	k8s.io/component-base => ../component-base
+	k8s.io/component-helpers => ../component-helpers
+	k8s.io/metrics => ../metrics
+	k8s.io/streaming => ../streaming
 )
