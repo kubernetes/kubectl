@@ -35,7 +35,7 @@ require (
 	k8s.io/cli-runtime v0.0.0-20260710145200-4aa1bc0ad8e0
 	k8s.io/client-go v0.0.0-20260714221009-91fd07e38c2e
 	k8s.io/component-base v0.0.0-20260710102828-e911414da118
-	k8s.io/component-helpers v0.0.0-20260710103118-d43ece45aeab
+	k8s.io/component-helpers v0.0.0-20260715182149-44e4d08c65b0
 	k8s.io/klog/v2 v2.140.0
 	k8s.io/kube-openapi v0.0.0-20260618221249-bc653b64f974
 	k8s.io/metrics v0.0.0-20260711064920-7b3a97878777
@@ -103,4 +103,4 @@ require (
 	sigs.k8s.io/kustomize/api v0.21.1 // indirect
 )
 
-replace k8s.io/code-generator => k8s.io/code-generator v0.0.0-20260714222444-5efa67c30ef4
+replace k8s.io/code-generator => k8s.io/code-generator v0.0.0-20260715021410-0854fe5907d7
