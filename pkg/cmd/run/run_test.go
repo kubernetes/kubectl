@@ -34,6 +34,7 @@ func TestGetRestartPolicy(t *testing.T) {
 		interactive bool
 		expected    corev1.RestartPolicy
 		expectErr   bool
+		expectedErr string
 	}{
 		{
 			input:    "",
@@ -63,8 +64,14 @@ func TestGetRestartPolicy(t *testing.T) {
 			expected: corev1.RestartPolicyNever,
 		},
 		{
-			input:     "foo",
-			expectErr: true,
+			input:       "foo",
+			expectErr:   true,
+			expectedErr: "invalid restart policy: foo, valid values are: Always, OnFailure, Never",
+		},
+		{
+			input:       "never",
+			expectErr:   true,
+			expectedErr: "invalid restart policy: never, valid values are: Always, OnFailure, Never",
 		},
 	}
 	for _, test := range tests {
@@ -74,6 +81,9 @@ func TestGetRestartPolicy(t *testing.T) {
 		}
 		if !test.expectErr && err != nil {
 			t.Errorf("unexpected error: %v", err)
+		}
+		if test.expectErr && err != nil && err.Error() != test.expectedErr {
+			t.Errorf("expected error: %q, saw: %q", test.expectedErr, err.Error())
 		}
 		if !test.expectErr && policy != test.expected {
 			t.Errorf("expected: %s, saw: %s (%s:%v)", test.expected, policy, test.input, test.interactive)
