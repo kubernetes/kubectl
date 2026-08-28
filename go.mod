@@ -30,16 +30,16 @@ require (
 	golang.org/x/sys v0.47.0
 	golang.org/x/text v0.40.0
 	gopkg.in/evanphx/json-patch.v4 v4.13.0
-	k8s.io/api v0.0.0
-	k8s.io/apimachinery v0.0.0
-	k8s.io/cli-runtime v0.0.0
-	k8s.io/client-go v0.0.0
-	k8s.io/component-base v0.0.0
-	k8s.io/component-helpers v0.0.0
+	k8s.io/api v0.0.0-20260829005437-99eb51d61cdd
+	k8s.io/apimachinery v0.0.0-20260829005050-50d9b4a672b4
+	k8s.io/cli-runtime v0.0.0-20260829014347-4a30ad9fa00e
+	k8s.io/client-go v0.0.0-20260829005942-d4060b1a90a3
+	k8s.io/component-base v0.0.0-20260829011232-e442c4088bc3
+	k8s.io/component-helpers v0.0.0-20260829011432-c72de78839ae
 	k8s.io/klog/v2 v2.140.0
 	k8s.io/kube-openapi v0.0.0-20260721132016-d427ff9ee9ad
-	k8s.io/metrics v0.0.0
-	k8s.io/streaming v0.0.0
+	k8s.io/metrics v0.0.0-20260829014132-44de6a96c3e2
+	k8s.io/streaming v0.0.0-20260710095143-d1a4397cb62c
 	k8s.io/utils v0.0.0-20260626114624-be93311217bd
 	sigs.k8s.io/json v0.0.0-20250730193827-2d320260d730
 	sigs.k8s.io/kustomize/kustomize/v5 v5.8.1
@@ -100,16 +100,4 @@ require (
 	google.golang.org/protobuf v1.36.12 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	sigs.k8s.io/kustomize/api v0.21.1 // indirect
-)
-
-replace (
-	k8s.io/api => ../api
-	k8s.io/apimachinery => ../apimachinery
-	k8s.io/cli-runtime => ../cli-runtime
-	k8s.io/client-go => ../client-go
-	k8s.io/code-generator => ../code-generator
-	k8s.io/component-base => ../component-base
-	k8s.io/component-helpers => ../component-helpers
-	k8s.io/metrics => ../metrics
-	k8s.io/streaming => ../streaming
 )
