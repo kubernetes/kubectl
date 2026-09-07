@@ -81,8 +81,8 @@ func NewCmdTop(f cmdutil.Factory, streams genericiooptions.IOStreams) *cobra.Com
 	}
 
 	// create subcommands
-	cmd.AddCommand(NewCmdTopNode(f, nil, streams))
-	cmd.AddCommand(NewCmdTopPod(f, nil, streams))
+	cmd.AddCommand(NewCmdTopNode(f, streams))
+	cmd.AddCommand(NewCmdTopPod(f, streams))
 
 	return cmd
 }
