@@ -31,7 +31,7 @@ require (
 	golang.org/x/text v0.41.0
 	gopkg.in/evanphx/json-patch.v4 v4.13.0
 	k8s.io/api v0.0.0-20260910221315-1dc86240dd84
-	k8s.io/apimachinery v0.0.0-20260910220915-6c11c83c4505
+	k8s.io/apimachinery v0.0.0-20260911180905-30eb14c6ca02
 	k8s.io/cli-runtime v0.0.0-20260908225334-f08c4a065d0e
 	k8s.io/client-go v0.0.0-20260910221834-f02d4420aca6
 	k8s.io/component-base v0.0.0-20260911142345-c58055e8ea54
