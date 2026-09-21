@@ -33,7 +33,7 @@ require (
 	k8s.io/api v0.0.0-20260918144955-756f73143d0a
 	k8s.io/apimachinery v0.0.0-20260916201323-e198c8900a45
 	k8s.io/cli-runtime v0.0.0-20260908225334-f08c4a065d0e
-	k8s.io/client-go v0.0.0-20260918151611-a1f10fd517a2
+	k8s.io/client-go v0.0.0-20260921192135-be7afe4f6911
 	k8s.io/component-base v0.0.0-20260918232136-b2dc1799955c
 	k8s.io/component-helpers v0.0.0-20260917233045-1fa0aeb68714
 	k8s.io/klog/v2 v2.140.0
