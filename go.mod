@@ -30,15 +30,15 @@ require (
 	golang.org/x/sys v0.48.0
 	golang.org/x/text v0.42.0
 	gopkg.in/evanphx/json-patch.v4 v4.13.0
-	k8s.io/api v0.0.0-20260925175811-97b4aac46fbf
-	k8s.io/apimachinery v0.0.0-20260925175343-be1093d69c39
-	k8s.io/cli-runtime v0.0.0-20260925185825-db06d17d589e
-	k8s.io/client-go v0.0.0-20260925180432-0b3e140561dc
-	k8s.io/component-base v0.0.0-20260925181949-33d458fff1ed
-	k8s.io/component-helpers v0.0.0-20260925182215-24eaa305d155
+	k8s.io/api v0.0.0-20260925175813-1ae1ab50d0cd
+	k8s.io/apimachinery v0.0.0-20260925175345-fdc546200a6d
+	k8s.io/cli-runtime v0.0.0-20260925185826-799a42f72ac6
+	k8s.io/client-go v0.0.0-20260925180436-4849f5561335
+	k8s.io/component-base v0.0.0-20260925181953-c3f88dae1f3b
+	k8s.io/component-helpers v0.0.0-20260925182217-66b885f15e1f
 	k8s.io/klog/v2 v2.140.0
 	k8s.io/kube-openapi v0.0.0-20260908163437-c4db2bdfbfe6
-	k8s.io/metrics v0.0.0-20260925185553-a47b41ca6ee7
+	k8s.io/metrics v0.0.0-20260925185554-ba2bdace9b11
 	k8s.io/streaming v0.0.0-20260925174948-82cc75b1f3b1
 	k8s.io/utils v0.0.0-20260626114624-be93311217bd
 	sigs.k8s.io/json v0.0.0-20250730193827-2d320260d730
@@ -55,7 +55,7 @@ require (
 	github.com/blang/semver/v4 v4.0.0 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/emicklei/go-restful/v3 v3.13.0 // indirect
-	github.com/fxamacker/cbor/v2 v2.9.1 // indirect
+	github.com/fxamacker/cbor/v2 v2.9.4 // indirect
 	github.com/go-errors/errors v1.4.2 // indirect
 	github.com/go-logr/logr v1.4.3 // indirect
 	github.com/go-openapi/jsonpointer v1.0.0 // indirect
