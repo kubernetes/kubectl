@@ -185,8 +185,8 @@ k8s.io/cli-runtime v0.0.0-20260929230556-16d14b1ae218 h1:Ij2Gba7SXKebW0AnK3owRH0
 k8s.io/cli-runtime v0.0.0-20260929230556-16d14b1ae218/go.mod h1:iB5ZrSJQD66AVknjqJsvrUdwgWlu59zEFuP+JgHVcLQ=
 k8s.io/client-go v0.0.0-20260929220611-55df5c6176d3 h1:LaeXVqFHTOrzDjs/wuhrhHrUZi7v61sQ4RotEd3QwHY=
 k8s.io/client-go v0.0.0-20260929220611-55df5c6176d3/go.mod h1:g772oHMacM1hpzzY2J0q81mvX1veZDTg9lbIIUaHFRM=
-k8s.io/component-base v0.0.0-20260929222251-8a6cf3448f5b h1:zGDZ2X8n8kLqxDLeOG/Gubq6NXzHbFVo9vF5U8HNFYA=
-k8s.io/component-base v0.0.0-20260929222251-8a6cf3448f5b/go.mod h1:dKwNhI0igWw2gnAj3/ttAVuQUHteKifJWqoyoYRdalU=
+k8s.io/component-base v0.0.0-20260930021248-4c931d644b26 h1:UAkeVZ9Rs9jSZMy6txu1bvw8dp+dCuM4X7g9PGXgnz0=
+k8s.io/component-base v0.0.0-20260930021248-4c931d644b26/go.mod h1:q21jzWXlqKBrNDBAXypK9EYICc2QAh4Fvtao41QUdBY=
 k8s.io/component-helpers v0.0.0-20260929222514-0e0672bbbb2c h1:FsGZHNoQhNEogVx8Jg2iBvNpty1wTLDEKGCsQp51z+w=
 k8s.io/component-helpers v0.0.0-20260929222514-0e0672bbbb2c/go.mod h1:fUqDJUo7NeQI2rFZYagx+VzJr0Xuz43wE1V/2G2ljfk=
 k8s.io/klog/v2 v2.140.0 h1:Tf+J3AH7xnUzZyVVXhTgGhEKnFqye14aadWv7bzXdzc=
