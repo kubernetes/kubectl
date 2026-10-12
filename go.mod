@@ -30,15 +30,15 @@ require (
 	golang.org/x/sys v0.48.0
 	golang.org/x/text v0.42.0
 	gopkg.in/evanphx/json-patch.v4 v4.13.0
-	k8s.io/api v0.0.0-20261009022248-31d6f3932eb5
+	k8s.io/api v0.0.0-20261010062234-e93463ddce2d
 	k8s.io/apimachinery v0.0.0-20261009061800-d40e9d24499c
-	k8s.io/cli-runtime v0.0.0-20261009032334-fbe1f25ccc22
-	k8s.io/client-go v0.0.0-20261009183522-f747e8b9a86e
-	k8s.io/component-base v0.0.0-20261010023500-ef7fbb31e5d2
-	k8s.io/component-helpers v0.0.0-20261009024645-def33f7b153c
+	k8s.io/cli-runtime v0.0.0-20261010151459-011ebc985d66
+	k8s.io/client-go v0.0.0-20261010142842-2a3406111e64
+	k8s.io/component-base v0.0.0-20261010143735-20f70c390f50
+	k8s.io/component-helpers v0.0.0-20261010143943-976b54055bd1
 	k8s.io/klog/v2 v2.140.0
 	k8s.io/kube-openapi v0.0.0-20261007072838-e2e80c32a35f
-	k8s.io/metrics v0.0.0-20261009032103-9ec2076f72cc
+	k8s.io/metrics v0.0.0-20261010151238-254be70828af
 	k8s.io/streaming v0.0.0-20260925214949-a5093f4e9dc5
 	k8s.io/utils v0.0.0-20260626114624-be93311217bd
 	sigs.k8s.io/json v0.0.0-20250730193827-2d320260d730
@@ -90,5 +90,3 @@ require (
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	sigs.k8s.io/kustomize/api v0.21.3 // indirect
 )
-
-replace k8s.io/code-generator => k8s.io/code-generator v0.0.0-20261010023203-8bc7f8edd01d
