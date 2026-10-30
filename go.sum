@@ -178,8 +178,8 @@ k8s.io/api v0.0.0-20261030022931-5ac274846118 h1:cD4EFTMood7lgEhv1+L8jnNLn7sCP33
 k8s.io/api v0.0.0-20261030022931-5ac274846118/go.mod h1:C7aSzj9fAE03Gl82nVc2VshqjbSSHju9D1l64TsYEOI=
 k8s.io/apimachinery v0.0.0-20261030040554-c0d5737608f6 h1:9Knm/sNuEGOGWOYQdXMeleIlAjBU0W36tUeU0N4M3ek=
 k8s.io/apimachinery v0.0.0-20261030040554-c0d5737608f6/go.mod h1:wOnsNGHXYzrqcz/O8Ak3fzqgPpkmDYGqDX3A44gqeZE=
-k8s.io/cli-runtime v0.0.0-20261024002622-1af2b401a0e7 h1:ZH6otZPQlbTMBQMJKyYdflARzgLK7NHVTPrOA4YwtRw=
-k8s.io/cli-runtime v0.0.0-20261024002622-1af2b401a0e7/go.mod h1:LAsg1i/HOKrwduIC21liiWcdiThtWOMK6LjCj/gWI2o=
+k8s.io/cli-runtime v0.0.0-20261030173154-1cc5c772d02f h1:QQ5GY9nrujC88u/zMselr0ApRWQxbcUR/MRTyp3Y/w0=
+k8s.io/cli-runtime v0.0.0-20261030173154-1cc5c772d02f/go.mod h1:Mm6Aw+vBfrIIK+vNfZ0jJAg/HEXjF2g1fz+f/iBnt+A=
 k8s.io/client-go v0.0.0-20261030041624-d88349359817 h1:uGnwFVyH4mw0paBfhHHIJIrXifLBYlheO+NfMm/ti1s=
 k8s.io/client-go v0.0.0-20261030041624-d88349359817/go.mod h1:F3KYmdLsJWg1wZV04bqmJj5r4zXL8cOHYq6w45Cw2SY=
 k8s.io/component-base v0.0.0-20261029151141-3e1d13907f62 h1:uRC1+3XeVmsxZ6x0rkdTj7c+LSRI9zV5hXfdRxvwE88=
