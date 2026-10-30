@@ -174,8 +174,8 @@ gopkg.in/evanphx/json-patch.v4 v4.13.0/go.mod h1:p8EYWUEYMpynmqDbY58zCKCFZw8pRWM
 gopkg.in/inf.v0 v0.9.1 h1:73M5CoZyi3ZLMOyDlQh031Cx6N9NDJ2Vvfl76EDAgDc=
 gopkg.in/inf.v0 v0.9.1/go.mod h1:cWUDdTG/fYaXco+Dcufb5Vnc6Gp2YChqWtbxRZE0mXw=
 gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c/go.mod h1:K4uyk7z7BCEPqu6E+C64Yfv1cQ7kz7rIZviUmN+EgEM=
-k8s.io/api v0.0.0-20261030022931-5ac274846118 h1:cD4EFTMood7lgEhv1+L8jnNLn7sCP33w8Bo33hPaHuc=
-k8s.io/api v0.0.0-20261030022931-5ac274846118/go.mod h1:C7aSzj9fAE03Gl82nVc2VshqjbSSHju9D1l64TsYEOI=
+k8s.io/api v0.0.0-20261030164858-33812b291ed0 h1:LNuGslHbD8tmYL1OOFUBwzVzCWP82FzykCiioZbFac4=
+k8s.io/api v0.0.0-20261030164858-33812b291ed0/go.mod h1:C7aSzj9fAE03Gl82nVc2VshqjbSSHju9D1l64TsYEOI=
 k8s.io/apimachinery v0.0.0-20261030040554-c0d5737608f6 h1:9Knm/sNuEGOGWOYQdXMeleIlAjBU0W36tUeU0N4M3ek=
 k8s.io/apimachinery v0.0.0-20261030040554-c0d5737608f6/go.mod h1:wOnsNGHXYzrqcz/O8Ak3fzqgPpkmDYGqDX3A44gqeZE=
 k8s.io/cli-runtime v0.0.0-20261030173154-1cc5c772d02f h1:QQ5GY9nrujC88u/zMselr0ApRWQxbcUR/MRTyp3Y/w0=
